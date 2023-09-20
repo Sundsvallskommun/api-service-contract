@@ -19,8 +19,7 @@ import lombok.NoArgsConstructor;
 public class ContractHolder {
 
 	@Valid
-	@ArraySchema(schema = @Schema(description = "Lista med arrendeavtal."))
-	private List<LandLeaseContract> landLeaseContracts;
-
+	@ArraySchema(schema = @Schema(description = "List of land lease contracts"))
+	private List<Contract> landLeaseContracts;
 
 }

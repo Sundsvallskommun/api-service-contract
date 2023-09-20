@@ -46,6 +46,10 @@
 			<artifactId>geojson-jackson</artifactId>
 			<version>1.14</version>
 		</dependency>
+		<dependency>
+			<groupId>se.sundsvall.dept44</groupId>
+			<artifactId>dept44-common-validators</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

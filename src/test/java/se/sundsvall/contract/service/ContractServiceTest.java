@@ -49,7 +49,10 @@ class ContractServiceTest {
 		final var result = contractService.getContracts(request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
-		assertThat(result.get(0).getPropertyDesignation()).isEqualTo("propertyDesignation");
+		assertThat(result.get(0)).isInstanceOf(LandLeaseContract.class);
+		if (result.get(0) instanceof final LandLeaseContract landLeaseContract) {
+			assertThat(landLeaseContract.getPropertyDesignation()).isEqualTo("propertyDesignation");
+		}
 	}
 
 	@Test

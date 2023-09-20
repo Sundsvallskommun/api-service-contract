@@ -1,6 +1,7 @@
 package se.sundsvall.contract.api.model;
 
 import se.sundsvall.contract.api.model.enums.AttachmentCategory;
+import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -16,22 +17,23 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Attachment {
 
-	@Schema(example = "KONTRAKT")
+	@Schema(description = "AttachmentCategory", example = "KONTRAKT")
 	private AttachmentCategory category;
 
-	@Schema(example = "Arrendekontrakt")
+	@Schema(description = "Name of the attachment", example = "LeaseContract12")
 	private String name;
 
-	@Schema(example = "pdf")
+	@Schema(description = "file extension", example = ".pdf")
 	private String extension;
 
-	@Schema(example = "application/pdf")
+	@Schema(description = "mimeType", example = "application/pdf")
 	private String mimeType;
 
-	@Schema(example = "Kontraktet var lite skrynkligt vid inskanningen.")
+	@Schema(description = "Notes about the attachment", example = "The contract was a little wrinkled when scanned")
 	private String note;
 
-	@Schema(format = "byte", description = "Base64-encoded file")
+	@ValidBase64(nullable = true)
+	@Schema(type = "string", format = "base64", description = "Base64-encoded file")
 	private String file;
 
 }

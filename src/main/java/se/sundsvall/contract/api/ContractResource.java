@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 
+import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractHolder;
 import se.sundsvall.contract.api.model.ContractRequest;
-import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.service.ContractService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +72,7 @@ public class ContractResource {
 	)
 	@PostMapping(produces = ALL_VALUE, consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> postLandLeaseContract(final UriComponentsBuilder uriComponentsBuilder,
-		@RequestBody @Valid final LandLeaseContract contract) {
+		@RequestBody @Valid final Contract contract) {
 
 		return ResponseEntity
 			.created(uriComponentsBuilder.build(service.createContract(contract)))
@@ -92,9 +92,9 @@ public class ContractResource {
 		}
 	)
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<LandLeaseContract>> getContracts(@ParameterObject final ContractRequest request) {
+	public ResponseEntity<List<Contract>> getContracts(@ParameterObject final ContractRequest request) {
 
-		final List<LandLeaseContract> landLeaseContractList = service.getContracts(request);
+		final var landLeaseContractList = service.getContracts(request);
 		return ResponseEntity.ok(landLeaseContractList);
 	}
 
@@ -111,13 +111,13 @@ public class ContractResource {
 		}
 	)
 	@GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<LandLeaseContract> getContractById(@Parameter(description = "Kontraktets id") @PathVariable("id") final Long id) {
+	public ResponseEntity<Contract> getContractById(@Parameter(description = "Kontraktets id") @PathVariable("id") final Long id) {
 
 		return ResponseEntity.ok(service.getContract(id));
 	}
 
 	@Operation(
-		summary = "Update contract",
+		summary = "Update List of contracts",
 		responses = {
 			@ApiResponse(
 				responseCode = "204",

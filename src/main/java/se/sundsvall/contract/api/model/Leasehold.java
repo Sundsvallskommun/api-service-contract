@@ -17,14 +17,14 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 @AllArgsConstructor()
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "Arrendeform")
+@Schema(description = "Leasehold")
 public class Leasehold {
 
 	@NotBlank
 	@Schema(example = "OTHER")
 	private LeaseholdType type;
 
-	@Schema(example = "Annat arrende")
+	@Schema(description = "description ", example = "A simple description of the leasehold")
 	private String description;
 
 }

@@ -28,7 +28,7 @@ class ContractHolderTest {
 	@Test
 	void testBuilderMethods() {
 
-		final var landLeaseContracts = List.of(LandLeaseContract.builder().build());
+		final List<Contract> landLeaseContracts = List.of(LandLeaseContract.builder().build());
 
 		final var contractHolder = ContractHolder.builder()
 			.withLandLeaseContracts(landLeaseContracts)

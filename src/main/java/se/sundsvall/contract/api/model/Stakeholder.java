@@ -22,31 +22,31 @@ public class Stakeholder {
 	@Schema(example = "OTHER")
 	private StakeholderType type;
 
-	@ArraySchema(schema = @Schema(description = "Lista med roller."))
+	@ArraySchema(schema = @Schema(description = "List of roles"))
 	private List<StakeholderRole> roles;
 
-	@Schema(example = "Sundsvalls kommun")
+	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")
 	private String organizationName;
 
-	@Schema(example = "212000-2411")
+	@Schema(description = "Swedish organization number", example = "212000-2411")
 	private String organizationNumber;
 
-	@Schema(example = "Test")
+	@Schema(description = "Stakeholders first name", example = "Test")
 	private String firstName;
 
-	@Schema(example = "Testorsson")
+	@Schema(description = "Stakeholders last name", example = "Testorsson")
 	private String lastName;
 
-	@Schema(example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	@Schema(description = "", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	private String personId;
 
-	// Lyfta ut detta i en egen klass? t.ex. ContactInfo
-	@Schema(example = "0701231212")
+	@Schema(description = "Phone number for stakeholder", example = "0701231212")
 	private String phoneNumber;
 
-	@Schema(example = "test.testorsson@test.se")
+	@Schema(description = "Email adress for stakeholder", example = "test.testorsson@test.se")
 	private String emailAddress;
 
+	@Schema(description = "Address for stakeholder")
 	private Address address;
 
 }

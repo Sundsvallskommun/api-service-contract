@@ -3,7 +3,6 @@ package se.sundsvall.contract.api.model;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -11,95 +10,70 @@ import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder(setterPrefix = "with")
-@AllArgsConstructor()
+@SuperBuilder(setterPrefix = "with")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "Arrendeavtal")
-public class LandLeaseContract {
+public class LandLeaseContract extends Contract {
 
-	@Schema(description = "Version på kontraktet (databas-version). Anges endast vid PUT och PATCH.")
-	Integer version;
+	@Schema(description = "Type of lease", example = "LEASEHOLD")
+	private LandLeaseType landLeaseType;
 
-	@Schema(description = "Status på kontraktet.", example = "ACTIVE")
-	Status status;
+	@Schema(description = "Type of leasehold", example = "OTHER")
+	private Leasehold leaseholdType;
 
-	@Schema(description = "Eventuellt ID på relaterat ärende.", example = "100")
-	Long caseId;
+	@Schema(description = "Type of right of use", example = "HUNTING")
+	private UsufructType usufructType;
 
-	@Schema(description = "Indexvillkor.")
-	String indexTerms;
-
-	@Schema(description = "Beskrivning av ändamål (fritext).", example = "En beskrivning av ändamålet med kontraktet.")
-	String description;
-
-	@Schema(description = "Övriga villkor.")
-	String additionalTerms;
-
-	@ArraySchema(schema = @Schema(description = "Lista med intressenter."))
-	List<Stakeholder> stakeholders;
-
-	@ArraySchema(schema = @Schema(description = "Lista med adresser."))
-	List<Attachment> attachments;
-
-	@Schema(description = "Typ av arrende.", example = "LEASEHOLD")
-	LandLeaseType landLeaseType;
-
-	@Schema(description = "Typ av arrende.", example = "Leasehold")
-	Leasehold leaseholdType;
-
-	@Schema(description = "Typ av nyttjanderätt.", example = "Jakt")
-	UsufructType usufructType;
-
-	@Schema(description = "Extern referens", example = "123")
-	String externalReferenceId;
+	@Schema(description = "External referenceId", example = "123")
+	private String externalReferenceId;
 
 	@NotBlank
-	@Schema(description = "Fastighetsbeteckning.", example = "SUNDSVALL NORRMALM 1:1", requiredMode = Schema.RequiredMode.REQUIRED)
-	String propertyDesignation;
+	@Schema(description = "Property designation", example = "SUNDSVALL NORRMALM 1:1", requiredMode = Schema.RequiredMode.REQUIRED)
+	private String propertyDesignation;
 
-	@Schema(description = "Objektidentitet (från Lantmäteriet).", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.REQUIRED)
-	String objectIdentity;
+	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.REQUIRED)
+	private String objectIdentity;
 
-	@Schema(description = "Arrendetid.")
-	Duration leaseDuration;
+	@Schema(description = "The duration of the lease")
+	private Duration leaseDuration;
 
-	@Schema(description = "Arrendeavgift per år (kr).", example = "4350")
-	BigDecimal rental;
+	@Schema(description = "Yearly lease fee", example = "4350")
+	private BigDecimal rental;
 
-	@Schema(description = "Faktureringsintervall.", example = "QUARTERLY")
-	IntervalType invoiceInterval;
+	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
+	private IntervalType invoiceInterval;
 
-	@Schema(description = "Upplåtelsetid - start.", example = "2020-01-01", format = "date")
-	LocalDate start;
+	@Schema(description = "Lease period start date", example = "2020-01-01", format = "date")
+	private LocalDate start;
 
-	@Schema(description = "Upplåtelsetid - slut.", example = "2022-12-31", format = "date")
-	LocalDate end;
+	@Schema(description = "Lease period end date", example = "2022-12-31", format = "date")
+	private LocalDate end;
 
-	@Schema(description = "Markör för om ett avtal skall förlängas automatiskt eller ej", example = "true", defaultValue = "true")
-	Boolean autoExtend;
+	@Schema(description = "Marker for whether an agreement should be extended automatically or not", example = "true", defaultValue = "true")
+	private Boolean autoExtend;
 
-	@Schema(description = "Förlängningstid.")
-	Duration leaseExtension;
+	@Schema(description = "Extension period")
+	private Duration leaseExtension;
 
-	@Schema(description = "Uppsägningstid.")
-	Duration periodOfNotice;
+	@Schema(description = "Termination period")
+	private Duration periodOfNotice;
 
-	@Schema(description = "Arrendeareal (m2).", example = "150")
-	Integer area;
+	@Schema(description = "Leased area (m2)", example = "150")
+	private Integer area;
 
-	@Schema(description = "Del(ar) av fastighet som omfattas av arrendet. Beskrivs av GeoJSON mha polygon(er)", example = "{\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                17.30072021484375,\n                                62.38137830626575\n                            ],\n                            [\n                                17.297286987304688,\n                                62.38050291927199\n                            ],\n                            [\n                                17.297801971435547,\n                                62.37922958346664\n                            ],\n                            [\n                                17.301406860351562,\n                                62.378194958300895\n                            ],\n                            [\n                                17.303810119628906,\n                                62.379149998183046\n                            ],\n                            [\n                                17.303638458251953,\n                                62.38066208244492\n                            ],\n                            [\n                                17.30072021484375,\n                                62.38137830626575\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }")
-	FeatureCollection areaData;
+	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = "{\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ],\n                            [\n                                17297286987304688,\n                                6238050291927199\n                            ],\n                            [\n                                17297801971435547,\n                                6237922958346664\n                            ],\n                            [\n                                17301406860351562,\n                                62378194958300895\n                            ],\n                            [\n                                17303810119628906,\n                                62379149998183046\n                            ],\n                            [\n                                17303638458251953,\n                                6238066208244492\n                            ],\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }")
+	private FeatureCollection areaData;
 
 }
