@@ -75,7 +75,7 @@ public class ContractResource {
 		@RequestBody @Valid final LandLeaseContract contract) {
 
 		return ResponseEntity
-			.created(uriComponentsBuilder.build(service.postContract(contract)))
+			.created(uriComponentsBuilder.build(service.createContract(contract)))
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -128,7 +128,7 @@ public class ContractResource {
 	@PatchMapping(path = "/{id}", produces = ALL_VALUE, consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> patchContract(@PathVariable("id") final Long id, @Valid final ContractHolder contractHolder) {
 
-		service.patchContract(id, contractHolder);
+		service.updateContract(id, contractHolder);
 		return ResponseEntity.noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

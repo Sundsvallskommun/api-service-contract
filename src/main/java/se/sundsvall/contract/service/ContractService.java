@@ -11,7 +11,7 @@ import se.sundsvall.contract.api.model.LandLeaseContract;
 @Service
 public class ContractService {
 
-	public Long postContract(final LandLeaseContract contract) {
+	public Long createContract(final LandLeaseContract contract) {
 		// to be implemented properly
 		return contract.getCaseId();
 	}
@@ -30,7 +30,7 @@ public class ContractService {
 			.build());
 	}
 
-	public void patchContract(final Long id, final ContractHolder contractHolder) {
+	public void updateContract(final Long id, final ContractHolder contractHolder) {
 		// to be implemented properly
 	}
 

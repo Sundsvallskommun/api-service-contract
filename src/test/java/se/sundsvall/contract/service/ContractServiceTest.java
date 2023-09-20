@@ -21,13 +21,13 @@ class ContractServiceTest {
 	private ContractService contractService;
 
 	@Test
-	void postContract() {
+	void createContract() {
 
 		final var contract = LandLeaseContract.builder()
 			.withCaseId(1L)
 			.build();
 
-		final var result = contractService.postContract(contract);
+		final var result = contractService.createContract(contract);
 
 		assertThat(result).isEqualTo(1L);
 	}
@@ -53,7 +53,7 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void patchContract() {
+	void updateContract() {
 
 		final var contractHolder = ContractHolder.builder()
 			.withLandLeaseContracts(List.of(LandLeaseContract.builder()
@@ -61,7 +61,7 @@ class ContractServiceTest {
 				.build()))
 			.build();
 
-		contractService.patchContract(1L, contractHolder);
+		contractService.updateContract(1L, contractHolder);
 	}
 
 }

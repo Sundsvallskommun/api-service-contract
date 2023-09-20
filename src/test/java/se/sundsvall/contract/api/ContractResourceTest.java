@@ -92,7 +92,7 @@ class ContractResourceTest {
 			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).postContract(contract);
+		verify(contractServiceMock, times(1)).createContract(contract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -113,7 +113,7 @@ class ContractResourceTest {
 			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).patchContract(any(Long.class), any());
+		verify(contractServiceMock, times(1)).updateContract(any(Long.class), any());
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
