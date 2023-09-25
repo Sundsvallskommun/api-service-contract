@@ -51,3 +51,6 @@ target/
 
 # Spring
 application-default.properties
+
+# OSX
+.DS_Store
