@@ -7,8 +7,8 @@
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>2.1.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>3.0</version>
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
