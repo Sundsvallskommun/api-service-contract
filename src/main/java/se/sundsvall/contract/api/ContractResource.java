@@ -23,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.ContractHolder;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.service.ContractService;
 
@@ -126,9 +125,8 @@ public class ContractResource {
 		}
 	)
 	@PatchMapping(path = "/{id}", produces = ALL_VALUE, consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> patchContract(@PathVariable("id") final Long id, @Valid final ContractHolder contractHolder) {
-
-		service.updateContract(id, contractHolder);
+	public ResponseEntity<Void> patchContract(@PathVariable("id") final Long id, @Valid @RequestBody final Contract contract) {
+		service.updateContract(id, contract);
 		return ResponseEntity.noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

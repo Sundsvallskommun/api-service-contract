@@ -1,8 +1,6 @@
 package se.sundsvall.contract.api.model;
 
 
-import jakarta.validation.constraints.NotBlank;
-
 import se.sundsvall.contract.api.model.enums.LeaseholdType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Leasehold")
 public class Leasehold {
 
-	@NotBlank
 	@Schema(example = "OTHER")
 	private LeaseholdType type;
 

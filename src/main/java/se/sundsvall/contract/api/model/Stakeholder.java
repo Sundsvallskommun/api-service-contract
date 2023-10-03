@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Stakeholder {
 
-	@Schema(example = "OTHER")
+	@Schema(example = "ASSOCIATION")
 	private StakeholderType type;
 
 	@ArraySchema(schema = @Schema(description = "List of roles"))

@@ -1,7 +1,6 @@
 package se.sundsvall.contract.api.model;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +29,7 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Type of lease", example = "LEASEHOLD")
 	private LandLeaseType landLeaseType;
 
-	@Schema(description = "Type of leasehold", example = "OTHER")
+	@Schema(description = "Type of leasehold")
 	private Leasehold leaseholdType;
 
 	@Schema(description = "Type of right of use", example = "HUNTING")
@@ -46,8 +45,8 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.REQUIRED)
 	private String objectIdentity;
 
-	@Schema(description = "The duration of the lease")
-	private Duration leaseDuration;
+	@Schema(description = "The duration of the lease in years", example = "9")
+	private Integer leaseDuration;
 
 	@Schema(description = "Yearly lease fee", example = "4350")
 	private BigDecimal rental;
@@ -64,11 +63,11 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Marker for whether an agreement should be extended automatically or not", example = "true", defaultValue = "true")
 	private Boolean autoExtend;
 
-	@Schema(description = "Extension period")
-	private Duration leaseExtension;
+	@Schema(description = "Extension period in days", example = "30")
+	private Integer leaseExtension;
 
-	@Schema(description = "Termination period")
-	private Duration periodOfNotice;
+	@Schema(description = "Termination period in days", example = "30")
+	private Integer periodOfNotice;
 
 	@Schema(description = "Leased area (m2)", example = "150")
 	private Integer area;
