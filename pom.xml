@@ -45,6 +45,11 @@
 			<artifactId>mariadb</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>jdbc</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Database-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -63,10 +68,6 @@
 			<groupId>de.grundid.opendatalab</groupId>
 			<artifactId>geojson-jackson</artifactId>
 			<version>1.14</version>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>jdbc</artifactId>
 		</dependency>
 	</dependencies>
 

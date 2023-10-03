@@ -20,20 +20,19 @@ public class ContractService {
 	public ContractService(final ContractRepository contractRepository) {this.contractRepository = contractRepository;}
 
 	public Long createContract(final Contract contract) {
-		final var entity = toEntity(contract);
-		final var result = contractRepository.save(entity);
-		return result.getId();
+
+		return contractRepository.save(toEntity(contract)).getId();
 	}
 
 	public Contract getContract(final Long id) {
-		final var result = contractRepository.findById(id).orElseThrow();
-		return ContractMapper.toDto(result);
+		return contractRepository.findById(id).map(ContractMapper::toDto).orElseThrow();
 	}
 
 	public List<Contract> getContracts(final ContractRequest request) {
 
-		final var result = contractRepository.findAll(createContractSpecification(request));
-		return result.stream().map(ContractMapper::toDto).toList();
+		return contractRepository.findAll(createContractSpecification(request)).stream()
+			.map(ContractMapper::toDto)
+			.toList();
 	}
 
 	public void updateContract(final Long id, final Contract contract) {
