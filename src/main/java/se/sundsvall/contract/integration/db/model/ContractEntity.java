@@ -16,6 +16,9 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import se.sundsvall.contract.api.model.enums.Status;
 
 import lombok.AllArgsConstructor;
@@ -24,13 +27,21 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 
+@JsonTypeInfo(
+	use = JsonTypeInfo.Id.NAME,
+	property = "type"
+)
+@JsonSubTypes({
+	@JsonSubTypes.Type(value = LandLeaseContractEntity.class, name = "landLeaseEntity"),
+})
 @Data
 @SuperBuilder(setterPrefix = "with")
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 @Table(name = "contract")
 @Inheritance(strategy = InheritanceType.JOINED)
+
 public abstract class ContractEntity {
 
 	@Id

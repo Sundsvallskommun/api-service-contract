@@ -1,23 +1,28 @@
 package se.sundsvall.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContract;
 import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.Problem;
 
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.LandLeaseContract;
@@ -28,6 +33,9 @@ import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
+
+	@Spy
+	private ObjectMapper objectMapper;
 
 	@Mock
 	private ContractRepository contractRepository;
@@ -82,16 +90,49 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void updateContract() {
+	void updateContract() throws IOException {
 
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
-		final var contract = getLandLeaseContract();
+		final var jsonPatchArray = "[{ \"op\": \"replace\", \"path\": \"/propertyDesignation\", \"value\": \"myPatchedPropertyDesignation\" }]";
+		final var patch = JsonPatch.fromJson(objectMapper.readTree(jsonPatchArray));
 
-		contractService.updateContract(1L, contract);
+		contractService.updateContract(1L, patch);
 
 		verify(contractRepository).findById(any(Long.class));
 		verify(contractRepository).save(any(LandLeaseContractEntity.class));
+		verifyNoMoreInteractions(contractRepository);
+	}
+
+	@Test
+	void updateContract_NotFound() throws IOException {
+
+		final var jsonPatchArray = "[{ \"op\": \"replace\", \"path\": \"/propertyDesignation\", \"value\": \"myNewValue\" }]";
+		final var patch = JsonPatch.fromJson(objectMapper.readTree(jsonPatchArray));
+
+		assertThatThrownBy(() -> contractService.updateContract(1L, patch))
+			.isInstanceOf(Problem.class)
+			.hasMessage("Not Found: Contract with id 1 not found");
+
+		verify(contractRepository).findById(any(Long.class));
+		verifyNoMoreInteractions(contractRepository);
+	}
+
+	@Test
+	void updateContract_InvalidPatch() throws IOException {
+
+		final var entity = getLandLeaseContractEntity();
+		final var jsonPatchArray = "[{ \"op\": \"replace\", \"path\": \"/InvalidPath\", \"value\": \"invalidValue\" }]";
+		final var patch = JsonPatch.fromJson(objectMapper.readTree(jsonPatchArray));
+
+		when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
+
+		assertThatThrownBy(() -> contractService.updateContract(1L, patch))
+			.isInstanceOf(Problem.class)
+			.hasMessage("Internal Server Error: Failed to apply patch [op: replace; path: \"/InvalidPath\"; " +
+				"value: \"invalidValue\"] with exception no such path in target JSON document");
+
+		verify(contractRepository).findById(any(Long.class));
 		verifyNoMoreInteractions(contractRepository);
 	}
 

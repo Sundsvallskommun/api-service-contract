@@ -1,10 +1,8 @@
 package se.sundsvall.contract.service;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
@@ -236,65 +234,6 @@ public final class ContractMapper {
 			.withNote(attachment.getNote())
 			.withFile(attachment.getFile())
 			.build();
-	}
-
-	static ContractEntity updateEntity(final ContractEntity entity, final Contract contract) {
-
-		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(entities.stream()
-			.map(ContractMapper::toEntity)
-			.toList()));
-
-		setPropertyIfNonNull(contract.getAttachments(), entities -> entity.setAttachments(entities.stream()
-			.map(ContractMapper::toEntity)
-			.toList()));
-
-		setPropertyIfNonNull(contract.getIndexTerms(), entity::setIndexTerms);
-		setPropertyIfNonNull(contract.getDescription(), entity::setDescription);
-		setPropertyIfNonNull(contract.getAdditionalTerms(), entity::setAdditionalTerms);
-		setPropertyIfNonNull(contract.getVersion(), entity::setVersion);
-		setPropertyIfNonNull(contract.getStatus(), entity::setStatus);
-		setPropertyIfNonNull(contract.getCaseId(), entity::setCaseId);
-
-		if (entity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
-			contract instanceof final LandLeaseContract landLeaseContract) {
-			updateEntity(landLeaseContractEntity, landLeaseContract);
-		}
-		return entity;
-	}
-
-	private static void updateEntity(final LeaseholdEntity entity, final Leasehold leasehold) {
-		if (nonNull(leasehold)) {
-			setPropertyIfNonNull(leasehold.getType(), entity::setType);
-			setPropertyIfNonNull(leasehold.getDescription(), entity::setDescription);
-		}
-	}
-
-	private static void updateEntity(final LandLeaseContractEntity entity, final LandLeaseContract contract) {
-
-		setPropertyIfNonNull(contract.getStatus(), entity::setStatus);
-		setPropertyIfNonNull(contract.getLandLeaseType(), entity::setLandLeaseType);
-		setPropertyIfNonNull(contract.getUsufructType(), entity::setUsufructType);
-		setPropertyIfNonNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
-		setPropertyIfNonNull(contract.getPropertyDesignation(), entity::setPropertyDesignation);
-		setPropertyIfNonNull(contract.getObjectIdentity(), entity::setObjectIdentity);
-		setPropertyIfNonNull(contract.getLeaseDuration(), entity::setLeaseDuration);
-		setPropertyIfNonNull(contract.getRental(), entity::setRental);
-		setPropertyIfNonNull(contract.getInvoiceInterval(), entity::setInvoiceInterval);
-		setPropertyIfNonNull(contract.getStart(), entity::setStart);
-		setPropertyIfNonNull(contract.getEnd(), entity::setEnd);
-		setPropertyIfNonNull(contract.getAutoExtend(), entity::setAutoExtend);
-		setPropertyIfNonNull(contract.getLeaseExtension(), entity::setLeaseExtension);
-		setPropertyIfNonNull(contract.getPeriodOfNotice(), entity::setPeriodOfNotice);
-		setPropertyIfNonNull(contract.getArea(), entity::setArea);
-		setPropertyIfNonNull(contract.getAreaData(), entity::setAreaData);
-
-		updateEntity(entity.getLeaseholdType(), contract.getLeaseholdType());
-	}
-
-	private static <T> void setPropertyIfNonNull(final T sourceValue, final Consumer<T> setter) {
-		if (nonNull(sourceValue)) {
-			setter.accept(sourceValue);
-		}
 	}
 
 }

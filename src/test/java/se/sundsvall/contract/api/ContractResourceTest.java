@@ -22,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.service.ContractService;
@@ -100,11 +99,11 @@ class ContractResourceTest {
 	@Test
 	void patchContracts() {
 
-		final var contract = TestFactory.getUpdatedLandLeaseContract();
 
 		webTestClient.patch()
 			.uri("/contracts/1")
-			.bodyValue(contract)
+			.header("Content-Type", "application/json-patch+json")
+			.bodyValue("[{ \"op\": \"replace\", \"path\": \"/externalReferenceId\", \"value\": \"12123\" }]")
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE)

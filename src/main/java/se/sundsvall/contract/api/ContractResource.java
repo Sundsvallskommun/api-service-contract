@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -73,8 +74,8 @@ public class ContractResource {
 	public ResponseEntity<Void> postLandLeaseContract(final UriComponentsBuilder uriComponentsBuilder,
 		@RequestBody @Valid final Contract contract) {
 
-		return ResponseEntity
-			.created(uriComponentsBuilder.build(service.createContract(contract)))
+		return ResponseEntity.created(uriComponentsBuilder.path("/contracts/{id}")
+				.buildAndExpand(service.createContract(contract)).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -124,9 +125,13 @@ public class ContractResource {
 			)
 		}
 	)
-	@PatchMapping(path = "/{id}", produces = ALL_VALUE, consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> patchContract(@PathVariable("id") final Long id, @Valid @RequestBody final Contract contract) {
-		service.updateContract(id, contract);
+	@PatchMapping(path = "/{id}", produces = ALL_VALUE, consumes = "application/json-patch+json")
+	public ResponseEntity<Void> patchContract(@PathVariable("id") final Long id,
+		@Schema(
+			description = "Use JsonPatch to update contract. See https://github.com/java-json-tools/json-patch for more information.",
+			example = "[{\"op\": \"replace\", \"path\": \"/propertyDesignation\", \"value\": \"myPatchedPropertyDesignation\"}]")
+		@RequestBody final JsonPatch patch) {
+		service.updateContract(id, patch);
 		return ResponseEntity.noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
