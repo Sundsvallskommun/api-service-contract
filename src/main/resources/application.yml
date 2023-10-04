@@ -13,3 +13,8 @@ openapi:
 spring:
   application:
     name: api-contract
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
