@@ -8,7 +8,7 @@
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
 		<version>3.1</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
@@ -18,8 +18,8 @@
 		<!-- Pipeline properties -->
 		<docker.image.name>ms-contract</docker.image.name>
 		<exposed.app.port>8080</exposed.app.port>
-		<published.container.port.test>xxx</published.container.port.test>
-		<published.container.port.production>xxx</published.container.port.production>
+		<published.container.port.test>8702</published.container.port.test>
+		<published.container.port.production>8702</published.container.port.production>
 		<maven-processor-plugin.version>5.0-jdk8</maven-processor-plugin.version>
 		<hibernate-jpamodelgen.version>6.3.0.Final</hibernate-jpamodelgen.version>
 	</properties>
