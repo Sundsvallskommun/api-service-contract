@@ -116,7 +116,7 @@ public class ContractResource {
 	}
 
 	@Operation(
-		summary = "Update List of contracts",
+		summary = "Update a contract",
 		responses = {
 			@ApiResponse(
 				responseCode = "204",

@@ -36,7 +36,6 @@ public class ContractService {
 	}
 
 	public void updateContract(final Long id, final Contract contract) {
-
 		final var result = contractRepository.findById(id).orElseThrow();
 		final var updatedEntity = updateEntity(result, contract);
 		contractRepository.save(updatedEntity);

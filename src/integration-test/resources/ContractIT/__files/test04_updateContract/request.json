@@ -1,0 +1,81 @@
+{
+  "type": "landLease",
+  "version": 1,
+  "status": "ACTIVE",
+  "caseId": 1,
+  "indexTerms": "someOtherIndexTerms",
+  "description": "someOtherDescription",
+  "additionalTerms": "someOtherAdditionalTerms",
+  "stakeholders": [
+    {
+      "type": "PERSON",
+      "roles": [
+        "FIRMATECKNARE"
+      ],
+      "organizationName": "someOtherOrganizationName",
+      "organizationNumber": "771122-1234",
+      "firstName": "someOtherFirstName",
+      "lastName": "someOtherLastName",
+      "personId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+      "phoneNumber": "someOtherPhoneNumber",
+      "emailAddress": "someOtherEmail",
+      "address": {
+        "type": "POSTAL_ADDRESS",
+        "streetAddress": "someOtherStreetAddress",
+        "postalCode": "12345",
+        "town": "someOtherTown",
+        "country": "SE",
+        "attention": "someOtherAttention"
+      }
+    },
+    {
+      "type": "PERSON",
+      "roles": [
+        "FULLMAKTSROLL"
+      ],
+      "organizationName": "someOtherOrganizationName",
+      "organizationNumber": "771122-1234",
+      "firstName": "someOtherFirstName",
+      "lastName": "someOtherLastName",
+      "personId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+      "phoneNumber": "someOtherPhoneNumber",
+      "emailAddress": "someOtherEmail",
+      "address": {
+        "type": "VISITING_ADDRESS",
+        "streetAddress": "someOtherStreetAddress",
+        "postalCode": "12345",
+        "town": "someOtherTown",
+        "country": "SE",
+        "attention": "someOtherAttention"
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "category": "KONTRAKT",
+      "name": "someOtherName",
+      "extension": ".pdf",
+      "mimeType": "application/pdf",
+      "note": "1",
+      "file": "someOtherFile"
+    }
+  ],
+  "landLeaseType": "LEASEHOLD",
+  "leaseholdType": {
+    "type": "AGRICULTURE",
+    "description": "someOtherLeaseholdDescription"
+  },
+  "usufructType": "HUNTING",
+  "externalReferenceId": "MK-TEST0003",
+  "propertyDesignation": "SUNDSVALL GRANLO 2:1",
+  "objectIdentity": "someOtherObjectIdentity",
+  "leaseDuration": 2,
+  "rental": 123.00,
+  "invoiceInterval": "QUARTERLY",
+  "start": "2023-10-02",
+  "end": "2023-10-10",
+  "autoExtend": true,
+  "leaseExtension": 1,
+  "periodOfNotice": 2,
+  "area": 12
+}

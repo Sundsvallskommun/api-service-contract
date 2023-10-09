@@ -23,9 +23,11 @@ import se.sundsvall.contract.api.model.enums.StakeholderRole;
 import se.sundsvall.contract.api.model.enums.StakeholderType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
+import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 
 public final class TestFactory {
 
@@ -48,7 +50,6 @@ public final class TestFactory {
 			.withPeriodOfNotice(2)
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
-
 			.withVersion(1)
 			.withStatus(Status.ACTIVE)
 			.withCaseId(1L)
@@ -56,7 +57,26 @@ public final class TestFactory {
 			.withIndexTerms("someIndexTerms")
 			.withDescription("someDescription")
 			.withAdditionalTerms("someAdditionalTerms")
-			.withStakeholders(List.of())
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withId(1L)
+				.withFirstName("someFirstName")
+				.withLastName("someLastName")
+				.withOrganizationNumber("someOrganizationNumber")
+				.withOrganizationName("someOrganizationName")
+				.withPersonId("somePersonId")
+				.withAddress(AddressEntity.builder()
+					.withTown("someTown")
+					.withStreetAddress("someStreetAddress")
+					.withPostalCode("somePostalCode")
+					.withCountry("someCountry")
+					.withAttention("someAttention")
+					.withType(AddressType.VISITING_ADDRESS)
+					.build())
+				.withRoles(List.of(StakeholderRole.FULLMAKTSROLL))
+				.withEmailAddress("someEmailAddress")
+				.withPhoneNumber("somePhoneNumber")
+				.withType(StakeholderType.ASSOCIATION)
+				.build()))
 			.withAttachments(List.of(AttachmentEntity.builder()
 				.withId(2L)
 				.withNote("someNote")
@@ -88,7 +108,6 @@ public final class TestFactory {
 			.withPeriodOfNotice(2)
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
-
 			.withVersion(1)
 			.withStatus(Status.ACTIVE)
 			.withCaseId(1L)
@@ -147,7 +166,6 @@ public final class TestFactory {
 			.withPeriodOfNotice(1)
 			.withArea(1243)
 			.withAreaData(new FeatureCollection())
-
 			.withVersion(2)
 			.withStatus(Status.TERMINATED)
 			.withCaseId(1L)
