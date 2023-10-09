@@ -67,7 +67,7 @@ class ContractRepositoryTest {
 
 		final var persistedEntity = contractRepository.saveAndFlush(entity);
 
-		assertThat(persistedEntity).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(persistedEntity).usingRecursiveComparison().ignoringFields("").isEqualTo(entity);
 		assertThat(persistedEntity.getId()).isNotZero();
 
 		persistedEntity.setDescription("Updated description");
