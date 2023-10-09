@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.service.ContractService;
@@ -99,11 +100,7 @@ class ContractResourceTest {
 	@Test
 	void patchContracts() {
 
-		final var contract = LandLeaseContract.builder()
-			.withVersion(0)
-			.withArea(0)
-			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
-			.build();
+		final var contract = TestFactory.getUpdatedLandLeaseContract();
 
 		webTestClient.patch()
 			.uri("/contracts/1")
