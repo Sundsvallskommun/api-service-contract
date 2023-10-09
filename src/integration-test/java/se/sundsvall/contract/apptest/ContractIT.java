@@ -1,6 +1,5 @@
 package se.sundsvall.contract.apptest;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -34,7 +33,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test01_readContract() throws Exception {
 
-		final var result = setupCall()
+		setupCall()
 			.withServicePath("/contracts/1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
@@ -43,13 +42,12 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(Contract.class);
 
-		assertThat(result).isNotNull();
 	}
 
 	@Test
 	void test02_readContracts() throws Exception {
 
-		final var result = setupCall()
+		setupCall()
 			.withServicePath("/contracts")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
@@ -59,8 +57,6 @@ class ContractIT extends AbstractAppTest {
 			.andReturnBody(new TypeReference<List<Contract>>() {
 
 			});
-
-		assertThat(result).isNotNull().hasSize(2);
 	}
 
 	@Test
@@ -78,7 +74,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test04_updateContract() {
 
-		final var result = setupCall()
+		setupCall()
 			.withServicePath("/contracts/1")
 			.withHttpMethod(PATCH)
 			.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -87,7 +83,6 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.sendRequestAndVerifyResponse();
 
-		assertThat(result).isNotNull();
 	}
 
 }

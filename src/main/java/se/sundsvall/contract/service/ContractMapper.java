@@ -3,6 +3,7 @@ package se.sundsvall.contract.service;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -240,13 +241,13 @@ public final class ContractMapper {
 
 	static ContractEntity updateEntity(final ContractEntity entity, final Contract contract) {
 
-		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(entities.stream()
+		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
 			.map(ContractMapper::toEntity)
-			.toList()));
+			.toList())));
 
-		setPropertyIfNonNull(contract.getAttachments(), entities -> entity.setAttachments(entities.stream()
+		setPropertyIfNonNull(contract.getAttachments(), entities -> entity.setAttachments(new ArrayList<>(entities.stream()
 			.map(ContractMapper::toEntity)
-			.toList()));
+			.toList())));
 
 		setPropertyIfNonNull(contract.getIndexTerms(), entity::setIndexTerms);
 		setPropertyIfNonNull(contract.getDescription(), entity::setDescription);
