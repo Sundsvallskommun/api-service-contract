@@ -1,12 +1,12 @@
 
     create table attachment (
         id bigint not null auto_increment,
-        category enum ('KONTRAKT','OTHER'),
         extension varchar(255),
         file varchar(255),
         mime_type varchar(255),
         name varchar(255),
         note varchar(255),
+        category enum ('KONTRAKT','OTHER'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -42,20 +42,19 @@
         start date,
         id bigint not null,
         external_reference_id varchar(255),
-        invoice_interval enum ('MONTHLY','QUARTERLY','YEARLY'),
-        land_lease_type enum ('LEASEHOLD','SITELEASEHOLD','USUFRUCT'),
         leasehold_description varchar(255),
-        leasehold_type enum ('AGRICULTURE','APARTMENT','BUILDING','DWELLING','OTHER'),
         object_identity varchar(255),
         property_designation varchar(255),
-        usufruct_type enum ('FISHING','HUNTING','MAINTENANCE','OTHER'),
         area_data longblob,
+        invoice_interval enum ('YEARLY','QUARTERLY','MONTHLY'),
+        land_lease_type enum ('LEASEHOLD','USUFRUCT','SITELEASEHOLD'),
+        leasehold_type enum ('APARTMENT','BUILDING','AGRICULTURE','DWELLING','OTHER'),
+        usufruct_type enum ('HUNTING','FISHING','MAINTENANCE','OTHER'),
         primary key (id)
     ) engine=InnoDB;
 
     create table stakeholder (
         id bigint not null auto_increment,
-        address_type enum ('BILLING_ADDRESS','POSTAL_ADDRESS','VISITING_ADDRESS'),
         attention varchar(255),
         country varchar(255),
         email_address varchar(255),
@@ -68,7 +67,8 @@
         postal_code varchar(255),
         street_address varchar(255),
         town varchar(255),
-        type enum ('ASSOCIATION','COMPANY','PERSON'),
+        address_type enum ('POSTAL_ADDRESS','BILLING_ADDRESS','VISITING_ADDRESS'),
+        type enum ('PERSON','COMPANY','ASSOCIATION'),
         primary key (id)
     ) engine=InnoDB;
 
