@@ -10,6 +10,7 @@ release.properties
 .classpath
 .settings/
 bin/
+/.factorypath
 
 # IntelliJ
 .idea
@@ -54,3 +55,4 @@ application-default.properties
 
 # OSX
 .DS_Store
+
