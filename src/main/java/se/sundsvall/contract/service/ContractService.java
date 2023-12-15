@@ -17,7 +17,9 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 
-	public ContractService(final ContractRepository contractRepository) {this.contractRepository = contractRepository;}
+	public ContractService(final ContractRepository contractRepository) {
+		this.contractRepository = contractRepository;
+	}
 
 	public Long createContract(final Contract contract) {
 
@@ -40,5 +42,4 @@ public class ContractService {
 		final var updatedEntity = updateEntity(result, contract);
 		contractRepository.save(updatedEntity);
 	}
-
 }
