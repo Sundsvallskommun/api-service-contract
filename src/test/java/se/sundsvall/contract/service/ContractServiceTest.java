@@ -82,7 +82,9 @@ class ContractServiceTest {
 	void getContracts() {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
+
 		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", LandLeaseType.SITELEASEHOLD.name());
+
 		final var result = contractService.getContracts("1984", request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
