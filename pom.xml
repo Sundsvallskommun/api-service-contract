@@ -23,16 +23,6 @@
 		<geojson-jackson.version>1.14</geojson-jackson.version>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>se.sundsvall.dept44</groupId>
-			<artifactId>dept44-common-validators</artifactId>
-		</dependency>
 		<!-- Test -->
 		<dependency>
 			<groupId>se.sundsvall.dept44</groupId>
@@ -44,6 +34,13 @@
 			<artifactId>mariadb</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Framework -->
+		<dependency>
+			<groupId>se.sundsvall.dept44</groupId>
+			<artifactId>dept44-common-validators</artifactId>
+		</dependency>
+
 		<!-- Database-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,7 +59,14 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
 		</dependency>
+
 		<!-- Other-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

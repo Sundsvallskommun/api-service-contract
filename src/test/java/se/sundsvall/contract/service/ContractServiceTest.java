@@ -2,6 +2,7 @@ package se.sundsvall.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -44,7 +45,7 @@ class ContractServiceTest {
 
 		when(contractRepository.save(any(LandLeaseContractEntity.class))).thenReturn(LandLeaseContractEntity.builder().withId(1L).build());
 
-		final var result = contractService.createContract(contract);
+		final var result = contractService.createContract("1984", contract);
 
 		assertThat(result).isEqualTo(1L);
 
@@ -58,7 +59,7 @@ class ContractServiceTest {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
 
-		final var result = contractService.getContract(1L);
+		final var result = contractService.getContract("1984", 1L);
 
 		assertThat(result).isNotNull();
 		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
@@ -72,7 +73,7 @@ class ContractServiceTest {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
 		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", LandLeaseType.SITELEASEHOLD);
-		final var result = contractService.getContracts(request);
+		final var result = contractService.getContracts("1984", request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
 		assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(entity);
@@ -83,16 +84,19 @@ class ContractServiceTest {
 
 	@Test
 	void updateContract() {
+		try (var mapper = mockStatic(ContractMapper.class)) {
+			mapper.when(() -> ContractMapper.toDto(any(LandLeaseContractEntity.class))).thenCallRealMethod();
+			mapper.when(() -> ContractMapper.updateEntity(any(LandLeaseContractEntity.class), any(LandLeaseContract.class))).thenCallRealMethod();
 
-		final var entity = getLandLeaseContractEntity();
-		when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
-		final var contract = getLandLeaseContract();
+			final var entity = getLandLeaseContractEntity();
+			when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
+			final var contract = getLandLeaseContract();
 
-		contractService.updateContract(1L, contract);
+			contractService.updateContract("1984", 1L, contract);
 
-		verify(contractRepository).findById(any(Long.class));
-		verify(contractRepository).save(any(LandLeaseContractEntity.class));
-		verifyNoMoreInteractions(contractRepository);
+			verify(contractRepository).findById(any(Long.class));
+			verify(contractRepository).save(any(LandLeaseContractEntity.class));
+			verifyNoMoreInteractions(contractRepository);
+		}
 	}
-
 }
