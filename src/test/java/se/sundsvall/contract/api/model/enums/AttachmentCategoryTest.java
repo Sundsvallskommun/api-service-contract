@@ -8,19 +8,12 @@ class AttachmentCategoryTest {
 
 	@Test
 	void enums() {
-		assertThat(AttachmentCategory.values()).containsExactlyInAnyOrder(AttachmentCategory.KONTRAKT, AttachmentCategory.OTHER);
+		assertThat(AttachmentCategory.values()).containsExactlyInAnyOrder(AttachmentCategory.CONTRACT, AttachmentCategory.OTHER);
 	}
 
 	@Test
 	void enumValues() {
-		assertThat(AttachmentCategory.KONTRAKT).hasToString("KONTRAKT");
+		assertThat(AttachmentCategory.CONTRACT).hasToString("CONTRACT");
 		assertThat(AttachmentCategory.OTHER).hasToString("OTHER");
 	}
-
-	@Test
-	void enumTextValues() {
-		assertThat(AttachmentCategory.KONTRAKT.getFileCategory()).isEqualTo("Kontrakt");
-		assertThat(AttachmentCategory.OTHER.getFileCategory()).isEqualTo("Övrigt");
-	}
-
 }

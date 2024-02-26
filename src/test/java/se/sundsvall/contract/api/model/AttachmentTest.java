@@ -28,7 +28,7 @@ class AttachmentTest {
 	@Test
 	void testBuilderMethods() {
 		final var name = "name";
-		final var category = AttachmentCategory.KONTRAKT;
+		final var category = AttachmentCategory.CONTRACT;
 		final var mimeType = "mimeType";
 		final var file = "file";
 		final var note = "note";

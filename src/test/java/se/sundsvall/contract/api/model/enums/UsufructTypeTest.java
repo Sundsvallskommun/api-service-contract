@@ -25,15 +25,4 @@ class UsufructTypeTest {
 		assertThat(OTHER).hasToString("OTHER");
 
 	}
-
-	@Test
-	void enumTestValues() {
-
-		assertThat(HUNTING.getText()).isEqualTo("Jakt");
-		assertThat(FISHING.getText()).isEqualTo("Fiske");
-		assertThat(MAINTENANCE.getText()).isEqualTo("Skötsel");
-		assertThat(OTHER.getText()).isEqualTo("Övrigt");
-
-	}
-
 }
