@@ -3,6 +3,7 @@ package se.sundsvall.contract.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -39,11 +40,10 @@ class ContractResourceTest {
 
 	@Test
 	void getContractsById() {
-
-		when(contractServiceMock.getContract(1L)).thenReturn(LandLeaseContract.builder().build());
+		when(contractServiceMock.getContract("1984", 1L)).thenReturn(LandLeaseContract.builder().build());
 
 		final var response = webTestClient.get()
-			.uri("/contracts/1")
+			.uri("/contracts/1984/1")
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -52,14 +52,14 @@ class ContractResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isNotNull();
-		verify(contractServiceMock, times(1)).getContract(any(Long.class));
+		verify(contractServiceMock, times(1)).getContract("1984", 1L);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
 	void getContracts() {
 		webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts")
+			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
 				.queryParam("personId", "1")
 				.build())
 			.exchange()
@@ -71,14 +71,12 @@ class ContractResourceTest {
 			.returnResult()
 			.getResponseBody();
 
-		verify(contractServiceMock, times(1)).getContracts(any(ContractRequest.class));
+		verify(contractServiceMock, times(1)).getContracts(eq("1984"), any(ContractRequest.class));
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
-
 	@Test
 	void postContracts() {
-
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
 			.withArea(0)
@@ -86,32 +84,29 @@ class ContractResourceTest {
 			.build();
 
 		webTestClient.post()
-			.uri("/contracts")
+			.uri("/contracts/1984")
 			.bodyValue(contract)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).createContract(contract);
+		verify(contractServiceMock, times(1)).createContract("1984", contract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
 	void patchContracts() {
-
 		final var contract = TestFactory.getUpdatedLandLeaseContract();
 
 		webTestClient.patch()
-			.uri("/contracts/1")
+			.uri("/contracts/1984/1")
 			.bodyValue(contract)
 			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE)
+			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).updateContract(any(Long.class), any());
+		verify(contractServiceMock, times(1)).updateContract(eq("1984"), eq(1L), any());
 		verifyNoMoreInteractions(contractServiceMock);
 	}
-
 }
