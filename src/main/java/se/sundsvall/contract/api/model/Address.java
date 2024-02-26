@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Address {
 
 	@Schema(example = "POSTAL_ADDRESS")
-	private AddressType type;
+	private String type;
 
 	@Schema(example = "Testvägen 18")
 	private String streetAddress;

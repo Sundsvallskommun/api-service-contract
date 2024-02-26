@@ -35,7 +35,7 @@ class AddressTest {
 		final var attention = "Test Testorsson";
 
 		final var address = Address.builder()
-			.withType(type)
+			.withType(type.toString())
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)
 			.withTown(town)
@@ -44,7 +44,7 @@ class AddressTest {
 			.build();
 
 		assertThat(address).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(address.getType()).isEqualTo(type);
+		assertThat(address.getType()).isEqualTo(type.toString());
 		assertThat(address.getStreetAddress()).isEqualTo(streetAddress);
 		assertThat(address.getPostalCode()).isEqualTo(postalCode);
 		assertThat(address.getTown()).isEqualTo(town);

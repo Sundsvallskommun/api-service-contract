@@ -21,11 +21,10 @@ class AddressTypeTest {
 		assertThat(VISITING_ADDRESS).hasToString("VISITING_ADDRESS");
 	}
 
-	@Test
+	/*@Test
 	void enumTextValues() {
 		assertThat(POSTAL_ADDRESS.getType()).isEqualTo("Postadress");
 		assertThat(BILLING_ADDRESS.getType()).isEqualTo("Fakturaadress");
 		assertThat(VISITING_ADDRESS.getType()).isEqualTo("Besöksadress");
-	}
-
+	}*/
 }

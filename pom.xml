@@ -15,6 +15,7 @@
 	<version>2.0</version>
 	<name>api-service-contract</name>
 	<properties>
+		<assertj-core.version>3.25.3</assertj-core.version>
 		<!-- Pipeline properties -->
 		<docker.image.name>ms-contract</docker.image.name>
 		<exposed.app.port>8080</exposed.app.port>
@@ -77,6 +78,13 @@
 			<artifactId>geojson-jackson</artifactId>
 			<version>${geojson-jackson.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

@@ -32,7 +32,7 @@ class StakeholderEntityTest {
 	void testBuilderMethods() {
 		final var id = 1L;
 		final var type = StakeholderType.COMPANY;
-		final var roles = List.of(StakeholderRole.FULLMAKTSROLL);
+		final var roles = List.of(StakeholderRole.POWER_OF_ATTOURNEY_ROLE);
 		final var organizationName = "Sundsvalls kommun";
 		final var organizationNumber = "212000-2411";
 		final var firstName = "Test";

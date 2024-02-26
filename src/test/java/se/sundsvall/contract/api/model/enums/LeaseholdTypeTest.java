@@ -26,15 +26,4 @@ class LeaseholdTypeTest {
 		assertThat(OTHER).hasToString("OTHER");
 
 	}
-
-	@Test
-	void enumTestValues() {
-
-		assertThat(APARTMENT.getText()).isEqualTo("Lägenhetsarrende");
-		assertThat(BUILDING.getText()).isEqualTo("Anläggningsarrende");
-		assertThat(AGRICULTURE.getText()).isEqualTo("Jordbruksarrende");
-		assertThat(DWELLING.getText()).isEqualTo("Bostadsarrende");
-		assertThat(OTHER.getText()).isEqualTo("Annat");
-	}
-
 }

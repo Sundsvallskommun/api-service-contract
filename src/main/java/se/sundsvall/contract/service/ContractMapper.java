@@ -13,6 +13,7 @@ import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
+import se.sundsvall.contract.api.model.enums.AddressType;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -122,7 +123,7 @@ public final class ContractMapper {
 			.withStreetAddress(addressEntity.getStreetAddress())
 			.withPostalCode(addressEntity.getPostalCode())
 			.withCountry(addressEntity.getCountry())
-			.withType(addressEntity.getType())
+			.withType(addressEntity.getType().name())
 			.withAttention(addressEntity.getAttention())
 			.withTown(addressEntity.getTown())
 			.build();
@@ -222,7 +223,7 @@ public final class ContractMapper {
 			.withStreetAddress(address.getStreetAddress())
 			.withPostalCode(address.getPostalCode())
 			.withCountry(address.getCountry())
-			.withType(address.getType())
+			.withType(AddressType.valueOf(address.getType()))
 			.withAttention(address.getAttention())
 			.withTown(address.getTown())
 			.build();

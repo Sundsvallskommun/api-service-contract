@@ -62,7 +62,10 @@ class ContractServiceTest {
 		final var result = contractService.getContract("1984", 1L);
 
 		assertThat(result).isNotNull();
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 
 		verify(contractRepository).findById(any(Long.class));
 		verifyNoMoreInteractions(contractRepository);
@@ -76,7 +79,10 @@ class ContractServiceTest {
 		final var result = contractService.getContracts("1984", request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
-		assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result.getFirst())
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 
 		verify(contractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
 		verifyNoMoreInteractions(contractRepository);

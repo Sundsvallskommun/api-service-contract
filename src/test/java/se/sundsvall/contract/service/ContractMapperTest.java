@@ -21,7 +21,10 @@ class ContractMapperTest {
 		final var result = ContractMapper.toDto(entity);
 
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 	}
 
 	@Test
@@ -34,6 +37,7 @@ class ContractMapperTest {
 		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result).usingRecursiveComparison()
 			.ignoringFields("id", "attachments.id", "stakeholders.id")
+			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
 
@@ -48,6 +52,7 @@ class ContractMapperTest {
 		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result).usingRecursiveComparison()
 			.ignoringFields("id", "attachments.id", "stakeholders.id")
+			.withEnumStringComparison()
 			.isEqualTo(dto);
 
 	}

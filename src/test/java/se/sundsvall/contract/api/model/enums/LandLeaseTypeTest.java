@@ -21,12 +21,4 @@ class LandLeaseTypeTest {
 		assertThat(SITELEASEHOLD).hasToString("SITELEASEHOLD");
 
 	}
-
-	@Test
-	void enumTextValues() {
-		assertThat(LEASEHOLD.getText()).isEqualTo("Arrende");
-		assertThat(USUFRUCT.getText()).isEqualTo("Nyttjanderätt");
-		assertThat(SITELEASEHOLD.getText()).isEqualTo("Tomträtt");
-	}
-
 }

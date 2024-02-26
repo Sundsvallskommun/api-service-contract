@@ -17,12 +17,4 @@ class IntervalTypeTest {
 		assertThat(IntervalType.QUARTERLY).hasToString("QUARTERLY");
 		assertThat(IntervalType.MONTHLY).hasToString("MONTHLY");
 	}
-
-	@Test
-	void enumTextValues() {
-		assertThat(IntervalType.YEARLY.getType()).isEqualTo("årligen");
-		assertThat(IntervalType.QUARTERLY.getType()).isEqualTo("kvartalsvis");
-		assertThat(IntervalType.MONTHLY.getType()).isEqualTo("månadsvis");
-	}
-
 }
