@@ -79,7 +79,6 @@ class ContractResourceTest {
 
 	@Test
 	void postContracts() {
-
 		final var id = 123L;
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
