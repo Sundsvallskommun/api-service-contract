@@ -71,7 +71,7 @@ class ContractResource {
 		responses = {
 			@ApiResponse(
 				responseCode = "201",
-				description = "No content",
+				description = "Successful operation",
 				headers = @Header(
 					name = LOCATION,
 					description = "Location of the created resource.",
