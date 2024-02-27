@@ -7,6 +7,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcl
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.LocalDate.now;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -17,7 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -101,38 +101,35 @@ class LandLeaseContractEntityTest {
 			.withAreaData(areaData)
 			.build();
 
-		Assertions.assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
-		Assertions.assertThat(contract.getVersion()).isEqualTo(version);
-		Assertions.assertThat(contract.getStatus()).isEqualTo(status);
-		Assertions.assertThat(contract.getCaseId()).isEqualTo(caseId);
-		Assertions.assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
-		Assertions.assertThat(contract.getDescription()).isEqualTo(description);
-		Assertions.assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
-		Assertions.assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		Assertions.assertThat(contract.getAttachments()).isEqualTo(attachments);
-		Assertions.assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
-		Assertions.assertThat(contract.getLeaseholdType()).isEqualTo(leaseholdType);
-		Assertions.assertThat(contract.getUsufructType()).isEqualTo(usufructType);
-		Assertions.assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
-		Assertions.assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
-		Assertions.assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
-		Assertions.assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
-		Assertions.assertThat(contract.getRental()).isEqualTo(rental);
-		Assertions.assertThat(contract.getInvoiceInterval()).isEqualTo(invoiceInterval);
-		Assertions.assertThat(contract.getStart()).isEqualTo(start);
-		Assertions.assertThat(contract.getEnd()).isEqualTo(end);
-		Assertions.assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
-		Assertions.assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
-		Assertions.assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
-		Assertions.assertThat(contract.getArea()).isEqualTo(area);
-		Assertions.assertThat(contract.getAreaData()).isEqualTo(areaData);
-
+		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(contract.getVersion()).isEqualTo(version);
+		assertThat(contract.getStatus()).isEqualTo(status);
+		assertThat(contract.getCaseId()).isEqualTo(caseId);
+		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
+		assertThat(contract.getDescription()).isEqualTo(description);
+		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
+		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
+		assertThat(contract.getAttachments()).isEqualTo(attachments);
+		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
+		assertThat(contract.getLeaseholdType()).isEqualTo(leaseholdType);
+		assertThat(contract.getUsufructType()).isEqualTo(usufructType);
+		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
+		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
+		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
+		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
+		assertThat(contract.getRental()).isEqualTo(rental);
+		assertThat(contract.getInvoiceInterval()).isEqualTo(invoiceInterval);
+		assertThat(contract.getStart()).isEqualTo(start);
+		assertThat(contract.getEnd()).isEqualTo(end);
+		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
+		assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
+		assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
+		assertThat(contract.getArea()).isEqualTo(area);
+		assertThat(contract.getAreaData()).isEqualTo(areaData);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		Assertions.assertThat(LandLeaseContractEntity.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(LandLeaseContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness");
 	}
-
-
 }

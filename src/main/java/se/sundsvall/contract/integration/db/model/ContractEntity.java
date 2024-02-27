@@ -5,8 +5,6 @@ import static jakarta.persistence.EnumType.STRING;
 import java.util.List;
 import java.util.Objects;
 
-import se.sundsvall.contract.api.model.enums.Status;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +16,9 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import se.sundsvall.contract.api.model.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,11 +64,18 @@ public abstract class ContractEntity {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<AttachmentEntity> attachments;
 
+	@Column(name = "signed_by_witness")
+	private boolean signedByWitness;
+
 	//Excluding stakeholders and attachments from equals, hashcode and toString
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof ContractEntity that)) return false;
+		if (this == o) {
+            return true;
+        }
+		if (!(o instanceof ContractEntity that)) {
+            return false;
+        }
 		return Objects.equals(id, that.id) && Objects.equals(version, that.version) && status == that.status && Objects.equals(caseId, that.caseId) && Objects.equals(indexTerms, that.indexTerms) && Objects.equals(description, that.description) && Objects.equals(additionalTerms, that.additionalTerms);
 	}
 

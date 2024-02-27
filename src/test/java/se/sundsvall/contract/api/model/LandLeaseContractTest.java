@@ -157,13 +157,10 @@ class LandLeaseContractTest {
 		assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
-
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LandLeaseContract.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(LandLeaseContract.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness");
 	}
-
-
 }

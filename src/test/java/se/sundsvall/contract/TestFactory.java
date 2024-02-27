@@ -32,7 +32,6 @@ import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 public final class TestFactory {
 
 	public static LandLeaseContractEntity getLandLeaseContractEntity() {
-
 		return LandLeaseContractEntity.builder()
 			.withLandLeaseType(LandLeaseType.LEASEHOLD)
 			.withLeaseholdType(LeaseholdEntity.builder().withType(APARTMENT).withDescription("someDescription").build())
@@ -86,11 +85,11 @@ public final class TestFactory {
 				.withMimeType("someMimeType")
 				.withFile("someFile")
 				.build()))
+			.withSignedByWitness(true)
 			.build();
 	}
 
 	public static LandLeaseContract getLandLeaseContract() {
-
 		return LandLeaseContract.builder()
 			.withLandLeaseType(LandLeaseType.LEASEHOLD.name())
 			.withLeaseholdType(Leasehold.builder().withType(APARTMENT.name()).withDescription("someDescription").build())
@@ -144,11 +143,11 @@ public final class TestFactory {
 				.withMimeType("someMimeType")
 				.withFile("someFile")
 				.build()))
+			.withSignedByWitness(true)
 			.build();
 	}
 
 	public static LandLeaseContract getUpdatedLandLeaseContract() {
-
 		return LandLeaseContract.builder()
 			.withLandLeaseType(LandLeaseType.USUFRUCT.name())
 			.withLeaseholdType(Leasehold.builder().withType(AGRICULTURE.name()).withDescription("someUpdatedDescription").build())
@@ -191,9 +190,7 @@ public final class TestFactory {
 					.withEmailAddress("someUpdatedEmailAddress")
 					.withPhoneNumber("someUpdatedPhoneNumber")
 					.withType(StakeholderType.COMPANY.name())
-					.build()
-
-			))
+					.build()))
 			.withAttachments(List.of(Attachment.builder()
 				.withNote("someUpdatedNote")
 				.withExtension("someUpdatedExtension")
@@ -202,6 +199,7 @@ public final class TestFactory {
 				.withMimeType("someUpdatedMimeType")
 				.withFile("someUpdatedFile")
 				.build()))
+			.withSignedByWitness(true)
 			.build();
 	}
 }

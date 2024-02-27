@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -36,7 +35,6 @@ public final class ContractMapper {
 	private ContractMapper() {}
 
 	static Contract toDto(final ContractEntity contractEntity) {
-
 		final Contract contract;
 
 		if (contractEntity instanceof final LandLeaseContractEntity landLeaseContractEntity) {
@@ -62,6 +60,7 @@ public final class ContractMapper {
 				.map(ContractMapper::toDto)
 				.toList())
 			.orElse(null));
+		contract.setSignedByWitness(contractEntity.isSignedByWitness());
 
 		return contract;
 	}
@@ -100,6 +99,7 @@ public final class ContractMapper {
 					.map(ContractMapper::toDto)
 					.toList())
 				.orElse(null))
+			.withSignedByWitness(landLeaseContractEntity.isSignedByWitness())
 			.build();
 	}
 
@@ -170,19 +170,17 @@ public final class ContractMapper {
 				.toList())
 			.orElse(null));
 
-
 		contractEntity.setAttachments(Optional.ofNullable(contract.getAttachments())
 			.map(attachments -> attachments.stream()
 				.map(ContractMapper::toEntity)
 				.toList())
 			.orElse(null));
-
+		contractEntity.setSignedByWitness(contract.isSignedByWitness());
 
 		return contractEntity;
 	}
 
 	private static LandLeaseContractEntity toEntity(final LandLeaseContract landLeaseContract) {
-
 		return LandLeaseContractEntity.builder()
 			.withLandLeaseType(Optional.ofNullable(landLeaseContract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null))
 			.withLeaseholdType(toEntity(landLeaseContract.getLeaseholdType()))
@@ -200,6 +198,7 @@ public final class ContractMapper {
 			.withPeriodOfNotice(landLeaseContract.getPeriodOfNotice())
 			.withArea(landLeaseContract.getArea())
 			.withAreaData(landLeaseContract.getAreaData())
+			.withSignedByWitness(landLeaseContract.isSignedByWitness())
 			.build();
 	}
 
@@ -250,7 +249,6 @@ public final class ContractMapper {
 	}
 
 	static ContractEntity updateEntity(final ContractEntity entity, final Contract contract) {
-
 		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
 			.map(ContractMapper::toEntity)
 			.toList())));
@@ -281,11 +279,9 @@ public final class ContractMapper {
 	}
 
 	private static void updateEntity(final LandLeaseContractEntity entity, final LandLeaseContract contract) {
-
 		setPropertyIfNonNull(Optional.ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
 		setPropertyIfNonNull(Optional.ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null), entity::setLandLeaseType);
 		setPropertyIfNonNull(Optional.ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null), entity::setUsufructType);
-
 		setPropertyIfNonNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
 		setPropertyIfNonNull(contract.getPropertyDesignation(), entity::setPropertyDesignation);
 		setPropertyIfNonNull(contract.getObjectIdentity(), entity::setObjectIdentity);
