@@ -62,6 +62,7 @@ public final class ContractMapper {
 				.toList())
 			.orElse(null));
 		contract.setSignedByWitness(contractEntity.isSignedByWitness());
+		contract.setExtraParameters(contractEntity.getExtraParameters());
 
 		return contract;
 	}
@@ -176,6 +177,7 @@ public final class ContractMapper {
 				.toList())
 			.orElse(null));
 		contractEntity.setSignedByWitness(contract.isSignedByWitness());
+		contractEntity.setExtraParameters(contract.getExtraParameters());
 
 		return contractEntity;
 	}
@@ -263,6 +265,9 @@ public final class ContractMapper {
 		setPropertyIfNonNull(Optional.ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
 		setPropertyIfNonNull(contract.getMunicipalityId(), entity::setMunicipalityId);
 		setPropertyIfNonNull(contract.getCaseId(), entity::setCaseId);
+		setPropertyIfNonNull(contract.isSignedByWitness(), entity::setSignedByWitness);
+		setPropertyIfNonNull(contract.getMunicipalityId(), entity::setMunicipalityId);
+		setPropertyIfNonNull(contract.getExtraParameters(), entity::setExtraParameters);
 
 		if (entity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
 			contract instanceof final LandLeaseContract landLeaseContract) {

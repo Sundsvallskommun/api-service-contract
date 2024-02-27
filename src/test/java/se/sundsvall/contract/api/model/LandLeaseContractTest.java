@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.geojson.FeatureCollection;
@@ -86,6 +87,7 @@ class LandLeaseContractTest {
 		final var indexTerms = "indexTerms";
 		final var description = "description";
 		final var additionalTerms = "additionalTerms";
+		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(Stakeholder.builder().build());
 		final var attachments = List.of(Attachment.builder().build());
 		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
@@ -113,6 +115,7 @@ class LandLeaseContractTest {
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
+			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType.name())
@@ -141,6 +144,7 @@ class LandLeaseContractTest {
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
+		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());

@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.geojson.FeatureCollection;
@@ -50,11 +51,12 @@ class LandLeaseContractEntityTest {
 		final var version = 1;
 		final var status = Status.TERMINATED;
 		final var municipalityId = "1984";
-		final var id = 1L;
+		final var id = "2024-12345";
 		final var caseId = 1L;
 		final var indexTerms = "indexTerms";
 		final var description = "description";
 		final var additionalTerms = "additionalTerms";
+		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(StakeholderEntity.builder().build());
 		final var attachments = List.of(AttachmentEntity.builder().build());
 		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
@@ -75,14 +77,15 @@ class LandLeaseContractEntityTest {
 		final var areaData = new FeatureCollection();
 
 		final var contract = LandLeaseContractEntity.builder()
+			.withId(id)
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
-			.withId("2024-12345")
 			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
+			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType)
@@ -104,6 +107,7 @@ class LandLeaseContractEntityTest {
 			.build();
 
 		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(contract.getId()).isEqualTo(id);
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
@@ -111,6 +115,7 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
+		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);

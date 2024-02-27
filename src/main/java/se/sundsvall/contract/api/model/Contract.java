@@ -1,6 +1,7 @@
 package se.sundsvall.contract.api.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -64,4 +65,7 @@ public abstract class Contract {
 
 	@Schema(description = "Whether the contract is signed by a witness")
 	private boolean signedByWitness;
+
+	@Schema(description = "Extra parameters", example = "{\"key\": \"value\"}")
+	private Map<String, String> extraParameters;
 }

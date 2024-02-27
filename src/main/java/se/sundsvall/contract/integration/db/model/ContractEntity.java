@@ -1,17 +1,25 @@
 package se.sundsvall.contract.integration.db.model;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.EAGER;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -67,6 +75,21 @@ public abstract class ContractEntity {
 	@Column(name = "signed_by_witness")
 	private boolean signedByWitness;
 
+	@ElementCollection(fetch = EAGER)
+	@CollectionTable(
+		name = "contract_extra_parameter",
+		joinColumns = @JoinColumn(
+			name = "contract_id",
+			referencedColumnName = "id",
+			foreignKey = @ForeignKey(name = "fk_extra_parameter_contract_id")
+		),
+		indexes = {
+			@Index(name = "idx_extra_parameter_asset_id", columnList = "contract_id")
+		})
+	@MapKeyColumn(name = "parameter_key")
+	@Column(name = "parameter_value", nullable = false)
+	private Map<String, String> extraParameters;
+
 	//Excluding stakeholders and attachments from equals, hashcode and toString
 	@Override
 	public boolean equals(Object o) {
@@ -76,12 +99,18 @@ public abstract class ContractEntity {
 		if (!(o instanceof ContractEntity that)) {
             return false;
         }
-		return Objects.equals(id, that.id) && Objects.equals(version, that.version) && status == that.status && Objects.equals(caseId, that.caseId) && Objects.equals(indexTerms, that.indexTerms) && Objects.equals(description, that.description) && Objects.equals(additionalTerms, that.additionalTerms);
+		return Objects.equals(id, that.id) && Objects.equals(version, that.version) &&
+			status == that.status &&
+			Objects.equals(caseId, that.caseId) &&
+			Objects.equals(indexTerms, that.indexTerms) &&
+			Objects.equals(description, that.description) &&
+			Objects.equals(additionalTerms, that.additionalTerms) &&
+			Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, version, status, caseId, indexTerms, description, additionalTerms);
+		return Objects.hash(id, version, status, caseId, indexTerms, description, additionalTerms, extraParameters);
 	}
 
 	@Override
@@ -94,6 +123,7 @@ public abstract class ContractEntity {
 			", indexTerms='" + indexTerms + '\'' +
 			", description='" + description + '\'' +
 			", additionalTerms='" + additionalTerms + '\'' +
+			", extraParameters='" + extraParameters + '\'' +
 			'}';
 	}
 }

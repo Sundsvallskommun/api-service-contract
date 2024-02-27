@@ -8,6 +8,7 @@ import static se.sundsvall.contract.api.model.enums.LeaseholdType.APARTMENT;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.geojson.FeatureCollection;
 
@@ -87,6 +88,7 @@ public final class TestFactory {
 				.withFile("someFile")
 				.build()))
 			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 
@@ -134,9 +136,7 @@ public final class TestFactory {
 					.withEmailAddress("someEmailAddress")
 					.withPhoneNumber("somePhoneNumber")
 					.withType(StakeholderType.ASSOCIATION.name())
-					.build()
-
-			))
+					.build()))
 			.withAttachments(List.of(Attachment.builder()
 				.withNote("someNote")
 				.withExtension("someExtension")
@@ -146,6 +146,7 @@ public final class TestFactory {
 				.withFile("someFile")
 				.build()))
 			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 
@@ -203,6 +204,7 @@ public final class TestFactory {
 				.withFile("someUpdatedFile")
 				.build()))
 			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 }
