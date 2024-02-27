@@ -18,6 +18,7 @@
         additional_terms varchar(255),
         description varchar(255),
         index_terms varchar(255),
+        municipality_id varchar(255),
         status enum ('ACTIVE','TERMINATED'),
         primary key (id)
     ) engine=InnoDB;

@@ -29,7 +29,7 @@ class ContractMapperTest {
 	void toEntity() {
 		final var dto = getLandLeaseContract();
 
-		final var result = ContractMapper.toEntity(dto);
+		final var result = ContractMapper.toEntity("1984", dto);
 
 		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result).usingRecursiveComparison()
@@ -67,10 +67,10 @@ class ContractMapperTest {
 	void toEntity_NullValues() {
 		final var dto = LandLeaseContract.builder().build();
 
-		final var result = ContractMapper.toEntity(dto);
+		final var result = ContractMapper.toEntity("1984", dto);
 
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id")
+			.ignoringFields("id", "municipalityId")
 			.isEqualTo(dto);
 	}
 

@@ -45,6 +45,7 @@ public final class ContractMapper {
 
 		contract.setVersion(contractEntity.getVersion());
 		contract.setStatus(Optional.ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null));
+		contract.setMunicipalityId(contractEntity.getMunicipalityId());
 		contract.setCaseId(contractEntity.getCaseId());
 		contract.setIndexTerms(contractEntity.getIndexTerms());
 		contract.setDescription(contractEntity.getDescription());
@@ -54,7 +55,6 @@ public final class ContractMapper {
 				.map(ContractMapper::toDto)
 				.toList())
 			.orElse(null));
-
 		contract.setAttachments(Optional.ofNullable(contractEntity.getAttachments())
 			.map(attachments -> attachments.stream()
 				.map(ContractMapper::toDto)
@@ -65,7 +65,7 @@ public final class ContractMapper {
 		return contract;
 	}
 
-	static Contract toDto(final LandLeaseContractEntity landLeaseContractEntity) {
+	private static Contract toDto(final LandLeaseContractEntity landLeaseContractEntity) {
 		return LandLeaseContract.builder()
 			.withLandLeaseType(Optional.ofNullable(landLeaseContractEntity.getLandLeaseType()).map(LandLeaseType::name).orElse(null))
 			.withLeaseholdType(toDto(landLeaseContractEntity.getLeaseholdType()))
@@ -149,8 +149,7 @@ public final class ContractMapper {
 			.build();
 	}
 
-	static ContractEntity toEntity(final Contract contract) {
-
+	static ContractEntity toEntity(final String municipalityId, final Contract contract) {
 		final LandLeaseContractEntity contractEntity;
 
 		if (contract instanceof final LandLeaseContract landLeaseContract) {
@@ -160,6 +159,7 @@ public final class ContractMapper {
 		}
 		contractEntity.setVersion(contract.getVersion());
 		contractEntity.setStatus(Optional.ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null));
+		contractEntity.setMunicipalityId(municipalityId);
 		contractEntity.setCaseId(contract.getCaseId());
 		contractEntity.setIndexTerms(contract.getIndexTerms());
 		contractEntity.setDescription(contract.getDescription());
@@ -169,7 +169,6 @@ public final class ContractMapper {
 				.map(ContractMapper::toEntity)
 				.toList())
 			.orElse(null));
-
 		contractEntity.setAttachments(Optional.ofNullable(contract.getAttachments())
 			.map(attachments -> attachments.stream()
 				.map(ContractMapper::toEntity)
@@ -198,7 +197,6 @@ public final class ContractMapper {
 			.withPeriodOfNotice(landLeaseContract.getPeriodOfNotice())
 			.withArea(landLeaseContract.getArea())
 			.withAreaData(landLeaseContract.getAreaData())
-			.withSignedByWitness(landLeaseContract.isSignedByWitness())
 			.build();
 	}
 
@@ -262,6 +260,7 @@ public final class ContractMapper {
 		setPropertyIfNonNull(contract.getAdditionalTerms(), entity::setAdditionalTerms);
 		setPropertyIfNonNull(contract.getVersion(), entity::setVersion);
 		setPropertyIfNonNull(Optional.ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
+		setPropertyIfNonNull(contract.getMunicipalityId(), entity::setMunicipalityId);
 		setPropertyIfNonNull(contract.getCaseId(), entity::setCaseId);
 
 		if (entity instanceof final LandLeaseContractEntity landLeaseContractEntity &&

@@ -49,6 +49,7 @@ class LandLeaseContractEntityTest {
 	void testBuilderMethods() {
 		final var version = 1;
 		final var status = Status.TERMINATED;
+		final var municipalityId = "1984";
 		final var id = 1L;
 		final var caseId = 1L;
 		final var indexTerms = "indexTerms";
@@ -76,6 +77,7 @@ class LandLeaseContractEntityTest {
 		final var contract = LandLeaseContractEntity.builder()
 			.withVersion(version)
 			.withStatus(status)
+			.withMunicipalityId(municipalityId)
 			.withId(id)
 			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
@@ -104,6 +106,7 @@ class LandLeaseContractEntityTest {
 		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
+		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(contract.getCaseId()).isEqualTo(caseId);
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);

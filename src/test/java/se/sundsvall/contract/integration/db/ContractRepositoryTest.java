@@ -46,7 +46,7 @@ class ContractRepositoryTest {
 			, "771122-1234", "SUNDSVALL GRANLO 2:1", "MK-TEST0001"
 			, "2023-10-10", LandLeaseType.LEASEHOLD.name());
 
-		final var result = contractRepository.findAll(ContractSpecification.createContractSpecification(request));
+		final var result = contractRepository.findAll(ContractSpecification.createContractSpecification("1984", request));
 		assertThat(result).hasSize(1);
 	}
 

@@ -38,6 +38,9 @@ public abstract class Contract {
 	@Schema(description = "Status for contract", example = "ACTIVE")
 	private String status;
 
+	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
+
 	@Schema(description = "Eventual caseId for the contract", example = "100")
 	private Long caseId;
 

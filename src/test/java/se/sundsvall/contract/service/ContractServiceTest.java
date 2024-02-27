@@ -41,7 +41,6 @@ class ContractServiceTest {
 
 	@Test
 	void createContract() {
-
 		final var contract = LandLeaseContract.builder()
 			.withCaseId(1L)
 			.withLandLeaseType(LandLeaseType.SITELEASEHOLD.name())
@@ -62,9 +61,8 @@ class ContractServiceTest {
 
 	@Test
 	void getContract() {
-
 		final var entity = getLandLeaseContractEntity();
-		when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
+		when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(Long.class))).thenReturn(Optional.of(entity));
 
 		final var result = contractService.getContract("1984", 1L);
 
@@ -74,7 +72,7 @@ class ContractServiceTest {
 			.withEnumStringComparison()
 			.isEqualTo(entity);
 
-		verify(contractRepository).findById(any(Long.class));
+		verify(contractRepository).findByMunicipalityIdAndId(any(String.class), any(Long.class));
 		verifyNoMoreInteractions(contractRepository);
 	}
 
@@ -104,12 +102,12 @@ class ContractServiceTest {
 			mapper.when(() -> ContractMapper.updateEntity(any(LandLeaseContractEntity.class), any(LandLeaseContract.class))).thenCallRealMethod();
 
 			final var entity = getLandLeaseContractEntity();
-			when(contractRepository.findById(any(Long.class))).thenReturn(Optional.of(entity));
+			when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(Long.class))).thenReturn(Optional.of(entity));
 			final var contract = getLandLeaseContract();
 
 			contractService.updateContract("1984", 1L, contract);
 
-			verify(contractRepository).findById(any(Long.class));
+			verify(contractRepository).findByMunicipalityIdAndId(any(String.class), any(Long.class));
 			verify(contractRepository).save(any(LandLeaseContractEntity.class));
 			verifyNoMoreInteractions(contractRepository);
 		}

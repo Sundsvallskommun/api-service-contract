@@ -1,6 +1,6 @@
-INSERT INTO contract (id, version, status, case_id, index_terms, description, additional_terms, signed_by_witness)
-VALUES (1, 1, 'ACTIVE', 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 1),
-       (2, 1, 'ACTIVE', 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 0);
+INSERT INTO contract (id, version, status, municipality_id, case_id, index_terms, description, additional_terms, signed_by_witness)
+VALUES (1, 1, 'ACTIVE', "1984", 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 1),
+       (2, 1, 'ACTIVE', "1984", 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 0);
 
 INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
                                  lease_duration, lease_extension, period_of_notice,

@@ -46,6 +46,9 @@ public abstract class ContractEntity {
 	@Enumerated(STRING)
 	private Status status;
 
+	@Column(name = "municipality_id")
+	private String municipalityId;
+
 	@Column(name = "case_id")
 	private Long caseId;
 
