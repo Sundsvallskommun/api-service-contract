@@ -49,11 +49,12 @@ class ContractServiceTest {
 			.withStatus(Status.ACTIVE.name())
 			.build();
 
-		when(contractRepository.save(any(LandLeaseContractEntity.class))).thenReturn(LandLeaseContractEntity.builder().withId(1L).build());
+		when(contractRepository.save(any(LandLeaseContractEntity.class)))
+			.thenReturn(LandLeaseContractEntity.builder().withId("2024-12345").build());
 
 		final var result = contractService.createContract("1984", contract);
 
-		assertThat(result).isEqualTo(1L);
+		assertThat(result).isEqualTo("2024-12345");
 
 		verify(contractRepository).save(any(LandLeaseContractEntity.class));
 		verifyNoMoreInteractions(contractRepository);
@@ -62,9 +63,9 @@ class ContractServiceTest {
 	@Test
 	void getContract() {
 		final var entity = getLandLeaseContractEntity();
-		when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(Long.class))).thenReturn(Optional.of(entity));
+		when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(String.class))).thenReturn(Optional.of(entity));
 
-		final var result = contractService.getContract("1984", 1L);
+		final var result = contractService.getContract("1984", "2024-12345");
 
 		assertThat(result).isNotNull();
 		assertThat(result)
@@ -72,7 +73,7 @@ class ContractServiceTest {
 			.withEnumStringComparison()
 			.isEqualTo(entity);
 
-		verify(contractRepository).findByMunicipalityIdAndId(any(String.class), any(Long.class));
+		verify(contractRepository).findByMunicipalityIdAndId("1984", "2024-12345");
 		verifyNoMoreInteractions(contractRepository);
 	}
 
@@ -102,12 +103,12 @@ class ContractServiceTest {
 			mapper.when(() -> ContractMapper.updateEntity(any(LandLeaseContractEntity.class), any(LandLeaseContract.class))).thenCallRealMethod();
 
 			final var entity = getLandLeaseContractEntity();
-			when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(Long.class))).thenReturn(Optional.of(entity));
+			when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(String.class))).thenReturn(Optional.of(entity));
 			final var contract = getLandLeaseContract();
 
-			contractService.updateContract("1984", 1L, contract);
+			contractService.updateContract("1984", "2024-12345", contract);
 
-			verify(contractRepository).findByMunicipalityIdAndId(any(String.class), any(Long.class));
+			verify(contractRepository).findByMunicipalityIdAndId("1984", "2024-12345");
 			verify(contractRepository).save(any(LandLeaseContractEntity.class));
 			verifyNoMoreInteractions(contractRepository);
 		}

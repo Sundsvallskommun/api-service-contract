@@ -30,18 +30,16 @@ class ContractRepositoryTest {
 
 	@Test
 	void createContract() {
-
 		final var entity = getLandLeaseContractEntity();
 		final var savedEntity = contractRepository.save(entity);
 
 		final var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();
-		assertThat(result.get().getId()).isEqualTo(1L);
+		assertThat(result.get().getId()).isEqualTo("2024-12345");
 	}
 
 	@Test
 	void testFindWithAllParameters() {
-
 		final var request = new ContractRequest("40f14de9-815d-44a5-a34d-b1d38b628e07"
 			, "771122-1234", "SUNDSVALL GRANLO 2:1", "MK-TEST0001"
 			, "2023-10-10", LandLeaseType.LEASEHOLD.name());
@@ -52,14 +50,13 @@ class ContractRepositoryTest {
 
 	@Test
 	void findByID() {
-		assertThat(contractRepository.findById(1L)).isPresent();
+		assertThat(contractRepository.findById("2024-12345")).isPresent();
 	}
 
 	@Test
 	void findByIdNotFound() {
-		assertThat(contractRepository.findById(123L)).isNotPresent();
+		assertThat(contractRepository.findById("2024-543210")).isNotPresent();
 	}
-
 
 	@Test
 	void testUpdate() {
@@ -68,7 +65,7 @@ class ContractRepositoryTest {
 		final var persistedEntity = contractRepository.saveAndFlush(entity);
 
 		assertThat(persistedEntity).usingRecursiveComparison().isEqualTo(entity);
-		assertThat(persistedEntity.getId()).isNotZero();
+		assertThat(persistedEntity.getId()).isNotBlank();
 
 		persistedEntity.setDescription("Updated description");
 
@@ -80,11 +77,10 @@ class ContractRepositoryTest {
 
 	@Test
 	void testDelete() {
-		assertThat(contractRepository.findById(2L)).isPresent();
+		assertThat(contractRepository.findById("2024-23456")).isPresent();
 
-		contractRepository.deleteById(2L);
+		contractRepository.deleteById("2024-23456");
 
-		assertThat(contractRepository.findById(2L)).isNotPresent();
+		assertThat(contractRepository.findById("2024-23456")).isNotPresent();
 	}
-
 }

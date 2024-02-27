@@ -42,10 +42,10 @@ class ContractResourceTest {
 
 	@Test
 	void getContractsById() {
-		when(contractServiceMock.getContract("1984", 1L)).thenReturn(LandLeaseContract.builder().build());
+		when(contractServiceMock.getContract("1984", "2024-12345")).thenReturn(LandLeaseContract.builder().build());
 
 		final var response = webTestClient.get()
-			.uri("/contracts/1984/1")
+			.uri("/contracts/1984/2024-12345")
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -54,7 +54,7 @@ class ContractResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isNotNull();
-		verify(contractServiceMock).getContract("1984", 1L);
+		verify(contractServiceMock).getContract("1984", "2024-12345");
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -67,9 +67,7 @@ class ContractResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(new ParameterizedTypeReference<List<LandLeaseContract>>() {
-
-			})
+			.expectBody(new ParameterizedTypeReference<List<LandLeaseContract>>() {})
 			.returnResult()
 			.getResponseBody();
 
@@ -79,7 +77,7 @@ class ContractResourceTest {
 
 	@Test
 	void postContracts() {
-		final var id = 123L;
+		final var id = "2024-12345";
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
 			.withArea(0)
@@ -110,7 +108,7 @@ class ContractResourceTest {
 		final var contract = TestFactory.getUpdatedLandLeaseContract();
 
 		webTestClient.patch()
-			.uri("/contracts/1984/1")
+			.uri("/contracts/1984/2024-12345")
 			.bodyValue(contract)
 			.exchange()
 			.expectStatus().isOk()

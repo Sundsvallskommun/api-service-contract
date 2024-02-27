@@ -28,6 +28,9 @@ import lombok.experimental.SuperBuilder;
 @Schema(description = "Arrendeavtal")
 public abstract class Contract {
 
+	@Schema(description = "Contract id", example = "2024-12345", accessMode = Schema.AccessMode.READ_ONLY)
+	private String id;
+
 	@Schema(description = "Version for contract", example = "1")
 	private Integer version;
 

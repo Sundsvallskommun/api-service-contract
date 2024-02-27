@@ -114,8 +114,8 @@ class ContractResource {
         })
     @GetMapping(path = "/{id}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
     ResponseEntity<Contract> getContractById(
-        @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-        @Parameter(description = "Contract id") @PathVariable("id") final Long id) {
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(description = "Contract id") @PathVariable("id") final String id) {
         return ok(service.getContract(municipalityId, id));
     }
 
@@ -129,8 +129,9 @@ class ContractResource {
         })
     @PatchMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
     ResponseEntity<Contract> patchContract(
-        @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-        @PathVariable("id") final Long id, @Valid @RequestBody final Contract contract) {
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@PathVariable("id") final String id,
+			@Valid @RequestBody final Contract contract) {
         return ok(service.updateContract(municipalityId, id, contract));
     }
 }

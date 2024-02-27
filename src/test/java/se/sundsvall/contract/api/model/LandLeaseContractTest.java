@@ -133,7 +133,7 @@ class LandLeaseContractTest {
 			.withAreaData(areaData)
 			.build();
 
-		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(contract).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status.name());
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);

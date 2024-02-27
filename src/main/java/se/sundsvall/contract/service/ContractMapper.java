@@ -43,6 +43,7 @@ public final class ContractMapper {
 			throw new IllegalArgumentException("Unknown contract type: " + contractEntity.getClass());
 		}
 
+		contract.setId(contractEntity.getId());
 		contract.setVersion(contractEntity.getVersion());
 		contract.setStatus(Optional.ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null));
 		contract.setMunicipalityId(contractEntity.getMunicipalityId());

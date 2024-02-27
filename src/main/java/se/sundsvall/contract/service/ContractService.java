@@ -21,11 +21,11 @@ public class ContractService {
 		this.contractRepository = contractRepository;
 	}
 
-	public Long createContract(final String municipalityId, final Contract contract) {
+	public String createContract(final String municipalityId, final Contract contract) {
 		return contractRepository.save(toEntity(municipalityId, contract)).getId();
 	}
 
-	public Contract getContract(final String municipalityId, final Long id) {
+	public Contract getContract(final String municipalityId, final String id) {
 		return contractRepository.findByMunicipalityIdAndId(municipalityId, id).map(ContractMapper::toDto).orElseThrow();
 	}
 
@@ -35,7 +35,7 @@ public class ContractService {
 			.toList();
 	}
 
-	public Contract updateContract(final String municipalityId, final Long id, final Contract contract) {
+	public Contract updateContract(final String municipalityId, final String id, final Contract contract) {
 		final var result = contractRepository.findByMunicipalityIdAndId(municipalityId, id).orElseThrow();
 		final var updatedEntity = updateEntity(result, contract);
 		return ContractMapper.toDto(contractRepository.save(updatedEntity));

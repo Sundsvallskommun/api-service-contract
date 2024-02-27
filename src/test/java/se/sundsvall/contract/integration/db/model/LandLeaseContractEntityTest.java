@@ -78,7 +78,7 @@ class LandLeaseContractEntityTest {
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
-			.withId(id)
+			.withId("2024-12345")
 			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)

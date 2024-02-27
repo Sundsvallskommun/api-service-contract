@@ -53,7 +53,7 @@ public final class TestFactory {
 			.withStatus(Status.ACTIVE)
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withId(1L)
+			.withId("2024-12345")
 			.withIndexTerms("someIndexTerms")
 			.withDescription("someDescription")
 			.withAdditionalTerms("someAdditionalTerms")
