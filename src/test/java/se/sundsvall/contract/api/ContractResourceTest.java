@@ -1,10 +1,8 @@
 package se.sundsvall.contract.api;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -56,7 +54,7 @@ class ContractResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isNotNull();
-		verify(contractServiceMock, times(1)).getContract("1984", 1L);
+		verify(contractServiceMock).getContract("1984", 1L);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -75,12 +73,14 @@ class ContractResourceTest {
 			.returnResult()
 			.getResponseBody();
 
-		verify(contractServiceMock, times(1)).getContracts(eq("1984"), any(ContractRequest.class));
+		verify(contractServiceMock).getContracts(eq("1984"), any(ContractRequest.class));
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
 	void postContracts() {
+
+		final var id = 123L;
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
 			.withArea(0)
@@ -91,15 +91,18 @@ class ContractResourceTest {
 			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
 			.build();
 
+		when(contractServiceMock.createContract(any(), any())).thenReturn(id);
+
 		webTestClient.post()
 			.uri("/contracts/1984")
 			.bodyValue(contract)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/contracts/1984/" + id)
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).createContract("1984", contract);
+		verify(contractServiceMock).createContract("1984", contract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -114,7 +117,7 @@ class ContractResourceTest {
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock, times(1)).updateContract(eq("1984"), eq(1L), any());
+		verify(contractServiceMock).updateContract(eq("1984"), eq(1L), any());
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 }
