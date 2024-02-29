@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import se.sundsvall.contract.api.model.enums.Status;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,8 +31,12 @@ public abstract class Contract {
 	@Schema(description = "Version for contract", example = "1")
 	private Integer version;
 
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
+	 */
+	@OneOf({"ACTIVE", "DRAFT", "TERMINATED"})
 	@Schema(description = "Status for contract", example = "ACTIVE")
-	private Status status;
+	private String status;
 
 	@Schema(description = "Eventual caseId for the contract", example = "100")
 	private Long caseId;

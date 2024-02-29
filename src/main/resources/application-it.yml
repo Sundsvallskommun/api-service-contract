@@ -8,7 +8,7 @@ spring:
         persistence:
           schema-generation:
             database:
-              action: update
+              action: validate
             scripts:
               action: create
               create-target: target/database/generated-schema.sql

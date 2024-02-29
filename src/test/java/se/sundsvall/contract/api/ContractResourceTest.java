@@ -26,6 +26,10 @@ import se.sundsvall.contract.Application;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.LandLeaseContract;
+import se.sundsvall.contract.api.model.enums.IntervalType;
+import se.sundsvall.contract.api.model.enums.LandLeaseType;
+import se.sundsvall.contract.api.model.enums.Status;
+import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.service.ContractService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -80,6 +84,10 @@ class ContractResourceTest {
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
 			.withArea(0)
+			.withInvoiceInterval(IntervalType.QUARTERLY.name())
+			.withLandLeaseType(LandLeaseType.LEASEHOLD.name())
+			.withStatus(Status.ACTIVE.name())
+			.withUsufructType(UsufructType.HUNTING.name())
 			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
 			.build();
 

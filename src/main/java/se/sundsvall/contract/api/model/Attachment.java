@@ -1,6 +1,6 @@
 package se.sundsvall.contract.api.model;
 
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,8 +17,12 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Attachment {
 
-	@Schema(description = "AttachmentCategory", example = "KONTRAKT")
-	private AttachmentCategory category;
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AttachmentCategory}
+	 * */
+	@Schema(description = "AttachmentCategory, possible values: CONTRACT | OTHER", example = "CONTRACT")
+	@OneOf({"CONTRACT", "OTHER"})
+	private String category;
 
 	@Schema(description = "Name of the attachment", example = "LeaseContract12")
 	private String name;

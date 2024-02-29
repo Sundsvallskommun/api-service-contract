@@ -78,6 +78,7 @@
 			<artifactId>geojson-jackson</artifactId>
 			<version>${geojson-jackson.version}</version>
 		</dependency>
+		<!-- Needed until dept44 updates to at least 3.25 of this dependency -->
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>

@@ -4,5 +4,5 @@ public enum UsufructType {
 	HUNTING,
 	FISHING,
 	MAINTENANCE,
-	OTHER;
+	OTHER
 }
