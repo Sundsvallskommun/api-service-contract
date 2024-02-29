@@ -8,4 +8,4 @@ alter table contract
 
 alter table stakeholder_roles
     change role
-        role tinyint check (role between 0 and 8);
+        role enum ('BUYER','CONTACT_PERSON','GRANTOR','LAND_OWNER','LEASE_HOLDER','POWER_OF_ATTOURNEY_CHECK','POWER_OF_ATTOURNEY_ROLE','SELLER','SIGNATORY')

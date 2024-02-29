@@ -5,5 +5,5 @@ public enum LeaseholdType {
 	APARTMENT,
 	BUILDING,
 	DWELLING,
-	OTHER;
+	OTHER
 }

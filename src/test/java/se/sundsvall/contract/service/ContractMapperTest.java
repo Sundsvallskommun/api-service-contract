@@ -8,10 +8,13 @@ import static se.sundsvall.contract.TestFactory.getUpdatedLandLeaseContract;
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.api.model.LandLeaseContract;
+import se.sundsvall.contract.api.model.enums.IntervalType;
+import se.sundsvall.contract.api.model.enums.LandLeaseType;
+import se.sundsvall.contract.api.model.enums.Status;
+import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 
 class ContractMapperTest {
-
 
 	@Test
 	void toDto() {
@@ -60,11 +63,18 @@ class ContractMapperTest {
 	@Test
 	void toDto_NullValues() {
 
-		final var entity = LandLeaseContractEntity.builder().build();
+		final var entity = LandLeaseContractEntity.builder()
+			.withLandLeaseType(LandLeaseType.LEASEHOLD)
+			.withUsufructType(UsufructType.HUNTING)
+			.withInvoiceInterval(IntervalType.MONTHLY)
+			.withStatus(Status.ACTIVE)
+			.build();
 
 		final var result = ContractMapper.toDto(entity);
 
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result).usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 	}
 
 	@Test

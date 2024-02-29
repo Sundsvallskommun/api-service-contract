@@ -9,7 +9,7 @@ INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
                                  invoice_interval, leasehold_description,
                                  leasehold_type, object_identity,
                                  property_designation, usufruct_type)
-VALUES (12, true, '2023-10-10', 1, 2, 1, 2, 123.00, '2023-10-02', 1, 'MK-TEST0001',
+VALUES (12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, 123.00, '2023-10-02', 1, 'MK-TEST0001',
         'QUARTERLY', 'SomeLeaseholdDescription',
         'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING'),
 
@@ -18,7 +18,7 @@ VALUES (12, true, '2023-10-10', 1, 2, 1, 2, 123.00, '2023-10-02', 1, 'MK-TEST000
         'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING');
 
 INSERT INTO attachment (id, category, extension, file, mime_type, name, note)
-    VALUE (1, 1, '.pdf', 'someFile', 'application/pdf', 'someName', 1);
+    VALUE (1, 'CONTRACT', '.pdf', 'someFile', 'application/pdf', 'someName', 1);
 
 INSERT INTO contract_attachments (contract_entity_id, attachments_id)
 VALUES (1, 1);
@@ -43,5 +43,5 @@ VALUES (1, 1),
        (1, 2);
 
 INSERT INTO stakeholder_roles (stakeholder_entity_id, role)
-VALUES (1, 1),
-       (2, 2);
+VALUES (1, 'SIGNATORY'),
+       (2, 'POWER_OF_ATTOURNEY_ROLE');

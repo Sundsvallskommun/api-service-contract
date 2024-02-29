@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -26,6 +27,7 @@ import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LandLeaseContractTest {
 
@@ -43,6 +45,36 @@ class LandLeaseContractTest {
 			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
+	}
+
+	@Test
+	void testLandLeseContract_landLeaseType_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = LandLeaseContract.class.getDeclaredField("landLeaseType")
+			.getAnnotation(OneOf.class)
+			.value();
+
+		Arrays.stream(LandLeaseType.values())
+			.forEach(value -> assertThat(oneOf).contains(value.name()));
+	}
+
+	@Test
+	void testLandLeseContract_usufructType_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = LandLeaseContract.class.getDeclaredField("usufructType")
+			.getAnnotation(OneOf.class)
+			.value();
+
+		Arrays.stream(UsufructType.values())
+			.forEach(value -> assertThat(oneOf).contains(value.name()));
+	}
+
+	@Test
+	void testLandLeseContract_invoiceInterval_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = LandLeaseContract.class.getDeclaredField("invoiceInterval")
+			.getAnnotation(OneOf.class)
+			.value();
+
+		Arrays.stream(IntervalType.values())
+			.forEach(value -> assertThat(oneOf).contains(value.name()));
 	}
 
 	@Test
@@ -75,22 +107,22 @@ class LandLeaseContractTest {
 
 		final var contract = LandLeaseContract.builder()
 			.withVersion(version)
-			.withStatus(status)
+			.withStatus(status.name())
 			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
-			.withLandLeaseType(landLeaseType)
+			.withLandLeaseType(landLeaseType.name())
 			.withLeaseholdType(leaseholdType)
-			.withUsufructType(usufructType)
+			.withUsufructType(usufructType.name())
 			.withExternalReferenceId(externalReferenceId)
 			.withPropertyDesignation(propertyDesignation)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
 			.withRental(rental)
-			.withInvoiceInterval(invoiceInterval)
+			.withInvoiceInterval(invoiceInterval.name())
 			.withStart(start)
 			.withEnd(end)
 			.withAutoExtend(autoExtend)
@@ -102,22 +134,22 @@ class LandLeaseContractTest {
 
 		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(contract.getVersion()).isEqualTo(version);
-		assertThat(contract.getStatus()).isEqualTo(status);
+		assertThat(contract.getStatus()).isEqualTo(status.name());
 		assertThat(contract.getCaseId()).isEqualTo(caseId);
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
-		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
+		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
 		assertThat(contract.getLeaseholdType()).isEqualTo(leaseholdType);
-		assertThat(contract.getUsufructType()).isEqualTo(usufructType);
+		assertThat(contract.getUsufructType()).isEqualTo(usufructType.name());
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
 		assertThat(contract.getRental()).isEqualTo(rental);
-		assertThat(contract.getInvoiceInterval()).isEqualTo(invoiceInterval);
+		assertThat(contract.getInvoiceInterval()).isEqualTo(invoiceInterval.name());
 		assertThat(contract.getStart()).isEqualTo(start);
 		assertThat(contract.getEnd()).isEqualTo(end);
 		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);

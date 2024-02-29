@@ -1,6 +1,10 @@
 package se.sundsvall.contract.integration.db.model;
 
 import java.util.List;
+import java.util.Objects;
+
+import se.sundsvall.contract.api.model.enums.StakeholderRole;
+import se.sundsvall.contract.api.model.enums.StakeholderType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -13,18 +17,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Setter
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(setterPrefix = "with")
@@ -42,6 +46,7 @@ public class StakeholderEntity {
 	@ElementCollection
 	@JoinTable(name = "stakeholder_roles")
 	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
 	private List<StakeholderRole> roles;
 
 	@Column(name = "organization_name")
@@ -68,4 +73,15 @@ public class StakeholderEntity {
 	@Embedded
 	private AddressEntity address;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof StakeholderEntity that)) return false;
+		return Objects.equals(id, that.id) && type == that.type && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(emailAddress, that.emailAddress) && Objects.equals(address, that.address);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, type, organizationName, organizationNumber, firstName, lastName, personId, phoneNumber, emailAddress, address);
+	}
 }

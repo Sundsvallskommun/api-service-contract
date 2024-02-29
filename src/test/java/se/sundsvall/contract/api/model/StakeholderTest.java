@@ -9,12 +9,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.api.model.enums.StakeholderRole;
 import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class StakeholderTest {
 
@@ -26,6 +28,24 @@ class StakeholderTest {
 			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
+	}
+
+	@Test
+	void testStakeholder_type_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = Stakeholder.class.getDeclaredField("type")
+			.getAnnotation(OneOf.class);
+
+		Arrays.stream(oneOf.value())
+			.forEach(value -> assertThat(oneOf.value()).contains(value));
+	}
+
+	@Test
+	void testStakeholder_roles_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = Stakeholder.class.getDeclaredField("roles")
+			.getAnnotation(OneOf.class);
+
+		Arrays.stream(StakeholderRole.values())
+			.forEach(value -> assertThat(oneOf.value()).contains(value.name()));
 	}
 
 	@Test
@@ -43,8 +63,8 @@ class StakeholderTest {
 		final var address = Address.builder().build();
 
 		final var stakeholder = Stakeholder.builder()
-			.withType(type)
-			.withRoles(roles)
+			.withType(type.name())
+			.withRoles(roles.stream().map(StakeholderRole::name).toList())
 			.withOrganizationName(organizationName)
 			.withOrganizationNumber(organizationNumber)
 			.withFirstName(firstName)
@@ -56,8 +76,8 @@ class StakeholderTest {
 			.build();
 
 		assertThat(stakeholder).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(stakeholder.getType()).isEqualTo(type);
-		assertThat(stakeholder.getRoles()).isEqualTo(roles);
+		assertThat(stakeholder.getType()).isEqualTo(type.name());
+		assertThat(stakeholder.getRoles()).isEqualTo(roles.stream().map(StakeholderRole::name).toList());
 		assertThat(stakeholder.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);

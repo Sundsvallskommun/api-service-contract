@@ -1,14 +1,13 @@
 package se.sundsvall.contract.integration.db.model;
 
 
+import se.sundsvall.contract.api.model.enums.LeaseholdType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.api.model.enums.LeaseholdType;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +29,4 @@ public class LeaseholdEntity {
 
 	@Column(name = "leasehold_description")
 	private String description;
-
 }
