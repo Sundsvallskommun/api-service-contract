@@ -78,7 +78,7 @@
 			<artifactId>geojson-jackson</artifactId>
 			<version>${geojson-jackson.version}</version>
 		</dependency>
-		<!-- Needed until dept44 updates to at least 3.25 of this dependency -->
+		<!-- To be able to use "withEnumStringComparison()" in tests, needed until dept44 updates to SB 3.3.0  -->
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
