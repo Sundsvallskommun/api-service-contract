@@ -63,7 +63,6 @@ public final class ContractMapper {
 				.toList())
 			.orElse(null));
 
-
 		return contract;
 	}
 

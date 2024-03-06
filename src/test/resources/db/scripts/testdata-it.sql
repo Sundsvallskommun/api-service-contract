@@ -44,4 +44,4 @@ VALUES (1, 1),
 
 INSERT INTO stakeholder_roles (stakeholder_entity_id, role)
 VALUES (1, 'SIGNATORY'),
-       (2, 'POWER_OF_ATTOURNEY_ROLE');
+       (2, 'POWER_OF_ATTORNEY_ROLE');

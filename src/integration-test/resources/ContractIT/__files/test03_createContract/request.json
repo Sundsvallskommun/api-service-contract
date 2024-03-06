@@ -31,7 +31,7 @@
     {
       "type": "PERSON",
       "roles": [
-        "POWER_OF_ATTOURNEY_ROLE"
+        "POWER_OF_ATTORNEY_ROLE"
       ],
       "organizationName": "someOrganizationName",
       "organizationNumber": "771122-1234",
