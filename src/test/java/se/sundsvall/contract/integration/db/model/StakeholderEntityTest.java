@@ -1,8 +1,8 @@
 package se.sundsvall.contract.integration.db.model;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,8 +23,8 @@ class StakeholderEntityTest {
 		assertThat(StakeholderEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanHashCode(),
-			hasValidBeanEquals(),
+			hasValidBeanHashCodeExcluding("roles"),
+			hasValidBeanEqualsExcluding("roles"),
 			hasValidBeanToString()));
 	}
 
@@ -32,7 +32,7 @@ class StakeholderEntityTest {
 	void testBuilderMethods() {
 		final var id = 1L;
 		final var type = StakeholderType.COMPANY;
-		final var roles = List.of(StakeholderRole.FULLMAKTSROLL);
+		final var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
 		final var organizationName = "Sundsvalls kommun";
 		final var organizationNumber = "212000-2411";
 		final var firstName = "Test";

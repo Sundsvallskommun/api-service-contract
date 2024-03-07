@@ -2,8 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import java.util.List;
 
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,11 +18,20 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Stakeholder {
 
-	@Schema(example = "ASSOCIATION")
-	private StakeholderType type;
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderType}
+	 */
+	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION")
+	@OneOf({"PERSON", "COMPANY", "ASSOCIATION"})
+	private String type;
 
-	@ArraySchema(schema = @Schema(description = "List of roles"))
-	private List<StakeholderRole> roles;
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
+	 */
+	@ArraySchema(schema = @Schema(description = "List of roles", example = "BUYER"))
+	@OneOf({"BUYER", "CONTACT_PERSON", "GRANTOR", "LAND_OWNER", "LEASE_HOLDER", "POWER_OF_ATTORNEY_CHECK",
+		"POWER_OF_ATTORNEY_ROLE", "SELLER", "SIGNATORY"})
+	private List<String> roles;
 
 	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")
 	private String organizationName;
@@ -37,7 +45,7 @@ public class Stakeholder {
 	@Schema(description = "Stakeholders last name", example = "Testorsson")
 	private String lastName;
 
-	@Schema(description = "", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	@Schema(description = "PersonId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	private String personId;
 
 	@Schema(description = "Phone number for stakeholder", example = "0701231212")
@@ -48,5 +56,4 @@ public class Stakeholder {
 
 	@Schema(description = "Address for stakeholder")
 	private Address address;
-
 }

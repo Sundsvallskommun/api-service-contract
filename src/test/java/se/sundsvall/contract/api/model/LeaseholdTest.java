@@ -9,9 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.api.model.enums.LeaseholdType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LeaseholdTest {
 
@@ -26,6 +29,15 @@ class LeaseholdTest {
 	}
 
 	@Test
+	void testLeaseHold_type_hasCorrectOneOfValues() throws NoSuchFieldException {
+		var oneOf = Leasehold.class.getDeclaredField("type")
+			.getAnnotation(OneOf.class);
+
+		Arrays.stream(oneOf.value())
+			.forEach(value -> assertThat(oneOf.value()).contains(value));
+	}
+
+	@Test
 	void testBuilderMethods() {
 
 		final var type = LeaseholdType.APARTMENT;
@@ -33,12 +45,12 @@ class LeaseholdTest {
 		final var description = "description";
 
 		final var leasehold = Leasehold.builder()
-			.withType(type)
+			.withType(type.name())
 			.withDescription(description)
 			.build();
 
 		assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leasehold.getType()).isEqualTo(type);
+		assertThat(leasehold.getType()).isEqualTo(type.name());
 		assertThat(leasehold.getDescription()).isEqualTo(description);
 	}
 

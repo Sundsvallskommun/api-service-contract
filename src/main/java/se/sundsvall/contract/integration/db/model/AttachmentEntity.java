@@ -1,7 +1,10 @@
 package se.sundsvall.contract.integration.db.model;
 
-
 import static jakarta.persistence.GenerationType.IDENTITY;
+
+import java.util.Objects;
+
+import se.sundsvall.contract.api.model.enums.AttachmentCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,17 +13,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(setterPrefix = "with")
@@ -50,4 +54,15 @@ public class AttachmentEntity {
 	@Column(name = "file")
 	private String file;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof AttachmentEntity that)) return false;
+		return Objects.equals(id, that.id) && category == that.category && Objects.equals(name, that.name) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(note, that.note) && Objects.equals(file, that.file);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, category, name, extension, mimeType, note, file);
+	}
 }

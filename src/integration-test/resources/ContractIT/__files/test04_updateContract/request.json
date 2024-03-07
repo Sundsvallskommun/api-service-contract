@@ -10,7 +10,7 @@
     {
       "type": "PERSON",
       "roles": [
-        "FIRMATECKNARE"
+        "SIGNATORY"
       ],
       "organizationName": "someOtherOrganizationName",
       "organizationNumber": "771122-1234",
@@ -31,7 +31,7 @@
     {
       "type": "PERSON",
       "roles": [
-        "FULLMAKTSROLL"
+        "POWER_OF_ATTORNEY_ROLE"
       ],
       "organizationName": "someOtherOrganizationName",
       "organizationNumber": "771122-1234",
@@ -52,7 +52,7 @@
   ],
   "attachments": [
     {
-      "category": "KONTRAKT",
+      "category": "CONTRACT",
       "name": "someOtherName",
       "extension": ".pdf",
       "mimeType": "application/pdf",

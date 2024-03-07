@@ -22,7 +22,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.LandLeaseContract;
+import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
+import se.sundsvall.contract.api.model.enums.Status;
+import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
@@ -41,6 +44,10 @@ class ContractServiceTest {
 
 		final var contract = LandLeaseContract.builder()
 			.withCaseId(1L)
+			.withLandLeaseType(LandLeaseType.SITELEASEHOLD.name())
+			.withUsufructType(UsufructType.HUNTING.name())
+			.withInvoiceInterval(IntervalType.QUARTERLY.name())
+			.withStatus(Status.ACTIVE.name())
 			.build();
 
 		when(contractRepository.save(any(LandLeaseContractEntity.class))).thenReturn(LandLeaseContractEntity.builder().withId(1L).build());
@@ -62,7 +69,10 @@ class ContractServiceTest {
 		final var result = contractService.getContract("1984", 1L);
 
 		assertThat(result).isNotNull();
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 
 		verify(contractRepository).findById(any(Long.class));
 		verifyNoMoreInteractions(contractRepository);
@@ -72,11 +82,14 @@ class ContractServiceTest {
 	void getContracts() {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
-		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", LandLeaseType.SITELEASEHOLD);
+		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", LandLeaseType.SITELEASEHOLD.name());
 		final var result = contractService.getContracts("1984", request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
-		assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(entity);
+		assertThat(result.getFirst())
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.isEqualTo(entity);
 
 		verify(contractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
 		verifyNoMoreInteractions(contractRepository);

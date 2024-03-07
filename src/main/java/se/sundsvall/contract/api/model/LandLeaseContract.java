@@ -3,15 +3,12 @@ package se.sundsvall.contract.api.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotBlank;
-
 import org.geojson.FeatureCollection;
 
-import se.sundsvall.contract.api.model.enums.IntervalType;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,14 +23,22 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LandLeaseContract extends Contract {
 
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
+	 */
 	@Schema(description = "Type of lease", example = "LEASEHOLD")
-	private LandLeaseType landLeaseType;
+	@OneOf({"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"})
+	private String landLeaseType;
 
 	@Schema(description = "Type of leasehold")
 	private Leasehold leaseholdType;
 
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.UsufructType}
+	 */
 	@Schema(description = "Type of right of use", example = "HUNTING")
-	private UsufructType usufructType;
+	@OneOf({"HUNTING", "FISHING", "MAINTENANCE", "OTHER"})
+	private String usufructType;
 
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
@@ -51,8 +56,12 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Yearly lease fee", example = "4350")
 	private BigDecimal rental;
 
+	/**
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.IntervalType}
+	 */
 	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
-	private IntervalType invoiceInterval;
+	@OneOf({"YEARLY", "QUARTERLY", "MONTHLY"})
+	private String invoiceInterval;
 
 	@Schema(description = "Lease period start date", example = "2020-01-01", format = "date")
 	private LocalDate start;
