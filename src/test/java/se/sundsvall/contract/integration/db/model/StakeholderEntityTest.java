@@ -74,5 +74,4 @@ class StakeholderEntityTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(StakeholderEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

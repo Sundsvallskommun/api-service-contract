@@ -8,16 +8,16 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.api.model.enums.IntervalType.MONTHLY;
+import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.LeaseholdType;
-
-class LeaseholdEntityTest {
+class InvoicingEntityTest {
 
 	@Test
 	void testBean() {
-		assertThat(LeaseholdEntity.class, allOf(
+		assertThat(InvoicingEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -27,20 +27,21 @@ class LeaseholdEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var type = LeaseholdType.APARTMENT;
-		final var description = "description";
-		final var leasehold = LeaseholdEntity.builder()
-			.withType(type)
-			.withDescription(description)
+		final var invoiceInterval = MONTHLY;
+		final var invoicedIn = ARREARS;
+
+		final var invoicing = InvoicingEntity.builder()
+			.withInvoiceInterval(invoiceInterval)
+			.withInvoicedIn(invoicedIn)
 			.build();
 
-		assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leasehold.getType()).isEqualTo(type);
-		assertThat(leasehold.getDescription()).isEqualTo(description);
+		assertThat(invoicing).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
+		assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LeaseholdEntity.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(InvoicingEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }

@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
 
-import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.UsufructType;
 
@@ -53,8 +52,8 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	private BigDecimal rental;
 
-	@Enumerated(EnumType.STRING)
-	private IntervalType invoiceInterval;
+	@Embedded
+	private InvoicingEntity invoicing;
 
 	private LocalDate start;
 
@@ -93,7 +92,7 @@ public class LandLeaseContractEntity extends ContractEntity {
 			Objects.equals(objectIdentity, that.objectIdentity) &&
 			Objects.equals(leaseDuration, that.leaseDuration) &&
 			Objects.equals(rental, that.rental) &&
-			invoiceInterval == that.invoiceInterval &&
+			Objects.equals(invoicing, that.invoicing) &&
 			Objects.equals(start, that.start) && Objects.equals(end, that.end) &&
 			Objects.equals(autoExtend, that.autoExtend) &&
 			Objects.equals(leaseExtension, that.leaseExtension) &&
@@ -103,7 +102,7 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), getMunicipalityId(), landLeaseType, leaseholdType, usufructType, isSignedByWitness(), externalReferenceId, propertyDesignation, objectIdentity, leaseDuration, rental, invoiceInterval, start, end, autoExtend, leaseExtension, periodOfNotice, area);
+		return Objects.hash(super.hashCode(), getMunicipalityId(), landLeaseType, leaseholdType, usufructType, isSignedByWitness(), externalReferenceId, propertyDesignation, objectIdentity, leaseDuration, rental, invoicing, start, end, autoExtend, leaseExtension, periodOfNotice, area);
 	}
 
 	@Override
@@ -119,7 +118,7 @@ public class LandLeaseContractEntity extends ContractEntity {
 			", objectIdentity='" + objectIdentity + '\'' +
 			", leaseDuration=" + leaseDuration +
 			", rental=" + rental +
-			", invoiceInterval=" + invoiceInterval +
+			", invoicing=" + invoicing +
 			", start=" + start +
 			", end=" + end +
 			", autoExtend=" + autoExtend +

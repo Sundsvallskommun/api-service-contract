@@ -2,6 +2,7 @@ package se.sundsvall.contract;
 
 import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.api.model.enums.IntervalType.YEARLY;
+import static se.sundsvall.contract.api.model.enums.InvoicedIn.ADVANCE;
 import static se.sundsvall.contract.api.model.enums.LeaseholdType.AGRICULTURE;
 import static se.sundsvall.contract.api.model.enums.LeaseholdType.APARTMENT;
 
@@ -14,6 +15,7 @@ import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
+import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
@@ -26,6 +28,7 @@ import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
+import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
@@ -44,7 +47,10 @@ public final class TestFactory {
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(20)
 			.withRental(BigDecimal.valueOf(4350))
-			.withInvoiceInterval(YEARLY)
+			.withInvoicing(InvoicingEntity.builder()
+				.withInvoiceInterval(YEARLY)
+				.withInvoicedIn(ADVANCE)
+				.build())
 			.withStart(LocalDate.now().minusMonths(2))
 			.withEnd(LocalDate.now().plusMonths(3))
 			.withAutoExtend(true)
@@ -120,7 +126,10 @@ public final class TestFactory {
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(30)
 			.withRental(BigDecimal.valueOf(4350))
-			.withInvoiceInterval(YEARLY.name())
+			.withInvoicing(Invoicing.builder()
+				.withInvoiceInterval(YEARLY.name())
+				.withInvoicedIn(ADVANCE.name())
+				.build())
 			.withStart(LocalDate.now().minusMonths(2))
 			.withEnd(LocalDate.now().plusMonths(3))
 			.withAutoExtend(true)
@@ -194,7 +203,10 @@ public final class TestFactory {
 			.withObjectIdentity("someUpdatedObjectIdentity")
 			.withLeaseDuration(20)
 			.withRental(BigDecimal.valueOf(4310))
-			.withInvoiceInterval(QUARTERLY.name())
+			.withInvoicing(Invoicing.builder()
+				.withInvoiceInterval(QUARTERLY.name())
+				.withInvoicedIn(ADVANCE.name())
+				.build())
 			.withStart(LocalDate.now().minusMonths(3))
 			.withEnd(LocalDate.now().plusMonths(5))
 			.withAutoExtend(false)

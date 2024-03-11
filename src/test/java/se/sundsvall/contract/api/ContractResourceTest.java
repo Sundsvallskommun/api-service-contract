@@ -9,6 +9,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.api.model.enums.LandLeaseType.LEASEHOLD;
+import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.api.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 
@@ -23,11 +28,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
+import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
-import se.sundsvall.contract.api.model.enums.IntervalType;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.Status;
-import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.service.ContractService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -81,10 +83,13 @@ class ContractResourceTest {
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
 			.withArea(0)
-			.withInvoiceInterval(IntervalType.QUARTERLY.name())
-			.withLandLeaseType(LandLeaseType.LEASEHOLD.name())
-			.withStatus(Status.ACTIVE.name())
-			.withUsufructType(UsufructType.HUNTING.name())
+			.withInvoicing(Invoicing.builder()
+				.withInvoiceInterval(QUARTERLY.name())
+				.withInvoicedIn(ARREARS.name())
+				.build())
+			.withLandLeaseType(LEASEHOLD.name())
+			.withStatus(ACTIVE.name())
+			.withUsufructType(HUNTING.name())
 			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
 			.build();
 

@@ -6,15 +6,15 @@ INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
                                  lease_duration, lease_extension, period_of_notice,
                                  rental, start, id,
                                  external_reference_id,
-                                 invoice_interval, leasehold_description,
+                                 invoice_interval, invoiced_in, leasehold_description,
                                  leasehold_type, object_identity,
                                  property_designation, usufruct_type)
 VALUES (12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, 123.00, '2023-10-02', "2024-12345", 'MK-TEST0001',
-        'QUARTERLY', 'SomeLeaseholdDescription',
+        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription',
         'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING'),
 
        (12, true, '2023-10-10', 1, 2, 1, 2, 123.00, '2023-10-02', "2024-23456", 'MK-TEST0002',
-        'QUARTERLY', 'SomeLeaseholdDescription',
+        'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription',
         'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING');
 
 INSERT INTO attachment (id, category, extension, file, mime_type, name, note)

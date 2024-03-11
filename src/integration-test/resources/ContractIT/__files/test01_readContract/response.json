@@ -75,7 +75,10 @@
 	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
 	"rental": 123.00,
-	"invoiceInterval": "QUARTERLY",
+	"invoicing": {
+		"invoiceInterval": "QUARTERLY",
+		"invoicedIn": "ADVANCE"
+	},
 	"start": "2023-10-02",
 	"end": "2023-10-10",
 	"autoExtend": true,

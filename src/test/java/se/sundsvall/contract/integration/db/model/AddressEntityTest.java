@@ -8,10 +8,9 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.api.model.enums.AddressType.POSTAL_ADDRESS;
 
 import org.junit.jupiter.api.Test;
-
-import se.sundsvall.contract.api.model.enums.AddressType;
 
 class AddressEntityTest {
 
@@ -25,10 +24,9 @@ class AddressEntityTest {
 			hasValidBeanToString()));
 	}
 
-
 	@Test
 	void testBuilderMethods() {
-		final var type = AddressType.POSTAL_ADDRESS;
+		final var type = POSTAL_ADDRESS;
 		final var streetAddress = "Testvägen 18";
 		final var postalCode = "123 45";
 		final var town = "Sundsvall";
@@ -57,5 +55,4 @@ class AddressEntityTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(AddressEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }
