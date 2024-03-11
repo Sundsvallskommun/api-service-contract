@@ -1,0 +1,1 @@
+alter table contract add column municipality_id varchar(4) not null after status;

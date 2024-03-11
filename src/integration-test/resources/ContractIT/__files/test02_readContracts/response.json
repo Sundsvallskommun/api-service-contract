@@ -1,12 +1,16 @@
 [
   {
     "type": "landLease",
+    "id": "2024-12345",
     "version": 1,
     "status": "ACTIVE",
+    "municipalityId": "1984",
     "caseId": 1,
-    "indexTerms": "someIndexTerms",
+    "indexTerms": [],
     "description": "someDescription",
-    "additionalTerms": "someAdditionalTerms",
+    "signedByWitness": true,
+    "extraParameters": { },
+    "additionalTerms": [],
     "stakeholders": [
       {
         "type": "PERSON",
@@ -81,13 +85,17 @@
     "area": 12
   },
   {
+    "id": "2024-23456",
     "type": "landLease",
     "version": 1,
     "status": "ACTIVE",
+    "municipalityId": "1984",
     "caseId": 1,
-    "indexTerms": "someIndexTerms",
+    "indexTerms": [],
     "description": "someDescription",
-    "additionalTerms": "someAdditionalTerms",
+    "signedByWitness": false,
+    "extraParameters": { },
+    "additionalTerms": [],
     "stakeholders": [],
     "attachments": [],
     "landLeaseType": "LEASEHOLD",

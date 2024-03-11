@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.geojson.FeatureCollection;
@@ -27,6 +28,8 @@ import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LandLeaseContractTest {
@@ -81,11 +84,28 @@ class LandLeaseContractTest {
 	void testBuilderMethods() {
 		final var version = 1;
 		final var status = Status.TERMINATED;
-
+		final var municipalityId = "1984";
 		final var caseId = 1L;
-		final var indexTerms = "indexTerms";
+		final var indexTerms = List.of(
+			TermGroup.builder()
+				.withHeader("Some index terms")
+				.withTerms(List.of(
+					Term.builder()
+						.withName("Some index term")
+						.withDescription("Some description")
+						.build()))
+				.build());
 		final var description = "description";
-		final var additionalTerms = "additionalTerms";
+		final var additionalTerms = List.of(
+			TermGroup.builder()
+				.withHeader("Some additional terms")
+				.withTerms(List.of(
+					Term.builder()
+						.withName("Some additional term")
+						.withDescription("Some description")
+						.build()))
+				.build());
+		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(Stakeholder.builder().build());
 		final var attachments = List.of(Attachment.builder().build());
 		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
@@ -108,10 +128,12 @@ class LandLeaseContractTest {
 		final var contract = LandLeaseContract.builder()
 			.withVersion(version)
 			.withStatus(status.name())
+			.withMunicipalityId(municipalityId)
 			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
+			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType.name())
@@ -132,13 +154,15 @@ class LandLeaseContractTest {
 			.withAreaData(areaData)
 			.build();
 
-		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(contract).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status.name());
+		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(contract.getCaseId()).isEqualTo(caseId);
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
+		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
@@ -157,13 +181,10 @@ class LandLeaseContractTest {
 		assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
-
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LandLeaseContract.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(LandLeaseContract.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness");
 	}
-
-
 }

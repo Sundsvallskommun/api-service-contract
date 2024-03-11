@@ -8,6 +8,7 @@ import static se.sundsvall.contract.api.model.enums.LeaseholdType.APARTMENT;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.geojson.FeatureCollection;
 
@@ -28,11 +29,12 @@ import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 
 public final class TestFactory {
 
 	public static LandLeaseContractEntity getLandLeaseContractEntity() {
-
 		return LandLeaseContractEntity.builder()
 			.withLandLeaseType(LandLeaseType.LEASEHOLD)
 			.withLeaseholdType(LeaseholdEntity.builder().withType(APARTMENT).withDescription("someDescription").build())
@@ -52,11 +54,28 @@ public final class TestFactory {
 			.withAreaData(new FeatureCollection())
 			.withVersion(1)
 			.withStatus(Status.ACTIVE)
+			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withId(1L)
-			.withIndexTerms("someIndexTerms")
+			.withId("2024-12345")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someDescription")
-			.withAdditionalTerms("someAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withId(1L)
 				.withFirstName("someFirstName")
@@ -86,11 +105,12 @@ public final class TestFactory {
 				.withMimeType("someMimeType")
 				.withFile("someFile")
 				.build()))
+			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 
 	public static LandLeaseContract getLandLeaseContract() {
-
 		return LandLeaseContract.builder()
 			.withLandLeaseType(LandLeaseType.LEASEHOLD.name())
 			.withLeaseholdType(Leasehold.builder().withType(APARTMENT.name()).withDescription("someDescription").build())
@@ -110,10 +130,27 @@ public final class TestFactory {
 			.withAreaData(new FeatureCollection())
 			.withVersion(1)
 			.withStatus(Status.ACTIVE.name())
+			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withIndexTerms("someIndexTerms")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someDescription")
-			.withAdditionalTerms("someAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(
 				Stakeholder.builder()
 					.withFirstName("someFirstName")
@@ -133,9 +170,7 @@ public final class TestFactory {
 					.withEmailAddress("someEmailAddress")
 					.withPhoneNumber("somePhoneNumber")
 					.withType(StakeholderType.ASSOCIATION.name())
-					.build()
-
-			))
+					.build()))
 			.withAttachments(List.of(Attachment.builder()
 				.withNote("someNote")
 				.withExtension("someExtension")
@@ -144,11 +179,12 @@ public final class TestFactory {
 				.withMimeType("someMimeType")
 				.withFile("someFile")
 				.build()))
+			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 
 	public static LandLeaseContract getUpdatedLandLeaseContract() {
-
 		return LandLeaseContract.builder()
 			.withLandLeaseType(LandLeaseType.USUFRUCT.name())
 			.withLeaseholdType(Leasehold.builder().withType(AGRICULTURE.name()).withDescription("someUpdatedDescription").build())
@@ -168,10 +204,27 @@ public final class TestFactory {
 			.withAreaData(new FeatureCollection())
 			.withVersion(2)
 			.withStatus(Status.TERMINATED.name())
+			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withIndexTerms("someUpdatedIndexTerms")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someUpdatedDescription")
-			.withAdditionalTerms("someUpdatedAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(
 				Stakeholder.builder()
 					.withFirstName("someUpdatedFirstName")
@@ -191,9 +244,7 @@ public final class TestFactory {
 					.withEmailAddress("someUpdatedEmailAddress")
 					.withPhoneNumber("someUpdatedPhoneNumber")
 					.withType(StakeholderType.COMPANY.name())
-					.build()
-
-			))
+					.build()))
 			.withAttachments(List.of(Attachment.builder()
 				.withNote("someUpdatedNote")
 				.withExtension("someUpdatedExtension")
@@ -202,6 +253,8 @@ public final class TestFactory {
 				.withMimeType("someUpdatedMimeType")
 				.withFile("someUpdatedFile")
 				.build()))
+			.withSignedByWitness(true)
+			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
 	}
 }

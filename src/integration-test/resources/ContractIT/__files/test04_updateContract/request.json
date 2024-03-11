@@ -2,10 +2,35 @@
   "type": "landLease",
   "version": 1,
   "status": "ACTIVE",
+  "municipalityId": "1984",
   "caseId": 1,
-  "indexTerms": "someOtherIndexTerms",
+  "indexTerms": [
+    {
+      "header": "General Terms",
+      "terms": [
+        {
+          "term": "General Conditions",
+          "description": "In general the conditions are..."
+        }
+      ]
+    }
+  ],
   "description": "someOtherDescription",
-  "additionalTerms": "someOtherAdditionalTerms",
+  "signedByWitness": true,
+  "additionalTerms": [
+    {
+      "header": "Extraordinary Terms",
+      "terms": [
+        {
+          "term": "Exceptions",
+          "description": "Unless something extraordinary has happened..."
+        }
+      ]
+    }
+  ],
+  "extraParameters": {
+    "legalReference": "Paragraph §1.2.3"
+  },
   "stakeholders": [
     {
       "type": "PERSON",

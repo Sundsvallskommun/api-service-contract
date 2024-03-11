@@ -14,6 +14,7 @@ spring:
   application:
     name: api-contract
   flyway:
+    #enabled: true
     enabled: true
   jpa:
     hibernate:

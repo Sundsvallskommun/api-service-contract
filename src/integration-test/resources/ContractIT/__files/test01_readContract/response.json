@@ -1,11 +1,15 @@
 {
 	"type": "landLease",
+	"id": "2024-12345",
 	"version": 1,
 	"status": "ACTIVE",
+	"municipalityId": "1984",
 	"caseId": 1,
-	"indexTerms": "someIndexTerms",
+	"indexTerms": [],
 	"description": "someDescription",
-	"additionalTerms": "someAdditionalTerms",
+	"additionalTerms": [],
+	"signedByWitness": true,
+	"extraParameters": { },
 	"stakeholders": [
 		{
 			"type": "PERSON",
@@ -70,7 +74,7 @@
 	"propertyDesignation": "SUNDSVALL GRANLO 2:1",
 	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
-	"rental": 123.0,
+	"rental": 123.00,
 	"invoiceInterval": "QUARTERLY",
 	"start": "2023-10-02",
 	"end": "2023-10-10",
