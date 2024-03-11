@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
@@ -108,7 +109,16 @@ class LandLeaseContractTest {
 		final var propertyDesignation = "propertyDesignation";
 		final var objectIdentity = "objectIdentity";
 		final var leaseDuration = 3;
-		final var rental = BigDecimal.valueOf(2.0);
+		final var leaseFees = LeaseFees.builder()
+			.withCurrency("SEK")
+			.withYearly(BigDecimal.valueOf(4350))
+			.withMonthly(BigDecimal.valueOf(375))
+			.withTotal(BigDecimal.valueOf(52200))
+			.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+			.withIndexYear(2023)
+			.withIndexNumber(2)
+			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+			.build();
 		final var invoiceInterval = QUARTERLY;
 		final var invoicedIn = ARREARS;
 		final var start = now();
@@ -137,7 +147,7 @@ class LandLeaseContractTest {
 			.withPropertyDesignation(propertyDesignation)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
-			.withRental(rental)
+			.withLeaseFees(leaseFees)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(invoiceInterval.name())
 				.withInvoicedIn(invoicedIn.name())
@@ -169,7 +179,7 @@ class LandLeaseContractTest {
 		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
-		assertThat(contract.getRental()).isEqualTo(rental);
+		assertThat(contract.getLeaseFees()).isEqualTo(leaseFees);
 		assertThat(contract.getInvoicing()).satisfies(invoicing -> {
 			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval.name());
 			assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn.name());

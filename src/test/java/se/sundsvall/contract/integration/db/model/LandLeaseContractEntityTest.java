@@ -28,6 +28,7 @@ import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 
@@ -85,7 +86,16 @@ class LandLeaseContractEntityTest {
 		final var propertyDesignation = "propertyDesignation";
 		final var objectIdentity = "objectIdentity";
 		final var leaseDuration = 3;
-		final var rental = BigDecimal.valueOf(2.0);
+		final var leaseFees = LeaseFees.builder()
+			.withCurrency("SEK")
+			.withYearly(BigDecimal.valueOf(4350))
+			.withMonthly(BigDecimal.valueOf(375))
+			.withTotal(BigDecimal.valueOf(52200))
+			.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+			.withIndexYear(2023)
+			.withIndexNumber(2)
+			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+			.build();
 		final var invoiceInterval = QUARTERLY;
 		final var invoicedIn = ADVANCE;
 		final var start = now();
@@ -115,7 +125,7 @@ class LandLeaseContractEntityTest {
 			.withPropertyDesignation(propertyDesignation)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
-			.withRental(rental)
+			.withLeaseFees(leaseFees)
 			.withInvoicing(InvoicingEntity.builder()
 				.withInvoiceInterval(invoiceInterval)
 				.withInvoicedIn(invoicedIn)
@@ -148,7 +158,7 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
-		assertThat(contract.getRental()).isEqualTo(rental);
+		assertThat(contract.getLeaseFees()).isEqualTo(leaseFees);
 		assertThat(contract.getInvoicing()).satisfies(invoicing -> {
 			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
 			assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);

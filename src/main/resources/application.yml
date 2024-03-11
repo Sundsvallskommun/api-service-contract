@@ -1,21 +1,13 @@
-#========================================
-# General settings
-#========================================
-logging:
-  level:
-    root: INFO
+spring:
+  application:
+    name: api-contract
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 openapi:
   name: ${spring.application.name}
   title: ${spring.application.name}
   version: '@project.version@'
-
-spring:
-  application:
-    name: api-contract
-  flyway:
-    #enabled: true
-    enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: validate

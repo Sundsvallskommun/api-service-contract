@@ -33,6 +33,7 @@ import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.LeaseFees;
 
 public final class ContractMapper {
 
@@ -80,7 +81,18 @@ public final class ContractMapper {
 			.withPropertyDesignation(landLeaseContractEntity.getPropertyDesignation())
 			.withObjectIdentity(landLeaseContractEntity.getObjectIdentity())
 			.withLeaseDuration(landLeaseContractEntity.getLeaseDuration())
-			.withRental(landLeaseContractEntity.getRental())
+			.withLeaseFees(ofNullable(landLeaseContractEntity.getLeaseFees())
+				.map(leaseFeesEntity -> LeaseFees.builder()
+					.withCurrency(leaseFeesEntity.getCurrency())
+					.withYearly(leaseFeesEntity.getYearly())
+					.withMonthly(leaseFeesEntity.getMonthly())
+					.withTotal(leaseFeesEntity.getTotal())
+					.withTotalAsText(leaseFeesEntity.getTotalAsText())
+					.withIndexYear(leaseFeesEntity.getIndexYear())
+					.withIndexNumber(leaseFeesEntity.getIndexNumber())
+					.withAdditionalInformation(leaseFeesEntity.getAdditionalInformation())
+					.build())
+				.orElse(null))
 			.withInvoicing(ofNullable(landLeaseContractEntity.getInvoicing())
 				.map(invoicing -> Invoicing.builder()
 					.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::name).orElse(null))
@@ -200,7 +212,7 @@ public final class ContractMapper {
 			.withPropertyDesignation(landLeaseContract.getPropertyDesignation())
 			.withObjectIdentity(landLeaseContract.getObjectIdentity())
 			.withLeaseDuration(landLeaseContract.getLeaseDuration())
-			.withRental(landLeaseContract.getRental())
+			.withLeaseFees(landLeaseContract.getLeaseFees())
 			.withInvoicing(ofNullable(landLeaseContract.getInvoicing())
 				.map(invoicing -> InvoicingEntity.builder()
 					.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
@@ -305,7 +317,7 @@ public final class ContractMapper {
 		setPropertyIfNonNull(contract.getPropertyDesignation(), entity::setPropertyDesignation);
 		setPropertyIfNonNull(contract.getObjectIdentity(), entity::setObjectIdentity);
 		setPropertyIfNonNull(contract.getLeaseDuration(), entity::setLeaseDuration);
-		setPropertyIfNonNull(contract.getRental(), entity::setRental);
+		setPropertyIfNonNull(contract.getLeaseFees(), entity::setLeaseFees);
 		setPropertyIfNonNull(contract.getInvoicing(), invoicing -> entity.setInvoicing(InvoicingEntity.builder()
 			.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
 			.withInvoicedIn(ofNullable(invoicing.getInvoicedIn()).map(InvoicedIn::valueOf).orElse(null))

@@ -1,12 +1,12 @@
 package se.sundsvall.contract.api.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 
 import org.geojson.FeatureCollection;
 
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,8 +54,8 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "The duration of the lease in years", example = "9")
 	private Integer leaseDuration;
 
-	@Schema(description = "Yearly lease fee", example = "4350")
-	private BigDecimal rental;
+	@Schema(description = "Lease fees")
+	private LeaseFees leaseFees;
 
 	@Schema(description = "Invoicing details")
 	private Invoicing invoicing;

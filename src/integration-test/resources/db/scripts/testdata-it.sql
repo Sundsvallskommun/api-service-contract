@@ -2,20 +2,16 @@ INSERT INTO contract (id, version, status, municipality_id, case_id, index_terms
 VALUES ("2024-12345", 1, 'ACTIVE', "1984", 1, '[]', 'someDescription', '[]', 1),
        ("2024-23456", 1, 'ACTIVE', "1984", 1, '[]', 'someDescription', '[]', 0);
 
-INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
-                                 lease_duration, lease_extension, period_of_notice,
-                                 rental, start, id,
-                                 external_reference_id,
+INSERT INTO land_lease_contract (id, area, auto_extend, end, land_lease_type, lease_duration,
+                                 lease_extension, period_of_notice, start, external_reference_id,
                                  invoice_interval, invoiced_in, leasehold_description,
-                                 leasehold_type, object_identity,
-                                 property_designation, usufruct_type)
-VALUES (12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, 123.00, '2023-10-02', "2024-12345", 'MK-TEST0001',
-        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription',
-        'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING'),
-
-       (12, true, '2023-10-10', 1, 2, 1, 2, 123.00, '2023-10-02', "2024-23456", 'MK-TEST0002',
-        'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription',
-        'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING');
+                                 leasehold_type, object_identity, property_designation, usufruct_type, lease_fees)
+VALUES ("2024-12345", 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, '2023-10-02', 'MK-TEST0001',
+        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
+        'SUNDSVALL GRANLO 2:1', 'HUNTING', '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexYear":2021,"additionalInformation":["someAdditionalInfo1","someAdditionalInfo2"]}'),
+       ("2024-23456", 12, true, '2023-10-10', 1, 2, 1, 2, '2023-10-02', 'MK-TEST0002',
+        'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
+        'SUNDSVALL GRANLO 2:1', 'HUNTING', '{"currency":"EUR","yearly":1000,"monthly":120,"total":5000,"totalAsText":"five thousand","indexNumber":3,"indexYear":2021,"additionalInformation":[]}');
 
 INSERT INTO attachment (id, category, extension, file, mime_type, name, note)
     VALUE (1, 'CONTRACT', '.pdf', 'someFile', 'application/pdf', 'someName', 1);

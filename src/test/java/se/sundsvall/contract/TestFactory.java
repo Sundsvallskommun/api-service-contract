@@ -3,8 +3,11 @@ package se.sundsvall.contract;
 import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.api.model.enums.IntervalType.YEARLY;
 import static se.sundsvall.contract.api.model.enums.InvoicedIn.ADVANCE;
+import static se.sundsvall.contract.api.model.enums.LandLeaseType.LEASEHOLD;
 import static se.sundsvall.contract.api.model.enums.LeaseholdType.AGRICULTURE;
 import static se.sundsvall.contract.api.model.enums.LeaseholdType.APARTMENT;
+import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.api.model.enums.UsufructType.FISHING;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +35,7 @@ import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 
@@ -39,14 +43,24 @@ public final class TestFactory {
 
 	public static LandLeaseContractEntity getLandLeaseContractEntity() {
 		return LandLeaseContractEntity.builder()
-			.withLandLeaseType(LandLeaseType.LEASEHOLD)
+			.withId("2024-12345")
+			.withLandLeaseType(LEASEHOLD)
 			.withLeaseholdType(LeaseholdEntity.builder().withType(APARTMENT).withDescription("someDescription").build())
-			.withUsufructType(UsufructType.FISHING)
+			.withUsufructType(FISHING)
 			.withExternalReferenceId("someExternalReferenceId")
 			.withPropertyDesignation("somePropertyDesignation")
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(20)
-			.withRental(BigDecimal.valueOf(4350))
+			.withLeaseFees(LeaseFees.builder()
+				.withCurrency("SEK")
+				.withYearly(BigDecimal.valueOf(4350))
+				.withMonthly(BigDecimal.valueOf(375))
+				.withTotal(BigDecimal.valueOf(52200))
+				.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+				.withIndexYear(2023)
+				.withIndexNumber(2)
+				.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+				.build())
 			.withInvoicing(InvoicingEntity.builder()
 				.withInvoiceInterval(YEARLY)
 				.withInvoicedIn(ADVANCE)
@@ -59,10 +73,9 @@ public final class TestFactory {
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
 			.withVersion(1)
-			.withStatus(Status.ACTIVE)
+			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withId("2024-12345")
 			.withIndexTerms(List.of(
 				TermGroup.builder()
 					.withHeader("Some index terms")
@@ -118,14 +131,23 @@ public final class TestFactory {
 
 	public static LandLeaseContract getLandLeaseContract() {
 		return LandLeaseContract.builder()
-			.withLandLeaseType(LandLeaseType.LEASEHOLD.name())
+			.withLandLeaseType(LEASEHOLD.name())
 			.withLeaseholdType(Leasehold.builder().withType(APARTMENT.name()).withDescription("someDescription").build())
-			.withUsufructType(UsufructType.FISHING.name())
+			.withUsufructType(FISHING.name())
 			.withExternalReferenceId("someExternalReferenceId")
 			.withPropertyDesignation("somePropertyDesignation")
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(30)
-			.withRental(BigDecimal.valueOf(4350))
+			.withLeaseFees(LeaseFees.builder()
+				.withCurrency("SEK")
+				.withYearly(BigDecimal.valueOf(4350))
+				.withMonthly(BigDecimal.valueOf(375))
+				.withTotal(BigDecimal.valueOf(52200))
+				.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+				.withIndexYear(2023)
+				.withIndexNumber(2)
+				.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+				.build())
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(YEARLY.name())
 				.withInvoicedIn(ADVANCE.name())
@@ -138,7 +160,7 @@ public final class TestFactory {
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
 			.withVersion(1)
-			.withStatus(Status.ACTIVE.name())
+			.withStatus(ACTIVE.name())
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
 			.withIndexTerms(List.of(
@@ -202,7 +224,16 @@ public final class TestFactory {
 			.withPropertyDesignation("someUpdatedPropertyDesignation")
 			.withObjectIdentity("someUpdatedObjectIdentity")
 			.withLeaseDuration(20)
-			.withRental(BigDecimal.valueOf(4310))
+			.withLeaseFees(LeaseFees.builder()
+				.withCurrency("SEK")
+				.withYearly(BigDecimal.valueOf(4350))
+				.withMonthly(BigDecimal.valueOf(375))
+				.withTotal(BigDecimal.valueOf(52200))
+				.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+				.withIndexYear(2023)
+				.withIndexNumber(2)
+				.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+				.build())
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY.name())
 				.withInvoicedIn(ADVANCE.name())
