@@ -81,9 +81,9 @@ class ContractResource {
 			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 			@RequestBody @Valid final Contract contract) {
 			final var id = service.createContract(municipalityId, contract);
-        return created(fromPath("/contracts/{municipalityId}/{id}").buildAndExpand(municipalityId, id).toUri())
-            .header(CONTENT_TYPE, ALL_VALUE)
-            .build();
+	    return created(fromPath("/contracts/{municipalityId}/{id}").buildAndExpand(municipalityId, id).toUri())
+		    .header(CONTENT_TYPE, ALL_VALUE)
+		    .build();
     }
 
     @Operation(

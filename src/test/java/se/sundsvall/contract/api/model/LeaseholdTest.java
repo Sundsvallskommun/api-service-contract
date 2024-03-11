@@ -30,7 +30,7 @@ class LeaseholdTest {
 
 	@Test
 	void testLeaseHold_type_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = Leasehold.class.getDeclaredField("type")
+		var oneOf = Leasehold.class.getDeclaredField("purpose")
 			.getAnnotation(OneOf.class);
 
 		Arrays.stream(oneOf.value())
@@ -45,12 +45,13 @@ class LeaseholdTest {
 		final var description = "description";
 
 		final var leasehold = Leasehold.builder()
-			.withType(type.name())
+			.withAdditionalInformation(Arrays.asList("info", "info2"))
+			.withPurpose(type.name())
 			.withDescription(description)
 			.build();
 
 		assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leasehold.getType()).isEqualTo(type.name());
+		assertThat(leasehold.getPurpose()).isEqualTo(type.name());
 		assertThat(leasehold.getDescription()).isEqualTo(description);
 	}
 

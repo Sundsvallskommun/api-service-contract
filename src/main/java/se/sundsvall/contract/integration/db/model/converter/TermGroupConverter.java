@@ -6,6 +6,7 @@ import static java.util.function.Predicate.not;
 import java.util.List;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.contract.model.TermGroup;
 
+@Converter
 public class TermGroupConverter implements AttributeConverter<List<TermGroup>, String> {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

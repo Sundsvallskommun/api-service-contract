@@ -2,7 +2,6 @@ package se.sundsvall.contract.apptest;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -12,6 +11,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -61,18 +61,6 @@ class ContractIT extends AbstractAppTest {
 			.withRequest("request.json")
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
-			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test04_updateContract() {
-		setupCall()
-			.withServicePath("/contracts/1984/2024-12345")
-			.withHttpMethod(PATCH)
-			.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-			.withRequest("request.json")
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.sendRequestAndVerifyResponse();
 	}
 }

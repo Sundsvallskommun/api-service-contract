@@ -3,6 +3,7 @@ package se.sundsvall.contract.api.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +17,17 @@ class ContractRequestTest {
 
 		final var personId = "personId";
 		final var organizationNumber = "organizationNumber";
-		final var propertyDesignation = "propertyDesignation";
+		final var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
 		final var externalReferenceId = "externalReferenceId";
 		final var endDate = "YYYY-MMM-DD";
 		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
 
-		final var record = new ContractRequest(personId, organizationNumber, propertyDesignation, externalReferenceId, endDate, landLeaseType.name());
+		final var record = new ContractRequest(personId, organizationNumber, propertyDesignations, externalReferenceId, endDate, landLeaseType.name());
 		assertThat(record).isNotNull().hasNoNullFieldsOrProperties();
 
 		assertThat(record.personId()).isEqualTo(personId);
 		assertThat(record.organizationNumber()).isEqualTo(organizationNumber);
-		assertThat(record.propertyDesignation()).isEqualTo(propertyDesignation);
+		assertThat(record.propertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(record.externalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(record.end()).isEqualTo(endDate);
 		assertThat(record.landLeaseType()).isEqualTo(landLeaseType.name());

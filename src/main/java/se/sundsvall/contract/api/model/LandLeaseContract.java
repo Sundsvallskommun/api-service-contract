@@ -1,15 +1,16 @@
 package se.sundsvall.contract.api.model;
 
 import java.time.LocalDate;
-
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +33,7 @@ public class LandLeaseContract extends Contract {
 	private String landLeaseType;
 
 	@Schema(description = "Type of leasehold")
-	private Leasehold leaseholdType;
+	private Leasehold leasehold;
 
 	/**
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.UsufructType}
@@ -44,11 +45,11 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
 
-	@NotBlank
-	@Schema(description = "Property designation", example = "SUNDSVALL NORRMALM 1:1", requiredMode = Schema.RequiredMode.REQUIRED)
-	private String propertyDesignation;
+	@NotEmpty
+	@ArraySchema(schema = @Schema(description = "Property designations", example = "SUNDSVALL NORRMALM 1:1", requiredMode = Schema.RequiredMode.REQUIRED))
+	private List<String> propertyDesignations;
 
-	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String objectIdentity;
 
 	@Schema(description = "The duration of the lease in years", example = "9")
