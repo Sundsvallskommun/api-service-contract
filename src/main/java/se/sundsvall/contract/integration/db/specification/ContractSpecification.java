@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.db.specification;
 
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.END;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.EXTERNAL_REFERENCE_ID;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.LAND_LEASE_TYPE;
@@ -18,13 +19,13 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 
 public final class ContractSpecification {
 
-	private ContractSpecification() {}
+	private ContractSpecification() { }
 
-
-	public static Specification<ContractEntity> createContractSpecification(final ContractRequest request) {
+	public static Specification<ContractEntity> createContractSpecification(final String municipalityId, final ContractRequest request) {
 		return ((root, query, criteriaBuilder) -> {
-
 			final List<Predicate> predicates = new ArrayList<>();
+
+			predicates.add(criteriaBuilder.equal(root.get(MUNICIPALITY_ID), municipalityId));
 
 			if (request.landLeaseType() != null) {
 				predicates.add(criteriaBuilder.equal(root.get(LAND_LEASE_TYPE), request.landLeaseType()));
