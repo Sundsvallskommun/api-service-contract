@@ -32,7 +32,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test01_readContract() throws Exception {
 		setupCall()
-			.withServicePath("/contracts/1984/1")
+			.withServicePath("/contracts/1984/2024-12345")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -67,7 +67,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test04_updateContract() {
 		setupCall()
-			.withServicePath("/contracts/1984/1")
+			.withServicePath("/contracts/1984/2024-12345")
 			.withHttpMethod(PATCH)
 			.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.withRequest("request.json")

@@ -78,9 +78,9 @@ class ContractResource {
     )
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
     ResponseEntity<Void> postLandLeaseContract(
-        @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-        @RequestBody @Valid final Contract contract) {
-        final var id = service.createContract(municipalityId, contract);
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@RequestBody @Valid final Contract contract) {
+			final var id = service.createContract(municipalityId, contract);
         return created(fromPath("/contracts/{municipalityId}/{id}").buildAndExpand(municipalityId, id).toUri())
             .header(CONTENT_TYPE, ALL_VALUE)
             .build();
@@ -97,8 +97,8 @@ class ContractResource {
     )
     @GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
     ResponseEntity<List<Contract>> getContracts(
-        @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-        @ParameterObject final ContractRequest request) {
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@ParameterObject final ContractRequest request) {
         final var landLeaseContractList = service.getContracts(municipalityId, request);
 
         return ok(landLeaseContractList);

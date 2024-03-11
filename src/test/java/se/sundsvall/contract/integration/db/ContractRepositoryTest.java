@@ -49,13 +49,13 @@ class ContractRepositoryTest {
 	}
 
 	@Test
-	void findByID() {
-		assertThat(contractRepository.findById("2024-12345")).isPresent();
+	void findByMunicipalityIdAndId() {
+		assertThat(contractRepository.findByMunicipalityIdAndId("1984", "2024-12345")).isPresent();
 	}
 
 	@Test
-	void findByIdNotFound() {
-		assertThat(contractRepository.findById("2024-543210")).isNotPresent();
+	void findByMunicipalityIdAndIdNotFound() {
+		assertThat(contractRepository.findByMunicipalityIdAndId("1984", "2024-543210")).isNotPresent();
 	}
 
 	@Test

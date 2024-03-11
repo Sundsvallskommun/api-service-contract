@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +15,6 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
 
 @JsonTypeInfo(
 	use = JsonTypeInfo.Id.NAME,
@@ -48,14 +48,14 @@ public abstract class Contract {
 	@Schema(description = "Eventual caseId for the contract", example = "100")
 	private Long caseId;
 
-	@Schema(description = "Index terms for the contract", example = "?")
-	private String indexTerms;
+	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
+	private List<TermGroup> indexTerms;
 
 	@Schema(description = "A description ", example = "A simple description of the contract")
 	private String description;
 
-	@Schema(description = "Additional terms for the contract", example = "The fee must be paid in advance")
-	private String additionalTerms;
+	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
+	private List<TermGroup> additionalTerms;
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;

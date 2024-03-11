@@ -1,94 +1,94 @@
 create table attachment (
-    id bigint not null auto_increment,
-    extension varchar(255),
-    file varchar(255),
-    mime_type varchar(255),
-    name varchar(255),
-    note varchar(255),
-    category enum ('KONTRAKT','OTHER'),
-    primary key (id)
+                            id bigint not null auto_increment,
+                            extension varchar(255),
+                            file varchar(255),
+                            mime_type varchar(255),
+                            name varchar(255),
+                            note varchar(255),
+                            category enum ('KONTRAKT','OTHER'),
+                            primary key (id)
 ) engine=InnoDB;
 
 create table contract (
-    signed_by_witness bit,
-    version integer,
-    case_id bigint,
-    additional_terms varchar(255),
-    description varchar(255),
-    id varchar(255) not null,
-    index_terms varchar(255),
-    municipality_id varchar(255),
-    status enum ('ACTIVE','TERMINATED'),
-    primary key (id)
+                          signed_by_witness bit,
+                          version integer,
+                          case_id bigint,
+                          additional_terms varchar(255),
+                          description varchar(255),
+                          id varchar(255) not null,
+                          index_terms varchar(255),
+                          municipality_id varchar(255),
+                          status enum ('ACTIVE','TERMINATED'),
+                          primary key (id)
 ) engine=InnoDB;
 
 create table contract_attachments (
-    attachments_id bigint not null,
-    contract_entity_id varchar(255) not null
+                                      attachments_id bigint not null,
+                                      contract_entity_id varchar(255) not null
 ) engine=InnoDB;
 
 create table contract_extra_parameter (
-    contract_id varchar(255) not null,
-    parameter_key varchar(255) not null,
-    parameter_value varchar(255) not null,
-    primary key (contract_id, parameter_key)
+                                          contract_id varchar(255) not null,
+                                          parameter_key varchar(255) not null,
+                                          parameter_value varchar(255) not null,
+                                          primary key (contract_id, parameter_key)
 ) engine=InnoDB;
 
 create table contract_stakeholders (
-    stakeholders_id bigint not null,
-    contract_entity_id varchar(255) not null
+                                       stakeholders_id bigint not null,
+                                       contract_entity_id varchar(255) not null
 ) engine=InnoDB;
 
 create table land_lease_contract (
-    area integer,
-    auto_extend bit,
-    end date,
-    lease_duration integer,
-    lease_extension integer,
-    period_of_notice integer,
-    rental decimal(38,2),
-    start date,
-    external_reference_id varchar(255),
-    id varchar(255) not null,
-    leasehold_description varchar(255),
-    object_identity varchar(255),
-    property_designation varchar(255),
-    area_data longblob,
-    invoice_interval enum ('YEARLY','QUARTERLY','MONTHLY'),
-    land_lease_type enum ('LEASEHOLD','USUFRUCT','SITELEASEHOLD'),
-    leasehold_type enum ('APARTMENT','BUILDING','AGRICULTURE','DWELLING','OTHER'),
-    usufruct_type enum ('HUNTING','FISHING','MAINTENANCE','OTHER'),
-    primary key (id)
+                                     area integer,
+                                     auto_extend bit,
+                                     end date,
+                                     lease_duration integer,
+                                     lease_extension integer,
+                                     period_of_notice integer,
+                                     rental decimal(38,2),
+                                     start date,
+                                     external_reference_id varchar(255),
+                                     id varchar(255) not null,
+                                     leasehold_description varchar(255),
+                                     object_identity varchar(255),
+                                     property_designation varchar(255),
+                                     area_data longblob,
+                                     invoice_interval enum ('YEARLY','QUARTERLY','MONTHLY'),
+                                     land_lease_type enum ('LEASEHOLD','USUFRUCT','SITELEASEHOLD'),
+                                     leasehold_type enum ('APARTMENT','BUILDING','AGRICULTURE','DWELLING','OTHER'),
+                                     usufruct_type enum ('HUNTING','FISHING','MAINTENANCE','OTHER'),
+                                     primary key (id)
 ) engine=InnoDB;
 
 create table stakeholder (
-    id bigint not null auto_increment,
-    attention varchar(255),
-    country varchar(255),
-    email_address varchar(255),
-    first_name varchar(255),
-    last_name varchar(255),
-    organization_name varchar(255),
-    organization_number varchar(255),
-    person_id varchar(255),
-    phone_number varchar(255),
-    postal_code varchar(255),
-    street_address varchar(255),
-    town varchar(255),
-    address_type enum ('POSTAL_ADDRESS','BILLING_ADDRESS','VISITING_ADDRESS'),
-    type enum ('PERSON','COMPANY','ASSOCIATION'),
-    primary key (id)
+                             id bigint not null auto_increment,
+                             attention varchar(255),
+                             country varchar(255),
+                             email_address varchar(255),
+                             first_name varchar(255),
+                             last_name varchar(255),
+                             organization_name varchar(255),
+                             organization_number varchar(255),
+                             person_id varchar(255),
+                             phone_number varchar(255),
+                             postal_code varchar(255),
+                             street_address varchar(255),
+                             town varchar(255),
+                             address_type enum ('POSTAL_ADDRESS','BILLING_ADDRESS','VISITING_ADDRESS'),
+                             type enum ('PERSON','COMPANY','ASSOCIATION'),
+                             primary key (id)
 ) engine=InnoDB;
 
 create table stakeholder_roles (
-    role tinyint check (role between 0 and 4),
-    stakeholder_entity_id bigint not null
+                                   role tinyint check (role between 0 and 4),
+                                   stakeholder_entity_id bigint not null
 ) engine=InnoDB;
 
 alter table if exists contract_attachments
     add constraint UK_qkj7mvq9plqt57iwee0cxlxup unique (attachments_id);
 
-create index idx_extra_parameter_asset_id
+create index idx_extra_parameter_contract_id
     on contract_extra_parameter (contract_id);
 
 alter table if exists contract_stakeholders

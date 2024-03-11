@@ -29,6 +29,8 @@ import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 
 public final class TestFactory {
 
@@ -55,9 +57,25 @@ public final class TestFactory {
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
 			.withId("2024-12345")
-			.withIndexTerms("someIndexTerms")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someDescription")
-			.withAdditionalTerms("someAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withId(1L)
 				.withFirstName("someFirstName")
@@ -114,9 +132,25 @@ public final class TestFactory {
 			.withStatus(Status.ACTIVE.name())
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withIndexTerms("someIndexTerms")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someDescription")
-			.withAdditionalTerms("someAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(
 				Stakeholder.builder()
 					.withFirstName("someFirstName")
@@ -172,9 +206,25 @@ public final class TestFactory {
 			.withStatus(Status.TERMINATED.name())
 			.withMunicipalityId("1984")
 			.withCaseId(1L)
-			.withIndexTerms("someUpdatedIndexTerms")
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some index terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some index term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withDescription("someUpdatedDescription")
-			.withAdditionalTerms("someUpdatedAdditionalTerms")
+			.withAdditionalTerms(List.of(
+				TermGroup.builder()
+					.withHeader("Some additional terms")
+					.withTerms(List.of(
+						Term.builder()
+							.withName("Some additional term")
+							.withDescription("Some description")
+							.build()))
+					.build()))
 			.withStakeholders(List.of(
 				Stakeholder.builder()
 					.withFirstName("someUpdatedFirstName")

@@ -1,6 +1,6 @@
 INSERT INTO contract (id, version, status, municipality_id, case_id, index_terms, description, additional_terms, signed_by_witness)
-VALUES ("2024-12345", 1, 'ACTIVE', "1984", 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 1),
-       ("2024-23456", 1, 'ACTIVE', "1984", 1, 'someIndexTerms', 'someDescription', 'someAdditionalTerms', 0);
+VALUES ("2024-12345", 1, 'ACTIVE', "1984", 1, '[]', 'someDescription', '[]', 1),
+       ("2024-23456", 1, 'ACTIVE', "1984", 1, '[]', 'someDescription', '[]', 0);
 
 INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
                                  lease_duration, lease_extension, period_of_notice,
@@ -9,7 +9,7 @@ INSERT INTO land_lease_contract (area, auto_extend, end, land_lease_type,
                                  invoice_interval, leasehold_description,
                                  leasehold_type, object_identity,
                                  property_designation, usufruct_type)
-VALUES (12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, 123.00, '2023-10-02', 1, 'MK-TEST0001',
+VALUES (12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, 123.00, '2023-10-02', "2024-12345", 'MK-TEST0001',
         'QUARTERLY', 'SomeLeaseholdDescription',
         'AGRICULTURE', 'someObjectIdentity', 'SUNDSVALL GRANLO 2:1', 'HUNTING'),
 

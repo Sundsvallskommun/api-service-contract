@@ -114,7 +114,7 @@ class ContractResourceTest {
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).updateContract(eq("1984"), eq(1L), any());
+		verify(contractServiceMock).updateContract(eq("1984"), eq("2024-12345"), any());
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 }

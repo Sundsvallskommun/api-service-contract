@@ -28,6 +28,8 @@ import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LandLeaseContractTest {
@@ -84,9 +86,25 @@ class LandLeaseContractTest {
 		final var status = Status.TERMINATED;
 		final var municipalityId = "1984";
 		final var caseId = 1L;
-		final var indexTerms = "indexTerms";
+		final var indexTerms = List.of(
+			TermGroup.builder()
+				.withHeader("Some index terms")
+				.withTerms(List.of(
+					Term.builder()
+						.withName("Some index term")
+						.withDescription("Some description")
+						.build()))
+				.build());
 		final var description = "description";
-		final var additionalTerms = "additionalTerms";
+		final var additionalTerms = List.of(
+			TermGroup.builder()
+				.withHeader("Some additional terms")
+				.withTerms(List.of(
+					Term.builder()
+						.withName("Some additional term")
+						.withDescription("Some description")
+						.build()))
+				.build());
 		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(Stakeholder.builder().build());
 		final var attachments = List.of(Attachment.builder().build());

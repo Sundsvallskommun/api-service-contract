@@ -7,6 +7,8 @@ import static se.sundsvall.contract.service.ContractMapper.updateEntity;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractRequest;
@@ -26,7 +28,9 @@ public class ContractService {
 	}
 
 	public Contract getContract(final String municipalityId, final String id) {
-		return contractRepository.findByMunicipalityIdAndId(municipalityId, id).map(ContractMapper::toDto).orElseThrow();
+		return contractRepository.findByMunicipalityIdAndId(municipalityId, id)
+			.map(ContractMapper::toDto)
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
 	}
 
 	public List<Contract> getContracts(final String municipalityId, final ContractRequest request) {
@@ -36,8 +40,11 @@ public class ContractService {
 	}
 
 	public Contract updateContract(final String municipalityId, final String id, final Contract contract) {
-		final var result = contractRepository.findByMunicipalityIdAndId(municipalityId, id).orElseThrow();
+		final var result = contractRepository.findByMunicipalityIdAndId(municipalityId, id)
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
+
 		final var updatedEntity = updateEntity(result, contract);
+
 		return ContractMapper.toDto(contractRepository.save(updatedEntity));
 	}
 }
