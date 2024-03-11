@@ -4,12 +4,14 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.contract.model.LeaseFees;
 
+@Converter
 public class LeaseFeesConverter implements AttributeConverter<LeaseFees, String> {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

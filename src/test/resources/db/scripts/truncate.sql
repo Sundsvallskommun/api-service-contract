@@ -6,4 +6,6 @@ TRUNCATE TABLE contract_stakeholders;
 TRUNCATE TABLE land_lease_contract;
 TRUNCATE TABLE stakeholder_roles;
 TRUNCATE TABLE stakeholder;
+TRUNCATE TABLE land_lease_contract_property_designations;
+TRUNCATE TABLE land_lease_contract_leasehold_additional_information;
 SET FOREIGN_KEY_CHECKS = 1;

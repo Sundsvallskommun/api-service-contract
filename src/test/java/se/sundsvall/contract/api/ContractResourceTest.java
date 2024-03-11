@@ -90,7 +90,7 @@ class ContractResourceTest {
 			.withLandLeaseType(LEASEHOLD.name())
 			.withStatus(ACTIVE.name())
 			.withUsufructType(HUNTING.name())
-			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
+			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
 			.build();
 
 		when(contractServiceMock.createContract(any(), any())).thenReturn(id);

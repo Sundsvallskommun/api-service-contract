@@ -3,34 +3,34 @@
   "version": 1,
   "status": "ACTIVE",
   "municipalityId": "1984",
-  "caseId": 1,
-  "indexTerms": [
-    {
-      "header": "General Terms",
-      "terms": [
-        {
-          "term": "General Conditions",
-          "description": "In general the conditions are..."
-        }
-      ]
-    }
-  ],
-  "description": "someDescription",
-  "signedByWitness": true,
-  "additionalTerms": [
-    {
-      "header": "Extraordinary Terms",
-      "terms": [
-        {
-          "term": "Exceptions",
-          "description": "Unless something extraordinary has happened..."
-        }
-      ]
-    }
-  ],
-  "extraParameters": {
-    "legalReference": "Paragraph §1.2.3"
-  },
+  "caseId": 666,
+	"indexTerms": [
+		{
+			"header": "General Terms",
+			"terms": [
+				{
+					"term": "General Conditions",
+					"description": "In general the conditions are..."
+				}
+			]
+		}
+	],
+	"description": "someDescription",
+	"signedByWitness": true,
+	"additionalTerms": [
+		{
+			"header": "Extraordinary Terms",
+			"terms": [
+				{
+					"term": "Exceptions",
+					"description": "Unless something extraordinary has happened..."
+				}
+			]
+		}
+	],
+	"extraParameters": {
+		"legalReference": "Paragraph §1.2.3"
+	},
   "stakeholders": [
     {
       "type": "PERSON",
@@ -86,15 +86,22 @@
     }
   ],
   "landLeaseType": "LEASEHOLD",
-  "leaseholdType": {
-    "type": "AGRICULTURE",
-    "description": "SomeLeaseholdDescription"
-  },
-  "usufructType": "HUNTING",
-  "externalReferenceId": "MK-TEST0003",
-  "propertyDesignation": "SUNDSVALL GRANLO 2:1",
-  "objectIdentity": "someObjectIdentity",
-  "leaseDuration": 2,
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Some additional information when posting",
+			"More additional information when posting"
+		]
+	},
+	"usufructType": "HUNTING",
+	"externalReferenceId": "MK-TEST0003",
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 123:1",
+		"SUNDSVALL NORRMALM 234:1"
+	],
+	"objectIdentity": "someObjectIdentity",
+	"leaseDuration": 2,
   "leaseFees": {
     "currency": "SEK",
     "yearly": 234.56,
@@ -109,13 +116,13 @@
     ]
   },
   "invoicing": {
-    "invoiceInterval": "QUARTERLY",
+	"invoiceInterval": "QUARTERLY",
     "invoicedIn": "ADVANCE"
   },
-  "start": "2023-10-02",
-  "end": "2023-10-10",
-  "autoExtend": true,
-  "leaseExtension": 1,
-  "periodOfNotice": 2,
-  "area": 12
+	"start": "2023-10-02",
+	"end": "2023-10-10",
+	"autoExtend": true,
+	"leaseExtension": 1,
+	"periodOfNotice": 2,
+	"area": 12
 }
