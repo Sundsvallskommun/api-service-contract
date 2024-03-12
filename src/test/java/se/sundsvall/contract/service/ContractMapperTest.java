@@ -33,7 +33,7 @@ class ContractMapperTest {
 
 		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments.id", "stakeholders.id")
+			.ignoringFields("id", "attachments.id", "stakeholders.id", "leaseFees.landLeaseContractId")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
@@ -47,7 +47,7 @@ class ContractMapperTest {
 
 		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments.id", "stakeholders.id")
+			.ignoringFields("id", "attachments.id", "stakeholders.id", "leaseFees.landLeaseContractId")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}

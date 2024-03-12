@@ -1,11 +1,11 @@
 package se.sundsvall.contract.integration.db.model;
 
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,9 +15,10 @@ import jakarta.persistence.Table;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
 
-import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.integration.db.model.converter.LeaseFeesConverter;
+import se.sundsvall.contract.model.LeaseFees;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,10 +52,12 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	private Integer leaseDuration;
 
-	private BigDecimal rental;
+	@Column(name = "lease_fees")
+	@Convert(converter = LeaseFeesConverter.class)
+	private LeaseFees leaseFees;
 
-	@Enumerated(EnumType.STRING)
-	private IntervalType invoiceInterval;
+	@Embedded
+	private InvoicingEntity invoicing;
 
 	private LocalDate start;
 
@@ -92,8 +95,8 @@ public class LandLeaseContractEntity extends ContractEntity {
 			Objects.equals(propertyDesignation, that.propertyDesignation) &&
 			Objects.equals(objectIdentity, that.objectIdentity) &&
 			Objects.equals(leaseDuration, that.leaseDuration) &&
-			Objects.equals(rental, that.rental) &&
-			invoiceInterval == that.invoiceInterval &&
+			Objects.equals(leaseFees, that.leaseFees) &&
+			Objects.equals(invoicing, that.invoicing) &&
 			Objects.equals(start, that.start) && Objects.equals(end, that.end) &&
 			Objects.equals(autoExtend, that.autoExtend) &&
 			Objects.equals(leaseExtension, that.leaseExtension) &&
@@ -103,7 +106,7 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), getMunicipalityId(), landLeaseType, leaseholdType, usufructType, isSignedByWitness(), externalReferenceId, propertyDesignation, objectIdentity, leaseDuration, rental, invoiceInterval, start, end, autoExtend, leaseExtension, periodOfNotice, area);
+		return Objects.hash(super.hashCode(), getMunicipalityId(), landLeaseType, leaseholdType, usufructType, isSignedByWitness(), externalReferenceId, propertyDesignation, objectIdentity, leaseDuration, leaseFees, invoicing, start, end, autoExtend, leaseExtension, periodOfNotice, area);
 	}
 
 	@Override
@@ -118,8 +121,8 @@ public class LandLeaseContractEntity extends ContractEntity {
 			", propertyDesignation='" + propertyDesignation + '\'' +
 			", objectIdentity='" + objectIdentity + '\'' +
 			", leaseDuration=" + leaseDuration +
-			", rental=" + rental +
-			", invoiceInterval=" + invoiceInterval +
+			", leaseFees=" + leaseFees +
+			", invoicing=" + invoicing +
 			", start=" + start +
 			", end=" + end +
 			", autoExtend=" + autoExtend +

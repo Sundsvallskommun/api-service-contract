@@ -1,0 +1,1 @@
+alter table land_lease_contract add column invoiced_in enum ('ADVANCE','ARREARS') after invoice_interval;

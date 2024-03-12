@@ -95,8 +95,23 @@
   "propertyDesignation": "SUNDSVALL GRANLO 2:1",
   "objectIdentity": "someOtherObjectIdentity",
   "leaseDuration": 2,
-  "rental": 123.00,
-  "invoiceInterval": "QUARTERLY",
+  "leaseFees": {
+    "currency": "SEK",
+    "yearly": 234.56,
+    "monthly": 123.45,
+    "total": 500.00,
+    "totalAsText": "five hundred",
+    "indexYear": 2021,
+    "indexNumber": 2,
+    "additionalInformation": [
+      "someAdditionalInfo1",
+      "someAdditionalInfo2"
+    ]
+  },
+  "invoicing": {
+    "invoiceInterval": "QUARTERLY",
+    "invoicedIn": "ADVANCE"
+  },
   "start": "2023-10-02",
   "end": "2023-10-10",
   "autoExtend": true,
