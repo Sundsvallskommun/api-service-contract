@@ -8,10 +8,9 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.api.model.enums.AttachmentCategory.CONTRACT;
 
 import org.junit.jupiter.api.Test;
-
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
 
 class AttachmentEntityTest {
 
@@ -29,7 +28,7 @@ class AttachmentEntityTest {
 	void testBuilderMethods() {
 		final var id = 1L;
 		final var name = "name";
-		final var category = AttachmentCategory.CONTRACT;
+		final var category = CONTRACT;
 		final var mimeType = "mimeType";
 		final var file = "file";
 		final var note = "note";
@@ -53,13 +52,10 @@ class AttachmentEntityTest {
 		assertThat(attachment.getFile()).isEqualTo(file);
 		assertThat(attachment.getNote()).isEqualTo(note);
 		assertThat(attachment.getExtension()).isEqualTo(extension);
-
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(AttachmentEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
-
 }

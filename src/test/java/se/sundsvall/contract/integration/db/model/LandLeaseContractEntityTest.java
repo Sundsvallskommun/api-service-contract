@@ -7,14 +7,19 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcl
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.LocalDate.now;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.api.model.enums.InvoicedIn.ADVANCE;
+import static se.sundsvall.contract.api.model.enums.LandLeaseType.SITELEASEHOLD;
+import static se.sundsvall.contract.api.model.enums.Status.TERMINATED;
+import static se.sundsvall.contract.api.model.enums.UsufructType.FISHING;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -23,10 +28,7 @@ import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.IntervalType;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.Status;
-import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 
@@ -35,7 +37,7 @@ class LandLeaseContractEntityTest {
 	@BeforeAll
 	static void setup() {
 		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), LocalDate.class);
-		registerValueGenerator(() -> Duration.of(new Random().nextLong(), ChronoUnit.SECONDS), Duration.class);
+		registerValueGenerator(() -> Duration.of(new Random().nextLong(), SECONDS), Duration.class);
 	}
 
 	@Test
@@ -51,7 +53,7 @@ class LandLeaseContractEntityTest {
 	@Test
 	void testBuilderMethods() {
 		final var version = 1;
-		final var status = Status.TERMINATED;
+		final var status = TERMINATED;
 		final var municipalityId = "1984";
 		final var id = "2024-12345";
 		final var caseId = 1L;
@@ -77,15 +79,25 @@ class LandLeaseContractEntityTest {
 		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(StakeholderEntity.builder().build());
 		final var attachments = List.of(AttachmentEntity.builder().build());
-		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
+		final var landLeaseType = SITELEASEHOLD;
 		final var leaseholdType = LeaseholdEntity.builder().build();
-		final var usufructType = UsufructType.FISHING;
+		final var usufructType = FISHING;
 		final var externalReferenceId = "externalReferenceId";
 		final var propertyDesignation = "propertyDesignation";
 		final var objectIdentity = "objectIdentity";
 		final var leaseDuration = 3;
-		final var rental = BigDecimal.valueOf(2.0);
-		final var invoiceInterval = IntervalType.QUARTERLY;
+		final var leaseFees = LeaseFees.builder()
+			.withCurrency("SEK")
+			.withYearly(BigDecimal.valueOf(4350))
+			.withMonthly(BigDecimal.valueOf(375))
+			.withTotal(BigDecimal.valueOf(52200))
+			.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+			.withIndexYear(2023)
+			.withIndexNumber(2)
+			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
+			.build();
+		final var invoiceInterval = QUARTERLY;
+		final var invoicedIn = ADVANCE;
 		final var start = now();
 		final var end = now();
 		final var autoExtend = true;
@@ -113,8 +125,11 @@ class LandLeaseContractEntityTest {
 			.withPropertyDesignation(propertyDesignation)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
-			.withRental(rental)
-			.withInvoiceInterval(invoiceInterval)
+			.withLeaseFees(leaseFees)
+			.withInvoicing(InvoicingEntity.builder()
+				.withInvoiceInterval(invoiceInterval)
+				.withInvoicedIn(invoicedIn)
+				.build())
 			.withStart(start)
 			.withEnd(end)
 			.withAutoExtend(autoExtend)
@@ -143,8 +158,11 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
-		assertThat(contract.getRental()).isEqualTo(rental);
-		assertThat(contract.getInvoiceInterval()).isEqualTo(invoiceInterval);
+		assertThat(contract.getLeaseFees()).isEqualTo(leaseFees);
+		assertThat(contract.getInvoicing()).satisfies(invoicing -> {
+			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
+			assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
+		});
 		assertThat(contract.getStart()).isEqualTo(start);
 		assertThat(contract.getEnd()).isEqualTo(end);
 		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);

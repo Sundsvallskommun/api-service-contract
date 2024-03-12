@@ -8,6 +8,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.contract.TestFactory.getLandLeaseContract;
 import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
+import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.api.model.enums.LandLeaseType.SITELEASEHOLD;
+import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.api.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +26,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
 import se.sundsvall.contract.api.model.ContractRequest;
+import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
-import se.sundsvall.contract.api.model.enums.IntervalType;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.Status;
-import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
@@ -43,10 +45,13 @@ class ContractServiceTest {
 	void createContract() {
 		final var contract = LandLeaseContract.builder()
 			.withCaseId(1L)
-			.withLandLeaseType(LandLeaseType.SITELEASEHOLD.name())
-			.withUsufructType(UsufructType.HUNTING.name())
-			.withInvoiceInterval(IntervalType.QUARTERLY.name())
-			.withStatus(Status.ACTIVE.name())
+			.withLandLeaseType(SITELEASEHOLD.name())
+			.withUsufructType(HUNTING.name())
+			.withInvoicing(Invoicing.builder()
+				.withInvoiceInterval(QUARTERLY.name())
+				.withInvoicedIn(ARREARS.name())
+				.build())
+			.withStatus(ACTIVE.name())
 			.build();
 
 		when(contractRepository.save(any(LandLeaseContractEntity.class)))
@@ -82,7 +87,7 @@ class ContractServiceTest {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
 
-		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", LandLeaseType.SITELEASEHOLD.name());
+		final var request = new ContractRequest("propertyDesignation", "organizationNumber", "propertyDesignation", "externalReferenceId", " yyyy-MM-dd", SITELEASEHOLD.name());
 
 		final var result = contractService.getContracts("1984", request);
 
