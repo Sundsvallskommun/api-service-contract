@@ -18,14 +18,14 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Stakeholder {
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderType}
 	 */
 	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION")
 	@OneOf({"PERSON", "COMPANY", "ASSOCIATION"})
 	private String type;
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
 	 */
 	@ArraySchema(schema = @Schema(description = "List of roles", example = "BUYER"))

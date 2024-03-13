@@ -88,7 +88,7 @@ class ContractServiceTest {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
 
-		final var request = new ContractRequest("propertyDesignation", "organizationNumber",
+		final var request = new ContractRequest("contractId", "propertyDesignation", "organizationNumber",
 			List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId", LocalDate.of(2023, 10, 10), SITELEASEHOLD.name());
 
 		final var result = contractService.getContracts("1984", request);

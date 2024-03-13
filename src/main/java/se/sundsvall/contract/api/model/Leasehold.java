@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Leasehold")
 public class Leasehold {
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseholdType}
 	 */
 	@Schema(example = "OTHER", description = "Type of leasehold")
