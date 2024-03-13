@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AddressType}
 	 */
 	@Schema(example = "POSTAL_ADDRESS", description = "Address type")

@@ -1,6 +1,6 @@
 package se.sundsvall.contract.service;
 
-import static se.sundsvall.contract.integration.db.specification.ContractSpecification.createContractSpecification;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
 import static se.sundsvall.contract.service.ContractMapper.toEntity;
 import static se.sundsvall.contract.service.ContractMapper.updateEntity;
 

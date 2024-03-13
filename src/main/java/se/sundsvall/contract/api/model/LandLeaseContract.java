@@ -25,7 +25,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LandLeaseContract extends Contract {
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
 	 */
 	@Schema(description = "Type of lease", example = "LEASEHOLD")
@@ -35,7 +35,7 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Type of leasehold")
 	private Leasehold leasehold;
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.UsufructType}
 	 */
 	@Schema(description = "Type of right of use", example = "HUNTING")
@@ -81,5 +81,4 @@ public class LandLeaseContract extends Contract {
 
 	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = "{\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ],\n                            [\n                                17297286987304688,\n                                6238050291927199\n                            ],\n                            [\n                                17297801971435547,\n                                6237922958346664\n                            ],\n                            [\n                                17301406860351562,\n                                62378194958300895\n                            ],\n                            [\n                                17303810119628906,\n                                62379149998183046\n                            ],\n                            [\n                                17303638458251953,\n                                6238066208244492\n                            ],\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }")
 	private FeatureCollection areaData;
-
 }
