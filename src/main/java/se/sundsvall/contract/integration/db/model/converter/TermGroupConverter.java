@@ -5,13 +5,13 @@ import static java.util.function.Predicate.not;
 
 import java.util.List;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.PersistenceException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.contract.model.TermGroup;
+
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.PersistenceException;
 
 public class TermGroupConverter implements AttributeConverter<List<TermGroup>, String> {
 

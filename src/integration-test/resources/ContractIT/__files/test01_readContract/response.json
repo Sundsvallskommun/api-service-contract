@@ -8,8 +8,6 @@
 	"indexTerms": [],
 	"description": "someDescription",
 	"additionalTerms": [],
-	"signedByWitness": true,
-	"extraParameters": { },
 	"stakeholders": [
 		{
 			"type": "PERSON",
@@ -31,27 +29,6 @@
 				"country": "SE",
 				"attention": "someAttention"
 			}
-		},
-		{
-			"type": "PERSON",
-			"roles": [
-				"POWER_OF_ATTORNEY_ROLE"
-			],
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"personId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
-			"emailAddress": "someEmail",
-			"address": {
-				"type": "VISITING_ADDRESS",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
-				"town": "someTown",
-				"country": "SE",
-				"attention": "someAttention"
-			}
 		}
 	],
 	"attachments": [
@@ -64,14 +41,21 @@
 			"file": "someFile"
 		}
 	],
+	"signedByWitness": true,
+	"extraParameters": {},
 	"landLeaseType": "LEASEHOLD",
-	"leaseholdType": {
-		"type": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription"
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Some additional information"
+		]
 	},
 	"usufructType": "HUNTING",
 	"externalReferenceId": "MK-TEST0001",
-	"propertyDesignation": "SUNDSVALL GRANLO 2:1",
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 1:1"
+	],
 	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
 	"leaseFees": {

@@ -103,10 +103,10 @@ class LandLeaseContractTest {
 		final var stakeholders = List.of(Stakeholder.builder().build());
 		final var attachments = List.of(Attachment.builder().build());
 		final var landLeaseType = SITELEASEHOLD;
-		final var leaseholdType = Leasehold.builder().build();
+		final var leasehold = Leasehold.builder().build();
 		final var usufructType = FISHING;
 		final var externalReferenceId = "externalReferenceId";
-		final var propertyDesignation = "propertyDesignation";
+		final var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
 		final var objectIdentity = "objectIdentity";
 		final var leaseDuration = 3;
 		final var leaseFees = LeaseFees.builder()
@@ -141,10 +141,10 @@ class LandLeaseContractTest {
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType.name())
-			.withLeaseholdType(leaseholdType)
+			.withLeasehold(leasehold)
 			.withUsufructType(usufructType.name())
 			.withExternalReferenceId(externalReferenceId)
-			.withPropertyDesignation(propertyDesignation)
+			.withPropertyDesignations(propertyDesignations)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
 			.withLeaseFees(leaseFees)
@@ -173,10 +173,10 @@ class LandLeaseContractTest {
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
-		assertThat(contract.getLeaseholdType()).isEqualTo(leaseholdType);
+		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getUsufructType()).isEqualTo(usufructType.name());
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
-		assertThat(contract.getPropertyDesignation()).isEqualTo(propertyDesignation);
+		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
 		assertThat(contract.getLeaseFees()).isEqualTo(leaseFees);

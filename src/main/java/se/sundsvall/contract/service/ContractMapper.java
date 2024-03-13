@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.springframework.util.CollectionUtils;
+
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
@@ -75,10 +77,10 @@ public final class ContractMapper {
 	private static Contract toDto(final LandLeaseContractEntity landLeaseContractEntity) {
 		return LandLeaseContract.builder()
 			.withLandLeaseType(ofNullable(landLeaseContractEntity.getLandLeaseType()).map(LandLeaseType::name).orElse(null))
-			.withLeaseholdType(toDto(landLeaseContractEntity.getLeaseholdType()))
+			.withLeasehold(toDto(landLeaseContractEntity.getLeasehold()))
 			.withUsufructType(ofNullable(landLeaseContractEntity.getUsufructType()).map(UsufructType::name).orElse(null))
 			.withExternalReferenceId(landLeaseContractEntity.getExternalReferenceId())
-			.withPropertyDesignation(landLeaseContractEntity.getPropertyDesignation())
+			.withPropertyDesignations(landLeaseContractEntity.getPropertyDesignations())
 			.withObjectIdentity(landLeaseContractEntity.getObjectIdentity())
 			.withLeaseDuration(landLeaseContractEntity.getLeaseDuration())
 			.withLeaseFees(ofNullable(landLeaseContractEntity.getLeaseFees())
@@ -131,7 +133,8 @@ public final class ContractMapper {
 			return null;
 		}
 		return Leasehold.builder()
-			.withType(ofNullable(leaseholdEntity.getType()).map(LeaseholdType::name).orElse(null))
+			.withPurpose(ofNullable(leaseholdEntity.getPurpose()).map(LeaseholdType::name).orElse(null))
+			.withAdditionalInformation(leaseholdEntity.getAdditionalInformation())
 			.withDescription(leaseholdEntity.getDescription())
 			.build();
 	}
@@ -206,10 +209,10 @@ public final class ContractMapper {
 	private static LandLeaseContractEntity toEntity(final LandLeaseContract landLeaseContract) {
 		return LandLeaseContractEntity.builder()
 			.withLandLeaseType(ofNullable(landLeaseContract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null))
-			.withLeaseholdType(toEntity(landLeaseContract.getLeaseholdType()))
+			.withLeasehold(toEntity(landLeaseContract.getLeasehold()))
 			.withUsufructType(ofNullable(landLeaseContract.getUsufructType()).map(UsufructType::valueOf).orElse(null))
 			.withExternalReferenceId(landLeaseContract.getExternalReferenceId())
-			.withPropertyDesignation(landLeaseContract.getPropertyDesignation())
+			.withPropertyDesignations(landLeaseContract.getPropertyDesignations())
 			.withObjectIdentity(landLeaseContract.getObjectIdentity())
 			.withLeaseDuration(landLeaseContract.getLeaseDuration())
 			.withLeaseFees(landLeaseContract.getLeaseFees())
@@ -234,8 +237,9 @@ public final class ContractMapper {
 			return null;
 		}
 		return LeaseholdEntity.builder()
-			.withType(ofNullable(leasehold.getType()).map(LeaseholdType::valueOf).orElse(null))
+			.withPurpose(ofNullable(leasehold.getPurpose()).map(LeaseholdType::valueOf).orElse(null))
 			.withDescription(leasehold.getDescription())
+			.withAdditionalInformation(leasehold.getAdditionalInformation())
 			.build();
 	}
 
@@ -304,7 +308,7 @@ public final class ContractMapper {
 
 	private static void updateEntity(final LeaseholdEntity entity, final Leasehold leasehold) {
 		if (nonNull(leasehold)) {
-			setPropertyIfNonNull(LeaseholdType.valueOf(leasehold.getType()), entity::setType);
+			setPropertyIfNonNull(LeaseholdType.valueOf(leasehold.getPurpose()), entity::setPurpose);
 			setPropertyIfNonNull(leasehold.getDescription(), entity::setDescription);
 		}
 	}
@@ -314,7 +318,7 @@ public final class ContractMapper {
 		setPropertyIfNonNull(ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null), entity::setLandLeaseType);
 		setPropertyIfNonNull(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null), entity::setUsufructType);
 		setPropertyIfNonNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
-		setPropertyIfNonNull(contract.getPropertyDesignation(), entity::setPropertyDesignation);
+		setPropertyIfNonNull(contract.getPropertyDesignations(), entity::setPropertyDesignations);
 		setPropertyIfNonNull(contract.getObjectIdentity(), entity::setObjectIdentity);
 		setPropertyIfNonNull(contract.getLeaseDuration(), entity::setLeaseDuration);
 		setPropertyIfNonNull(contract.getLeaseFees(), entity::setLeaseFees);
@@ -330,7 +334,11 @@ public final class ContractMapper {
 		setPropertyIfNonNull(contract.getArea(), entity::setArea);
 		setPropertyIfNonNull(contract.getAreaData(), entity::setAreaData);
 
-		updateEntity(entity.getLeaseholdType(), contract.getLeaseholdType());
+		if(contract.getLeasehold() != null && !CollectionUtils.isEmpty(contract.getLeasehold().getAdditionalInformation())) {
+			setPropertyIfNonNull(contract.getLeasehold().getAdditionalInformation(), entity.getLeasehold()::setAdditionalInformation);
+		}
+
+		updateEntity(entity.getLeasehold(), contract.getLeasehold());
 	}
 
 	private static <T> void setPropertyIfNonNull(final T sourceValue, final Consumer<T> setter) {
