@@ -14,6 +14,7 @@ import static se.sundsvall.contract.api.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.api.model.enums.UsufructType.HUNTING;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +88,8 @@ class ContractServiceTest {
 		final var entity = getLandLeaseContractEntity();
 		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
 
-		final var request = new ContractRequest("propertyDesignation", "organizationNumber", List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId", " yyyy-MM-dd", SITELEASEHOLD.name());
+		final var request = new ContractRequest("propertyDesignation", "organizationNumber",
+			List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId", LocalDate.of(2023, 10, 10), SITELEASEHOLD.name());
 
 		final var result = contractService.getContracts("1984", request);
 
