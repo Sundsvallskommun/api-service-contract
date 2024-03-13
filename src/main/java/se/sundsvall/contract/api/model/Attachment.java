@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Attachment {
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AttachmentCategory}
-	 * */
+	 */
 	@Schema(description = "AttachmentCategory, possible values: CONTRACT | OTHER", example = "CONTRACT")
 	@OneOf({"CONTRACT", "OTHER"})
 	private String category;

@@ -35,7 +35,7 @@ public abstract class Contract {
 	@Schema(description = "Version for contract", example = "1")
 	private Integer version;
 
-	/**
+	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
 	 */
 	@OneOf({"ACTIVE", "DRAFT", "TERMINATED"})
