@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,7 @@ class ContractRequestTest {
 		final var organizationNumber = "organizationNumber";
 		final var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
 		final var externalReferenceId = "externalReferenceId";
-		final var endDate = "YYYY-MMM-DD";
+		final var endDate = LocalDate.of(2023, 10, 10);
 		final var landLeaseType = LandLeaseType.SITELEASEHOLD;
 
 		final var record = new ContractRequest(personId, organizationNumber, propertyDesignations, externalReferenceId, endDate, landLeaseType.name());

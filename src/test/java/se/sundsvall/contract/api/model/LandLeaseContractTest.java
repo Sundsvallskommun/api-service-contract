@@ -103,7 +103,7 @@ class LandLeaseContractTest {
 		final var stakeholders = List.of(Stakeholder.builder().build());
 		final var attachments = List.of(Attachment.builder().build());
 		final var landLeaseType = SITELEASEHOLD;
-		final var leaseholdType = Leasehold.builder().build();
+		final var leasehold = Leasehold.builder().build();
 		final var usufructType = FISHING;
 		final var externalReferenceId = "externalReferenceId";
 		final var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
@@ -141,7 +141,7 @@ class LandLeaseContractTest {
 			.withStakeholders(stakeholders)
 			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType.name())
-			.withLeasehold(leaseholdType)
+			.withLeasehold(leasehold)
 			.withUsufructType(usufructType.name())
 			.withExternalReferenceId(externalReferenceId)
 			.withPropertyDesignations(propertyDesignations)
@@ -173,7 +173,7 @@ class LandLeaseContractTest {
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
-		assertThat(contract.getLeasehold()).isEqualTo(leaseholdType);
+		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getUsufructType()).isEqualTo(usufructType.name());
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);

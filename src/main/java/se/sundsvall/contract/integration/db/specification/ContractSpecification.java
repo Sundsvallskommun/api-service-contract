@@ -6,11 +6,8 @@ import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.LAND_LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.PROPERTY_DESIGNATIONS;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.criteria.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +15,8 @@ import org.springframework.util.CollectionUtils;
 
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+
+import jakarta.persistence.criteria.Predicate;
 
 public final class ContractSpecification {
 
@@ -33,8 +32,8 @@ public final class ContractSpecification {
 				predicates.add(criteriaBuilder.equal(root.get(LAND_LEASE_TYPE), request.landLeaseType()));
 			}
 
-			if (StringUtils.isNotBlank(request.end())) {
-				predicates.add(criteriaBuilder.equal(root.get(END), LocalDate.parse(request.end())));
+			if (request.end() != null) {
+				predicates.add(criteriaBuilder.equal(root.get(END), request.end()));
 			}
 
 			if (StringUtils.isNotBlank(request.externalReferenceId())) {
@@ -49,11 +48,13 @@ public final class ContractSpecification {
 					propertyPredicate.add(criteriaBuilder.isMember(property, root.get(PROPERTY_DESIGNATIONS)));
 				}
 
-				predicates.add(criteriaBuilder.or(propertyPredicate.toArray(new Predicate[0])));
+				//Check that propertyPredicate is not empty before adding it to the predicates list
+				if(!propertyPredicate.isEmpty()){
+					predicates.add(criteriaBuilder.or(propertyPredicate.toArray(new Predicate[0])));
+				}
 			}
 
 			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 		});
 	}
-
 }
