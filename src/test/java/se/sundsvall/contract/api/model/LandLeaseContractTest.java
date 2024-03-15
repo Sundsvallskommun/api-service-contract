@@ -101,7 +101,6 @@ class LandLeaseContractTest {
 				.build());
 		final var extraParameters = Map.of("someParameter", "someValue");
 		final var stakeholders = List.of(Stakeholder.builder().build());
-		final var attachments = List.of(Attachment.builder().build());
 		final var landLeaseType = SITELEASEHOLD;
 		final var leasehold = Leasehold.builder().build();
 		final var usufructType = FISHING;
@@ -139,7 +138,6 @@ class LandLeaseContractTest {
 			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
-			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType.name())
 			.withLeasehold(leasehold)
 			.withUsufructType(usufructType.name())
@@ -171,7 +169,6 @@ class LandLeaseContractTest {
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getUsufructType()).isEqualTo(usufructType.name());

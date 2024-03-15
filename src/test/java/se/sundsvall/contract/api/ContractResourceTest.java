@@ -3,6 +3,7 @@ package se.sundsvall.contract.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -109,17 +110,20 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void patchContracts() {
-		final var contract = TestFactory.getUpdatedLandLeaseContract();
+	void updateContract() {
+		var landLeaseContract = TestFactory.getLandLeaseContract();
 
-		webTestClient.patch()
+		doNothing().when(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
+
+		webTestClient.put()
 			.uri("/contracts/1984/2024-12345")
-			.bodyValue(contract)
+			.bodyValue(landLeaseContract)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).updateContract(eq("1984"), eq("2024-12345"), any());
+		verify(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
+
 }
