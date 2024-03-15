@@ -12,14 +12,12 @@ import java.util.function.Consumer;
 import org.springframework.util.CollectionUtils;
 
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.api.model.enums.AddressType;
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
 import se.sundsvall.contract.api.model.enums.IntervalType;
 import se.sundsvall.contract.api.model.enums.InvoicedIn;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
@@ -29,7 +27,6 @@ import se.sundsvall.contract.api.model.enums.StakeholderType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
-import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
@@ -60,11 +57,6 @@ public final class ContractMapper {
 		contract.setAdditionalTerms(contractEntity.getAdditionalTerms());
 		contract.setStakeholders(ofNullable(contractEntity.getStakeholders())
 			.map(stakeholders -> stakeholders.stream()
-				.map(ContractMapper::toDto)
-				.toList())
-			.orElse(null));
-		contract.setAttachments(ofNullable(contractEntity.getAttachments())
-			.map(attachments -> attachments.stream()
 				.map(ContractMapper::toDto)
 				.toList())
 			.orElse(null));
@@ -119,11 +111,6 @@ public final class ContractMapper {
 					.map(ContractMapper::toDto)
 					.toList())
 				.orElse(null))
-			.withAttachments(ofNullable(landLeaseContractEntity.getAttachments())
-				.map(attachments -> attachments.stream()
-					.map(ContractMapper::toDto)
-					.toList())
-				.orElse(null))
 			.withSignedByWitness(landLeaseContractEntity.isSignedByWitness())
 			.build();
 	}
@@ -164,17 +151,6 @@ public final class ContractMapper {
 			.build();
 	}
 
-	private static Attachment toDto(final AttachmentEntity attachmentEntity) {
-		return Attachment.builder()
-			.withCategory(ofNullable(attachmentEntity.getCategory()).map(AttachmentCategory::name).orElse(null))
-			.withName(attachmentEntity.getName())
-			.withExtension(attachmentEntity.getExtension())
-			.withMimeType(attachmentEntity.getMimeType())
-			.withNote(attachmentEntity.getNote())
-			.withFile(attachmentEntity.getFile())
-			.build();
-	}
-
 	static ContractEntity toEntity(final String municipalityId, final Contract contract) {
 		final LandLeaseContractEntity contractEntity;
 
@@ -192,11 +168,6 @@ public final class ContractMapper {
 		contractEntity.setAdditionalTerms(contract.getAdditionalTerms());
 		contractEntity.setStakeholders(ofNullable(contract.getStakeholders())
 			.map(stakeholders -> stakeholders.stream()
-				.map(ContractMapper::toEntity)
-				.toList())
-			.orElse(null));
-		contractEntity.setAttachments(ofNullable(contract.getAttachments())
-			.map(attachments -> attachments.stream()
 				.map(ContractMapper::toEntity)
 				.toList())
 			.orElse(null));
@@ -268,23 +239,8 @@ public final class ContractMapper {
 			.build();
 	}
 
-	private static AttachmentEntity toEntity(final Attachment attachment) {
-		return AttachmentEntity.builder()
-			.withCategory(Optional.of(AttachmentCategory.valueOf(attachment.getCategory())).orElse(null))
-			.withName(attachment.getName())
-			.withExtension(attachment.getExtension())
-			.withMimeType(attachment.getMimeType())
-			.withNote(attachment.getNote())
-			.withFile(attachment.getFile())
-			.build();
-	}
-
 	static ContractEntity updateEntity(final ContractEntity entity, final Contract contract) {
 		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
-			.map(ContractMapper::toEntity)
-			.toList())));
-
-		setPropertyIfNonNull(contract.getAttachments(), entities -> entity.setAttachments(new ArrayList<>(entities.stream()
 			.map(ContractMapper::toEntity)
 			.toList())));
 

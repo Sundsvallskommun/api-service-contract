@@ -17,20 +17,17 @@ import java.util.Map;
 import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.api.model.enums.AddressType;
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
 import se.sundsvall.contract.api.model.enums.LandLeaseType;
 import se.sundsvall.contract.api.model.enums.StakeholderRole;
 import se.sundsvall.contract.api.model.enums.StakeholderType;
 import se.sundsvall.contract.api.model.enums.Status;
 import se.sundsvall.contract.api.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
-import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
@@ -119,15 +116,6 @@ public final class TestFactory {
 				.withPhoneNumber("somePhoneNumber")
 				.withType(StakeholderType.ASSOCIATION)
 				.build()))
-			.withAttachments(List.of(AttachmentEntity.builder()
-				.withId(2L)
-				.withNote("someNote")
-				.withExtension("someExtension")
-				.withName("someName")
-				.withCategory(AttachmentCategory.CONTRACT)
-				.withMimeType("someMimeType")
-				.withFile("someFile")
-				.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
@@ -206,14 +194,6 @@ public final class TestFactory {
 					.withPhoneNumber("somePhoneNumber")
 					.withType(StakeholderType.ASSOCIATION.name())
 					.build()))
-			.withAttachments(List.of(Attachment.builder()
-				.withNote("someNote")
-				.withExtension("someExtension")
-				.withName("someName")
-				.withCategory(AttachmentCategory.CONTRACT.name())
-				.withMimeType("someMimeType")
-				.withFile("someFile")
-				.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
@@ -296,14 +276,6 @@ public final class TestFactory {
 					.withPhoneNumber("someUpdatedPhoneNumber")
 					.withType(StakeholderType.COMPANY.name())
 					.build()))
-			.withAttachments(List.of(Attachment.builder()
-				.withNote("someUpdatedNote")
-				.withExtension("someUpdatedExtension")
-				.withName("someUpdatedName")
-				.withCategory(AttachmentCategory.OTHER.name())
-				.withMimeType("someUpdatedMimeType")
-				.withFile("someUpdatedFile")
-				.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(Map.of("someParameter", "someValue"))
 			.build();
