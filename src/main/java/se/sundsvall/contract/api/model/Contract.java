@@ -60,9 +60,6 @@ public abstract class Contract {
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;
 
-	@ArraySchema(schema = @Schema(description = "List of attachments"))
-	private List<Attachment> attachments;
-
 	@Schema(description = "Whether the contract is signed by a witness")
 	private boolean signedByWitness;
 

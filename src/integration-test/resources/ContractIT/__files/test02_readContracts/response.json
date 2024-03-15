@@ -32,16 +32,6 @@
 				}
 			}
 		],
-		"attachments": [
-			{
-				"category": "CONTRACT",
-				"name": "someName",
-				"extension": ".pdf",
-				"mimeType": "application/pdf",
-				"note": "1",
-				"file": "someFile"
-			}
-		],
 		"signedByWitness": true,
 		"extraParameters": {},
 		"landLeaseType": "LEASEHOLD",
@@ -116,7 +106,6 @@
 				}
 			}
 		],
-		"attachments": [],
 		"signedByWitness": false,
 		"extraParameters": {},
 		"landLeaseType": "LEASEHOLD",

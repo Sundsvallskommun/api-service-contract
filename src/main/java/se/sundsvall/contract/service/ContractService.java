@@ -39,12 +39,11 @@ public class ContractService {
 			.toList();
 	}
 
-	public Contract updateContract(final String municipalityId, final String id, final Contract contract) {
+	public void updateContract(final String municipalityId, final String id, final Contract contract) {
 		final var result = contractRepository.findByMunicipalityIdAndId(municipalityId, id)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
 
 		final var updatedEntity = updateEntity(result, contract);
-
-		return ContractMapper.toDto(contractRepository.save(updatedEntity));
+		contractRepository.save(updatedEntity);
 	}
 }
