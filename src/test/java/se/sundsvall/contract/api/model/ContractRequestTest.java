@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class ContractRequestTest {

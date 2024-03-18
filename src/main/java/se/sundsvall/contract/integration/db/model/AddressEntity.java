@@ -1,6 +1,6 @@
 package se.sundsvall.contract.integration.db.model;
 
-import se.sundsvall.contract.api.model.enums.AddressType;
+import se.sundsvall.contract.model.enums.AddressType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

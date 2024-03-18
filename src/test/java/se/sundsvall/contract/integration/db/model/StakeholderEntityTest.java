@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 class StakeholderEntityTest {
 

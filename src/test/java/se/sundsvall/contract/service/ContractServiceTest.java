@@ -8,11 +8,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.contract.TestFactory.getLandLeaseContract;
 import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
-import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
-import static se.sundsvall.contract.api.model.enums.LandLeaseType.SITELEASEHOLD;
-import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.api.model.enums.UsufructType.HUNTING;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.time.LocalDate;
 import java.util.List;

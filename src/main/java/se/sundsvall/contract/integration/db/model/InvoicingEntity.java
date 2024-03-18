@@ -4,8 +4,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
-import se.sundsvall.contract.api.model.enums.IntervalType;
-import se.sundsvall.contract.api.model.enums.InvoicedIn;
+import se.sundsvall.contract.model.enums.IntervalType;
+import se.sundsvall.contract.model.enums.InvoicedIn;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
