@@ -1,11 +1,13 @@
 package se.sundsvall.contract.api.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.api.model.enums.Status.DRAFT;
-import static se.sundsvall.contract.api.model.enums.Status.TERMINATED;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.Status.DRAFT;
+import static se.sundsvall.contract.model.enums.Status.TERMINATED;
 
 import org.junit.jupiter.api.Test;
+
+import se.sundsvall.contract.model.enums.Status;
 
 class StatusTest {
 

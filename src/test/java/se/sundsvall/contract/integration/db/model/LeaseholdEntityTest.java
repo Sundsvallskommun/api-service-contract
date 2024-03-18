@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.LeaseholdType;
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 class LeaseholdEntityTest {
 

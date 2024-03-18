@@ -8,8 +8,8 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static se.sundsvall.contract.api.model.enums.IntervalType.MONTHLY;
-import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 
 import org.junit.jupiter.api.Test;
 

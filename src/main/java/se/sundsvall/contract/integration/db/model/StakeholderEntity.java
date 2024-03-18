@@ -3,8 +3,8 @@ package se.sundsvall.contract.integration.db.model;
 import java.util.List;
 import java.util.Objects;
 
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

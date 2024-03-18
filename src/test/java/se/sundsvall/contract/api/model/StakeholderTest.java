@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class StakeholderTest {

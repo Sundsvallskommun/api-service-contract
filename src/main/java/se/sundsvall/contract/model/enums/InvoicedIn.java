@@ -1,4 +1,4 @@
-package se.sundsvall.contract.api.model.enums;
+package se.sundsvall.contract.model.enums;
 
 public enum InvoicedIn {
     ADVANCE,

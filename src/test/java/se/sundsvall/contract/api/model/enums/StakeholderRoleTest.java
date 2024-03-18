@@ -1,16 +1,16 @@
 package se.sundsvall.contract.api.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.BUYER;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.CONTACT_PERSON;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.GRANTOR;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.LAND_OWNER;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.LEASE_HOLDER;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.POWER_OF_ATTORNEY_CHECK;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.SELLER;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.SIGNATORY;
-import static se.sundsvall.contract.api.model.enums.StakeholderRole.values;
+import static se.sundsvall.contract.model.enums.StakeholderRole.BUYER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.CONTACT_PERSON;
+import static se.sundsvall.contract.model.enums.StakeholderRole.GRANTOR;
+import static se.sundsvall.contract.model.enums.StakeholderRole.LAND_OWNER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.LEASE_HOLDER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_CHECK;
+import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
+import static se.sundsvall.contract.model.enums.StakeholderRole.SELLER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.SIGNATORY;
+import static se.sundsvall.contract.model.enums.StakeholderRole.values;
 
 import org.junit.jupiter.api.Test;
 
