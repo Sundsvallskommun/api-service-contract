@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class AttachmentTest {

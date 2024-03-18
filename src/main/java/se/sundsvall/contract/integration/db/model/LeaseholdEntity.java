@@ -2,7 +2,7 @@ package se.sundsvall.contract.integration.db.model;
 
 import java.util.List;
 
-import se.sundsvall.contract.api.model.enums.LeaseholdType;
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

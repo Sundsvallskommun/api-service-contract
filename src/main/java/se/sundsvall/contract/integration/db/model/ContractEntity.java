@@ -27,7 +27,7 @@ import jakarta.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import se.sundsvall.contract.api.model.enums.Status;
+import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
 import se.sundsvall.contract.integration.db.model.generator.ContractIdGenerator;
 import se.sundsvall.contract.model.TermGroup;

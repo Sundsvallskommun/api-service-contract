@@ -8,7 +8,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static se.sundsvall.contract.api.model.enums.AddressType.POSTAL_ADDRESS;
+import static se.sundsvall.contract.model.enums.AddressType.POSTAL_ADDRESS;
 
 import org.junit.jupiter.api.Test;
 

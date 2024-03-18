@@ -11,11 +11,11 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
-import static se.sundsvall.contract.api.model.enums.LandLeaseType.SITELEASEHOLD;
-import static se.sundsvall.contract.api.model.enums.Status.TERMINATED;
-import static se.sundsvall.contract.api.model.enums.UsufructType.FISHING;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
+import static se.sundsvall.contract.model.enums.Status.TERMINATED;
+import static se.sundsvall.contract.model.enums.UsufructType.FISHING;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -29,8 +29,8 @@ import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.UsufructType;
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;

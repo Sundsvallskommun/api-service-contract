@@ -7,8 +7,8 @@ import java.util.Objects;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
 
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.api.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.UsufructType;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

@@ -17,7 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)

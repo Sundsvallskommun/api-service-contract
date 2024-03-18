@@ -10,11 +10,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.contract.api.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.api.model.enums.InvoicedIn.ARREARS;
-import static se.sundsvall.contract.api.model.enums.LandLeaseType.LEASEHOLD;
-import static se.sundsvall.contract.api.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.api.model.enums.UsufructType.HUNTING;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.LandLeaseType.LEASEHOLD;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 

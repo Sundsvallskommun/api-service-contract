@@ -4,7 +4,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import java.util.Objects;
 
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
