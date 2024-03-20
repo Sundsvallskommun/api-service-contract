@@ -7,22 +7,25 @@
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>4.3.0</version>
+		<version>4.3.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
 	<version>2.0</version>
 	<name>api-service-contract</name>
+
 	<properties>
+		<geojson-jackson.version>1.14</geojson-jackson.version>
 		<assertj-core.version>3.25.3</assertj-core.version>
+
 		<!-- Pipeline properties -->
 		<docker.image.name>ms-contract</docker.image.name>
 		<exposed.app.port>8080</exposed.app.port>
 		<published.container.port.test>8702</published.container.port.test>
 		<published.container.port.production>8702</published.container.port.production>
-		<geojson-jackson.version>1.14</geojson-jackson.version>
 	</properties>
+
 	<dependencies>
 		<!-- Test -->
 		<dependency>
@@ -85,8 +88,8 @@
 			<version>${assertj-core.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -99,6 +102,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>

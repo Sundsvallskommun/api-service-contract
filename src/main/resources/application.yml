@@ -9,5 +9,5 @@ spring:
 
 openapi:
   name: ${spring.application.name}
-  title: ${spring.application.name}
+  title: Contracts
   version: '@project.version@'

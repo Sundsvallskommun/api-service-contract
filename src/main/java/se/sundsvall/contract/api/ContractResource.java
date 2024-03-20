@@ -12,6 +12,8 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -38,11 +40,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @RestController
 @Validated
-@Tag(name = "Contracts", description = "Contracts")
+@Tag(name = "Contracts", description = "Contract resources")
 @RequestMapping(path = "/contracts/{municipalityId}")
 @ApiResponse(
 	responseCode = "400",
@@ -79,9 +80,10 @@ class ContractResource {
 	)
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> createContract(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@RequestBody @Valid final Contract contract) {
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@RequestBody @Valid final Contract contract) {
 		final var id = service.createContract(municipalityId, contract);
+
 		return created(fromPath("/contracts/{municipalityId}/{id}").buildAndExpand(municipalityId, id).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -102,9 +104,9 @@ class ContractResource {
 	)
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<List<Contract>> getContracts(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@ParameterObject final ContractRequest request) {
-		final var landLeaseContractList = service.getContracts(municipalityId, request);
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@ParameterObject final ContractRequest request) {
+		var landLeaseContractList = service.getContracts(municipalityId, request);
 
 		return ok(landLeaseContractList);
 	}
@@ -121,11 +123,11 @@ class ContractResource {
 				description = "Not Found",
 				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@GetMapping(path = "/{id}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{contractId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Contract> getContractById(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable("id") final String id) {
-		return ok(service.getContract(municipalityId, id));
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId) {
+		return ok(service.getContract(municipalityId, contractId));
 	}
 
 	@Operation(
@@ -141,11 +143,11 @@ class ContractResource {
 		})
 	@PutMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Void> updateContract(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable("id") final String id,
-		@RequestBody @Valid final Contract contract) {
-
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(description = "Contract id") @PathVariable("id") final String id,
+			@RequestBody @Valid final Contract contract) {
 		service.updateContract(municipalityId, id, contract);
+
 		return ok().build();
 	}
 
@@ -162,9 +164,10 @@ class ContractResource {
 		})
 	@DeleteMapping(path = "/{id}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteContract(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable("id") final String id) {
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(description = "Contract id") @PathVariable("id") final String id) {
 		service.deleteContract(municipalityId, id);
+
 		return noContent().build();
 	}
 }

@@ -27,10 +27,10 @@ class InvoicingEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var invoiceInterval = MONTHLY;
-		final var invoicedIn = ARREARS;
+		var invoiceInterval = MONTHLY;
+		var invoicedIn = ARREARS;
 
-		final var invoicing = InvoicingEntity.builder()
+		var invoicing = InvoicingEntity.builder()
 			.withInvoiceInterval(invoiceInterval)
 			.withInvoicedIn(invoicedIn)
 			.build();

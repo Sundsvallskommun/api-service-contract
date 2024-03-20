@@ -2,7 +2,7 @@ package se.sundsvall.contract.integration.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
 
 import java.time.LocalDate;
@@ -29,25 +29,27 @@ class ContractRepositoryTest {
 
 	@Autowired
 	private ContractRepository contractRepository;
+	@Autowired
+	private AttachmentRepository attachmentRepository;
 
 	@Test
 	void createContract() {
-		final var entity = getLandLeaseContractEntity();
+		final var entity = createLandLeaseContractEntity();
 		entity.getStakeholders().getFirst().setId(null);    // Clear the id
 		final var savedEntity = contractRepository.save(entity);
 
-		final var result = contractRepository.findById(savedEntity.getId());
+		var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();
 		assertThat(result.get().getId()).isEqualTo(3);
 	}
 
 	@Test
 	void testFindWithAllParameters() {
-		final var request = new ContractRequest("2024-12345", "40f14de6-815d-44b2-a34d-b1d38b628e07",
+		var request = new ContractRequest("2024-12345", "40f14de6-815d-44b2-a34d-b1d38b628e07",
 			"771122-1234", List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"), "MK-TEST0001",
 			LocalDate.of(2023, 10, 10), LandLeaseType.LEASEHOLD.name());
 
-		final var result = contractRepository.findAll(createContractSpecification("1984", request));
+		var result = contractRepository.findAll(createContractSpecification("1984", request));
 
 		assertThat(result).hasSize(1);
 	}
@@ -64,6 +66,8 @@ class ContractRepositoryTest {
 
 	@Test
 	void testDeleteAllByMunicipalityIdAndContractId() {
+		attachmentRepository.deleteAllByContractId("2024-12345");
+
 		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
 		contractRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
 		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isNotPresent();

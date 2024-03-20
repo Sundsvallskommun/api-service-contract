@@ -1,5 +1,7 @@
 package se.sundsvall.contract;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
@@ -22,10 +24,12 @@ import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
@@ -38,7 +42,19 @@ import se.sundsvall.contract.model.enums.UsufructType;
 
 public final class TestFactory {
 
-	public static LandLeaseContractEntity getLandLeaseContractEntity() {
+	public static AttachmentEntity createAttachmentEntity() {
+		return AttachmentEntity.builder()
+			.withId(123L)
+			.withContractId("2024-12345")
+			.withCategory(CONTRACT)
+			.withFilename("mycontract.pdf")
+			.withMimeType("application/pdf")
+			.withNote("some info goes here")
+			.withContent("data".getBytes(UTF_8))
+			.build();
+	}
+
+	public static LandLeaseContractEntity createLandLeaseContractEntity() {
 		return LandLeaseContractEntity.builder()
 			.withContractId("2024-98765")
 			.withLandLeaseType(LEASEHOLD)
@@ -117,12 +133,21 @@ public final class TestFactory {
 				.withType(StakeholderType.ASSOCIATION)
 				.build()))
 			.withSignedByWitness(true)
-			.withExtraParameters(Map.of("someParameter", "someValue"))
+			.withExtraParameters(List.of(
+				ExtraParameterGroup.builder()
+					.withName("someExtraParameterGroup")
+					.withParameters(Map.of("someParameter", "someValue"))
+					.build()))
 			.build();
 	}
 
-	public static LandLeaseContract getLandLeaseContract() {
+	public static LandLeaseContract createLandLeaseContract() {
 		return LandLeaseContract.builder()
+			//.withType(LAND_LEASE.name())
+			//.withVersion(1)
+			.withStatus(ACTIVE.name())
+			.withMunicipalityId("1984")
+			.withContractId("2024-12345")
 			.withLandLeaseType(LEASEHOLD.name())
 			.withLeasehold(Leasehold.builder().withPurpose(APARTMENT.name()).withDescription("someDescription").build())
 			.withUsufructType(FISHING.name())
@@ -151,9 +176,6 @@ public final class TestFactory {
 			.withPeriodOfNotice(2)
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
-			.withVersion(1)
-			.withStatus(ACTIVE.name())
-			.withMunicipalityId("1984")
 			.withCaseId(1L)
 			.withIndexTerms(List.of(
 				TermGroup.builder()
@@ -195,11 +217,15 @@ public final class TestFactory {
 					.withType(StakeholderType.ASSOCIATION.name())
 					.build()))
 			.withSignedByWitness(true)
-			.withExtraParameters(Map.of("someParameter", "someValue"))
+			.withExtraParameters(List.of(
+				ExtraParameterGroup.builder()
+					.withName("someExtraParameterGroup")
+					.withParameters(Map.of("someParameter", "someValue"))
+					.build()))
 			.build();
 	}
 
-	public static LandLeaseContract getUpdatedLandLeaseContract() {
+	public static LandLeaseContract createUpdatedLandLeaseContract() {
 		return LandLeaseContract.builder()
 			.withLandLeaseType(LandLeaseType.USUFRUCT.name())
 			.withLeasehold(Leasehold.builder()
@@ -277,7 +303,11 @@ public final class TestFactory {
 					.withType(StakeholderType.COMPANY.name())
 					.build()))
 			.withSignedByWitness(true)
-			.withExtraParameters(Map.of("someParameter", "someValue"))
+			.withExtraParameters(List.of(
+				ExtraParameterGroup.builder()
+					.withName("someExtraParameterGroup")
+					.withParameters(Map.of("someParameter", "someValue"))
+					.build()))
 			.build();
 	}
 }

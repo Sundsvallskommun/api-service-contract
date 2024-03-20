@@ -5,6 +5,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,32 +27,32 @@ class AttachmentEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var id = 1L;
-		final var name = "name";
-		final var category = CONTRACT;
-		final var mimeType = "mimeType";
-		final var file = "file";
-		final var note = "note";
-		final var extension = "extension";
+		var id = 1L;
+		var contractId = "contractId";
+		var filename = "filename";
+		var category = CONTRACT;
+		var mimeType = "mimeType";
+		var fileContent = "fileContent".getBytes(UTF_8);
+		var note = "note";
 
-		final var attachment = AttachmentEntity.builder()
+		var attachment = AttachmentEntity.builder()
 			.withId(id)
-			.withName(name)
+			.withContractId(contractId)
+			.withFilename(filename)
 			.withCategory(category)
 			.withMimeType(mimeType)
-			.withFile(file)
+			.withContent(fileContent)
 			.withNote(note)
-			.withExtension(extension)
 			.build();
 
 		assertThat(attachment).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(attachment.getId()).isEqualTo(id);
-		assertThat(attachment.getName()).isEqualTo(name);
+		assertThat(attachment.getContractId()).isEqualTo(contractId);
+		assertThat(attachment.getFilename()).isEqualTo(filename);
 		assertThat(attachment.getCategory()).isEqualTo(category);
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
-		assertThat(attachment.getFile()).isEqualTo(file);
+		assertThat(attachment.getContent()).isEqualTo(fileContent);
 		assertThat(attachment.getNote()).isEqualTo(note);
-		assertThat(attachment.getExtension()).isEqualTo(extension);
 	}
 
 	@Test

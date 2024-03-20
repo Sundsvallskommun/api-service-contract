@@ -1,9 +1,11 @@
 package se.sundsvall.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContract;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
-import static se.sundsvall.contract.TestFactory.getUpdatedLandLeaseContract;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createUpdatedLandLeaseContract;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,77 +14,81 @@ import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 
 class ContractMapperTest {
 
+	private final ContractMapper contractMapper = new ContractMapper();
+
 	@Test
-	void toDto() {
-		final var entity = getLandLeaseContractEntity();
+	void toContractDto() {
+		var entity = createLandLeaseContractEntity();
 
-		final var result = ContractMapper.toDto(entity);
+		var result = contractMapper.toContractDto(entity, List.of());
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("type");
 		assertThat(result)
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
+			.ignoringFields("type", "attachments")
 			.isEqualTo(entity);
 	}
 
 	@Test
-	void toEntity() {
-		final var dto = getLandLeaseContract();
+	void toContractDto_NullValues() {
+		var entity = LandLeaseContractEntity.builder().build();
 
-		final var result = ContractMapper.toEntity("1984", dto);
+		var result = contractMapper.toContractDto(entity, null);
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments", "contractId", "version");
+		assertThat(result).isNotNull().hasAllNullFieldsOrPropertiesExcept("type", "version", "signedByWitness");
+	}
+
+	@Test
+	void toContractEntity() {
+		var dto = createLandLeaseContract();
+
+		var result = contractMapper.toContractEntity("1984", dto);
+
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "type", "attachments");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId", "version")
+			.ignoringFields("id", "type", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
 
 	@Test
-	void updateEntity() {
-		final var entity = getLandLeaseContractEntity();
-		final var dto = getUpdatedLandLeaseContract();
+	void updateContractEntity() {
+		var entity = createLandLeaseContractEntity();
+		var dto = createUpdatedLandLeaseContract();
 
-		final var result = ContractMapper.updateEntity(entity, dto);
+		var result = contractMapper.updateContractEntity(entity, dto);
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments", "contractId");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "type", "attachments", "contractId");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("attachments", "id", "stakeholders.id", "leaseFees.landLeaseContractId", "contractId")
+			.ignoringFields("id", "type", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId", "contractId")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
 
 	@Test
-	void toDto_NullValues() {
-		final var entity = LandLeaseContractEntity.builder().build();
+	void toContractEntity_NullValues() {
+		var dto = LandLeaseContract.builder().build();
 
-		final var result = ContractMapper.toDto(entity);
+		var result = contractMapper.toContractEntity("1984", dto);
 
-		assertThat(result).usingRecursiveComparison()
+		assertThat(result)
+			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.isEqualTo(entity);
-	}
-
-	@Test
-	void toEntity_NullValues() {
-		final var dto = LandLeaseContract.builder().build();
-
-		final var result = ContractMapper.toEntity("1984", dto);
-
-		assertThat(result).usingRecursiveComparison()
 			.ignoringFields("id", "municipalityId", "attachments", "version")
 			.isEqualTo(dto);
 	}
 
 	@Test
-	void updateEntity_NullValues() {
-		final var entity = LandLeaseContractEntity.builder().build();
-		final var dto = LandLeaseContract.builder().build();
+	void updateContractEntity_NullValues() {
+		var entity = LandLeaseContractEntity.builder().build();
+		var dto = LandLeaseContract.builder().build();
 
-		final var result = ContractMapper.updateEntity(entity, dto);
+		var result = contractMapper.updateContractEntity(entity, dto);
 
-		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments", "version")
+		assertThat(result)
+			.usingRecursiveComparison()
+			.ignoringFields("type", "id", "version", "attachments")
 			.isEqualTo(dto);
 	}
 }

@@ -29,9 +29,9 @@ class LeaseholdEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var type = LeaseholdType.APARTMENT;
-		final var description = "description";
-		final var leasehold = LeaseholdEntity.builder()
+		var type = LeaseholdType.APARTMENT;
+		var description = "description";
+		var leasehold = LeaseholdEntity.builder()
 			.withPurpose(type)
 			.withAdditionalInformation(List.of("info1", "info2"))
 			.withDescription(description)

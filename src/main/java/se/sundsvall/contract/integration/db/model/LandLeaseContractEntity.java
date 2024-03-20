@@ -4,16 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import org.geojson.FeatureCollection;
-import org.hibernate.Length;
-
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.contract.model.enums.UsufructType;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Convert;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,8 +18,13 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
+import org.geojson.FeatureCollection;
+import org.hibernate.Length;
+
 import se.sundsvall.contract.integration.db.model.converter.LeaseFeesConverter;
 import se.sundsvall.contract.model.LeaseFees;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.UsufructType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,12 +54,13 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-		name = "land_lease_contract_property_designations",
+		name = "land_lease_contract_property_designation",
 		joinColumns = @JoinColumn(
-			name = "contract_id",
+			name = "land_lease_contract_id",
 			referencedColumnName = "id",
-			foreignKey = @ForeignKey(name = "fk_land_lease_contract_property_designations_contract_id")),
-	indexes = @Index(name = "idx_land_lease_contract_property_designations_contract_id", columnList = "contract_id"))
+			foreignKey = @ForeignKey(name = "fk_land_lease_contract_property_designation_contract_id")),
+			indexes = @Index(name = "idx_land_lease_contract_property_designation_contract_id", columnList = "land_lease_contract_id"))
+	@Column(name = "property_designation")
 	private List<String> propertyDesignations;
 
 	private String objectIdentity;
@@ -98,10 +98,8 @@ public class LandLeaseContractEntity extends ContractEntity {
 		if (!(o instanceof LandLeaseContractEntity that)) {
             return false;
         }
-		if (!super.equals(o)) {
-            return false;
-        }
-		return landLeaseType == that.landLeaseType &&
+		return super.equals(o) &&
+			landLeaseType == that.landLeaseType &&
 			Objects.equals(getMunicipalityId(), that.getMunicipalityId()) &&
 			Objects.equals(leasehold, that.leasehold) &&
 			usufructType == that.usufructType &&
