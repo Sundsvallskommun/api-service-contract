@@ -1,1 +1,0 @@
-alter table contract add column signed_by_witness bit;
