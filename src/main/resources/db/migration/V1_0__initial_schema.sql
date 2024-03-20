@@ -1,46 +1,42 @@
-
 create table attachment (
-    id bigint not null auto_increment,
-    extension varchar(255),
-    file varchar(255),
-    mime_type varchar(255),
-    name varchar(255),
-    note varchar(255),
-    category enum ('CONTRACT','OTHER'),
+    id          bigint not null auto_increment,
+    contract_id varchar(10) not null,
+    category    enum ('CONTRACT','OTHER'),
+    filename    varchar(255),
+    mime_type   varchar(255),
+    note        varchar(255),
+    content     longblob,
     primary key (id)
 ) engine=InnoDB;
 
 create table contract (
+    id                varchar(10) not null,
+    version           integer,
+    municipality_id   varchar(255),
+    type              enum ('LAND_LEASE'),
+    status            enum ('ACTIVE','TERMINATED'),
+    description       varchar(255),
+    case_id           bigint,
     signed_by_witness bit,
-    version integer,
-    case_id bigint,
-    additional_terms varchar(255),
-    description varchar(255),
-    id varchar(255) not null,
-    index_terms varchar(255),
-    municipality_id varchar(255),
-    status enum ('ACTIVE','DRAFT','TERMINATED'),
+    additional_terms  varchar(255),
+    index_terms       varchar(255),
     primary key (id)
 ) engine=InnoDB;
 
-create table contract_attachments (
-    attachments_id bigint not null,
-    contract_entity_id varchar(255) not null
-) engine=InnoDB;
-
 create table contract_extra_parameter (
-    contract_id varchar(255) not null,
-    parameter_key varchar(255) not null,
+    contract_id     varchar(10) not null,
+    parameter_key   varchar(255) not null,
     parameter_value varchar(255) not null,
     primary key (contract_id, parameter_key)
 ) engine=InnoDB;
 
-create table contract_stakeholders (
-    stakeholders_id bigint not null,
-    contract_entity_id varchar(255) not null
+create table contract_stakeholder (
+    contract_id varchar(10) not null,
+    stakeholder_id bigint not null
 ) engine=InnoDB;
 
 create table land_lease_contract (
+    id varchar(10) not null,
     area integer,
     auto_extend bit,
     end date,
@@ -49,7 +45,6 @@ create table land_lease_contract (
     period_of_notice integer,
     start date,
     external_reference_id varchar(255),
-    id varchar(255) not null,
     lease_fees varchar(255),
     leasehold_description varchar(255),
     object_identity varchar(255),
@@ -67,7 +62,7 @@ create table land_lease_contract_leasehold_additional_information (
     land_lease_contract_id varchar(255) not null
 ) engine=InnoDB;
 
-create table land_lease_contract_property_designations (
+create table land_lease_contract_property_designation (
     contract_id varchar(255) not null,
     property_designations varchar(255)
 ) engine=InnoDB;
@@ -91,31 +86,23 @@ create table stakeholder (
     primary key (id)
 ) engine=InnoDB;
 
-create table stakeholder_roles (
-    stakeholder_entity_id bigint not null,
+create table stakeholder_role (
+    stakeholder_id bigint not null,
     role enum ('BUYER','CONTACT_PERSON','GRANTOR','LAND_OWNER','LEASE_HOLDER','POWER_OF_ATTORNEY_CHECK','POWER_OF_ATTORNEY_ROLE','SELLER','SIGNATORY')
 ) engine=InnoDB;
-
-alter table if exists contract_attachments
-    add constraint uq_contract_attachments_attachments_id unique (attachments_id);
 
 create index idx_extra_parameter_contract_id
     on contract_extra_parameter (contract_id);
 
-alter table if exists contract_stakeholders
-    add constraint uq_contract_stakeholders_stakeholders_id unique (stakeholders_id);
+alter table if exists contract_stakeholder
+    add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
-create index idx_land_lease_contract_property_designations_contract_id
-    on land_lease_contract_property_designations (contract_id);
+create index idx_land_lease_contract_property_designation_contract_id
+    on land_lease_contract_property_designation (contract_id);
 
-alter table if exists contract_attachments
-    add constraint fk_contract_attachments_attachments_id
-        foreign key (attachments_id)
-            references attachment (id);
-
-alter table if exists contract_attachments
+alter table if exists attachment
     add constraint fk_contract_attachments_contract_entity_id
-        foreign key (contract_entity_id)
+        foreign key (contract_id)
             references contract (id);
 
 alter table if exists contract_extra_parameter
@@ -123,14 +110,14 @@ alter table if exists contract_extra_parameter
         foreign key (contract_id)
             references contract (id);
 
-alter table if exists contract_stakeholders
-    add constraint fk_contract_stakeholders_stakeholder_id
-        foreign key (stakeholders_id)
+alter table if exists contract_stakeholder
+    add constraint fk_contract_stakeholder_stakeholder_id
+        foreign key (stakeholder_id)
             references stakeholder (id);
 
-alter table if exists contract_stakeholders
-    add constraint fk_contract_stakeholders_contract_entity_id
-        foreign key (contract_entity_id)
+alter table if exists contract_stakeholder
+    add constraint fk_contract_stakeholder_contract_entity_id
+        foreign key (contract_id)
             references contract (id);
 
 alter table if exists land_lease_contract
@@ -143,12 +130,12 @@ alter table if exists land_lease_contract_leasehold_additional_information
         foreign key (land_lease_contract_id)
             references land_lease_contract (id);
 
-alter table if exists land_lease_contract_property_designations
-    add constraint fk_land_lease_contract_property_designations_contract_id
+alter table if exists land_lease_contract_property_designation
+    add constraint fk_land_lease_contract_property_designation_contract_id
         foreign key (contract_id)
             references land_lease_contract (id);
 
-alter table if exists stakeholder_roles
-    add constraint fk_stakeholder_roles_stakeholder_entity_id
-        foreign key (stakeholder_entity_id)
+alter table if exists stakeholder_role
+    add constraint fk_stakeholder_role_stakeholder_id
+        foreign key (stakeholder_id)
             references stakeholder (id);

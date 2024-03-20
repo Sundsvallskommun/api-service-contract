@@ -21,12 +21,6 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
-import se.sundsvall.contract.model.enums.AddressType;
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.contract.model.enums.StakeholderRole;
-import se.sundsvall.contract.model.enums.StakeholderType;
-import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEntity;
 import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
@@ -35,6 +29,12 @@ import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.contract.model.enums.AddressType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.Status;
+import se.sundsvall.contract.model.enums.UsufructType;
 
 public final class TestFactory {
 
