@@ -51,18 +51,18 @@ class StakeholderTest {
 	@Test
 	void testBuilderMethods() {
 
-		final var type = StakeholderType.COMPANY;
-		final var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
-		final var organizationName = "Sundsvalls kommun";
-		final var organizationNumber = "212000-2411";
-		final var firstName = "Test";
-		final var lastName = "Testorsson";
-		final var personId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
-		final var phoneNumber = "0701231212";
-		final var emailAddress = "test.testorsson@test.se";
-		final var address = Address.builder().build();
+		var type = StakeholderType.COMPANY;
+		var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
+		var organizationName = "Sundsvalls kommun";
+		var organizationNumber = "212000-2411";
+		var firstName = "Test";
+		var lastName = "Testorsson";
+		var personId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
+		var phoneNumber = "0701231212";
+		var emailAddress = "test.testorsson@test.se";
+		var address = Address.builder().build();
 
-		final var stakeholder = Stakeholder.builder()
+		var stakeholder = Stakeholder.builder()
 			.withType(type.name())
 			.withRoles(roles.stream().map(StakeholderRole::name).toList())
 			.withOrganizationName(organizationName)

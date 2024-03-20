@@ -40,14 +40,14 @@ class AddressTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var type = AddressType.POSTAL_ADDRESS;
-		final var streetAddress = "Testvägen 18";
-		final var postalCode = "123 45";
-		final var town = "Sundsvall";
-		final var country = "Sverige";
-		final var attention = "Test Testorsson";
+		var type = AddressType.POSTAL_ADDRESS;
+		var streetAddress = "Testvägen 18";
+		var postalCode = "123 45";
+		var town = "Sundsvall";
+		var country = "Sverige";
+		var attention = "Test Testorsson";
 
-		final var address = Address.builder()
+		var address = Address.builder()
 			.withType(type.name())
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)

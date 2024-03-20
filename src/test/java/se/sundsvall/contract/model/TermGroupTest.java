@@ -27,12 +27,12 @@ class TermGroupTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var header = "term header";
-		final var terms = List.of(
+		var header = "term header";
+		var terms = List.of(
 			Term.builder().build(),
 				Term.builder().build());
 
-		final var termGroup = TermGroup.builder()
+		var termGroup = TermGroup.builder()
 			.withHeader(header)
 			.withTerms(terms)
 			.build();

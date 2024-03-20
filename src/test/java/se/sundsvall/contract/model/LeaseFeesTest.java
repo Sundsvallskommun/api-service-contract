@@ -28,16 +28,16 @@ class LeaseFeesTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var currency = "USD";
-		final var yearly = BigDecimal.valueOf(12.50);
-		final var monthly = BigDecimal.valueOf(1.50);
-		final var total = BigDecimal.valueOf(25);
-		final var totalAsText = "twenty five";
-		final var indexYear = 2022;
-		final var indexNumber = 5;
-		final var additionalInformation = List.of("aaa", "bbb");
+		var currency = "USD";
+		var yearly = BigDecimal.valueOf(12.50);
+		var monthly = BigDecimal.valueOf(1.50);
+		var total = BigDecimal.valueOf(25);
+		var totalAsText = "twenty five";
+		var indexYear = 2022;
+		var indexNumber = 5;
+		var additionalInformation = List.of("aaa", "bbb");
 
-		final var leaseFees = LeaseFees.builder()
+		var leaseFees = LeaseFees.builder()
 			.withCurrency(currency)
 			.withYearly(yearly)
 			.withMonthly(monthly)

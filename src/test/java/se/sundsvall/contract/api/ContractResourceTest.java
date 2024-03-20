@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 import static se.sundsvall.contract.model.enums.LandLeaseType.LEASEHOLD;
@@ -27,7 +28,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
@@ -47,7 +47,7 @@ class ContractResourceTest {
 	void getContractsByMunicipalityAndContractId() {
 		when(contractServiceMock.getContract("1984", "2024-12345")).thenReturn(LandLeaseContract.builder().build());
 
-		final var response = webTestClient.get()
+		var response = webTestClient.get()
 			.uri("/contracts/1984/2024-12345")
 			.exchange()
 			.expectStatus().isOk()
@@ -82,7 +82,6 @@ class ContractResourceTest {
 	void postContract() {
 		final var id = "2024-12345";
 		final var contract = LandLeaseContract.builder()
-			.withVersion(0)
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY.name())
@@ -94,7 +93,7 @@ class ContractResourceTest {
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
 			.build();
 
-		when(contractServiceMock.createContract(any(), any())).thenReturn(id);
+        when(contractServiceMock.createContract("1984", contract)).thenReturn(id);
 
 		webTestClient.post()
 			.uri("/contracts/1984")
@@ -111,7 +110,7 @@ class ContractResourceTest {
 
 	@Test
 	void updateContract() {
-		var landLeaseContract = TestFactory.getLandLeaseContract();
+		var landLeaseContract = createLandLeaseContract();
 
 		doNothing().when(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
 

@@ -40,27 +40,25 @@ class AttachmentTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var name = "name";
-		final var category = AttachmentCategory.CONTRACT;
-		final var mimeType = "mimeType";
-		final var file = "file";
-		final var note = "note";
-		final var extension = "extension";
+		var filename = "filename";
+		var category = AttachmentCategory.CONTRACT;
+		var mimeType = "mimeType";
+		var file = "file";
+		var note = "note";
 
-		final var attachment = Attachment.builder()
-			.withName(name)
+		var attachment = Attachment.builder()
+			.withFilename(filename)
 			.withCategory(category.name())
 			.withMimeType(mimeType)
-			.withFile(file)
+			.withContent(file)
 			.withNote(note)
-			.withExtension(extension)
 			.build();
 
 		assertThat(attachment).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(attachment.getName()).isEqualTo(name);
+		assertThat(attachment.getFilename()).isEqualTo(filename);
 		assertThat(attachment.getCategory()).isEqualTo(category.name());
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
-		assertThat(attachment.getFile()).isEqualTo(file);
+		assertThat(attachment.getContent()).isEqualTo(file);
 		assertThat(attachment.getNote()).isEqualTo(note);
 
 	}

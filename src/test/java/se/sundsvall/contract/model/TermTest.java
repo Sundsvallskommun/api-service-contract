@@ -25,10 +25,10 @@ class TermTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var termName = "some term";
-		final var termDescription = "some term description";
+		var termName = "some term";
+		var termDescription = "some term description";
 
-		final var term = Term.builder()
+		var term = Term.builder()
 			.withName(termName)
 			.withDescription(termDescription)
 			.build();

@@ -7,10 +7,10 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcl
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.LocalDate.now;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
 import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
@@ -18,7 +18,6 @@ import static se.sundsvall.contract.model.enums.Status.TERMINATED;
 import static se.sundsvall.contract.model.enums.UsufructType.FISHING;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
@@ -37,7 +37,6 @@ class LandLeaseContractEntityTest {
 	@BeforeAll
 	static void setup() {
 		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), LocalDate.class);
-		registerValueGenerator(() -> Duration.of(new Random().nextLong(), SECONDS), Duration.class);
 	}
 
 	@Test
@@ -45,20 +44,21 @@ class LandLeaseContractEntityTest {
 		assertThat(LandLeaseContractEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanHashCodeExcluding("areaData", "attachments", "stakeholders", "version", "contractId"),
-			hasValidBeanEqualsExcluding("areaData", "attachments", "stakeholders", "version", "contractId"),
-			hasValidBeanToStringExcluding("areaData", "attachments", "stakeholders", "version", "contractId")));
+			hasValidBeanHashCodeExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId"),
+			hasValidBeanEqualsExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId"),
+			hasValidBeanToStringExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId")));
 	}
 
 	@Test
 	void testBuilderMethods() {
-		final var version = 1;
-		final var status = TERMINATED;
-		final var municipalityId = "1984";
-		final var contractId = "2024-12345";
-		final var id = 1L;
-		final var caseId = 1L;
-		final var indexTerms = List.of(
+		var type = LAND_LEASE;
+		var version = 1;
+		var status = TERMINATED;
+		var municipalityId = "1984";
+		var contractId = "2024-12345";
+		var id = 1L;
+		var caseId = 1L;
+		var indexTerms = List.of(
 			TermGroup.builder()
 				.withHeader("Some index terms")
 				.withTerms(List.of(
@@ -67,8 +67,8 @@ class LandLeaseContractEntityTest {
 						.withDescription("Some description")
 						.build()))
 				.build());
-		final var description = "description";
-		final var additionalTerms = List.of(
+		var description = "description";
+		var additionalTerms = List.of(
 			TermGroup.builder()
 				.withHeader("Some additional terms")
 				.withTerms(List.of(
@@ -77,17 +77,20 @@ class LandLeaseContractEntityTest {
 						.withDescription("Some description")
 						.build()))
 				.build());
-		final var extraParameters = Map.of("someParameter", "someValue");
-		final var stakeholders = List.of(StakeholderEntity.builder().build());
-		final var attachments = List.of(AttachmentEntity.builder().build());
-		final var landLeaseType = SITELEASEHOLD;
-		final var leasehold = LeaseholdEntity.builder().build();
-		final var usufructType = FISHING;
-		final var externalReferenceId = "externalReferenceId";
-		final var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
-		final var objectIdentity = "objectIdentity";
-		final var leaseDuration = 3;
-		final var leaseFees = LeaseFees.builder()
+		var extraParameters = List.of(
+			ExtraParameterGroup.builder()
+				.withName("someExtraParameterGroup")
+				.withParameters(Map.of("someParameter", "someValue"))
+				.build());
+		var stakeholders = List.of(StakeholderEntity.builder().build());
+		var landLeaseType = SITELEASEHOLD;
+		var leasehold = LeaseholdEntity.builder().build();
+		var usufructType = FISHING;
+		var externalReferenceId = "externalReferenceId";
+		var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
+		var objectIdentity = "objectIdentity";
+		var leaseDuration = 3;
+		var leaseFees = LeaseFees.builder()
 			.withCurrency("SEK")
 			.withYearly(BigDecimal.valueOf(4350))
 			.withMonthly(BigDecimal.valueOf(375))
@@ -97,19 +100,20 @@ class LandLeaseContractEntityTest {
 			.withIndexNumber(2)
 			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
 			.build();
-		final var invoiceInterval = QUARTERLY;
-		final var invoicedIn = ADVANCE;
-		final var start = now();
-		final var end = now();
-		final var autoExtend = true;
-		final var leaseExtension = 4;
-		final var periodOfNotice = 1;
-		final var area = 1;
-		final var areaData = new FeatureCollection();
+		var invoiceInterval = QUARTERLY;
+		var invoicedIn = ADVANCE;
+		var start = now();
+		var end = now();
+		var autoExtend = true;
+		var leaseExtension = 4;
+		var periodOfNotice = 1;
+		var area = 1;
+		var areaData = new FeatureCollection();
 
-		final var contract = LandLeaseContractEntity.builder()
+		var contract = LandLeaseContractEntity.builder()
 			.withId(id)
 			.withContractId(contractId)
+			.withType(type)
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
@@ -119,7 +123,6 @@ class LandLeaseContractEntityTest {
 			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
-			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType)
 			.withLeasehold(leasehold)
 			.withUsufructType(usufructType)
@@ -144,6 +147,7 @@ class LandLeaseContractEntityTest {
 		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(contract.getId()).isEqualTo(id);
 		assertThat(contract.getContractId()).isEqualTo(contractId);
+		assertThat(contract.getType()).isEqualTo(type);
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
@@ -153,7 +157,6 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getUsufructType()).isEqualTo(usufructType);

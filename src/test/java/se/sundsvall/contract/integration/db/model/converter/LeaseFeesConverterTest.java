@@ -37,7 +37,7 @@ class LeaseFeesConverterTest {
 
     @Test
     void convertToDatabaseColumn() {
-        final var leaseFees = LeaseFees.builder()
+        var leaseFees = LeaseFees.builder()
             .withCurrency("USD")
             .withYearly(BigDecimal.valueOf(123.45))
             .withMonthly(BigDecimal.valueOf(234.56))

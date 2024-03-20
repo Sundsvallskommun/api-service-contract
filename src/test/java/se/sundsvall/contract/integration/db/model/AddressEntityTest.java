@@ -26,14 +26,14 @@ class AddressEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var type = POSTAL_ADDRESS;
-		final var streetAddress = "Testvägen 18";
-		final var postalCode = "123 45";
-		final var town = "Sundsvall";
-		final var country = "Sverige";
-		final var attention = "Test Testorsson";
+		var type = POSTAL_ADDRESS;
+		var streetAddress = "Testvägen 18";
+		var postalCode = "123 45";
+		var town = "Sundsvall";
+		var country = "Sverige";
+		var attention = "Test Testorsson";
 
-		final var address = AddressEntity.builder()
+		var address = AddressEntity.builder()
 			.withType(type)
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)
