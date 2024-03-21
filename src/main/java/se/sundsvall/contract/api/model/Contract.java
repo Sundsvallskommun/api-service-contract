@@ -18,21 +18,29 @@ import lombok.experimental.SuperBuilder;
 
 @JsonTypeInfo(
 	use = JsonTypeInfo.Id.NAME,
+	include = JsonTypeInfo.As.EXISTING_PROPERTY,
 	property = "type"
 )
 @JsonSubTypes({
-	@JsonSubTypes.Type(value = LandLeaseContract.class, name = "landLease"),
+	@JsonSubTypes.Type(value = LandLeaseContract.class, name = "LAND_LEASE")
 })
 @Data
 @SuperBuilder(setterPrefix = "with")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "Arrendeavtal")
+@Schema(description = "Contract")
 public abstract class Contract {
+
+	/*
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.ContractType}
+	 */
+	@OneOf({"landLease"})
+	@Schema(description = "Contract type. Possible values: LAND_LEASE", example = "LAND_LEASE")
+	private String type;
 
 	@Schema(description = "Contract id", example = "2024-12345", accessMode = Schema.AccessMode.READ_ONLY)
 	private String id;
 
-	@Schema(description = "Version for contract", example = "1")
+	@Schema(description = "Version for contract", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
 	private Integer version;
 
 	/*
@@ -59,6 +67,9 @@ public abstract class Contract {
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;
+
+	@ArraySchema(schema = @Schema(description = "List of attachments", accessMode = Schema.AccessMode.READ_ONLY))
+	private List<Attachment> attachments;
 
 	@Schema(description = "Whether the contract is signed by a witness")
 	private boolean signedByWitness;

@@ -55,7 +55,7 @@ public class LandLeaseContractEntity extends ContractEntity {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-		name = "land_lease_contract_property_designations",
+		name = "land_lease_contract_property_designation",
 		joinColumns = @JoinColumn(
 			name = "contract_id",
 			referencedColumnName = "id",

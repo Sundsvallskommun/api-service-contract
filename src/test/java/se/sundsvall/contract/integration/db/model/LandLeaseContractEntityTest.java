@@ -117,7 +117,6 @@ class LandLeaseContractEntityTest {
 			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
-			.withAttachments(attachments)
 			.withLandLeaseType(landLeaseType)
 			.withLeasehold(leasehold)
 			.withUsufructType(usufructType)
@@ -150,7 +149,6 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getAttachments()).isEqualTo(attachments);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getUsufructType()).isEqualTo(usufructType);

@@ -1,5 +1,6 @@
 package se.sundsvall.contract.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -12,12 +13,23 @@ import java.util.function.Consumer;
 import org.springframework.util.CollectionUtils;
 
 import se.sundsvall.contract.api.model.Address;
+import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
+import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.AttachmentEntity;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.InvoicingEntity;
+import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
+import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
+import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.enums.AddressType;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
+import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
 import se.sundsvall.contract.model.enums.LandLeaseType;
@@ -26,13 +38,6 @@ import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.UsufructType;
-import se.sundsvall.contract.integration.db.model.AddressEntity;
-import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.integration.db.model.InvoicingEntity;
-import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
-import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
-import se.sundsvall.contract.integration.db.model.StakeholderEntity;
-import se.sundsvall.contract.model.LeaseFees;
 
 public final class ContractMapper {
 
@@ -49,6 +54,7 @@ public final class ContractMapper {
 
 		contract.setId(contractEntity.getId());
 		contract.setVersion(contractEntity.getVersion());
+		contract.setType(ofNullable(contractEntity.getType()).map(ContractType::name).orElse(null));
 		contract.setStatus(ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null));
 		contract.setMunicipalityId(contractEntity.getMunicipalityId());
 		contract.setCaseId(contractEntity.getCaseId());
@@ -151,6 +157,15 @@ public final class ContractMapper {
 			.build();
 	}
 
+	private static Attachment toDto(final AttachmentEntity attachmentEntity) {
+		return Attachment.builder()
+			.withCategory(ofNullable(attachmentEntity.getCategory()).map(AttachmentCategory::name).orElse(null))
+			.withFilename(attachmentEntity.getFilename())
+			.withMimeType(attachmentEntity.getMimeType())
+			.withNote(attachmentEntity.getNote())
+			.build();
+	}
+
 	static ContractEntity toEntity(final String municipalityId, final Contract contract) {
 		final LandLeaseContractEntity contractEntity;
 
@@ -160,6 +175,7 @@ public final class ContractMapper {
 			throw new IllegalArgumentException("Unknown contract type: " + contract.getClass());
 		}
 		contractEntity.setVersion(contract.getVersion());
+		contractEntity.setType(ofNullable(contract.getType()).map(ContractType::valueOf).orElse(null));
 		contractEntity.setStatus(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null));
 		contractEntity.setMunicipalityId(municipalityId);
 		contractEntity.setCaseId(contract.getCaseId());
@@ -239,21 +255,30 @@ public final class ContractMapper {
 			.build();
 	}
 
+	private static AttachmentEntity toEntity(final Attachment attachment) {
+		return AttachmentEntity.builder()
+			.withCategory(Optional.of(AttachmentCategory.valueOf(attachment.getCategory())).orElse(null))
+			.withFilename(attachment.getFilename())
+			.withMimeType(attachment.getMimeType())
+			.withNote(attachment.getNote())
+			.withContent(attachment.getContent().getBytes(UTF_8))
+			.build();
+	}
+
 	static ContractEntity updateEntity(final ContractEntity entity, final Contract contract) {
-		setPropertyIfNonNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
+		setPropertyUnlessNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
 			.map(ContractMapper::toEntity)
 			.toList())));
-
-		setPropertyIfNonNull(contract.getIndexTerms(), entity::setIndexTerms);
-		setPropertyIfNonNull(contract.getDescription(), entity::setDescription);
-		setPropertyIfNonNull(contract.getAdditionalTerms(), entity::setAdditionalTerms);
-		setPropertyIfNonNull(contract.getVersion(), entity::setVersion);
-		setPropertyIfNonNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
-		setPropertyIfNonNull(contract.getMunicipalityId(), entity::setMunicipalityId);
-		setPropertyIfNonNull(contract.getCaseId(), entity::setCaseId);
-		setPropertyIfNonNull(contract.isSignedByWitness(), entity::setSignedByWitness);
-		setPropertyIfNonNull(contract.getMunicipalityId(), entity::setMunicipalityId);
-		setPropertyIfNonNull(contract.getExtraParameters(), entity::setExtraParameters);
+		setPropertyUnlessNull(contract.getIndexTerms(), entity::setIndexTerms);
+		setPropertyUnlessNull(contract.getDescription(), entity::setDescription);
+		setPropertyUnlessNull(contract.getAdditionalTerms(), entity::setAdditionalTerms);
+		setPropertyUnlessNull(contract.getVersion(), entity::setVersion);
+		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
+		setPropertyUnlessNull(contract.getMunicipalityId(), entity::setMunicipalityId);
+		setPropertyUnlessNull(contract.getCaseId(), entity::setCaseId);
+		setPropertyUnlessNull(contract.isSignedByWitness(), entity::setSignedByWitness);
+		setPropertyUnlessNull(contract.getMunicipalityId(), entity::setMunicipalityId);
+		setPropertyUnlessNull(contract.getExtraParameters(), entity::setExtraParameters);
 
 		if (entity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
 			contract instanceof final LandLeaseContract landLeaseContract) {
@@ -264,40 +289,40 @@ public final class ContractMapper {
 
 	private static void updateEntity(final LeaseholdEntity entity, final Leasehold leasehold) {
 		if (nonNull(leasehold)) {
-			setPropertyIfNonNull(LeaseholdType.valueOf(leasehold.getPurpose()), entity::setPurpose);
-			setPropertyIfNonNull(leasehold.getDescription(), entity::setDescription);
+			setPropertyUnlessNull(LeaseholdType.valueOf(leasehold.getPurpose()), entity::setPurpose);
+			setPropertyUnlessNull(leasehold.getDescription(), entity::setDescription);
 		}
 	}
 
 	private static void updateEntity(final LandLeaseContractEntity entity, final LandLeaseContract contract) {
-		setPropertyIfNonNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
-		setPropertyIfNonNull(ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null), entity::setLandLeaseType);
-		setPropertyIfNonNull(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null), entity::setUsufructType);
-		setPropertyIfNonNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
-		setPropertyIfNonNull(contract.getPropertyDesignations(), entity::setPropertyDesignations);
-		setPropertyIfNonNull(contract.getObjectIdentity(), entity::setObjectIdentity);
-		setPropertyIfNonNull(contract.getLeaseDuration(), entity::setLeaseDuration);
-		setPropertyIfNonNull(contract.getLeaseFees(), entity::setLeaseFees);
-		setPropertyIfNonNull(contract.getInvoicing(), invoicing -> entity.setInvoicing(InvoicingEntity.builder()
+		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
+		setPropertyUnlessNull(ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null), entity::setLandLeaseType);
+		setPropertyUnlessNull(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null), entity::setUsufructType);
+		setPropertyUnlessNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
+		setPropertyUnlessNull(contract.getPropertyDesignations(), entity::setPropertyDesignations);
+		setPropertyUnlessNull(contract.getObjectIdentity(), entity::setObjectIdentity);
+		setPropertyUnlessNull(contract.getLeaseDuration(), entity::setLeaseDuration);
+		setPropertyUnlessNull(contract.getLeaseFees(), entity::setLeaseFees);
+		setPropertyUnlessNull(contract.getInvoicing(), invoicing -> entity.setInvoicing(InvoicingEntity.builder()
 			.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
 			.withInvoicedIn(ofNullable(invoicing.getInvoicedIn()).map(InvoicedIn::valueOf).orElse(null))
 			.build()));
-		setPropertyIfNonNull(contract.getStart(), entity::setStart);
-		setPropertyIfNonNull(contract.getEnd(), entity::setEnd);
-		setPropertyIfNonNull(contract.getAutoExtend(), entity::setAutoExtend);
-		setPropertyIfNonNull(contract.getLeaseExtension(), entity::setLeaseExtension);
-		setPropertyIfNonNull(contract.getPeriodOfNotice(), entity::setPeriodOfNotice);
-		setPropertyIfNonNull(contract.getArea(), entity::setArea);
-		setPropertyIfNonNull(contract.getAreaData(), entity::setAreaData);
+		setPropertyUnlessNull(contract.getStart(), entity::setStart);
+		setPropertyUnlessNull(contract.getEnd(), entity::setEnd);
+		setPropertyUnlessNull(contract.getAutoExtend(), entity::setAutoExtend);
+		setPropertyUnlessNull(contract.getLeaseExtension(), entity::setLeaseExtension);
+		setPropertyUnlessNull(contract.getPeriodOfNotice(), entity::setPeriodOfNotice);
+		setPropertyUnlessNull(contract.getArea(), entity::setArea);
+		setPropertyUnlessNull(contract.getAreaData(), entity::setAreaData);
 
 		if(contract.getLeasehold() != null && !CollectionUtils.isEmpty(contract.getLeasehold().getAdditionalInformation())) {
-			setPropertyIfNonNull(contract.getLeasehold().getAdditionalInformation(), entity.getLeasehold()::setAdditionalInformation);
+			setPropertyUnlessNull(contract.getLeasehold().getAdditionalInformation(), entity.getLeasehold()::setAdditionalInformation);
 		}
 
 		updateEntity(entity.getLeasehold(), contract.getLeasehold());
 	}
 
-	private static <T> void setPropertyIfNonNull(final T sourceValue, final Consumer<T> setter) {
+	private static <T> void setPropertyUnlessNull(final T sourceValue, final Consumer<T> setter) {
 		if (nonNull(sourceValue)) {
 			setter.accept(sourceValue);
 		}
