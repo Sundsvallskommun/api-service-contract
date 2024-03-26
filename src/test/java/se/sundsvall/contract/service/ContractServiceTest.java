@@ -3,7 +3,6 @@ package se.sundsvall.contract.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -140,7 +139,7 @@ class ContractServiceTest {
 
 	@Test
 	void testDeleteContract() {
-		when(mockContractRepository.existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
+		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
 		contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 
 		verify(mockContractRepository).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
@@ -149,12 +148,12 @@ class ContractServiceTest {
 
 	@Test
 	void testDeleteContract_shouldThrow404_whenNoMatch() {
-		when(mockContractRepository.existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
+		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID));
 
-		verify(mockContractRepository).existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 	}
 }

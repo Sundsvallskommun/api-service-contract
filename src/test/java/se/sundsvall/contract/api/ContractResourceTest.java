@@ -133,7 +133,7 @@ class ContractResourceTest {
 		webTestClient.delete()
 			.uri("/contracts/1984/2024-12345")
 			.exchange()
-			.expectStatus().isOk()
+			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		verify(contractServiceMock).deleteContract("1984", "2024-12345");

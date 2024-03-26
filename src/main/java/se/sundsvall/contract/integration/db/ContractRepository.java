@@ -14,6 +14,6 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long>,
 
 	Optional<ContractEntity> findByMunicipalityIdAndContractId(String municipalityId, String contractId);
 	Optional<ContractEntity> findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(String municipalityId, String contractId);
-	boolean existsContractEntityByMunicipalityIdAndContractId(String municipalityId, String contractId);
+	boolean existsByMunicipalityIdAndContractId(String municipalityId, String contractId);
 	void deleteAllByMunicipalityIdAndContractId(String municipalityId, String contractId);
 }

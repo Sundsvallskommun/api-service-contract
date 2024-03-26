@@ -53,7 +53,7 @@ public class ContractService {
 	}
 
 	public void deleteContract(String municipalityId, String contractId) {
-		if(contractRepository.existsContractEntityByMunicipalityIdAndContractId(municipalityId, contractId)) {
+		if(contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
 			contractRepository.deleteAllByMunicipalityIdAndContractId(municipalityId, contractId);
 		} else {
 			throw Problem.valueOf(Status.NOT_FOUND);

@@ -13,9 +13,7 @@ import jakarta.persistence.PersistenceException;
 
 public class ContractIdGenerator implements BeforeExecutionGenerator {
 
-	private static final String GENERATE_ID_QUERY = """
-        SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))
-        """;
+	private static final String GENERATE_ID_QUERY = "SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))";
 
 	@Override
 	public Object generate(final SharedSessionContractImplementor session, final Object owner, final Object currentValue, final EventType eventType) {
