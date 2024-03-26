@@ -3,7 +3,7 @@ package se.sundsvall.contract.integration.db.specification;
 import static java.util.function.Predicate.not;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static se.sundsvall.contract.integration.db.model.ContractEntity_.ID;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRACT_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.END;
@@ -47,7 +47,7 @@ public final class ContractSpecifications {
 			return EMPTY;
 		}
 
-		return (root, query, cb) -> cb.equal(root.get(ID), contractId);
+		return (root, query, cb) -> cb.equal(root.get(CONTRACT_ID), contractId);
 	}
 
 	private static Specification<ContractEntity> withPersonId(final String personId) {

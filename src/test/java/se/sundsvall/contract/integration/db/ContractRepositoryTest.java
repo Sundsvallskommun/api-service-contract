@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.model.enums.LandLeaseType;
 
@@ -34,11 +33,12 @@ class ContractRepositoryTest {
 	@Test
 	void createContract() {
 		final var entity = getLandLeaseContractEntity();
+		entity.getStakeholders().getFirst().setId(null);    // Clear the id
 		final var savedEntity = contractRepository.save(entity);
 
 		final var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();
-		assertThat(result.get().getId()).isEqualTo("2024-12345");
+		assertThat(result.get().getId()).isEqualTo(3);
 	}
 
 	@Test
@@ -54,37 +54,18 @@ class ContractRepositoryTest {
 
 	@Test
 	void findByMunicipalityIdAndId() {
-		assertThat(contractRepository.findByMunicipalityIdAndId("1984", "2024-12345")).isPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
 	}
 
 	@Test
 	void findByMunicipalityIdAndIdNotFound() {
-		assertThat(contractRepository.findByMunicipalityIdAndId("1984", "2024-543210")).isNotPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-543210")).isNotPresent();
 	}
 
 	@Test
-	void testUpdate() {
-		final var entity = TestFactory.getLandLeaseContractEntity();
-
-		final var persistedEntity = contractRepository.saveAndFlush(entity);
-
-		assertThat(persistedEntity).usingRecursiveComparison().isEqualTo(entity);
-		assertThat(persistedEntity.getId()).isNotBlank();
-
-		persistedEntity.setDescription("Updated description");
-
-		final var updatedEntity = contractRepository.saveAndFlush(persistedEntity);
-
-		assertThat(updatedEntity).usingRecursiveComparison().isEqualTo(persistedEntity);
-		assertThat(updatedEntity.getDescription()).isEqualTo("Updated description");
-	}
-
-	@Test
-	void testDelete() {
-		assertThat(contractRepository.findById("2024-23456")).isPresent();
-
-		contractRepository.deleteById("2024-23456");
-
-		assertThat(contractRepository.findById("2024-23456")).isNotPresent();
+	void testDeleteAllByMunicipalityIdAndContractId() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
+		contractRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isNotPresent();
 	}
 }

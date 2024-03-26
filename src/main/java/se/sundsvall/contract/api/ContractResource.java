@@ -14,6 +14,7 @@ import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,7 +77,7 @@ class ContractResource {
 		}
 	)
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
-	ResponseEntity<Void> postLandLeaseContract(
+	ResponseEntity<Void> createContract(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@RequestBody @Valid final Contract contract) {
 		final var id = service.createContract(municipalityId, contract);
@@ -88,8 +89,14 @@ class ContractResource {
 	@Operation(
 		summary = "Get a list of contracts",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "Ok", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "404", description = "Not Found")
+			@ApiResponse(
+				responseCode = "200",
+				description = "Ok",
+				useReturnTypeSchema = true),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class)))
 		}
 	)
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
@@ -104,29 +111,59 @@ class ContractResource {
 	@Operation(
 		summary = "Get a contract",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "Ok", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "404", description = "Not Found")
+			@ApiResponse(
+				responseCode = "200",
+				description = "Ok",
+				useReturnTypeSchema = true),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@GetMapping(path = "/{id}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{contractId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Contract> getContractById(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable("id") final String id) {
-		return ok(service.getContract(municipalityId, id));
+		@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId) {
+		return ok(service.getContract(municipalityId, contractId));
 	}
 
 	@Operation(
 		summary = "Update a contract",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "Ok"),
-			@ApiResponse(responseCode = "404", description = "Not Found")
+			@ApiResponse(
+				responseCode = "200",
+				description = "Ok"),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@PutMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@PutMapping(path = "/{contractId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Void> updateContract(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable("id") final String id,
+		@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId,
 		@RequestBody @Valid final Contract contract) {
 
-		service.updateContract(municipalityId, id, contract);
+		service.updateContract(municipalityId, contractId, contract);
+		return ok().build();
+	}
+
+	@Operation(
+		summary = "Delete a contract",
+		responses = {
+			@ApiResponse(
+				responseCode = "202",
+				description = "Accepted"),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class)))
+		})
+	@DeleteMapping(path = "/{contractId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	ResponseEntity<Void> deleteContract(
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+		@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId) {
+		service.deleteContract(municipalityId, contractId);
 		return ok().build();
 	}
 }

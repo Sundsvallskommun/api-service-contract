@@ -10,7 +10,10 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @CircuitBreaker(name = "contractRepository")
-public interface ContractRepository extends JpaRepository<ContractEntity, String>, JpaSpecificationExecutor<ContractEntity> {
+public interface ContractRepository extends JpaRepository<ContractEntity, Long>, JpaSpecificationExecutor<ContractEntity> {
 
-    Optional<ContractEntity> findByMunicipalityIdAndId(String municipalityId, String id);
+	Optional<ContractEntity> findByMunicipalityIdAndContractId(String municipalityId, String contractId);
+	Optional<ContractEntity> findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(String municipalityId, String contractId);
+	boolean existsContractEntityByMunicipalityIdAndContractId(String municipalityId, String contractId);
+	void deleteAllByMunicipalityIdAndContractId(String municipalityId, String contractId);
 }

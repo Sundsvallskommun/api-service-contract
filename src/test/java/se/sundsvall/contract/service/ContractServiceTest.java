@@ -1,7 +1,9 @@
 package se.sundsvall.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -25,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.ThrowableProblem;
 
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Invoicing;
@@ -37,10 +40,13 @@ import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 class ContractServiceTest {
 
 	@Mock
-	private ContractRepository contractRepository;
+	private ContractRepository mockContractRepository;
 
 	@InjectMocks
 	private ContractService contractService;
+
+	private static final String MUNICIPALITY_ID = "1984";
+	private static final String CONTRACT_ID = "2024-12345";
 
 	@Test
 	void createContract() {
@@ -55,23 +61,23 @@ class ContractServiceTest {
 			.withStatus(ACTIVE.name())
 			.build();
 
-		when(contractRepository.save(any(LandLeaseContractEntity.class)))
-			.thenReturn(LandLeaseContractEntity.builder().withId("2024-12345").build());
+		when(mockContractRepository.save(any(LandLeaseContractEntity.class)))
+			.thenReturn(LandLeaseContractEntity.builder().withContractId(CONTRACT_ID).build());
 
-		final var result = contractService.createContract("1984", contract);
+		final var result = contractService.createContract(MUNICIPALITY_ID, contract);
 
-		assertThat(result).isEqualTo("2024-12345");
+		assertThat(result).isEqualTo(CONTRACT_ID);
 
-		verify(contractRepository).save(any(LandLeaseContractEntity.class));
-		verifyNoMoreInteractions(contractRepository);
+		verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
+		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
 	void getContract() {
 		final var entity = getLandLeaseContractEntity();
-		when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(String.class))).thenReturn(Optional.of(entity));
+		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.of(entity));
 
-		final var result = contractService.getContract("1984", "2024-12345");
+  		final var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID);
 
 		assertThat(result).isNotNull();
 		assertThat(result)
@@ -79,19 +85,30 @@ class ContractServiceTest {
 			.withEnumStringComparison()
 			.isEqualTo(entity);
 
-		verify(contractRepository).findByMunicipalityIdAndId("1984", "2024-12345");
-		verifyNoMoreInteractions(contractRepository);
+		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+		verifyNoMoreInteractions(mockContractRepository);
+	}
+
+	@Test
+	void testGetContract_shouldThrow404_whenNoMatch() {
+		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.empty());
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID));
+
+		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
 	void getContracts() {
 		final var entity = getLandLeaseContractEntity();
-		when(contractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
+		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(entity));
 
 		final var request = new ContractRequest("contractId", "propertyDesignation", "organizationNumber",
 			List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId", LocalDate.of(2023, 10, 10), SITELEASEHOLD.name());
 
-		final var result = contractService.getContracts("1984", request);
+		final var result = contractService.getContracts(MUNICIPALITY_ID, request);
 
 		assertThat(result).isNotNull().hasSize(1).element(0).isNotNull();
 		assertThat(result.getFirst())
@@ -99,8 +116,8 @@ class ContractServiceTest {
 			.withEnumStringComparison()
 			.isEqualTo(entity);
 
-		verify(contractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
-		verifyNoMoreInteractions(contractRepository);
+		verify(mockContractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
+		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
@@ -110,14 +127,34 @@ class ContractServiceTest {
 			mapper.when(() -> ContractMapper.updateEntity(any(LandLeaseContractEntity.class), any(LandLeaseContract.class))).thenCallRealMethod();
 
 			final var entity = getLandLeaseContractEntity();
-			when(contractRepository.findByMunicipalityIdAndId(any(String.class), any(String.class))).thenReturn(Optional.of(entity));
+			when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(entity));
 			final var contract = getLandLeaseContract();
 
 			contractService.updateContract("1984", "2024-12345", contract);
 
-			verify(contractRepository).findByMunicipalityIdAndId("1984", "2024-12345");
-			verify(contractRepository).save(any(LandLeaseContractEntity.class));
-			verifyNoMoreInteractions(contractRepository);
+			verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+			verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
+			verifyNoMoreInteractions(mockContractRepository);
 		}
+	}
+
+	@Test
+	void testDeleteContract() {
+		when(mockContractRepository.existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
+		contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
+
+		verify(mockContractRepository).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
+		verifyNoMoreInteractions(mockContractRepository);
+	}
+
+	@Test
+	void testDeleteContract_shouldThrow404_whenNoMatch() {
+		when(mockContractRepository.existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID));
+
+		verify(mockContractRepository).existsContractEntityByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
+		verifyNoMoreInteractions(mockContractRepository);
 	}
 }

@@ -44,7 +44,7 @@ class ContractResourceTest {
 	private ContractService contractServiceMock;
 
 	@Test
-	void getContractsById() {
+	void getContractsByMunicipalityAndContractId() {
 		when(contractServiceMock.getContract("1984", "2024-12345")).thenReturn(LandLeaseContract.builder().build());
 
 		final var response = webTestClient.get()
@@ -62,7 +62,7 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void getContracts() {
+	void getAllContractsOnAMunicipalityId() {
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
 				.queryParam("personId", "1")
@@ -79,7 +79,7 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void postContracts() {
+	void postContract() {
 		final var id = "2024-12345";
 		final var contract = LandLeaseContract.builder()
 			.withVersion(0)
@@ -123,6 +123,20 @@ class ContractResourceTest {
 			.expectBody().isEmpty();
 
 		verify(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void testDeleteContract() {
+		doNothing().when(contractServiceMock).deleteContract("1984", "2024-12345");
+
+		webTestClient.delete()
+			.uri("/contracts/1984/2024-12345")
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody().isEmpty();
+
+		verify(contractServiceMock).deleteContract("1984", "2024-12345");
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
