@@ -1,8 +1,8 @@
 {
 	"type": "landLease",
-	"id": "2024-12345",
+	"contractId": "2024-12345",
 	"version": 1,
-	"status": "ACTIVE",
+	"status": "DRAFT",
 	"municipalityId": "1984",
 	"caseId": 1,
 	"indexTerms": [],

@@ -1,35 +1,36 @@
 
 create table attachment (
-    id bigint not null auto_increment,
+    category enum ('CONTRACT','OTHER'),
     extension varchar(255),
     file varchar(255),
+    id bigint not null auto_increment,
     mime_type varchar(255),
     name varchar(255),
     note varchar(255),
-    category enum ('CONTRACT','OTHER'),
     primary key (id)
 ) engine=InnoDB;
 
 create table contract (
-    signed_by_witness bit,
-    version integer,
-    case_id bigint,
     additional_terms varchar(255),
-    description varchar(255),
-    id varchar(255) not null,
+    case_id bigint,
+    contract_id varchar(10),
+    description varchar(4096),
+    id bigint not null auto_increment,
     index_terms varchar(255),
     municipality_id varchar(255),
+    signed_by_witness bit,
     status enum ('ACTIVE','DRAFT','TERMINATED'),
+    version integer,
     primary key (id)
 ) engine=InnoDB;
 
 create table contract_attachments (
     attachments_id bigint not null,
-    contract_entity_id varchar(255) not null
+    contract_entity_id bigint not null
 ) engine=InnoDB;
 
 create table contract_extra_parameter (
-    contract_id varchar(255) not null,
+    contract_id bigint not null,
     parameter_key varchar(255) not null,
     parameter_value varchar(255) not null,
     primary key (contract_id, parameter_key)
@@ -37,7 +38,7 @@ create table contract_extra_parameter (
 
 create table contract_stakeholders (
     stakeholders_id bigint not null,
-    contract_entity_id varchar(255) not null
+    contract_entity_id bigint not null
 ) engine=InnoDB;
 
 create table land_lease_contract (
@@ -49,7 +50,7 @@ create table land_lease_contract (
     period_of_notice integer,
     start date,
     external_reference_id varchar(255),
-    id varchar(255) not null,
+    id bigint not null,
     lease_fees varchar(255),
     leasehold_description varchar(255),
     object_identity varchar(255),
@@ -64,11 +65,11 @@ create table land_lease_contract (
 
 create table land_lease_contract_leasehold_additional_information (
     additional_information varchar(255),
-    land_lease_contract_id varchar(255) not null
+    land_lease_contract_id bigint not null
 ) engine=InnoDB;
 
 create table land_lease_contract_property_designations (
-    contract_id varchar(255) not null,
+    contract_id bigint not null,
     property_designations varchar(255)
 ) engine=InnoDB;
 
@@ -95,6 +96,9 @@ create table stakeholder_roles (
     stakeholder_entity_id bigint not null,
     role enum ('BUYER','CONTACT_PERSON','GRANTOR','LAND_OWNER','LEASE_HOLDER','POWER_OF_ATTORNEY_CHECK','POWER_OF_ATTORNEY_ROLE','SELLER','SIGNATORY')
 ) engine=InnoDB;
+
+alter table if exists contract
+    add constraint uq_contract_contract_id_version unique (contract_id, version);
 
 alter table if exists contract_attachments
     add constraint uq_contract_attachments_attachments_id unique (attachments_id);
@@ -152,3 +156,5 @@ alter table if exists stakeholder_roles
     add constraint fk_stakeholder_roles_stakeholder_entity_id
         foreign key (stakeholder_entity_id)
             references stakeholder (id);
+
+CREATE SEQUENCE IF NOT EXISTS `contract_id_seq` START WITH 1 INCREMENT BY 1;

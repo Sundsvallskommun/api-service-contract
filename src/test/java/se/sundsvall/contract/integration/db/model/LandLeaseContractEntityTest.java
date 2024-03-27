@@ -45,9 +45,9 @@ class LandLeaseContractEntityTest {
 		assertThat(LandLeaseContractEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanHashCodeExcluding("areaData", "attachments", "stakeholders"),
-			hasValidBeanEqualsExcluding("areaData", "attachments", "stakeholders"),
-			hasValidBeanToStringExcluding("areaData", "attachments", "stakeholders")));
+			hasValidBeanHashCodeExcluding("areaData", "attachments", "stakeholders", "version", "contractId"),
+			hasValidBeanEqualsExcluding("areaData", "attachments", "stakeholders", "version", "contractId"),
+			hasValidBeanToStringExcluding("areaData", "attachments", "stakeholders", "version", "contractId")));
 	}
 
 	@Test
@@ -55,7 +55,8 @@ class LandLeaseContractEntityTest {
 		final var version = 1;
 		final var status = TERMINATED;
 		final var municipalityId = "1984";
-		final var id = "2024-12345";
+		final var contractId = "2024-12345";
+		final var id = 1L;
 		final var caseId = 1L;
 		final var indexTerms = List.of(
 			TermGroup.builder()
@@ -108,6 +109,7 @@ class LandLeaseContractEntityTest {
 
 		final var contract = LandLeaseContractEntity.builder()
 			.withId(id)
+			.withContractId(contractId)
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
@@ -141,6 +143,7 @@ class LandLeaseContractEntityTest {
 
 		assertThat(contract).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(contract.getId()).isEqualTo(id);
+		assertThat(contract.getContractId()).isEqualTo(contractId);
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
@@ -174,8 +177,6 @@ class LandLeaseContractEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LandLeaseContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness");
+		assertThat(LandLeaseContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version");
 	}
-
-
 }

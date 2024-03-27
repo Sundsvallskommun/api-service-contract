@@ -31,9 +31,9 @@ class ContractMapperTest {
 
 		final var result = ContractMapper.toEntity("1984", dto);
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments", "contractId", "version");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId")
+			.ignoringFields("id", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId", "version")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
@@ -45,9 +45,9 @@ class ContractMapperTest {
 
 		final var result = ContractMapper.updateEntity(entity, dto);
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "attachments", "contractId");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("attachments", "id", "stakeholders.id", "leaseFees.landLeaseContractId")
+			.ignoringFields("attachments", "id", "stakeholders.id", "leaseFees.landLeaseContractId", "contractId")
 			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
@@ -70,7 +70,7 @@ class ContractMapperTest {
 		final var result = ContractMapper.toEntity("1984", dto);
 
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "municipalityId", "attachments")
+			.ignoringFields("id", "municipalityId", "attachments", "version")
 			.isEqualTo(dto);
 	}
 
@@ -82,7 +82,7 @@ class ContractMapperTest {
 		final var result = ContractMapper.updateEntity(entity, dto);
 
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments")
+			.ignoringFields("id", "attachments", "version")
 			.isEqualTo(dto);
 	}
 }
