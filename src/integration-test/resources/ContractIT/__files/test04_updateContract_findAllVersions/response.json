@@ -2,72 +2,96 @@
 	{
 		"type": "landLease",
 		"contractId": "2024-12345",
-		"version": 1,
+		"version": 2,
 		"status": "DRAFT",
 		"municipalityId": "1984",
-		"caseId": 1,
-		"indexTerms": [],
-		"description": "someDescription",
-		"additionalTerms": [],
+		"caseId": 666,
+		"indexTerms": [
+			{
+				"header": "More General Terms",
+				"terms": [
+					{
+						"description": "In general the conditions 2 are now...",
+						"term": "General Conditions 2"
+					}
+				]
+			}
+		],
+		"description": "some other description",
+		"additionalTerms": [
+			{
+				"header": "Extraordinary Terms 2",
+				"terms": [
+					{
+						"description": "Unless something extraordinary has happened...",
+						"term": "Exceptions"
+					}
+				]
+			}
+		],
 		"stakeholders": [
 			{
-				"type": "PERSON",
+				"type": "COMPANY",
 				"roles": [
-					"SIGNATORY"
+					"SELLER"
 				],
-				"organizationName": "someOrganizationName",
-				"organizationNumber": "771122-1234",
-				"firstName": "someFirstName",
-				"lastName": "someLastName",
-				"personId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
-				"phoneNumber": "somePhoneNumber",
-				"emailAddress": "someEmail",
+				"organizationName": "another org",
+				"organizationNumber": "771122-2345",
+				"firstName": "Donald",
+				"lastName": "Duck",
+				"personId": "4a29b325-4b8f-41e9-927d-946ef3953e99",
+				"phoneNumber": "1234567890",
+				"emailAddress": "donald.duck@sundsvall.se",
 				"address": {
-					"type": "POSTAL_ADDRESS",
-					"streetAddress": "someStreetAddress",
-					"postalCode": "12345",
-					"town": "someTown",
+					"type": "BILLING_ADDRESS",
+					"streetAddress": "another street",
+					"postalCode": "54321",
+					"town": "Ducktown",
 					"country": "SE",
-					"attention": "someAttention"
+					"attention": "No Attention"
 				}
 			}
 		],
 		"signedByWitness": true,
-		"extraParameters": {},
-		"landLeaseType": "LEASEHOLD",
+		"extraParameters": {
+			"legalReference": "Paragraph §3.2.1"
+		},
+		"landLeaseType": "SITELEASEHOLD",
 		"leasehold": {
-			"purpose": "AGRICULTURE",
-			"description": "SomeLeaseholdDescription",
+			"purpose": "APARTMENT",
+			"description": "anotherLeaseholdDescription",
 			"additionalInformation": [
-				"Some additional information"
+				"another additional information when posting",
+				"More other information when posting"
 			]
 		},
-		"usufructType": "HUNTING",
-		"externalReferenceId": "MK-TEST0001",
+		"usufructType": "FISHING",
+		"externalReferenceId": "MK-TEST0009",
 		"propertyDesignations": [
-			"SUNDSVALL NORRMALM 1:1"
+			"SUNDSVALL NORRMALM 678:1",
+			"SUNDSVALL NORRMALM 987:1"
 		],
-		"objectIdentity": "someObjectIdentity",
-		"leaseDuration": 2,
+		"objectIdentity": "anotherObjectIdentity",
+		"leaseDuration": 5,
 		"leaseFees": {
 			"currency": "SEK",
-			"yearly": 234.56,
-			"monthly": 123.45,
-			"total": 500,
-			"totalAsText": "five hundred",
-			"indexYear": 2021,
-			"indexNumber": 2,
+			"yearly": 2814.72,
+			"monthly": 234.56,
+			"total": 1172.8,
+			"totalAsText": "eleven hundered seventy two and 80/100 SEK",
+			"indexYear": 2022,
+			"indexNumber": 3,
 			"additionalInformation": [
-				"someAdditionalInfo1",
-				"someAdditionalInfo2"
+				"anotherAdditionalInfo1",
+				"anotherAdditionalInfo2"
 			]
 		},
 		"invoicing": {
-			"invoiceInterval": "QUARTERLY",
-			"invoicedIn": "ADVANCE"
+			"invoiceInterval": "MONTHLY",
+			"invoicedIn": "ARREARS"
 		},
-		"start": "2023-10-02",
-		"end": "2023-10-10",
+		"start": "2024-05-02",
+		"end": "2024-10-02",
 		"autoExtend": true,
 		"leaseExtension": 1,
 		"periodOfNotice": 2,

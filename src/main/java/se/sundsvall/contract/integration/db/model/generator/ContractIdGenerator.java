@@ -1,38 +1,44 @@
 package se.sundsvall.contract.integration.db.model.generator;
 
-import java.util.Properties;
+import java.sql.SQLException;
+import java.util.EnumSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.type.Type;
+import org.hibernate.generator.BeforeExecutionGenerator;
+import org.hibernate.generator.EventType;
+import org.hibernate.generator.EventTypeSets;
 
-public class ContractIdGenerator implements IdentifierGenerator {
+import jakarta.persistence.PersistenceException;
 
-    private static final String CREATE_SEQUENCE_QUERY_TEMPLATE = """
-        CREATE SEQUENCE IF NOT EXISTS `%s` START WITH 1 INCREMENT BY 1
-        """;
-    private static final String GENERATE_ID_QUERY_TEMPLATE = """
-        SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `%s`, %d, 0))
-        """;
+public class ContractIdGenerator implements BeforeExecutionGenerator {
 
-    private String createSequenceQuery;
-    private String generateIdQuery;
+	private static final String GENERATE_ID_QUERY = "SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))";
 
-    @Override
-    public Object generate(final SharedSessionContractImplementor session, final Object obj) {
-        session.createNativeMutationQuery(createSequenceQuery).executeUpdate();
+	@Override
+	public Object generate(final SharedSessionContractImplementor session, final Object owner, final Object currentValue, final EventType eventType) {
+		// Don't update if already set and non-blank
+		if (currentValue != null && StringUtils.isNotBlank(currentValue.toString())) {
+			return currentValue;
+		}
 
-        return session.createNativeQuery(generateIdQuery, String.class).getSingleResult();
-    }
+		var statementPreparer = session.getJdbcCoordinator().getStatementPreparer();
 
-    @Override
-    public void configure(final Type type, final Properties properties,
-            final ServiceRegistry serviceRegistry) {
-        var sequenceName = properties.getProperty("sequenceName", "contract_id_seq");
-        var length = Integer.parseInt(properties.getProperty("length", "5"));
+		try (var ps = statementPreparer.prepareStatement(GENERATE_ID_QUERY)) {
+			var resultSet = ps.executeQuery();
 
-        createSequenceQuery = CREATE_SEQUENCE_QUERY_TEMPLATE.formatted(sequenceName);
-        generateIdQuery = GENERATE_ID_QUERY_TEMPLATE.formatted(sequenceName, length);
-    }
+			if (!resultSet.next()) {
+				throw new SQLException("Unable to generate contract id");
+			}
+
+			return resultSet.getString(1);
+		} catch (SQLException e) {
+			throw new PersistenceException("Contract id generation failed", e);
+		}
+	}
+
+	@Override
+	public EnumSet<EventType> getEventTypes() {
+		return EventTypeSets.INSERT_ONLY;
+	}
 }

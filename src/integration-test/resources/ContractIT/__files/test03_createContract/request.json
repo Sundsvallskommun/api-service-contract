@@ -1,7 +1,6 @@
 {
   "type": "landLease",
-  "version": 1,
-  "status": "ACTIVE",
+  "status": "DRAFT",
   "municipalityId": "1984",
   "caseId": 666,
 	"indexTerms": [

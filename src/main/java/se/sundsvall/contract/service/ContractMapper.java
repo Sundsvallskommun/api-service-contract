@@ -17,6 +17,13 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Stakeholder;
+import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.InvoicingEntity;
+import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
+import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
+import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.enums.AddressType;
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
@@ -26,13 +33,6 @@ import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.UsufructType;
-import se.sundsvall.contract.integration.db.model.AddressEntity;
-import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.integration.db.model.InvoicingEntity;
-import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
-import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
-import se.sundsvall.contract.integration.db.model.StakeholderEntity;
-import se.sundsvall.contract.model.LeaseFees;
 
 public final class ContractMapper {
 
@@ -47,7 +47,7 @@ public final class ContractMapper {
 			throw new IllegalArgumentException("Unknown contract type: " + contractEntity.getClass());
 		}
 
-		contract.setId(contractEntity.getId());
+		contract.setContractId(contractEntity.getContractId());
 		contract.setVersion(contractEntity.getVersion());
 		contract.setStatus(ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null));
 		contract.setMunicipalityId(contractEntity.getMunicipalityId());
@@ -159,7 +159,8 @@ public final class ContractMapper {
 		} else {
 			throw new IllegalArgumentException("Unknown contract type: " + contract.getClass());
 		}
-		contractEntity.setVersion(contract.getVersion());
+
+		contractEntity.setContractId(contract.getContractId());
 		contractEntity.setStatus(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null));
 		contractEntity.setMunicipalityId(municipalityId);
 		contractEntity.setCaseId(contract.getCaseId());
@@ -177,7 +178,7 @@ public final class ContractMapper {
 		return contractEntity;
 	}
 
-	private static LandLeaseContractEntity toEntity(final LandLeaseContract landLeaseContract) {
+	static LandLeaseContractEntity toEntity(final LandLeaseContract landLeaseContract) {
 		return LandLeaseContractEntity.builder()
 			.withLandLeaseType(ofNullable(landLeaseContract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null))
 			.withLeasehold(toEntity(landLeaseContract.getLeasehold()))

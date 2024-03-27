@@ -29,11 +29,11 @@ import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.contract.model.enums.UsufructType;
 import se.sundsvall.contract.model.LeaseFees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.UsufructType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LandLeaseContractTest {
@@ -80,6 +80,7 @@ class LandLeaseContractTest {
 		final var status = TERMINATED;
 		final var municipalityId = "1984";
 		final var caseId = 1L;
+		final var contractId = "2024-12345";
 		final var indexTerms = List.of(
 			TermGroup.builder()
 				.withHeader("Some index terms")
@@ -129,6 +130,7 @@ class LandLeaseContractTest {
 		final var areaData = new FeatureCollection();
 
 		final var contract = LandLeaseContract.builder()
+			.withContractId(contractId)
 			.withVersion(version)
 			.withStatus(status.name())
 			.withMunicipalityId(municipalityId)

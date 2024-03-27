@@ -1,8 +1,8 @@
 {
 	"type": "landLease",
-	"id": "2024-12345",
+	"contractId": "2024-12345",
 	"version": 2,
-	"status": "ACTIVE",
+	"status": "DRAFT",
 	"municipalityId": "1984",
 	"caseId": 666,
 	"indexTerms": [
@@ -10,7 +10,7 @@
 			"header": "More General Terms",
 			"terms": [
 				{
-					"description": "In general the conditions are now...",
+					"description": "In general the conditions 2 are now...",
 					"term": "General Conditions 2"
 				}
 			]

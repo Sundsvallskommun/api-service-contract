@@ -77,7 +77,29 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_updateContract() {
+	void test04_updateContract_findAllVersions() {
+		final String path = "/contracts/1984/2024-12345";
+		final String allContractsPath = "/contracts/1984";
+
+		//Update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PUT)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequestAndVerifyResponse();
+
+		//Verify update
+		setupCall()
+			.withServicePath(allContractsPath)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+	@Test
+	void test05_updateContract_findLatestVersions() {
 		final String path = "/contracts/1984/2024-12345";
 
 		//Update
@@ -97,4 +119,5 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
 }
