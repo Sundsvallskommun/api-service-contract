@@ -5,24 +5,29 @@ import static java.util.function.Predicate.not;
 
 import java.util.List;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.PersistenceException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.contract.model.ExtraParameterGroup;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.PersistenceException;
+
 public class ExtraParameterGroupConverter implements AttributeConverter<List<ExtraParameterGroup>, String> {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    @Override
+	public ExtraParameterGroupConverter(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	@Override
     public String convertToDatabaseColumn(final List<ExtraParameterGroup> extraParameterGroups) {
         return ofNullable(extraParameterGroups)
+	        .filter(not(List::isEmpty))
             .map(value -> {
                 try {
-                    return OBJECT_MAPPER.writeValueAsString(value);
+                    return objectMapper.writeValueAsString(value);
                 } catch (Exception e) {
                     throw new PersistenceException("Unable to serialize extra parameter groups", e);
                 }
@@ -36,7 +41,7 @@ public class ExtraParameterGroupConverter implements AttributeConverter<List<Ext
             .filter(not(String::isBlank))
             .map(s -> {
                 try {
-                    return OBJECT_MAPPER.readValue(json, new TypeReference<List<ExtraParameterGroup>>() {});
+                    return objectMapper.readValue(json, new TypeReference<List<ExtraParameterGroup>>() {});
                 } catch (Exception e) {
                     throw new PersistenceException("Unable to deserialize extra parameter groups", e);
                 }

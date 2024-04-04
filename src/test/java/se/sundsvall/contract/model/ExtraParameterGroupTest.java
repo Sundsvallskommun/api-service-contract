@@ -1,4 +1,4 @@
-package se.sundsvall.contract.api.model;
+package se.sundsvall.contract.model;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
@@ -9,13 +9,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Map;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AttachmentTest {
+import se.sundsvall.contract.api.model.Address;
+
+class ExtraParameterGroupTest {
 
 	@Test
 	void testBean() {
-		assertThat(Attachment.class, allOf(
+		assertThat(ExtraParameterGroup.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -25,18 +30,21 @@ class AttachmentTest {
 
 	@Test
 	void testBuilderMethods() {
-		var attachment = Attachment.builder()
-			.withAttachmentData(AttachmentData.builder().build())
-			.withMetaData(AttachmentMetaData.builder().build())
+		var name = "Test";
+		var parameters = Map.of("someKey", "someValue");
+
+		var extraParameterGroup = ExtraParameterGroup.builder()
+			.withName(name)
+			.withParameters(parameters)
 			.build();
 
-		assertThat(attachment.getAttachmentData()).isNotNull();
-		assertThat(attachment.getMetaData()).isNotNull();
+		assertThat(extraParameterGroup.getName()).isEqualTo(name);
+		assertThat(extraParameterGroup.getParameters()).isEqualTo(parameters);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Attachment.builder().build()).hasAllNullFieldsOrProperties();
+		Assertions.assertThat(Address.builder().build()).hasAllNullFieldsOrProperties();
 	}
 
 }

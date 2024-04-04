@@ -19,6 +19,9 @@ import java.util.Map;
 import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.api.model.Address;
+import se.sundsvall.contract.api.model.Attachment;
+import se.sundsvall.contract.api.model.AttachmentData;
+import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.api.model.Leasehold;
@@ -308,6 +311,20 @@ public final class TestFactory {
 					.withName("someExtraParameterGroup")
 					.withParameters(Map.of("someParameter", "someValue"))
 					.build()))
+			.build();
+	}
+
+	public static Attachment createAttachment() {
+		return Attachment.builder()
+			.withAttachmentData(AttachmentData.builder()
+				.withContent("someContent")
+				.build())
+			.withMetaData(AttachmentMetaData.builder()
+				.withNote("aNote")
+				.withCategory("CONTRACT")
+				.withMimeType("mimeType")
+				.withFilename("file.pdf")
+				.build())
 			.build();
 	}
 }

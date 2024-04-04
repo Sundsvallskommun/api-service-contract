@@ -6,16 +6,16 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 
 import org.junit.jupiter.api.Test;
 
-class AttachmentTest {
+class AttachmentDataTest {
 
 	@Test
 	void testBean() {
-		assertThat(Attachment.class, allOf(
+		assertThat(AttachmentData.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -25,18 +25,16 @@ class AttachmentTest {
 
 	@Test
 	void testBuilderMethods() {
-		var attachment = Attachment.builder()
-			.withAttachmentData(AttachmentData.builder().build())
-			.withMetaData(AttachmentMetaData.builder().build())
+		var content = "base64Content";
+		var attachmentData = AttachmentData.builder()
+			.withContent(content)
 			.build();
 
-		assertThat(attachment.getAttachmentData()).isNotNull();
-		assertThat(attachment.getMetaData()).isNotNull();
+		assertThat(attachmentData.getContent()).isNotNull();
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Attachment.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(AttachmentData.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

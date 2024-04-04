@@ -1,10 +1,10 @@
 package se.sundsvall.contract.api.model;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSettersExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.LocalDate.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -48,12 +48,13 @@ class LandLeaseContractTest {
 
 	@Test
 	void testBean() {
+		//Excluding "type" since it's a JsonSubType and doesn't play well with the bean matchers
 		assertThat(LandLeaseContract.class, allOf(
 			hasValidBeanConstructor(),
-			hasValidGettersAndSetters(),
-			hasValidBeanHashCode(),
-			hasValidBeanEquals(),
-			hasValidBeanToString()));
+			hasValidGettersAndSettersExcluding("type"),
+			hasValidBeanHashCodeExcluding("type"),
+			hasValidBeanEqualsExcluding("type"),
+			hasValidBeanToStringExcluding("type")));
 	}
 
 	@Test
@@ -108,7 +109,7 @@ class LandLeaseContractTest {
 				.withName("someExtraParameterGroup")
 				.withParameters(Map.of("someParameter", "someValue"))
 				.build());
-		var attachments = List.of(Attachment.builder().build());
+		var attachments = List.of(AttachmentMetaData.builder().build());
 		var stakeholders = List.of(Stakeholder.builder().build());
 		var landLeaseType = SITELEASEHOLD;
 		var leasehold = Leasehold.builder().build();
@@ -148,7 +149,7 @@ class LandLeaseContractTest {
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
-			.withAttachments(attachments)
+			.withAttachmentMetaData(attachments)
 			.withStakeholders(stakeholders)
 			.withLandLeaseType(landLeaseType.name())
 			.withLeasehold(leasehold)
@@ -182,7 +183,7 @@ class LandLeaseContractTest {
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
-		assertThat(contract.getAttachments()).hasSameSizeAs(attachments);
+		assertThat(contract.getAttachmentMetaData()).hasSameSizeAs(attachments);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType.name());
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);

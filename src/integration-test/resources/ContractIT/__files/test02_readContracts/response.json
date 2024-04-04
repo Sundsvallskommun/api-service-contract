@@ -1,6 +1,6 @@
 [
 	{
-		"type": "landLease",
+		"type": "LAND_LEASE",
 		"contractId": "2024-12345",
 		"version": 1,
 		"status": "DRAFT",
@@ -32,8 +32,16 @@
 				}
 			}
 		],
+		"attachmentMetaData": [
+			{
+				"id": 1,
+				"category": "CONTRACT",
+				"filename": "someFile.pdf",
+				"mimeType": "application/pdf",
+				"note": "someNote"
+			}
+		],
 		"signedByWitness": true,
-		"extraParameters": {},
 		"landLeaseType": "LEASEHOLD",
 		"leasehold": {
 			"purpose": "AGRICULTURE",
@@ -74,7 +82,7 @@
 		"area": 12
 	},
 	{
-		"type": "landLease",
+		"type": "LAND_LEASE",
 		"contractId": "2024-23456",
 		"version": 1,
 		"status": "DRAFT",
@@ -106,8 +114,8 @@
 				}
 			}
 		],
+		"attachmentMetaData": [],
 		"signedByWitness": false,
-		"extraParameters": {},
 		"landLeaseType": "LEASEHOLD",
 		"leasehold": {
 			"purpose": "AGRICULTURE",
