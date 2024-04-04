@@ -1,5 +1,5 @@
 {
-	"type": "landLease",
+	"type": "LAND_LEASE",
 	"contractId": "2024-00001",
 	"version": 1,
 	"status": "DRAFT",
@@ -72,10 +72,17 @@
 			}
 		}
 	],
+	"attachmentMetaData": [],
 	"signedByWitness": true,
-	"extraParameters": {
-		"legalReference": "Paragraph §1.2.3"
-	},
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
 	"landLeaseType": "LEASEHOLD",
 	"leasehold": {
 		"purpose": "AGRICULTURE",

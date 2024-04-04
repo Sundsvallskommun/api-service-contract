@@ -4,21 +4,21 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.bouncycastle.util.Arrays;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
+import se.sundsvall.contract.api.model.AttachmentData;
+import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
@@ -45,7 +45,7 @@ import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.UsufructType;
 
 @Component
-class ContractMapper {
+public class ContractMapper {
 
 	Contract toContractDto(final ContractEntity contractEntity, final List<AttachmentEntity> attachmentEntities) {
 		Contract contract;
@@ -72,9 +72,9 @@ class ContractMapper {
 			.orElse(null));
 		contract.setSignedByWitness(contractEntity.isSignedByWitness());
 		contract.setExtraParameters(contractEntity.getExtraParameters());
-		contract.setAttachments(ofNullable(attachmentEntities)
+		contract.setAttachmentMetaData(ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
-				.map(this::toAttachmentDto)
+				.map(this::toAttachmentMetaDataDto)
 				.toList())
 			.orElse(null));
 
@@ -154,12 +154,19 @@ class ContractMapper {
 			.build();
 	}
 
-	Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
-		return Attachment.builder()
+	AttachmentMetaData toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
+		return AttachmentMetaData.builder()
+			.withId(attachmentEntity.getId())
 			.withCategory(ofNullable(attachmentEntity.getCategory()).map(AttachmentCategory::name).orElse(null))
 			.withFilename(attachmentEntity.getFilename())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
+			.build();
+	}
+
+	AttachmentData toAttachmentDataDto(final AttachmentEntity attachmentEntity) {
+		return AttachmentData.builder()
+			.withContent(new String(attachmentEntity.getContent(), StandardCharsets.UTF_8))
 			.build();
 	}
 
@@ -173,7 +180,7 @@ class ContractMapper {
 		}
 		contractEntity.setContractId(contract.getContractId());
 		contractEntity.setVersion(of(contract.getVersion()).orElse(1));
-		contractEntity.setType(ofNullable(contract.getType()).map(ContractType::valueOf).orElse(null));
+		contractEntity.setType(of(contract.getType()).map(ContractType::valueOf).orElse(null));
 		contractEntity.setStatus(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null));
 		contractEntity.setMunicipalityId(municipalityId);
 		contractEntity.setCaseId(contract.getCaseId());
@@ -253,14 +260,14 @@ class ContractMapper {
 			.build();
 	}
 
-	AttachmentEntity toAttachmentEntity(final String contractId, final Attachment attachment) {
+	AttachmentEntity toAttachmentEntity(final String contractId, Attachment attachment) {
 		return AttachmentEntity.builder()
 			.withContractId(contractId)
-			.withCategory(Optional.of(AttachmentCategory.valueOf(attachment.getCategory())).orElse(null))
-			.withFilename(attachment.getFilename())
-			.withMimeType(attachment.getMimeType())
-			.withNote(attachment.getNote())
-			.withContent(Base64.getDecoder().decode(attachment.getContent()))
+			.withCategory(of(AttachmentCategory.valueOf(attachment.getMetaData().getCategory())).orElse(null))
+			.withFilename(attachment.getMetaData().getFilename())
+			.withMimeType(attachment.getMetaData().getMimeType())
+			.withNote(attachment.getMetaData().getNote())
+			.withContent(attachment.getAttachmentData().getContent().getBytes(StandardCharsets.UTF_8))
 			.build();
 	}
 
@@ -323,14 +330,11 @@ class ContractMapper {
 	}
 
 	AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final Attachment attachment) {
-		setPropertyUnlessNull(ofNullable(attachment.getCategory()).map(AttachmentCategory::valueOf).orElse(null), entity::setCategory);
-		setPropertyUnlessNull(attachment.getFilename(), entity::setFilename);
-		setPropertyUnlessNull(attachment.getMimeType(), entity::setMimeType);
-		setPropertyUnlessNull(attachment.getNote(), entity::setNote);
-		setPropertyUnlessNull(ofNullable(attachment.getContent())
-			.map(Base64.getDecoder()::decode)
-			.filter(not(Arrays::isNullOrEmpty))
-			.orElse(null), entity::setContent);
+		setPropertyUnlessNull(ofNullable(attachment.getMetaData().getCategory()).map(AttachmentCategory::valueOf).orElse(null), entity::setCategory);
+		setPropertyUnlessNull(attachment.getMetaData().getFilename(), entity::setFilename);
+		setPropertyUnlessNull(attachment.getMetaData().getMimeType(), entity::setMimeType);
+		setPropertyUnlessNull(attachment.getMetaData().getNote(), entity::setNote);
+		setPropertyUnlessNull(attachment.getAttachmentData().getContent().getBytes(StandardCharsets.UTF_8), entity::setContent);
 
 		return entity;
 	}

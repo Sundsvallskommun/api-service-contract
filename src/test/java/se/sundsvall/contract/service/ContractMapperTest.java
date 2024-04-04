@@ -26,7 +26,7 @@ class ContractMapperTest {
 		assertThat(result)
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments")
+			.ignoringFields("type", "attachments", "attachmentMetaData")
 			.isEqualTo(entity);
 	}
 

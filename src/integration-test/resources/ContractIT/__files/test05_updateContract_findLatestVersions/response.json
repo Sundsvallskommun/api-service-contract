@@ -1,7 +1,7 @@
 {
-	"type": "landLease",
+	"type": "LAND_LEASE",
 	"contractId": "2024-12345",
-	"version": 2,
+	"version": 1,
 	"status": "DRAFT",
 	"municipalityId": "1984",
 	"caseId": 666,
@@ -51,10 +51,25 @@
 			}
 		}
 	],
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
 	"signedByWitness": true,
-	"extraParameters": {
-		"legalReference": "Paragraph §3.2.1"
-	},
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
 	"landLeaseType": "SITELEASEHOLD",
 	"leasehold": {
 		"purpose": "APARTMENT",

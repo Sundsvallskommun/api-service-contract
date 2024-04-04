@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
-import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
@@ -64,29 +63,5 @@ public class ContractService {
 		}
 
 		contractRepository.deleteAllByMunicipalityIdAndContractId(municipalityId, contractId);
-	}
-
-	public Long createAttachment(final String contractId, final Attachment attachment) {
-		return attachmentRepository.save(contractMapper.toAttachmentEntity(contractId, attachment)).getId();
-	}
-
-	@Transactional(readOnly = true)
-	public Attachment getAttachment(final Long id) {
-		return attachmentRepository.findById(id)
-			.map(contractMapper::toAttachmentDto)
-			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
-	}
-
-	public Attachment updateAttachment(final Long attachmentId, final Attachment attachment) {
-		var result = attachmentRepository.findById(attachmentId)
-			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
-
-		var updatedEntity = contractMapper.updateAttachmentEntity(result, attachment);
-
-		return contractMapper.toAttachmentDto(attachmentRepository.save(updatedEntity));
-	}
-
-	public void deleteAttachment(final Long attachmentId) {
-		attachmentRepository.deleteById(attachmentId);
 	}
 }

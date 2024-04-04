@@ -15,6 +15,7 @@ import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -89,7 +90,7 @@ class ContractServiceTest {
 		assertThat(result)
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments")
+			.ignoringFields("type", "attachments", "attachmentMetaData")
 			.isEqualTo(landLeaseContractEntity);
 
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
@@ -127,7 +128,7 @@ class ContractServiceTest {
 			.isNotNull()
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments")
+			.ignoringFields("type", "attachments", "attachmentMetaData")
 			.isEqualTo(landLeaseContractEntity);
 
 		verify(mockContractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
@@ -158,6 +159,8 @@ class ContractServiceTest {
 
 	@Test
 	void testDeleteContract_shouldThrow404_whenNoMatch() {
+		final String s = StandardCharsets.ISO_8859_1.name();
+		System.out.println(s);
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 
 		assertThatExceptionOfType(ThrowableProblem.class)

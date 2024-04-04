@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -25,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 	@JsonSubTypes.Type(value = LandLeaseContract.class, name = "LAND_LEASE")
 })
 @Data
+@EqualsAndHashCode
 @SuperBuilder(setterPrefix = "with")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "Contract")
@@ -68,8 +70,8 @@ public abstract class Contract {
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;
 
-	@ArraySchema(schema = @Schema(description = "List of attachments", accessMode = Schema.AccessMode.READ_ONLY))
-	private List<Attachment> attachments;
+	@ArraySchema(schema = @Schema(description = "Metadata for all attachments", accessMode = Schema.AccessMode.READ_ONLY))
+	private List<AttachmentMetaData> attachmentMetaData;
 
 	@Schema(description = "Whether the contract is signed by a witness")
 	private boolean signedByWitness;

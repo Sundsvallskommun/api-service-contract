@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
-class AttachmentCategoryTest {
+class AttachmentMetaDataCategoryTest {
 
 	@Test
 	void enums() {

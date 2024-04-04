@@ -13,7 +13,7 @@ import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 
 import org.junit.jupiter.api.Test;
 
-class AttachmentEntityTest {
+class AttachmentMetaDataEntityTest {
 
 	@Test
 	void testBean() {

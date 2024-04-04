@@ -22,7 +22,7 @@ VALUES (1, 'Some additional information'),
        (2, 'More additional information');
 
 INSERT INTO attachment (id, contract_id, category, filename, mime_type, note, content)
-    VALUE (1, '2024-12345', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someContent');
+    VALUE (1, '2024-12345', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content');
 
 INSERT INTO stakeholder (id, address_type, attention, country, email_address, first_name,
                          last_name, organization_name, organization_number, person_id, phone_number,

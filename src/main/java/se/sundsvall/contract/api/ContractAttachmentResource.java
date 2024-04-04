@@ -6,10 +6,9 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
-import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +24,9 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.service.ContractService;
+import se.sundsvall.contract.api.model.AttachmentData;
+import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +36,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @Validated
@@ -54,10 +56,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     content = @Content(schema = @Schema(implementation = Problem.class)))
 class ContractAttachmentResource {
 
-    private final ContractService contractService;
+    private final AttachmentService attachmentService;
 
-    ContractAttachmentResource(final ContractService contractService) {
-        this.contractService = contractService;
+    ContractAttachmentResource(final AttachmentService attachmentService) {
+        this.attachmentService = attachmentService;
     }
 
     @Operation(
@@ -69,11 +71,11 @@ class ContractAttachmentResource {
                 useReturnTypeSchema = true)
         })
     @GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<Attachment> getContractAttachmentById(
+    ResponseEntity<AttachmentData> getContractAttachmentById(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
-        return ok(contractService.getAttachment(attachmentId));
+        return ok(attachmentService.getAttachmentData(attachmentId));
     }
 
     @Operation(
@@ -94,7 +96,7 @@ class ContractAttachmentResource {
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @RequestBody @Valid final Attachment attachment) {
-        var id = contractService.createAttachment(contractId, attachment);
+        var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
 
         return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
             .header(CONTENT_TYPE, ALL_VALUE)
@@ -110,12 +112,12 @@ class ContractAttachmentResource {
                 useReturnTypeSchema = true)
         })
     @PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<Attachment> updateContractAttachmentMetadata(
+    ResponseEntity<AttachmentMetaData> updateContractAttachment(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
             @Valid @RequestBody final Attachment attachment) {
-        var result = contractService.updateAttachment(attachmentId, attachment);
+        var result = attachmentService.updateAttachment(attachmentId, attachment);
 
         return ok(result);
     }
@@ -124,16 +126,17 @@ class ContractAttachmentResource {
         summary = "Delete a contract attachment",
         responses = {
             @ApiResponse(
-                responseCode = "200",
-                description = "Successful operation")
+                responseCode = "204",
+                description = "No content")
         })
-    @DeleteMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+    @DeleteMapping(path = "/{attachmentId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
     ResponseEntity<Void> deleteContractAttachment(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
-        contractService.deleteAttachment(attachmentId);
 
-        return ok().build();
+        attachmentService.deleteAttachment(attachmentId);
+
+        return noContent().build();
     }
 }

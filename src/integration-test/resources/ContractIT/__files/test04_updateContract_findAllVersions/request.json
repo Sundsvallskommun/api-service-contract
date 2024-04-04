@@ -1,6 +1,6 @@
 {
 	"contractId": "2024-12345",
-	"type": "landLease",
+	"type": "LAND_LEASE",
 	"status": "DRAFT",
 	"municipalityId": "1984",
 	"caseId": 666,
@@ -28,9 +28,15 @@
 			]
 		}
 	],
-	"extraParameters": {
-		"legalReference": "Paragraph §3.2.1"
-	},
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
 	"stakeholders": [
 		{
 			"type": "COMPANY",
