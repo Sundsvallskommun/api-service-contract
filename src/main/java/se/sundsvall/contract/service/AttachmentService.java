@@ -6,7 +6,6 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
@@ -25,7 +24,6 @@ public class AttachmentService {
 		this.contractMapper = contractMapper;
 	}
 
-
 	public Long createAttachment(final String municipalityId, final String contractId, final Attachment attachment) {
 		if(!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
 			throw Problem.valueOf(Status.NOT_FOUND);
@@ -34,12 +32,9 @@ public class AttachmentService {
 	}
 
 	@Transactional(readOnly = true)
-	public AttachmentData getAttachmentData(final Long id) {
-		return attachmentRepository.findById(id)
-			.map(contractMapper::toAttachmentDataDto)
-			.map(dto -> AttachmentData.builder()
-				.withContent(dto.getContent())
-				.build())
+	public Attachment getAttachment(final String contractId, final Long attachmentId) {
+		return attachmentRepository.findByContractIdAndId(contractId, attachmentId)
+			.map(contractMapper::toAttachmentDto)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
 	}
 
@@ -52,7 +47,7 @@ public class AttachmentService {
 		return contractMapper.toAttachmentMetaDataDto(attachmentRepository.save(updatedEntity));
 	}
 
-	public void deleteAttachment(final Long attachmentId) {
-		attachmentRepository.deleteById(attachmentId);
+	public void deleteAttachment(final String contractId, final Long attachmentId) {
+		attachmentRepository.deleteByContractIdAndId(contractId, attachmentId);
 	}
 }

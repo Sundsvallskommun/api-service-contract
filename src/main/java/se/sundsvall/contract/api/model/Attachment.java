@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(setterPrefix = "with")
-@Schema(description = "Attachment object containing both metadata and data")
+@Schema(description = "Attachment")
 public class Attachment {
 
 	@Valid
-	@Schema(description = "Attachment data", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Attachment data, i.e. the file", requiredMode = Schema.RequiredMode.REQUIRED)
 	private AttachmentData attachmentData;
 
 	@Valid

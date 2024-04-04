@@ -48,7 +48,7 @@ class LandLeaseContractTest {
 
 	@Test
 	void testBean() {
-		//Excluding "type" since it's a JsonSubType and doesn't play well with the bean matchers
+		//Excluding "type" since it's a JsonSubType and doesn't play well with BeanMatchers
 		assertThat(LandLeaseContract.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSettersExcluding("type"),

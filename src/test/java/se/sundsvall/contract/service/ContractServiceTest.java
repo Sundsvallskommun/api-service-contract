@@ -15,7 +15,6 @@ import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -43,8 +42,10 @@ class ContractServiceTest {
 
 	@Mock
 	private ContractRepository mockContractRepository;
+
 	@Mock
 	private AttachmentRepository mockAttachmentRepository;
+
 	@Mock(answer = Answers.CALLS_REAL_METHODS)
 	private ContractMapper mockContractMapper;
 
@@ -56,6 +57,7 @@ class ContractServiceTest {
 
 	@Test
 	void createContract() {
+		//Arrange
 		var contract = LandLeaseContract.builder()
 			.withCaseId(1L)
 			.withLandLeaseType(SITELEASEHOLD.name())
@@ -70,22 +72,26 @@ class ContractServiceTest {
 		when(mockContractRepository.save(any(LandLeaseContractEntity.class)))
 			.thenReturn(LandLeaseContractEntity.builder().withContractId(CONTRACT_ID).build());
 
+		//ACt
 		var result = contractService.createContract(MUNICIPALITY_ID, contract);
 
+		//Assert
 		assertThat(result).isEqualTo(CONTRACT_ID);
-
 		verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
 	void getContract() {
-		final var landLeaseContractEntity = createLandLeaseContractEntity();
+		//Arrange
+		var landLeaseContractEntity = createLandLeaseContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 
-  		final var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID);
+		//Act
+  		var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID);
 
+		  //Assert
 		assertThat(result).isNotNull();
 		assertThat(result)
 			.usingRecursiveComparison()
@@ -99,8 +105,10 @@ class ContractServiceTest {
 
 	@Test
 	void testGetContract_shouldThrow404_whenNoMatch() {
+		//Arrange
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.empty());
 
+		//Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID));
 
@@ -110,7 +118,8 @@ class ContractServiceTest {
 
 	@Test
 	void getContracts() {
-		final var landLeaseContractEntity = createLandLeaseContractEntity();
+		//Arrange
+		var landLeaseContractEntity = createLandLeaseContractEntity();
 		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(landLeaseContractEntity));
 
 		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any()))
@@ -118,11 +127,13 @@ class ContractServiceTest {
 		when(mockAttachmentRepository.findAllByContractId(any(String.class)))
 			.thenReturn(List.of(createAttachmentEntity()));
 
+		//Act
 		var request = new ContractRequest("contractId", "propertyDesignation", "organizationNumber",
 			List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId",
 			LocalDate.of(2023, 10, 10), SITELEASEHOLD.name());
 		var result = contractService.getContracts(MUNICIPALITY_ID, request);
 
+		//Assert
 		assertThat(result).isNotNull().hasSize(1);
 		assertThat(result.getFirst())
 			.isNotNull()
@@ -133,16 +144,20 @@ class ContractServiceTest {
 
 		verify(mockContractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
 		verifyNoMoreInteractions(mockContractRepository);
+		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
 	@Test
 	void updateContract() {
-		final var landLeaseContractEntity = createLandLeaseContractEntity();
+		//Arrange
+		var landLeaseContractEntity = createLandLeaseContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(landLeaseContractEntity));
-		final var landLeaseContract = createLandLeaseContract();
+		var landLeaseContract = createLandLeaseContract();
 
+		//Act
 		contractService.updateContract("1984", "2024-12345", landLeaseContract);
 
+		//Assert
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
@@ -150,19 +165,23 @@ class ContractServiceTest {
 
 	@Test
 	void testDeleteContract() {
+		//Arrange
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
+
+		//Act
 		contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 
+		//Assert
 		verify(mockContractRepository).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
 	void testDeleteContract_shouldThrow404_whenNoMatch() {
-		final String s = StandardCharsets.ISO_8859_1.name();
-		System.out.println(s);
+		//Arrange
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 
+		//Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID));
 

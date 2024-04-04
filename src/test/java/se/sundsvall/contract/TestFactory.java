@@ -2,6 +2,7 @@ package se.sundsvall.contract;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
+import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
@@ -146,8 +147,8 @@ public final class TestFactory {
 
 	public static LandLeaseContract createLandLeaseContract() {
 		return LandLeaseContract.builder()
-			//.withType(LAND_LEASE.name())
-			//.withVersion(1)
+			.withType(LAND_LEASE.name())
+			.withVersion(1)
 			.withStatus(ACTIVE.name())
 			.withMunicipalityId("1984")
 			.withContractId("2024-12345")

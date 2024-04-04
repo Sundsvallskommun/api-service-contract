@@ -24,7 +24,6 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -63,19 +62,24 @@ class ContractAttachmentResource {
     }
 
     @Operation(
-        summary = "Download (the file contents of) a contract attachment",
+        summary = "Download a contract attachment and its metadata",
         responses = {
             @ApiResponse(
                 responseCode = "200",
                 description = "Ok",
-                useReturnTypeSchema = true)
+                useReturnTypeSchema = true),
+	        @ApiResponse(
+				responseCode = "404",
+		        description = "Not Found",
+		        content = @Content(schema = @Schema(implementation = Problem.class))
+	        )
         })
     @GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<AttachmentData> getContractAttachmentById(
+    ResponseEntity<Attachment> getAttachmentById(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
-        return ok(attachmentService.getAttachmentData(attachmentId));
+        return ok(attachmentService.getAttachment(contractId, attachmentId));
     }
 
     @Operation(
@@ -88,11 +92,16 @@ class ContractAttachmentResource {
                     name = LOCATION,
                     description = "Location of the uploaded attachment.",
                     schema = @Schema(type = "string")),
-                useReturnTypeSchema = true)
+                useReturnTypeSchema = true),
+	        @ApiResponse(
+		        responseCode = "404",
+		        description = "Not Found",
+		        content = @Content(schema = @Schema(implementation = Problem.class))
+	        )
         }
     )
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseEntity<Void> postContractAttachment(
+    ResponseEntity<Void> createAttachment(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @RequestBody @Valid final Attachment attachment) {
@@ -109,10 +118,15 @@ class ContractAttachmentResource {
             @ApiResponse(
                 responseCode = "200",
                 description = "Successful operation",
-                useReturnTypeSchema = true)
+                useReturnTypeSchema = true),
+	        @ApiResponse(
+		        responseCode = "404",
+		        description = "Not Found",
+		        content = @Content(schema = @Schema(implementation = Problem.class))
+	        )
         })
     @PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<AttachmentMetaData> updateContractAttachment(
+    ResponseEntity<AttachmentMetaData> updateAttachment(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
@@ -130,12 +144,12 @@ class ContractAttachmentResource {
                 description = "No content")
         })
     @DeleteMapping(path = "/{attachmentId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseEntity<Void> deleteContractAttachment(
+    ResponseEntity<Void> deleteAttachment(
             @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
             @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
             @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
 
-        attachmentService.deleteAttachment(attachmentId);
+        attachmentService.deleteAttachment(contractId, attachmentId);
 
         return noContent().build();
     }

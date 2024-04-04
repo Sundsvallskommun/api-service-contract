@@ -1,33 +1,13 @@
 {
 	"type": "LAND_LEASE",
-	"contractId": "2024-00001",
+	"contractId": "2024-12345",
 	"version": 1,
 	"status": "DRAFT",
 	"municipalityId": "1984",
-	"caseId": 666,
-	"indexTerms": [
-		{
-			"header": "General Terms",
-			"terms": [
-				{
-					"description": "In general the conditions are...",
-					"term": "General Conditions"
-				}
-			]
-		}
-	],
+	"caseId": 1,
+	"indexTerms": [],
 	"description": "someDescription",
-	"additionalTerms": [
-		{
-			"header": "Extraordinary Terms",
-			"terms": [
-				{
-					"description": "Unless something extraordinary has happened...",
-					"term": "Exceptions"
-				}
-			]
-		}
-	],
+	"additionalTerms": [],
 	"stakeholders": [
 		{
 			"type": "PERSON",
@@ -49,54 +29,30 @@
 				"country": "SE",
 				"attention": "someAttention"
 			}
-		},
-		{
-			"type": "PERSON",
-			"roles": [
-				"POWER_OF_ATTORNEY_ROLE"
-			],
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"personId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
-			"emailAddress": "someEmail",
-			"address": {
-				"type": "VISITING_ADDRESS",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
-				"town": "someTown",
-				"country": "SE",
-				"attention": "someAttention"
-			}
 		}
 	],
-	"attachmentMetaData": [],
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
 	"signedByWitness": true,
-	"extraParameters": [
-		{
-			"name": "Fees",
-			"parameters": {
-				"key1": "value1",
-				"key2": "value2"
-			}
-		}
-	],
 	"landLeaseType": "LEASEHOLD",
 	"leasehold": {
 		"purpose": "AGRICULTURE",
 		"description": "SomeLeaseholdDescription",
 		"additionalInformation": [
-			"Some additional information when posting",
-			"More additional information when posting"
+			"Some additional information"
 		]
 	},
 	"usufructType": "HUNTING",
-	"externalReferenceId": "MK-TEST0003",
+	"externalReferenceId": "MK-TEST0001",
 	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 123:1",
-		"SUNDSVALL NORRMALM 234:1"
+		"SUNDSVALL NORRMALM 1:1"
 	],
 	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
@@ -104,7 +60,7 @@
 		"currency": "SEK",
 		"yearly": 234.56,
 		"monthly": 123.45,
-		"total": 500.0,
+		"total": 500,
 		"totalAsText": "five hundred",
 		"indexYear": 2021,
 		"indexNumber": 2,
