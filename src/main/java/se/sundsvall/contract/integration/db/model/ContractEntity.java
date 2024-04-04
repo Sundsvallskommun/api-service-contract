@@ -5,6 +5,14 @@ import static jakarta.persistence.EnumType.STRING;
 import java.util.List;
 import java.util.Objects;
 
+import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
+import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
+import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
+import se.sundsvall.contract.model.ExtraParameterGroup;
+import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.Status;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -22,16 +30,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
-import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
-import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
-import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.Status;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,6 +56,7 @@ public abstract class ContractEntity {
 	@Column(name = "contract_id", length = 10, nullable = false)
 	private String contractId;
 
+	@Builder.Default
 	@Column(name = "version")
 	private int version = 1;
 

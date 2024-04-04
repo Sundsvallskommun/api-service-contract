@@ -46,8 +46,6 @@ class AttachmentServiceTest {
 	private static final String CONTRACT_ID = "2024-12345";
 	private static final Long ENTITY_ID = 1L;
 
-
-
 	@Test
 	void testCreateAttachment() {
 		//Arrange
@@ -90,36 +88,34 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void testGetAttachmentData() {
+	void testGetAttachment() {
 		//Arrange
-		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.of(AttachmentEntity.builder()
-				.withContent("someContent".getBytes())
-			.build()));
+		when(mockAttachmentRepository.findByContractIdAndId(CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(TestFactory.createAttachmentEntity()));
 
 		//Act
-		var attachment = attachmentService.getAttachmentData(ENTITY_ID);
+		var attachment = attachmentService.getAttachment(CONTRACT_ID, ENTITY_ID);
 
 		//Assert
 		assertThat(attachment).isNotNull();
-		verify(mockAttachmentRepository).findById(ENTITY_ID);
-		verify(mockContractMapper).toAttachmentDataDto(any(AttachmentEntity.class));
+		verify(mockAttachmentRepository).findByContractIdAndId(CONTRACT_ID, ENTITY_ID);
+		verify(mockContractMapper).toAttachmentDto(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockContractMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
 	@Test
-	void testGetAttachmentData_shouldThrow404_whenNotFound() {
+	void testGetAttachment_shouldThrow404_whenNotFound() {
 		//Arrange
-		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.empty());
+		when(mockAttachmentRepository.findByContractIdAndId(CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
 		//Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> attachmentService.getAttachmentData(ENTITY_ID))
+			.isThrownBy(() -> attachmentService.getAttachment(CONTRACT_ID, ENTITY_ID))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
 			.withMessage("Not Found");
 
-		verify(mockAttachmentRepository).findById(ENTITY_ID);
+		verify(mockAttachmentRepository).findByContractIdAndId(CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockContractMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
@@ -130,7 +126,7 @@ class AttachmentServiceTest {
 	void testUpdateAttachment() {
 		//Arrange
 		//Set up a captor since we want to verify what's being saved, not what comes back.
-		ArgumentCaptor<AttachmentEntity> argumentCaptor = ArgumentCaptor.forClass(AttachmentEntity.class);
+		var argumentCaptor = ArgumentCaptor.forClass(AttachmentEntity.class);
 
 		var incomingAttachment = TestFactory.createAttachment();
 		var oldAttachmentEntity = TestFactory.createAttachmentEntity();
@@ -140,7 +136,7 @@ class AttachmentServiceTest {
 			.build());
 
 		//Act
-		var updatedEntity = attachmentService.updateAttachment(ENTITY_ID, incomingAttachment);
+		attachmentService.updateAttachment(ENTITY_ID, incomingAttachment);
 
 		//Assert
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
@@ -182,13 +178,13 @@ class AttachmentServiceTest {
 	@Test
 	void testDeleteAttachment() {
 		//Arrange
-		doNothing().when(mockAttachmentRepository).deleteById(ENTITY_ID);
+		doNothing().when(mockAttachmentRepository).deleteByContractIdAndId(CONTRACT_ID, ENTITY_ID);
 
 		//Act
-		attachmentService.deleteAttachment(ENTITY_ID);
+		attachmentService.deleteAttachment(CONTRACT_ID, ENTITY_ID);
 
 		//Assert
-		verify(mockAttachmentRepository).deleteById(ENTITY_ID);
+		verify(mockAttachmentRepository).deleteByContractIdAndId(CONTRACT_ID, ENTITY_ID);
 
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}

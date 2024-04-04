@@ -1,6 +1,7 @@
 package se.sundsvall.contract.apptest;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static java.util.Objects.requireNonNull;
+import static org.apache.hc.core5.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -10,69 +11,53 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/ContractIT/", classes = Application.class)
+@WireMockAppTestSuite(files = "classpath:/AttachmentIT/", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"
 })
-class ContractIT extends AbstractAppTest {
-
+class AttachmentIT extends AbstractAppTest {
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
 
 	@Test
-	void test01_readContract() throws Exception {
+	void test01_testGetAttachment() {
 		setupCall()
-			.withServicePath("/contracts/1984/2024-12345")
+			.withServicePath("/contracts/1984/2024-12345/attachments/1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse()
-			.andReturnBody(Contract.class);
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test02_readContracts() throws Exception {
-		setupCall()
-			.withServicePath("/contracts/1984")
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse()
-			.andReturnBody(new TypeReference<List<Contract>>() {});
-	}
-
-	@Test
-	void test03_createContract() {
+	void test02_testPostAndGetNewAttachment() {
 		var test = setupCall()
-			.withServicePath("/contracts/1984")
+			.withServicePath("/contracts/1984/2024-12345/attachments")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.sendRequestAndVerifyResponse();
 
-		var location = test.getResponseHeaders().getLocation();
+		var location = test.getResponseHeaders().getLocation().getPath();
 
 		//Verify it's there
 		setupCall()
-			.withServicePath(location.getPath())
+			.withServicePath(location)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -81,42 +66,19 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_updateContract_findAllVersions() {
-		final String path = "/contracts/1984/2024-12345";
-		final String allContractsPath = "/contracts/1984";
-
-		//Update
+	void test03_testReplaceAttachment() {
+		var servicePath = "/contracts/1984/2024-12345/attachments/1";
 		setupCall()
-			.withServicePath(path)
+			.withServicePath(servicePath)
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
-			.sendRequestAndVerifyResponse();
-
-		//Verify update
-		setupCall()
-			.withServicePath(allContractsPath)
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-	}
-	@Test
-	void test05_updateContract_findLatestVersions() {
-		final String path = "/contracts/1984/2024-12345";
-
-		//Update
-		setupCall()
-			.withServicePath(path)
-			.withHttpMethod(PUT)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
-		//Verify update
+		//Verify the attachment has been updated
 		setupCall()
-			.withServicePath(path)
+			.withServicePath(servicePath)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -125,41 +87,29 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test06_deleteContract() {
-		final String contractPath = "/contracts/1984/2024-12345";
-		final String attachmentPath = contractPath + "/attachments/1";
-
-		//Verify the contract is there
+	void test04_deleteAttachment() {
+		var servicePath = "/contracts/1984/2024-12345/attachments/1";
+		//Verify the attachment exists since the delete doesn't care if it actually deletes something
 		setupCall()
-			.withServicePath(contractPath)
+			.withServicePath(servicePath)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		//Delete
+		//Delete it
 		setupCall()
-			.withServicePath(contractPath)
+			.withServicePath(servicePath)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
-		//Verify it's gone
+		//Verify it's gone i.e. a 404
 		setupCall()
-			.withServicePath(contractPath)
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(NOT_FOUND)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
-			.sendRequestAndVerifyResponse();
-
-		//Verify the attachments are gone as well
-		setupCall()
-			.withServicePath(attachmentPath)
+			.withServicePath(servicePath)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
 			.sendRequestAndVerifyResponse();
 	}
-
 }

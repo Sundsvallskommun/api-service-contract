@@ -80,8 +80,8 @@ class ContractResourceTest {
 
 	@Test
 	void postContract() {
-		final var id = "2024-12345";
-		final var contract = LandLeaseContract.builder()
+		var id = "2024-12345";
+		var contract = LandLeaseContract.builder()
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY.name())

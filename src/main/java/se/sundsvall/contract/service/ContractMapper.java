@@ -164,9 +164,18 @@ public class ContractMapper {
 			.build();
 	}
 
-	AttachmentData toAttachmentDataDto(final AttachmentEntity attachmentEntity) {
-		return AttachmentData.builder()
-			.withContent(new String(attachmentEntity.getContent(), StandardCharsets.UTF_8))
+	Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
+		return Attachment.builder()
+			.withAttachmentData(AttachmentData.builder()
+				.withContent(new String(attachmentEntity.getContent(), StandardCharsets.UTF_8))
+				.build())
+			.withMetaData(AttachmentMetaData.builder()
+				.withCategory(attachmentEntity.getCategory().toString())
+				.withFilename(attachmentEntity.getFilename())
+				.withId(attachmentEntity.getId())
+				.withMimeType(attachmentEntity.getMimeType())
+				.withNote(attachmentEntity.getNote())
+				.build())
 			.build();
 	}
 

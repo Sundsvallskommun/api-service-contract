@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Attachment content")
 public class AttachmentData {
 
-	@ValidBase64(nullable = true)
+	@ValidBase64
 	@Schema(description = "BASE64-encoded attachment file content", example = "<BASE64-encoded data>", format = "base64")
 	private String content;
 }

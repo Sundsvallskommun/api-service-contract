@@ -46,5 +46,4 @@ class ExtraParameterGroupTest {
 	void testNoDirtOnCreatedBean() {
 		Assertions.assertThat(Address.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

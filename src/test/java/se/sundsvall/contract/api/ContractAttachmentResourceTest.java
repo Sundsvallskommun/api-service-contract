@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
@@ -35,13 +36,13 @@ class ContractAttachmentResourceTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
+	private static final String CONTRACT_ID = "2024-12345";
+
 	@Test
-	void testGetContractAttachmentById() {
+	void testGetAttachmentById() {
 		//Arrange
-		var attachmentData = AttachmentData.builder()
-			.withContent("someContent")
-			.build();
-		when(attachmentService.getAttachmentData(1L)).thenReturn(attachmentData);
+		var attachment = TestFactory.createAttachment();
+		when(attachmentService.getAttachment(CONTRACT_ID, 1L)).thenReturn(attachment);
 
 		//Act
 		var response = webTestClient.get()
@@ -55,13 +56,12 @@ class ContractAttachmentResourceTest {
 
 		//Assert
 		assertNotNull(response);
-		assertThat(response).isEqualTo(attachmentData);
-		verify(attachmentService).getAttachmentData(1L);
+		verify(attachmentService).getAttachment(CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
 	}
 
 	@Test
-	void testPostContractAttachment() {
+	void testCreateAttachment() {
 		//Arrange
 		Attachment attachment = Attachment.builder()
 			.withAttachmentData(AttachmentData.builder()
@@ -76,7 +76,7 @@ class ContractAttachmentResourceTest {
 				.build())
 			.build();
 
-		when(attachmentService.createAttachment(eq("1984"), eq("2024-12345"), any())).thenReturn(1L);
+		when(attachmentService.createAttachment(eq("1984"), eq(CONTRACT_ID), any())).thenReturn(1L);
 
 		//Act
 		var location = webTestClient.post()
@@ -88,12 +88,12 @@ class ContractAttachmentResourceTest {
 			.expectHeader().valueEquals("Location", "/contracts/1984/2024-12345/attachments/1");
 
 		//Assert
-		verify(attachmentService).createAttachment("1984", "2024-12345", attachment);
+		verify(attachmentService).createAttachment("1984", CONTRACT_ID, attachment);
 		verifyNoMoreInteractions(attachmentService);
 	}
 
 	@Test
-	void testUpdateContractAttachmentMetaData() {
+	void testUpdateAttachmentMetaData() {
 		//Arrange
 		var attachmentMetaData = AttachmentMetaData.builder()
 			.withCategory("aNewCategory")
@@ -133,7 +133,7 @@ class ContractAttachmentResourceTest {
 	@Test
 	void testDeleteAttachment() {
 		//Arrange
-		doNothing().when(attachmentService).deleteAttachment(1L);
+		doNothing().when(attachmentService).deleteAttachment(CONTRACT_ID, 1L);
 
 		//Act
 		webTestClient.delete()
@@ -142,7 +142,7 @@ class ContractAttachmentResourceTest {
 			.expectStatus().isNoContent();
 
 		//Assert
-		verify(attachmentService).deleteAttachment(1L);
+		verify(attachmentService).deleteAttachment(CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
 	}
 }

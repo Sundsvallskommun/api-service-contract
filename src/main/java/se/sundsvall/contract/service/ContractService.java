@@ -62,6 +62,7 @@ public class ContractService {
 			throw Problem.valueOf(Status.NOT_FOUND);
 		}
 
+		attachmentRepository.deleteAllByContractId(contractId);
 		contractRepository.deleteAllByMunicipalityIdAndContractId(municipalityId, contractId);
 	}
 }

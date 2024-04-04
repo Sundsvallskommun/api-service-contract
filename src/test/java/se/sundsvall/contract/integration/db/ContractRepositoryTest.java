@@ -27,7 +27,7 @@ import se.sundsvall.contract.model.enums.LandLeaseType;
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"
 })
-@Import(ObjectMapper.class) //Needed since we autowire an ObjectMapper in the ExtraParameterGroupConverter
+@Import(ObjectMapper.class) //Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractRepositoryTest {
 
 	@Autowired
@@ -37,9 +37,9 @@ class ContractRepositoryTest {
 
 	@Test
 	void createContract() {
-		final var entity = createLandLeaseContractEntity();
+		var entity = createLandLeaseContractEntity();
 		entity.getStakeholders().getFirst().setId(null);    // Clear the id
-		final var savedEntity = contractRepository.save(entity);
+		var savedEntity = contractRepository.save(entity);
 
 		var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();

@@ -38,5 +38,4 @@ class AttachmentTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(Attachment.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

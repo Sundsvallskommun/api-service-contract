@@ -1,0 +1,12 @@
+{
+	"attachmentData": {
+		"content": "someBase64Content"
+	},
+	"metaData": {
+		"id": 1,
+		"category": "CONTRACT",
+		"filename": "someFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "someNote"
+	}
+}

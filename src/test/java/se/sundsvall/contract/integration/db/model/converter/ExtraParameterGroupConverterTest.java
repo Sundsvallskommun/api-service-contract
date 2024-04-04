@@ -20,7 +20,6 @@ class ExtraParameterGroupConverterTest {
 
 	@BeforeEach
 	public void setup() {
-		//Don't want to mock the ObjectMapper, hence no @InjectMocks etc
 		this.converter = new ExtraParameterGroupConverter(new ObjectMapper());
 	}
 
