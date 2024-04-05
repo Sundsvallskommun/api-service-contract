@@ -110,7 +110,7 @@ class ContractAttachmentResourceTest {
 			.withMetaData(attachmentMetaData)
 			.build();
 
-		when(attachmentService.updateAttachment(eq(1L), eq(attachment))).thenReturn(attachmentMetaData);
+		when(attachmentService.updateAttachment(1L, attachment)).thenReturn(attachmentMetaData);
 
 		//Act
 		var response = webTestClient.put()
