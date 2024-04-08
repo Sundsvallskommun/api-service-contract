@@ -81,7 +81,7 @@ public class ContractMapper {
 		return contract;
 	}
 
-	Contract toLandLeaseContractDto(final LandLeaseContractEntity landLeaseContractEntity) {
+	private Contract toLandLeaseContractDto(final LandLeaseContractEntity landLeaseContractEntity) {
 		return LandLeaseContract.builder()
 			.withLandLeaseType(ofNullable(landLeaseContractEntity.getLandLeaseType()).map(LandLeaseType::name).orElse(null))
 			.withLeasehold(toLeaseholdDto(landLeaseContractEntity.getLeasehold()))
@@ -118,7 +118,7 @@ public class ContractMapper {
 			.build();
 	}
 
-	Leasehold toLeaseholdDto(final LeaseholdEntity leaseholdEntity) {
+	private Leasehold toLeaseholdDto(final LeaseholdEntity leaseholdEntity) {
 		if (isNull(leaseholdEntity)) {
 			return null;
 		}
@@ -129,7 +129,7 @@ public class ContractMapper {
 			.build();
 	}
 
-	Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
+	private Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
 		return Stakeholder.builder()
 			.withType(ofNullable(stakeholderEntity.getType()).map(StakeholderType::name).orElse(null))
 			.withRoles(stakeholderEntity.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::name).toList())
@@ -137,13 +137,13 @@ public class ContractMapper {
 			.withOrganizationNumber(stakeholderEntity.getOrganizationNumber())
 			.withFirstName(stakeholderEntity.getFirstName())
 			.withLastName(stakeholderEntity.getLastName())
-			.withPersonId(stakeholderEntity.getPersonId())
+			.withPartyId(stakeholderEntity.getPartyId())
 			.withPhoneNumber(stakeholderEntity.getPhoneNumber())
 			.withEmailAddress(stakeholderEntity.getEmailAddress())
 			.withAddress(toAddressDto(stakeholderEntity.getAddress())).build();
 	}
 
-	Address toAddressDto(final AddressEntity addressEntity) {
+	private Address toAddressDto(final AddressEntity addressEntity) {
 		return Address.builder()
 			.withStreetAddress(addressEntity.getStreetAddress())
 			.withPostalCode(addressEntity.getPostalCode())
@@ -233,7 +233,7 @@ public class ContractMapper {
 			.build();
 	}
 
-	LeaseholdEntity toLeaseholdEntity(final Leasehold leasehold) {
+	private LeaseholdEntity toLeaseholdEntity(final Leasehold leasehold) {
 		if (isNull(leasehold)) {
 			return null;
 		}
@@ -244,7 +244,7 @@ public class ContractMapper {
 			.build();
 	}
 
-	StakeholderEntity toStakeholderEntity(final Stakeholder stakeholder) {
+	private StakeholderEntity toStakeholderEntity(final Stakeholder stakeholder) {
 		return StakeholderEntity.builder()
 			.withType(ofNullable(stakeholder.getType()).map(StakeholderType::valueOf).orElse(null))
 			.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::valueOf).toList())
@@ -252,13 +252,13 @@ public class ContractMapper {
 			.withOrganizationNumber(stakeholder.getOrganizationNumber())
 			.withFirstName(stakeholder.getFirstName())
 			.withLastName(stakeholder.getLastName())
-			.withPersonId(stakeholder.getPersonId())
+			.withPartyId(stakeholder.getPartyId())
 			.withPhoneNumber(stakeholder.getPhoneNumber())
 			.withEmailAddress(stakeholder.getEmailAddress())
 			.withAddress(toAddressEntity(stakeholder.getAddress())).build();
 	}
 
-	AddressEntity toAddressEntity(final Address address) {
+	private AddressEntity toAddressEntity(final Address address) {
 		return AddressEntity.builder()
 			.withStreetAddress(address.getStreetAddress())
 			.withPostalCode(address.getPostalCode())
@@ -269,9 +269,10 @@ public class ContractMapper {
 			.build();
 	}
 
-	AttachmentEntity toAttachmentEntity(final String contractId, Attachment attachment) {
+	AttachmentEntity toAttachmentEntity(String municipalityId, final String contractId, Attachment attachment) {
 		return AttachmentEntity.builder()
 			.withContractId(contractId)
+			.withMunicipalityId(municipalityId)
 			.withCategory(of(AttachmentCategory.valueOf(attachment.getMetaData().getCategory())).orElse(null))
 			.withFilename(attachment.getMetaData().getFilename())
 			.withMimeType(attachment.getMetaData().getMimeType())
@@ -280,27 +281,26 @@ public class ContractMapper {
 			.build();
 	}
 
-	ContractEntity updateContractEntity(final ContractEntity entity, final Contract contract) {
-		entity.setVersion(entity.getVersion() + 1);
-		setPropertyUnlessNull(contract.getStakeholders(), entities -> entity.setStakeholders(new ArrayList<>(entities.stream()
+	ContractEntity updateContractEntity(final ContractEntity oldEntity, final Contract contract) {
+		oldEntity.setVersion(oldEntity.getVersion() + 1);
+		setPropertyUnlessNull(contract.getStakeholders(), entities -> oldEntity.setStakeholders(new ArrayList<>(entities.stream()
 			.map(this::toStakeholderEntity)
 			.toList())));
-		setPropertyUnlessNull(contract.getIndexTerms(), entity::setIndexTerms);
-		setPropertyUnlessNull(contract.getDescription(), entity::setDescription);
-		setPropertyUnlessNull(contract.getAdditionalTerms(), entity::setAdditionalTerms);
-		setPropertyUnlessNull(contract.getVersion(), entity::setVersion);
-		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
-		setPropertyUnlessNull(contract.getMunicipalityId(), entity::setMunicipalityId);
-		setPropertyUnlessNull(contract.getCaseId(), entity::setCaseId);
-		setPropertyUnlessNull(contract.isSignedByWitness(), entity::setSignedByWitness);
-		setPropertyUnlessNull(contract.getMunicipalityId(), entity::setMunicipalityId);
-		setPropertyUnlessNull(contract.getExtraParameters(), entity::setExtraParameters);
+		setPropertyUnlessNull(contract.getIndexTerms(), oldEntity::setIndexTerms);
+		setPropertyUnlessNull(contract.getDescription(), oldEntity::setDescription);
+		setPropertyUnlessNull(contract.getAdditionalTerms(), oldEntity::setAdditionalTerms);
+		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), oldEntity::setStatus);
+		setPropertyUnlessNull(contract.getMunicipalityId(), oldEntity::setMunicipalityId);
+		setPropertyUnlessNull(contract.getCaseId(), oldEntity::setCaseId);
+		setPropertyUnlessNull(contract.isSignedByWitness(), oldEntity::setSignedByWitness);
+		setPropertyUnlessNull(contract.getMunicipalityId(), oldEntity::setMunicipalityId);
+		setPropertyUnlessNull(contract.getExtraParameters(), oldEntity::setExtraParameters);
 
-		if (entity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
+		if (oldEntity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
 				contract instanceof final LandLeaseContract landLeaseContract) {
 			updateLandLeaseContractEntity(landLeaseContractEntity, landLeaseContract);
 		}
-		return entity;
+		return oldEntity;
 	}
 
 	private void updateLeaseholdEntity(final LeaseholdEntity entity, final Leasehold leasehold) {

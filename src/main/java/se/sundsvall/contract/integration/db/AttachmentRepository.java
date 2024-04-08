@@ -12,8 +12,9 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @CircuitBreaker(name = "attachmentRepository")
 public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Long> {
 
-    List<AttachmentEntity> findAllByContractId(String contractId);
-    void deleteAllByContractId(String contractId);
-	Optional<AttachmentEntity> findByContractIdAndId(String contractId, Long id);
-	void deleteByContractIdAndId(String contractId, Long id);
+	List<AttachmentEntity> findAllByContractId(String contractId);
+	Optional<AttachmentEntity> findByMunicipalityIdAndContractIdAndId(String municipalityId, String contractId, Long id);
+	boolean existsByMunicipalityIdAndContractIdAndId(String municipalityId, String contractId, Long id);
+	void deleteAllByContractId(String contractId);
+	void deleteByMunicipalityIdAndContractIdAndId(String municipalityId, String contractId, Long id);
 }

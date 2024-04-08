@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import se.sundsvall.contract.model.ExtraParameterGroup;
 
+import jakarta.persistence.PersistenceException;
+
 @ExtendWith(MockitoExtension.class)
 class ExtraParameterGroupConverterExceptionTest {
 
@@ -34,7 +36,7 @@ class ExtraParameterGroupConverterExceptionTest {
 		when(mockObjectMapper.writeValueAsString(any())).thenThrow(new RuntimeException("error"));
 
 		//Act & Assert
-		assertThatExceptionOfType(Exception.class).isThrownBy(() -> converter.convertToDatabaseColumn(List.of(new ExtraParameterGroup())))
+		assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> converter.convertToDatabaseColumn(List.of(new ExtraParameterGroup())))
 			.withMessage("Unable to serialize extra parameter groups");
 
 		verifyNoMoreInteractions(mockObjectMapper);
@@ -47,7 +49,7 @@ class ExtraParameterGroupConverterExceptionTest {
 		when(mockObjectMapper.readValue(anyString(), any(JavaType.class))).thenThrow(new RuntimeException("error"));
 
 		//Act & Assert
-		assertThatExceptionOfType(Exception.class).isThrownBy(() -> converter.convertToEntityAttribute(json))
+		assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> converter.convertToEntityAttribute(json))
 			.withMessage("Unable to deserialize extra parameter groups");
 	}
 }

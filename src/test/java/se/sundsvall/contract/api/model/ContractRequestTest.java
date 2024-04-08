@@ -16,18 +16,18 @@ class ContractRequestTest {
 	@Test
 	void testRecord() {
 		var contractId = "2024-12345";
-		var personId = "personId";
+		var partyId = "partyId";
 		var organizationNumber = "organizationNumber";
 		var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
 		var externalReferenceId = "externalReferenceId";
 		var endDate = LocalDate.of(2023, 10, 10);
 		var landLeaseType = LandLeaseType.SITELEASEHOLD;
 
-		var request = new ContractRequest(contractId, personId, organizationNumber, propertyDesignations, externalReferenceId, endDate, landLeaseType.name());
+		var request = new ContractRequest(contractId, partyId, organizationNumber, propertyDesignations, externalReferenceId, endDate, landLeaseType.name());
 
 		assertThat(request).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(request.contractId()).isEqualTo(contractId);
-		assertThat(request.personId()).isEqualTo(personId);
+		assertThat(request.partyId()).isEqualTo(partyId);
 		assertThat(request.organizationNumber()).isEqualTo(organizationNumber);
 		assertThat(request.propertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(request.externalReferenceId()).isEqualTo(externalReferenceId);

@@ -11,7 +11,7 @@ import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.LAND_LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.ORGANIZATION_NUMBER;
-import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PERSON_ID;
+import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PARTY_ID;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +30,7 @@ public final class ContractSpecifications {
 	public static Specification<ContractEntity> createContractSpecification(final String municipalityId, final ContractRequest request) {
 		return withMunicipalityId(municipalityId)
 			.and(withContractId(request.contractId()))
-			.and(withPersonId(request.personId()))
+			.and(withPersonId(request.partyId()))
 			.and(withOrganizationNumber(request.organizationNumber()))
 			.and(withEndDate(request.end()))
 			.and(withLandLeaseType(request.landLeaseType()))
@@ -50,12 +50,12 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> cb.equal(root.get(CONTRACT_ID), contractId);
 	}
 
-	private static Specification<ContractEntity> withPersonId(final String personId) {
-		if (isBlank(personId)) {
+	private static Specification<ContractEntity> withPersonId(final String partyId) {
+		if (isBlank(partyId)) {
 			return EMPTY;
 		}
 
-		return (root, query, cb) -> cb.equal(root.join(STAKEHOLDERS).get(PERSON_ID), personId);
+		return (root, query, cb) -> cb.equal(root.join(STAKEHOLDERS).get(PARTY_ID), partyId);
 	}
 
 	private static Specification<ContractEntity> withOrganizationNumber(final String organizationNumber) {

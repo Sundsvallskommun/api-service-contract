@@ -42,115 +42,115 @@ import jakarta.validation.Valid;
 @Tag(name = "Contract attachments", description = "Contract attachment resources")
 @RequestMapping(path = "/contracts/{municipalityId}/{contractId}/attachments")
 @ApiResponse(
-    responseCode = "400",
-    description = "Bad Request",
-    content = @Content(schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
+	responseCode = "400",
+	description = "Bad Request",
+	content = @Content(schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(
-    responseCode = "500",
-    description = "Internal Server Error",
-    content = @Content(schema = @Schema(implementation = Problem.class)))
+	responseCode = "500",
+	description = "Internal Server Error",
+	content = @Content(schema = @Schema(implementation = Problem.class)))
 @ApiResponse(
-    responseCode = "502",
-    description = "Bad Gateway",
-    content = @Content(schema = @Schema(implementation = Problem.class)))
+	responseCode = "502",
+	description = "Bad Gateway",
+	content = @Content(schema = @Schema(implementation = Problem.class)))
 class ContractAttachmentResource {
 
-    private final AttachmentService attachmentService;
+	private final AttachmentService attachmentService;
 
-    ContractAttachmentResource(final AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
-    }
+	ContractAttachmentResource(final AttachmentService attachmentService) {
+		this.attachmentService = attachmentService;
+	}
 
-    @Operation(
-        summary = "Download a contract attachment and its metadata",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Ok",
-                useReturnTypeSchema = true),
-	        @ApiResponse(
+	@Operation(
+		summary = "Get a contracts attachment(s) and its metadata",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "Ok",
+				useReturnTypeSchema = true),
+			@ApiResponse(
 				responseCode = "404",
-		        description = "Not Found",
-		        content = @Content(schema = @Schema(implementation = Problem.class))
-	        )
-        })
-    @GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<Attachment> getAttachmentById(
-            @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-            @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-            @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
-        return ok(attachmentService.getAttachment(contractId, attachmentId));
-    }
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class))
+			)
+		})
+	@GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	ResponseEntity<Attachment> getAttachmentById(
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
+			@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
+		return ok(attachmentService.getAttachment(municipalityId, contractId, attachmentId));
+	}
 
-    @Operation(
-        summary = "Create a contract attachment",
-        responses = {
-            @ApiResponse(
-                responseCode = "201",
-                description = "Successful operation",
-                headers = @Header(
-                    name = LOCATION,
-                    description = "Location of the uploaded attachment.",
-                    schema = @Schema(type = "string")),
-                useReturnTypeSchema = true),
-	        @ApiResponse(
-		        responseCode = "404",
-		        description = "Not Found",
-		        content = @Content(schema = @Schema(implementation = Problem.class))
-	        )
-        }
-    )
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseEntity<Void> createAttachment(
-            @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-            @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-            @RequestBody @Valid final Attachment attachment) {
-        var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
+	@Operation(
+		summary = "Create a contract attachment",
+		responses = {
+			@ApiResponse(
+				responseCode = "201",
+				description = "Successful operation",
+				headers = @Header(
+					name = LOCATION,
+					description = "Location of the uploaded attachment.",
+					schema = @Schema(type = "string")),
+				useReturnTypeSchema = true),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class))
+			)
+		}
+	)
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
+	ResponseEntity<Void> createAttachment(
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
+			@RequestBody @Valid final Attachment attachment) {
+		var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
 
-        return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
-            .header(CONTENT_TYPE, ALL_VALUE)
-            .build();
-    }
+		return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
 
-    @Operation(
-        summary = "Update a contract attachment",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Successful operation",
-                useReturnTypeSchema = true),
-	        @ApiResponse(
-		        responseCode = "404",
-		        description = "Not Found",
-		        content = @Content(schema = @Schema(implementation = Problem.class))
-	        )
-        })
-    @PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-    ResponseEntity<AttachmentMetaData> updateAttachment(
-            @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-            @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-            @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
-            @Valid @RequestBody final Attachment attachment) {
-        var result = attachmentService.updateAttachment(attachmentId, attachment);
+	@Operation(
+		summary = "Update a contract attachment",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "Successful operation",
+				useReturnTypeSchema = true),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class))
+			)
+		})
+	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	ResponseEntity<AttachmentMetaData> updateAttachment(
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
+			@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
+			@Valid @RequestBody final Attachment attachment) {
+		var result = attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment);
 
-        return ok(result);
-    }
+		return ok(result);
+	}
 
-    @Operation(
-        summary = "Delete a contract attachment",
-        responses = {
-            @ApiResponse(
-                responseCode = "204",
-                description = "No content")
-        })
-    @DeleteMapping(path = "/{attachmentId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseEntity<Void> deleteAttachment(
-            @Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-            @Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-            @Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
+	@Operation(
+		summary = "Delete a contract attachment",
+		responses = {
+			@ApiResponse(
+				responseCode = "204",
+				description = "No content")
+		})
+	@DeleteMapping(path = "/{attachmentId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	ResponseEntity<Void> deleteAttachment(
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
+			@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
 
-        attachmentService.deleteAttachment(contractId, attachmentId);
+		attachmentService.deleteAttachment(municipalityId, contractId, attachmentId);
 
-        return noContent().build();
-    }
+		return noContent().build();
+	}
 }

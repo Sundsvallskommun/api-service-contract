@@ -29,6 +29,7 @@ class AttachmentMetaDataEntityTest {
 	void testBuilderMethods() {
 		var id = 1L;
 		var contractId = "contractId";
+		var municipalityId = "1984";
 		var filename = "filename";
 		var category = CONTRACT;
 		var mimeType = "mimeType";
@@ -38,6 +39,7 @@ class AttachmentMetaDataEntityTest {
 		var attachment = AttachmentEntity.builder()
 			.withId(id)
 			.withContractId(contractId)
+			.withMunicipalityId(municipalityId)
 			.withFilename(filename)
 			.withCategory(category)
 			.withMimeType(mimeType)
@@ -48,6 +50,7 @@ class AttachmentMetaDataEntityTest {
 		assertThat(attachment).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(attachment.getId()).isEqualTo(id);
 		assertThat(attachment.getContractId()).isEqualTo(contractId);
+		assertThat(attachment.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(attachment.getFilename()).isEqualTo(filename);
 		assertThat(attachment.getCategory()).isEqualTo(category);
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);

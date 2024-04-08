@@ -43,7 +43,6 @@ class AttachmentMetaDataTest {
 		var filename = "filename";
 		var category = AttachmentCategory.CONTRACT;
 		var mimeType = "mimeType";
-		var file = "file";
 		var note = "note";
 
 		var attachment = AttachmentMetaData.builder()
