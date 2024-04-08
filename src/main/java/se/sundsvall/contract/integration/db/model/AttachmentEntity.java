@@ -5,6 +5,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import java.util.Arrays;
 import java.util.Objects;
 
+import se.sundsvall.contract.model.enums.AttachmentCategory;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,9 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.model.enums.AttachmentCategory;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +40,9 @@ public class AttachmentEntity {
 	@Column(name = "contract_id", length = 10, nullable = false)
 	private String contractId;
 
+	@Column(name = "municipality_id", length = 4)
+	private String municipalityId;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category")
 	private AttachmentCategory category;
@@ -61,16 +63,16 @@ public class AttachmentEntity {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
-            return true;
-        }
+			return true;
+		}
 		if (!(o instanceof AttachmentEntity that)) {
-            return false;
-        }
-		return Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && category == that.category && Objects.equals(filename, that.filename) && Objects.equals(mimeType, that.mimeType) && Objects.equals(note, that.note) && Arrays.equals(content, that.content);
+			return false;
+		}
+		return Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && Objects.equals(municipalityId, that.municipalityId) && category == that.category && Objects.equals(filename, that.filename) && Objects.equals(mimeType, that.mimeType) && Objects.equals(note, that.note) && Objects.deepEquals(content, that.content);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, contractId, category, filename, mimeType, note, Arrays.hashCode(content));
+		return Objects.hash(id, contractId, municipalityId, category, filename, mimeType, note, Arrays.hashCode(content));
 	}
 }

@@ -37,7 +37,7 @@ class StakeholderEntityTest {
 		var organizationNumber = "212000-2411";
 		var firstName = "Test";
 		var lastName = "Testorsson";
-		var personId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
+		var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
 		var phoneNumber = "0701231212";
 		var emailAddress = "test.testorsson@test.se";
 		var address = AddressEntity.builder().build();
@@ -50,7 +50,7 @@ class StakeholderEntityTest {
 			.withOrganizationNumber(organizationNumber)
 			.withFirstName(firstName)
 			.withLastName(lastName)
-			.withPersonId(personId)
+			.withPartyId(partyId)
 			.withPhoneNumber(phoneNumber)
 			.withEmailAddress(emailAddress)
 			.withAddress(address)
@@ -64,7 +64,7 @@ class StakeholderEntityTest {
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
-		assertThat(stakeholder.getPersonId()).isEqualTo(personId);
+		assertThat(stakeholder.getPartyId()).isEqualTo(partyId);
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(phoneNumber);
 		assertThat(stakeholder.getEmailAddress()).isEqualTo(emailAddress);
 		assertThat(stakeholder.getAddress()).isEqualTo(address);

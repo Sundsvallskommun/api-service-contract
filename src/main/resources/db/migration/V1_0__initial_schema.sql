@@ -3,6 +3,7 @@ create sequence if not exists contract_id_seq start with 1 increment by 1;
 create table attachment (
     id                      bigint not null auto_increment,
     contract_id             varchar(10) not null,
+    municipality_id         varchar(4),
     category                enum ('CONTRACT','OTHER'),
     filename                varchar(255),
     mime_type               varchar(255),
@@ -13,7 +14,7 @@ create table attachment (
 
 create table contract (
     id                      bigint not null auto_increment,
-    municipality_id         varchar(255),
+    municipality_id         varchar(4),
     contract_id             varchar(10),
     version                 integer,
     type                    enum ('LAND_LEASE'),

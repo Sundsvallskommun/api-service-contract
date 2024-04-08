@@ -1,6 +1,5 @@
 package se.sundsvall.contract.apptest;
 
-import static java.util.Objects.requireNonNull;
 import static org.apache.hc.core5.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;

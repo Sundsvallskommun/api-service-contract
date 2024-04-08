@@ -37,12 +37,13 @@ class ContractAttachmentResourceTest {
 	private WebTestClient webTestClient;
 
 	private static final String CONTRACT_ID = "2024-12345";
+	private static final String MUNICIPALITY_ID = "1984";
 
 	@Test
 	void testGetAttachmentById() {
 		//Arrange
 		var attachment = TestFactory.createAttachment();
-		when(attachmentService.getAttachment(CONTRACT_ID, 1L)).thenReturn(attachment);
+		when(attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L)).thenReturn(attachment);
 
 		//Act
 		var response = webTestClient.get()
@@ -56,7 +57,7 @@ class ContractAttachmentResourceTest {
 
 		//Assert
 		assertNotNull(response);
-		verify(attachmentService).getAttachment(CONTRACT_ID, 1L);
+		verify(attachmentService).getAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
 	}
 
@@ -76,10 +77,10 @@ class ContractAttachmentResourceTest {
 				.build())
 			.build();
 
-		when(attachmentService.createAttachment(eq("1984"), eq(CONTRACT_ID), any())).thenReturn(1L);
+		when(attachmentService.createAttachment(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), any())).thenReturn(1L);
 
 		//Act
-		var location = webTestClient.post()
+		webTestClient.post()
 			.uri("/contracts/1984/2024-12345/attachments")
 			.bodyValue(attachment)
 			.exchange()
@@ -110,7 +111,7 @@ class ContractAttachmentResourceTest {
 			.withMetaData(attachmentMetaData)
 			.build();
 
-		when(attachmentService.updateAttachment(1L, attachment)).thenReturn(attachmentMetaData);
+		when(attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment)).thenReturn(attachmentMetaData);
 
 		//Act
 		var response = webTestClient.put()
@@ -126,14 +127,14 @@ class ContractAttachmentResourceTest {
 		//Assert
 		assertNotNull(response);
 		assertThat(response).isEqualTo(attachmentMetaData);
-		verify(attachmentService).updateAttachment(1L, attachment);
+		verify(attachmentService).updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment);
 		verifyNoMoreInteractions(attachmentService);
 	}
 
 	@Test
 	void testDeleteAttachment() {
 		//Arrange
-		doNothing().when(attachmentService).deleteAttachment(CONTRACT_ID, 1L);
+		doNothing().when(attachmentService).deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 
 		//Act
 		webTestClient.delete()
@@ -142,7 +143,7 @@ class ContractAttachmentResourceTest {
 			.expectStatus().isNoContent();
 
 		//Assert
-		verify(attachmentService).deleteAttachment(CONTRACT_ID, 1L);
+		verify(attachmentService).deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
 	}
 }

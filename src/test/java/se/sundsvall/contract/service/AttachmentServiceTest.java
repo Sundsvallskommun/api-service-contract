@@ -62,7 +62,7 @@ class AttachmentServiceTest {
 		//Assert
 		assertThat(createdAttachment).isEqualTo(ENTITY_ID);
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
-		verify(mockContractMapper).toAttachmentEntity(CONTRACT_ID, attachment);
+		verify(mockContractMapper).toAttachmentEntity(MUNICIPALITY_ID, CONTRACT_ID, attachment);
 		verify(mockAttachmentRepository).save(any(AttachmentEntity.class));
 
 		verifyNoMoreInteractions(mockContractRepository);
@@ -79,7 +79,7 @@ class AttachmentServiceTest {
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, Attachment.builder().build()))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Not Found");
+			.withMessage("Contract with contractId 2024-12345 is not present within municipality 1984.");
 
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
@@ -90,14 +90,14 @@ class AttachmentServiceTest {
 	@Test
 	void testGetAttachment() {
 		//Arrange
-		when(mockAttachmentRepository.findByContractIdAndId(CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(TestFactory.createAttachmentEntity()));
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(TestFactory.createAttachmentEntity()));
 
 		//Act
-		var attachment = attachmentService.getAttachment(CONTRACT_ID, ENTITY_ID);
+		var attachment = attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
 		//Assert
 		assertThat(attachment).isNotNull();
-		verify(mockAttachmentRepository).findByContractIdAndId(CONTRACT_ID, ENTITY_ID);
+		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verify(mockContractMapper).toAttachmentDto(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockContractMapper);
@@ -107,15 +107,15 @@ class AttachmentServiceTest {
 	@Test
 	void testGetAttachment_shouldThrow404_whenNotFound() {
 		//Arrange
-		when(mockAttachmentRepository.findByContractIdAndId(CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
 		//Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> attachmentService.getAttachment(CONTRACT_ID, ENTITY_ID))
+			.isThrownBy(() -> attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Not Found");
+			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
 
-		verify(mockAttachmentRepository).findByContractIdAndId(CONTRACT_ID, ENTITY_ID);
+		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockContractMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
@@ -136,7 +136,7 @@ class AttachmentServiceTest {
 			.build());
 
 		//Act
-		attachmentService.updateAttachment(ENTITY_ID, incomingAttachment);
+		attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, incomingAttachment);
 
 		//Assert
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
@@ -165,9 +165,9 @@ class AttachmentServiceTest {
 
 		//Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> attachmentService.updateAttachment(ENTITY_ID, Attachment.builder().build()))
+			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, Attachment.builder().build()))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Not Found");
+			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
 
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
@@ -178,13 +178,30 @@ class AttachmentServiceTest {
 	@Test
 	void testDeleteAttachment() {
 		//Arrange
-		doNothing().when(mockAttachmentRepository).deleteByContractIdAndId(CONTRACT_ID, ENTITY_ID);
+		when(mockAttachmentRepository.existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(true);
+		doNothing().when(mockAttachmentRepository).deleteByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
 		//Act
-		attachmentService.deleteAttachment(CONTRACT_ID, ENTITY_ID);
+		attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
 		//Assert
-		verify(mockAttachmentRepository).deleteByContractIdAndId(CONTRACT_ID, ENTITY_ID);
+		verify(mockAttachmentRepository).existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
+		verify(mockAttachmentRepository).deleteByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
+
+		verifyNoMoreInteractions(mockAttachmentRepository);
+	}
+
+	@Test
+	void testDeleteAttachment_shouldThrow404_whenNotFound() {
+		//Arrange
+		when(mockAttachmentRepository.existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(false);
+
+		//Act & Assert
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
+			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
 
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}

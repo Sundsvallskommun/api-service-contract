@@ -65,7 +65,7 @@ class ContractResourceTest {
 	void getAllContractsOnAMunicipalityId() {
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
-				.queryParam("personId", "1")
+				.queryParam("partyId", "1")
 				.build())
 			.exchange()
 			.expectStatus().isOk()
@@ -93,7 +93,7 @@ class ContractResourceTest {
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
 			.build();
 
-        when(contractServiceMock.createContract("1984", contract)).thenReturn(id);
+		when(contractServiceMock.createContract("1984", contract)).thenReturn(id);
 
 		webTestClient.post()
 			.uri("/contracts/1984")

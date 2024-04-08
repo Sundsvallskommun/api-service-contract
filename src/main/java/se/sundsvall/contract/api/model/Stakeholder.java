@@ -45,8 +45,8 @@ public class Stakeholder {
 	@Schema(description = "Stakeholders last name", example = "Testorsson")
 	private String lastName;
 
-	@Schema(description = "PersonId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
-	private String personId;
+	@Schema(description = "PartyId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	private String partyId;
 
 	@Schema(description = "Phone number for stakeholder", example = "0701231212")
 	private String phoneNumber;

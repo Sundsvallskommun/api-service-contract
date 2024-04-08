@@ -22,6 +22,9 @@ public class ContractService {
 	private final AttachmentRepository attachmentRepository;
 	private final ContractMapper contractMapper;
 
+	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId %s is not present within municipality %s.";
+
+
 	public ContractService(final ContractRepository contractRepository,
 			final AttachmentRepository attachmentRepository, final ContractMapper contractMapper) {
 		this.contractRepository = contractRepository;
@@ -39,7 +42,10 @@ public class ContractService {
 	public Contract getContract(final String municipalityId, final String contractId) {
 		return contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
 			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByContractId(contractId)))
-			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
+			.orElseThrow(() -> Problem.builder()
+				.withStatus(Status.NOT_FOUND)
+				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
+				.build());
 	}
 
 	@Transactional(readOnly = true)
@@ -52,14 +58,20 @@ public class ContractService {
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
 		var latest = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
 			.map(oldEntity -> contractMapper.updateContractEntity(oldEntity, contract))
-			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND));
+			.orElseThrow(() -> Problem.builder()
+				.withStatus(Status.NOT_FOUND)
+				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
+				.build());
 
 		contractRepository.save(latest);
 	}
 
 	public void deleteContract(final String municipalityId, final String contractId) {
 		if (!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
-			throw Problem.valueOf(Status.NOT_FOUND);
+			throw Problem.builder()
+				.withStatus(Status.NOT_FOUND)
+				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
+				.build();
 		}
 
 		attachmentRepository.deleteAllByContractId(contractId);

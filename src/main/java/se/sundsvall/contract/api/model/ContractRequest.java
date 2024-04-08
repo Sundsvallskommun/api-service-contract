@@ -19,7 +19,7 @@ public record ContractRequest(
 
 	@ValidUuid(nullable = true)
 	@Schema(description = "Identifier for private person", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
-	String personId,
+	String partyId,
 
 	@ValidOrganizationNumber(nullable = true)
 	@Schema(description = "Organization number", example = "771122-1234")

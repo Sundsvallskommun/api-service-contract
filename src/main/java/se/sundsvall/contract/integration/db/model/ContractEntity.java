@@ -68,7 +68,7 @@ public abstract class ContractEntity {
 	@Column(name = "status")
 	private Status status;
 
-	@Column(name = "municipality_id")
+	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
 	@Column(name = "case_id")

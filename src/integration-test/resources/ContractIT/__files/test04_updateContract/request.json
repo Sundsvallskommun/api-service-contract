@@ -47,7 +47,7 @@
 			"organizationNumber": "771122-2345",
 			"firstName": "Donald",
 			"lastName": "Duck",
-			"personId": "4a29b325-4b8f-41e9-927d-946ef3953e99",
+			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99",
 			"phoneNumber": "1234567890",
 			"emailAddress": "donald.duck@sundsvall.se",
 			"address": {

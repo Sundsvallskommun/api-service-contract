@@ -15,12 +15,10 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -35,27 +33,25 @@ class ContractIT extends AbstractAppTest {
 	private static final String REQUEST_FILE = "request.json";
 
 	@Test
-	void test01_readContract() throws Exception {
+	void test01_readContract() {
 		setupCall()
 			.withServicePath("/contracts/1984/2024-12345")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse()
-			.andReturnBody(Contract.class);
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test02_readContracts() throws Exception {
+	void test02_readContracts() {
 		setupCall()
 			.withServicePath("/contracts/1984")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse()
-			.andReturnBody(new TypeReference<List<Contract>>() {});
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
@@ -81,9 +77,9 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_updateContract_findAllVersions() {
+	void test04_updateContract() {
 		final String path = "/contracts/1984/2024-12345";
-		final String allContractsPath = "/contracts/1984";
+		final String allContractsPath = "/contracts/1984/2024-12345";
 
 		//Update
 		setupCall()
@@ -103,7 +99,7 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 	@Test
-	void test05_updateContract_findLatestVersions() {
+	void test05_updateContract_findLatestVersion() {
 		final String path = "/contracts/1984/2024-12345";
 
 		//Update

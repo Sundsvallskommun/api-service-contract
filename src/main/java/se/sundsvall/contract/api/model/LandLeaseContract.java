@@ -5,8 +5,6 @@ import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.validation.constraints.NotEmpty;
-
 import org.geojson.FeatureCollection;
 
 import se.sundsvall.contract.model.LeaseFees;
@@ -14,6 +12,7 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -82,11 +81,56 @@ public class LandLeaseContract extends Contract {
 	@Schema(description = "Leased area (m2)", example = "150")
 	private Integer area;
 
-	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = "{\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ],\n                            [\n                                17297286987304688,\n                                6238050291927199\n                            ],\n                            [\n                                17297801971435547,\n                                6237922958346664\n                            ],\n                            [\n                                17301406860351562,\n                                62378194958300895\n                            ],\n                            [\n                                17303810119628906,\n                                62379149998183046\n                            ],\n                            [\n                                17303638458251953,\n                                6238066208244492\n                            ],\n                            [\n                                1730072021484375,\n                                6238137830626575\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }")
-	private FeatureCollection areaData;
-
 	@Override
 	public final String getType() {
 		return LAND_LEASE.name();
 	}
+
+	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = """
+		{
+		    "features": [
+		        {
+		            "geometry": {
+		                "coordinates": [
+		                    [
+		                        [
+		                            1730072021484375,
+		                            6238137830626575
+		                        ],
+		                        [
+		                            17297286987304688,
+		                            6238050291927199
+		                        ],
+		                        [
+		                            17297801971435547,
+		                            6237922958346664
+		                        ],
+		                        [
+		                            17301406860351562,
+		                            62378194958300895
+		                        ],
+		                        [
+		                            17303810119628906,
+		                            62379149998183046
+		                        ],
+		                        [
+		                            17303638458251953,
+		                            6238066208244492
+		                        ],
+		                        [
+		                            1730072021484375,
+		                            6238137830626575
+		                        ]
+		                    ]
+		                ],
+		                "type": "Polygon"
+		            },
+		            "properties": {},
+		            "type": "Feature"
+		        }
+		    ],
+		    "type": "FeatureCollection"
+		}
+		""")
+	private FeatureCollection areaData;
 }
