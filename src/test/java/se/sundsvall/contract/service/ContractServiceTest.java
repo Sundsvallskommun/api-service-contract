@@ -3,6 +3,7 @@ package se.sundsvall.contract.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -124,7 +125,7 @@ class ContractServiceTest {
 
 		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any()))
 			.thenReturn(List.of(landLeaseContractEntity));
-		when(mockAttachmentRepository.findAllByContractId(any(String.class)))
+		when(mockAttachmentRepository.findAllByMunicipalityIdAndContractId(eq(MUNICIPALITY_ID), any(String.class)))
 			.thenReturn(List.of(createAttachmentEntity()));
 
 		//Act
