@@ -6,14 +6,12 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
@@ -281,63 +279,6 @@ public class ContractMapper {
 			.build();
 	}
 
-	ContractEntity updateContractEntity(final ContractEntity oldEntity, final Contract contract) {
-		oldEntity.setVersion(oldEntity.getVersion() + 1);
-		setPropertyUnlessNull(contract.getStakeholders(), entities -> oldEntity.setStakeholders(new ArrayList<>(entities.stream()
-			.map(this::toStakeholderEntity)
-			.toList())));
-		setPropertyUnlessNull(contract.getIndexTerms(), oldEntity::setIndexTerms);
-		setPropertyUnlessNull(contract.getDescription(), oldEntity::setDescription);
-		setPropertyUnlessNull(contract.getAdditionalTerms(), oldEntity::setAdditionalTerms);
-		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), oldEntity::setStatus);
-		setPropertyUnlessNull(contract.getMunicipalityId(), oldEntity::setMunicipalityId);
-		setPropertyUnlessNull(contract.getCaseId(), oldEntity::setCaseId);
-		setPropertyUnlessNull(contract.isSignedByWitness(), oldEntity::setSignedByWitness);
-		setPropertyUnlessNull(contract.getMunicipalityId(), oldEntity::setMunicipalityId);
-		setPropertyUnlessNull(contract.getExtraParameters(), oldEntity::setExtraParameters);
-
-		if (oldEntity instanceof final LandLeaseContractEntity landLeaseContractEntity &&
-				contract instanceof final LandLeaseContract landLeaseContract) {
-			updateLandLeaseContractEntity(landLeaseContractEntity, landLeaseContract);
-		}
-		return oldEntity;
-	}
-
-	private void updateLeaseholdEntity(final LeaseholdEntity entity, final Leasehold leasehold) {
-		if (nonNull(leasehold)) {
-			setPropertyUnlessNull(LeaseholdType.valueOf(leasehold.getPurpose()), entity::setPurpose);
-			setPropertyUnlessNull(leasehold.getDescription(), entity::setDescription);
-		}
-	}
-
-	private void updateLandLeaseContractEntity(final LandLeaseContractEntity entity, final LandLeaseContract contract) {
-		setPropertyUnlessNull(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null), entity::setStatus);
-		setPropertyUnlessNull(ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null), entity::setLandLeaseType);
-		setPropertyUnlessNull(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null), entity::setUsufructType);
-		setPropertyUnlessNull(contract.getExternalReferenceId(), entity::setExternalReferenceId);
-		setPropertyUnlessNull(contract.getPropertyDesignations(), entity::setPropertyDesignations);
-		setPropertyUnlessNull(contract.getObjectIdentity(), entity::setObjectIdentity);
-		setPropertyUnlessNull(contract.getLeaseDuration(), entity::setLeaseDuration);
-		setPropertyUnlessNull(contract.getLeaseFees(), entity::setLeaseFees);
-		setPropertyUnlessNull(contract.getInvoicing(), invoicing -> entity.setInvoicing(InvoicingEntity.builder()
-			.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
-			.withInvoicedIn(ofNullable(invoicing.getInvoicedIn()).map(InvoicedIn::valueOf).orElse(null))
-			.build()));
-		setPropertyUnlessNull(contract.getStart(), entity::setStart);
-		setPropertyUnlessNull(contract.getEnd(), entity::setEnd);
-		setPropertyUnlessNull(contract.getAutoExtend(), entity::setAutoExtend);
-		setPropertyUnlessNull(contract.getLeaseExtension(), entity::setLeaseExtension);
-		setPropertyUnlessNull(contract.getPeriodOfNotice(), entity::setPeriodOfNotice);
-		setPropertyUnlessNull(contract.getArea(), entity::setArea);
-		setPropertyUnlessNull(contract.getAreaData(), entity::setAreaData);
-
-		if (contract.getLeasehold() != null && !CollectionUtils.isEmpty(contract.getLeasehold().getAdditionalInformation())) {
-			setPropertyUnlessNull(contract.getLeasehold().getAdditionalInformation(), entity.getLeasehold()::setAdditionalInformation);
-		}
-
-		updateLeaseholdEntity(entity.getLeasehold(), contract.getLeasehold());
-	}
-
 	AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final Attachment attachment) {
 		setPropertyUnlessNull(ofNullable(attachment.getMetaData().getCategory()).map(AttachmentCategory::valueOf).orElse(null), entity::setCategory);
 		setPropertyUnlessNull(attachment.getMetaData().getFilename(), entity::setFilename);
@@ -352,5 +293,16 @@ public class ContractMapper {
 		if (nonNull(sourceValue)) {
 			setter.accept(sourceValue);
 		}
+	}
+
+	public ContractEntity createNewContractEntity(String municipalityId, ContractEntity oldContract, Contract contract) {
+		var contractEntity = toContractEntity(municipalityId, contract);
+
+		//Set the version, the PrePersist / PreUpdate will take care of upping the version by one.
+		contractEntity.setVersion(oldContract.getVersion());
+		//Set the contractId since it will be generated otherwise.
+		contractEntity.setContractId(oldContract.getContractId());
+
+		return contractEntity;
 	}
 }

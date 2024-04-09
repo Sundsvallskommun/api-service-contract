@@ -41,7 +41,7 @@ public class ContractService {
 	@Transactional(readOnly = true)
 	public Contract getContract(final String municipalityId, final String contractId) {
 		return contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
-			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByContractId(contractId)))
+			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(Status.NOT_FOUND)
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
@@ -51,19 +51,21 @@ public class ContractService {
 	@Transactional(readOnly = true)
 	public List<Contract> getContracts(final String municipalityId, final ContractRequest request) {
 		return contractRepository.findAll(createContractSpecification(municipalityId, request)).stream()
-			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByContractId(contractEntity.getContractId())))
+			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
 			.toList();
 	}
 
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
-		var latest = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
-			.map(oldEntity -> contractMapper.updateContractEntity(oldEntity, contract))
+		var oldContractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(Status.NOT_FOUND)
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build());
 
-		contractRepository.save(latest);
+		//Create a new entity and save it
+		var newContractEntity = contractMapper.createNewContractEntity(municipalityId, oldContractEntity, contract);
+		contractRepository.save(newContractEntity);
+
 	}
 
 	public void deleteContract(final String municipalityId, final String contractId) {

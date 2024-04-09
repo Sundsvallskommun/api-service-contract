@@ -1,5 +1,6 @@
 package se.sundsvall.contract.apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -16,9 +17,11 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -31,6 +34,9 @@ class ContractIT extends AbstractAppTest {
 
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
+
+	@Autowired
+	private ContractRepository contractRepository;
 
 	@Test
 	void test01_readContract() {
@@ -97,31 +103,16 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-	}
-	@Test
-	void test05_updateContract_findLatestVersion() {
-		final String path = "/contracts/1984/2024-12345";
 
-		//Update
-		setupCall()
-			.withServicePath(path)
-			.withHttpMethod(PUT)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(OK)
-			.sendRequestAndVerifyResponse();
-
-		//Verify update
-		setupCall()
-			.withServicePath(path)
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
+		//We can't fetch older versions via the API, so check that we have an older version of the contract
+		//The old version should have id 1.
+		var contractEntity = contractRepository.findById(1L).get();
+		assertThat(contractEntity.getContractId()).isEqualTo("2024-12345");
+		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 
 	@Test
-	void test06_deleteContract() {
+	void test05_deleteContract() {
 		final String contractPath = "/contracts/1984/2024-12345";
 		final String attachmentPath = contractPath + "/attachments/1";
 
