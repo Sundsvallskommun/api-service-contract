@@ -1,0 +1,28 @@
+{
+  "oldVersion": 1,
+  "newVersion": 2,
+  "changes": [
+    {
+      "type": "MODIFICATION",
+      "path": "$.description",
+      "oldValue": "someOldDescription",
+      "newValue": "someDescription"
+    },
+    {
+      "type": "MODIFICATION",
+      "path": "$.signedByWitness",
+      "oldValue": false,
+      "newValue": true
+    },
+    {
+      "type": "MODIFICATION",
+      "path": "$.status",
+      "oldValue": "DRAFT",
+      "newValue": "ACTIVE"
+    }
+  ],
+  "availableVersions": [
+    1,
+    2
+  ]
+}

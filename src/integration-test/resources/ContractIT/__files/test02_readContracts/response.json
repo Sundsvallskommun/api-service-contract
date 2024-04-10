@@ -1,165 +1,165 @@
 {
-	"contracts": [
-		{
-			"type": "LAND_LEASE",
-			"contractId": "2024-12345",
-			"version": 1,
-			"status": "DRAFT",
-			"municipalityId": "1984",
-			"caseId": 1,
-			"indexTerms": [],
-			"description": "someDescription",
-			"additionalTerms": [],
-			"stakeholders": [
-				{
-					"type": "PERSON",
-					"roles": [
-						"SIGNATORY"
-					],
-					"organizationName": "someOrganizationName",
-					"organizationNumber": "771122-1234",
-					"firstName": "someFirstName",
-					"lastName": "someLastName",
-					"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
-					"phoneNumber": "somePhoneNumber",
-					"emailAddress": "someEmail",
-					"address": {
-						"type": "POSTAL_ADDRESS",
-						"streetAddress": "someStreetAddress",
-						"postalCode": "12345",
-						"town": "someTown",
-						"country": "SE",
-						"attention": "someAttention"
-					}
-				}
-			],
-			"attachmentMetaData": [
-				{
-					"id": 1,
-					"category": "CONTRACT",
-					"filename": "someFile.pdf",
-					"mimeType": "application/pdf",
-					"note": "someNote"
-				}
-			],
-			"signedByWitness": true,
-			"landLeaseType": "LEASEHOLD",
-			"leasehold": {
-				"purpose": "AGRICULTURE",
-				"description": "SomeLeaseholdDescription",
-				"additionalInformation": [
-					"Some additional information"
-				]
-			},
-			"usufructType": "HUNTING",
-			"externalReferenceId": "MK-TEST0001",
-			"propertyDesignations": [
-				"SUNDSVALL NORRMALM 1:1"
-			],
-			"objectIdentity": "someObjectIdentity",
-			"leaseDuration": 2,
-			"leaseFees": {
-				"currency": "SEK",
-				"yearly": 234.56,
-				"monthly": 123.45,
-				"total": 500,
-				"totalAsText": "five hundred",
-				"indexYear": 2021,
-				"indexNumber": 2,
-				"additionalInformation": [
-					"someAdditionalInfo1",
-					"someAdditionalInfo2"
-				]
-			},
-			"invoicing": {
-				"invoiceInterval": "QUARTERLY",
-				"invoicedIn": "ADVANCE"
-			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
-			"area": 12
-		},
-		{
-			"type": "LAND_LEASE",
-			"contractId": "2024-23456",
-			"version": 1,
-			"status": "DRAFT",
-			"municipalityId": "1984",
-			"caseId": 1,
-			"indexTerms": [],
-			"description": "someDescription",
-			"additionalTerms": [],
-			"stakeholders": [
-				{
-					"type": "PERSON",
-					"roles": [
-						"POWER_OF_ATTORNEY_ROLE",
-						"SIGNATORY"
-					],
-					"organizationName": "someOrganizationName",
-					"organizationNumber": "771122-1234",
-					"firstName": "someFirstName",
-					"lastName": "someLastName",
-					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-					"phoneNumber": "somePhoneNumber",
-					"emailAddress": "someEmail",
-					"address": {
-						"type": "VISITING_ADDRESS",
-						"streetAddress": "someStreetAddress",
-						"postalCode": "12345",
-						"town": "someTown",
-						"country": "SE",
-						"attention": "someAttention"
-					}
-				}
-			],
-			"attachmentMetaData": [],
-			"signedByWitness": false,
-			"landLeaseType": "LEASEHOLD",
-			"leasehold": {
-				"purpose": "AGRICULTURE",
-				"description": "SomeLeaseholdDescription",
-				"additionalInformation": [
-					"More additional information"
-				]
-			},
-			"usufructType": "HUNTING",
-			"externalReferenceId": "MK-TEST0002",
-			"propertyDesignations": [
-				"SUNDSVALL NORRMALM 2:1"
-			],
-			"objectIdentity": "someObjectIdentity",
-			"leaseDuration": 2,
-			"leaseFees": {
-				"currency": "EUR",
-				"yearly": 1000,
-				"monthly": 120,
-				"total": 5000,
-				"totalAsText": "five thousand",
-				"indexYear": 2021,
-				"indexNumber": 3,
-				"additionalInformation": []
-			},
-			"invoicing": {
-				"invoiceInterval": "QUARTERLY",
-				"invoicedIn": "ARREARS"
-			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
-			"area": 12
-		}
-	],
-	"_meta": {
-		"page": 1,
-		"limit": 9,
-		"count": 2,
-		"totalRecords": 2,
-		"totalPages": 1
-	}
+  "contracts": [
+    {
+      "type": "LAND_LEASE",
+      "contractId": "2024-23456",
+      "version": 1,
+      "status": "DRAFT",
+      "municipalityId": "1984",
+      "caseId": 1,
+      "indexTerms": [],
+      "description": "someDescription",
+      "additionalTerms": [],
+      "stakeholders": [
+        {
+          "type": "PERSON",
+          "roles": [
+            "POWER_OF_ATTORNEY_ROLE",
+            "SIGNATORY"
+          ],
+          "organizationName": "someOrganizationName",
+          "organizationNumber": "771122-1234",
+          "firstName": "someFirstName",
+          "lastName": "someLastName",
+          "partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+          "phoneNumber": "somePhoneNumber",
+          "emailAddress": "someEmail",
+          "address": {
+            "type": "VISITING_ADDRESS",
+            "streetAddress": "someStreetAddress",
+            "postalCode": "12345",
+            "town": "someTown",
+            "country": "SE",
+            "attention": "someAttention"
+          }
+        }
+      ],
+      "attachmentMetaData": [],
+      "signedByWitness": false,
+      "landLeaseType": "LEASEHOLD",
+      "leasehold": {
+        "purpose": "AGRICULTURE",
+        "description": "SomeLeaseholdDescription",
+        "additionalInformation": [
+          "More additional information"
+        ]
+      },
+      "usufructType": "HUNTING",
+      "externalReferenceId": "MK-TEST0002",
+      "propertyDesignations": [
+        "SUNDSVALL NORRMALM 2:1"
+      ],
+      "objectIdentity": "someObjectIdentity",
+      "leaseDuration": 2,
+      "leaseFees": {
+        "currency": "EUR",
+        "yearly": 1000,
+        "monthly": 120,
+        "total": 5000,
+        "totalAsText": "five thousand",
+        "indexYear": 2021,
+        "indexNumber": 3,
+        "additionalInformation": []
+      },
+      "invoicing": {
+        "invoiceInterval": "QUARTERLY",
+        "invoicedIn": "ARREARS"
+      },
+      "start": "2023-10-02",
+      "end": "2023-10-10",
+      "autoExtend": true,
+      "leaseExtension": 1,
+      "periodOfNotice": 2,
+      "area": 12
+    },
+    {
+      "type": "LAND_LEASE",
+      "contractId": "2024-12345",
+      "version": 2,
+      "status": "ACTIVE",
+      "municipalityId": "1984",
+      "caseId": 1,
+      "indexTerms": [],
+      "description": "someDescription",
+      "additionalTerms": [],
+      "stakeholders": [
+        {
+          "type": "PERSON",
+          "roles": [
+            "SIGNATORY"
+          ],
+          "organizationName": "someOrganizationName",
+          "organizationNumber": "771122-1234",
+          "firstName": "someFirstName",
+          "lastName": "someLastName",
+          "partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+          "phoneNumber": "somePhoneNumber",
+          "emailAddress": "someEmail",
+          "address": {
+            "type": "POSTAL_ADDRESS",
+            "streetAddress": "someStreetAddress",
+            "postalCode": "12345",
+            "town": "someTown",
+            "country": "SE",
+            "attention": "someAttention"
+          }
+        }
+      ],
+      "attachmentMetaData": [
+        {
+          "id": 1,
+          "category": "CONTRACT",
+          "filename": "someFile.pdf",
+          "mimeType": "application/pdf",
+          "note": "someNote"
+        }
+      ],
+      "signedByWitness": true,
+      "landLeaseType": "LEASEHOLD",
+      "leasehold": {
+        "purpose": "AGRICULTURE",
+        "description": "SomeLeaseholdDescription",
+        "additionalInformation": [
+          "Some additional information"
+        ]
+      },
+      "usufructType": "HUNTING",
+      "externalReferenceId": "MK-TEST0001",
+      "propertyDesignations": [
+        "SUNDSVALL NORRMALM 1:1"
+      ],
+      "objectIdentity": "someObjectIdentity",
+      "leaseDuration": 2,
+      "leaseFees": {
+        "currency": "SEK",
+        "yearly": 234.56,
+        "monthly": 123.45,
+        "total": 500,
+        "totalAsText": "five hundred",
+        "indexYear": 2021,
+        "indexNumber": 2,
+        "additionalInformation": [
+          "someAdditionalInfo1",
+          "someAdditionalInfo2"
+        ]
+      },
+      "invoicing": {
+        "invoiceInterval": "QUARTERLY",
+        "invoicedIn": "ADVANCE"
+      },
+      "start": "2023-10-02",
+      "end": "2023-10-10",
+      "autoExtend": true,
+      "leaseExtension": 1,
+      "periodOfNotice": 2,
+      "area": 12
+    }
+  ],
+  "_meta": {
+    "page": 1,
+    "limit": 9,
+    "count": 2,
+    "totalRecords": 2,
+    "totalPages": 1
+  }
 }

@@ -10,6 +10,9 @@ import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,13 +23,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
+import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -37,7 +43,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @RestController
 @Validated
@@ -118,8 +123,9 @@ class ContractResource {
 	@GetMapping(path = "/{contractId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Contract> getContractById(
 			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-			@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId) {
-		return ok(service.getContract(municipalityId, contractId));
+			@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId,
+			@Parameter(description = "Contract version") @Positive @RequestParam(name = "version", required = false) final Integer version) {
+		return ok(service.getContract(municipalityId, contractId, version));
 	}
 
 	@Operation(
@@ -141,6 +147,29 @@ class ContractResource {
 		service.updateContract(municipalityId, contractId, contract);
 
 		return ok().build();
+	}
+
+	@Operation(
+		summary = "Diff two versions of a contract",
+		responses = {
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(schema = @Schema(implementation = Problem.class)))
+		})
+	@PostMapping(path = "/{contractId}/diff", consumes = ALL_VALUE, produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	ResponseEntity<Diff> diffContract(
+			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
+			@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId,
+			@Parameter(description = "Old version") @Positive @RequestParam(name = "oldVersion", required = false) final Integer oldVersion,
+			@Parameter(description = "New version") @Positive @RequestParam(name = "newVersion", required = false) final Integer newVersion) {
+		var oldVersionNull = oldVersion == null;
+		var newVersionNull = newVersion == null;
+		if (oldVersionNull ^ newVersionNull) {
+			throw Problem.valueOf(Status.BAD_REQUEST, "Either both or none of 'oldVersion' and 'newVersion' must be set");
+		}
+
+		return ok(service.diffContract(municipalityId, contractId, oldVersion, newVersion));
 	}
 
 	@Operation(

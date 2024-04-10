@@ -17,6 +17,7 @@
 
 	<properties>
 		<geojson-jackson.version>1.14</geojson-jackson.version>
+		<json-diff.version>1.0.1</json-diff.version>
 		<assertj-core.version>3.25.3</assertj-core.version>
 
 		<!-- Pipeline properties -->
@@ -84,6 +85,11 @@
 			<groupId>de.grundid.opendatalab</groupId>
 			<artifactId>geojson-jackson</artifactId>
 			<version>${geojson-jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.deblockt</groupId>
+			<artifactId>json-diff</artifactId>
+			<version>${json-diff.version}</version>
 		</dependency>
 		<!-- To be able to use "withEnumStringComparison()" in tests, needed until dept44 updates to SB 3.3.0  -->
 		<dependency>

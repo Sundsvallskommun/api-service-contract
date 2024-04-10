@@ -13,6 +13,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 
@@ -32,6 +33,9 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class ContractIT extends AbstractAppTest {
 
+	private static final String MUNICIPALITY_ID = "1984";
+	private static final String CONTRACT_ID = "2024-12345";
+
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
 
@@ -41,7 +45,9 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test01_readContract() {
 		setupCall()
-			.withServicePath("/contracts/1984/2024-12345")
+			.withServicePath(fromPath("/contracts/{municipalityId}/{contractId}")
+				.build(MUNICIPALITY_ID, CONTRACT_ID)
+				.toString())
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -52,7 +58,11 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test02_readContracts() {
 		setupCall()
-			.withServicePath("/contracts/1984?page=1&limit=9")
+			.withServicePath(fromPath("/contracts/{municipalityId}")
+				.queryParam("page", 1)
+				.queryParam("limit", 9)
+				.build(MUNICIPALITY_ID)
+				.toString())
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -63,7 +73,9 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test03_createContract() {
 		var test = setupCall()
-			.withServicePath("/contracts/1984")
+			.withServicePath(fromPath("/contracts/{municipalityId}")
+				.build(MUNICIPALITY_ID)
+				.toString())
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
@@ -72,7 +84,10 @@ class ContractIT extends AbstractAppTest {
 
 		var location = test.getResponseHeaders().getLocation();
 
-		//Verify it's there
+		assertThat(location).isNotNull();
+		assertThat(location.getPath()).isNotNull();
+
+		// Verify it's there
 		setupCall()
 			.withServicePath(location.getPath())
 			.withHttpMethod(GET)
@@ -84,10 +99,11 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test04_updateContract() {
-		final String path = "/contracts/1984/2024-12345";
-		final String allContractsPath = "/contracts/1984/2024-12345";
+		final var path = fromPath("/contracts/{municipalityId}/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
 
-		//Update
+		// Update
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(PUT)
@@ -95,28 +111,33 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
-		//Verify update
+		// Verify update
 		setupCall()
-			.withServicePath(allContractsPath)
+			.withServicePath(path)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		//We can't fetch older versions via the API, so check that we have an older version of the contract
-		//The old version should have id 1.
+		// We can't fetch older versions via the API, so check that we have an older version of the contract
+		// The old version should have id 1.
 		var contractEntity = contractRepository.findById(1L).get();
-		assertThat(contractEntity.getContractId()).isEqualTo("2024-12345");
+		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 
 	@Test
 	void test05_deleteContract() {
-		final String contractPath = "/contracts/1984/2024-12345";
-		final String attachmentPath = contractPath + "/attachments/1";
+		final var contractPath = fromPath("/contracts/{municipalityId}/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+		final var attachmentPath = fromPath(contractPath)
+			.path("/attachments/{attachmentId}")
+			.build(1)
+			.toString();
 
-		//Verify the contract is there
+		// Verify the contract is there
 		setupCall()
 			.withServicePath(contractPath)
 			.withHttpMethod(GET)
@@ -125,14 +146,14 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		//Delete
+		// Delete
 		setupCall()
 			.withServicePath(contractPath)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
-		//Verify it's gone
+		// Verify it's gone
 		setupCall()
 			.withServicePath(contractPath)
 			.withHttpMethod(GET)
@@ -140,7 +161,7 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
 			.sendRequestAndVerifyResponse();
 
-		//Verify the attachments are gone as well
+		// Verify the attachments are gone as well
 		setupCall()
 			.withServicePath(attachmentPath)
 			.withHttpMethod(GET)
@@ -149,4 +170,20 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	@Test
+	void test06_diffContract() {
+		final var path = fromPath("/contracts/{municipalityId}/{contractId}/diff")
+			.queryParam("oldVersion", 1)
+			.queryParam("newVersion", 2)
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(POST)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }
