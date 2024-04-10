@@ -95,7 +95,8 @@
 			{
 				"type": "PERSON",
 				"roles": [
-					"POWER_OF_ATTORNEY_ROLE"
+					"POWER_OF_ATTORNEY_ROLE",
+					"SIGNATORY"
 				],
 				"organizationName": "someOrganizationName",
 				"organizationNumber": "771122-1234",

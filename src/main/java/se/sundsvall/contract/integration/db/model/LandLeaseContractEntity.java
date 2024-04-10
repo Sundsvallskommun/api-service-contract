@@ -4,28 +4,28 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import org.geojson.FeatureCollection;
+import org.hibernate.Length;
+
+import se.sundsvall.contract.integration.db.model.converter.LeaseFeesConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.LandLeaseTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.UsufructTypeConverter;
+import se.sundsvall.contract.model.LeaseFees;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.UsufructType;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
-
-import org.geojson.FeatureCollection;
-import org.hibernate.Length;
-
-import se.sundsvall.contract.integration.db.model.converter.LeaseFeesConverter;
-import se.sundsvall.contract.model.LeaseFees;
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.contract.model.enums.UsufructType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,15 +41,18 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "land_lease_contract")
 public class LandLeaseContractEntity extends ContractEntity {
 
-	@Enumerated(EnumType.STRING)
+	@Column(name = "land_lease_type")
+	@Convert(converter = LandLeaseTypeConverter.class)
 	private LandLeaseType landLeaseType;
 
 	@Embedded
 	private LeaseholdEntity leasehold;
 
-	@Enumerated(EnumType.STRING)
+	@Column(name = "usufruct_type")
+	@Convert(converter = UsufructTypeConverter.class)
 	private UsufructType usufructType;
 
+	@Column(name = "external_reference_id")
 	private String externalReferenceId;
 
 	@ElementCollection(fetch = FetchType.EAGER)
@@ -63,27 +66,35 @@ public class LandLeaseContractEntity extends ContractEntity {
 	@Column(name = "property_designation")
 	private List<String> propertyDesignations;
 
+	@Schema(name = "object_identity")
 	private String objectIdentity;
 
+	@Schema(name = "lease_duration")
 	private Integer leaseDuration;
 
-	@Column(name = "lease_fees")
+	@Column(name = "lease_fees", length = 2048)
 	@Convert(converter = LeaseFeesConverter.class)
 	private LeaseFees leaseFees;
 
 	@Embedded
 	private InvoicingEntity invoicing;
 
+	@Schema(name = "start")
 	private LocalDate start;
 
+	@Schema(name = "end")
 	private LocalDate end;
 
+	@Column(name = "auto_extend")
 	private Boolean autoExtend;
 
+	@Column(name = "lease_extension")
 	private Integer leaseExtension;
 
+	@Column(name = "period_of_notice")
 	private Integer periodOfNotice;
 
+	@Column(name = "area")
 	private Integer area;
 
 	@Column(name = "area_data", length = Length.LONG32)

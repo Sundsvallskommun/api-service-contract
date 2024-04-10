@@ -5,12 +5,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import java.util.Arrays;
 import java.util.Objects;
 
+import se.sundsvall.contract.integration.db.model.converter.enums.AttachmentCategoryConverter;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
@@ -43,8 +43,8 @@ public class AttachmentEntity {
 	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "category")
+	@Convert(converter = AttachmentCategoryConverter.class)
 	private AttachmentCategory category;
 
 	@Column(name = "filename")

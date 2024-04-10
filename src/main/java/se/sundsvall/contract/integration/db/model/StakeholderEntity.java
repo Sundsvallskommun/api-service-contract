@@ -3,20 +3,18 @@ package se.sundsvall.contract.integration.db.model;
 import java.util.List;
 import java.util.Objects;
 
+import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderTypeConverter;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -40,17 +38,12 @@ public class StakeholderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
+	@Convert(converter = StakeholderTypeConverter.class)
 	private StakeholderType type;
 
-	@ElementCollection
-	@JoinTable(
-		name = "stakeholder_role",
-		joinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id")
-	)
-	@Column(name = "role")
-	@Enumerated(EnumType.STRING)
+	@Column(name = "roles")
+	@Convert(converter = StakeholderRoleConverter.class)
 	private List<StakeholderRole> roles;
 
 	@Column(name = "organization_name")

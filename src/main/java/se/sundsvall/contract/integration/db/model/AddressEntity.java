@@ -1,11 +1,11 @@
 package se.sundsvall.contract.integration.db.model;
 
+import se.sundsvall.contract.integration.db.model.converter.enums.AddressTypeConverter;
 import se.sundsvall.contract.model.enums.AddressType;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(name = "address")
 public class AddressEntity {
-	
-	@Enumerated(EnumType.STRING)
+
 	@Column(name = "address_type")
+	@Convert(converter = AddressTypeConverter.class)
 	private AddressType type;
 
 	@Column(name = "street_address")

@@ -2,17 +2,16 @@ package se.sundsvall.contract.integration.db.model;
 
 import java.util.List;
 
+import se.sundsvall.contract.integration.db.model.converter.enums.LeaseholdTypeConverter;
 import se.sundsvall.contract.model.enums.LeaseholdType;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +25,8 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class LeaseholdEntity {
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "leasehold_type")
+	@Convert(converter = LeaseholdTypeConverter.class)
 	private LeaseholdType purpose;
 
 	@Column(name = "leasehold_description")
