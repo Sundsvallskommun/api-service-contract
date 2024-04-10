@@ -1,9 +1,11 @@
 package se.sundsvall.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContract;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
-import static se.sundsvall.contract.TestFactory.getUpdatedLandLeaseContract;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createUpdatedLandLeaseContract;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,79 +14,66 @@ import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 
 class ContractMapperTest {
 
+	private final ContractMapper contractMapper = new ContractMapper();
 
 	@Test
-	void toDto() {
+	void toContractDto() {
+		//Arrange
+		var entity = createLandLeaseContractEntity();
 
-		final var entity = getLandLeaseContractEntity();
+		//Act
+		var result = contractMapper.toContractDto(entity, List.of());
 
-		final var result = ContractMapper.toDto(entity);
-
-		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
+		//Assert
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("type");
+		assertThat(result)
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.ignoringFields("type", "attachments", "attachmentMetaData")
+			.isEqualTo(entity);
 	}
 
 	@Test
-	void toEntity() {
+	void toContractDto_NullValues() {
+		//Arrange
+		var entity = LandLeaseContractEntity.builder().build();
 
-		final var dto = getLandLeaseContract();
+		//Act
+		var result = contractMapper.toContractDto(entity, null);
 
-		final var result = ContractMapper.toEntity(dto);
+		//Assert
+		assertThat(result).isNotNull().hasAllNullFieldsOrPropertiesExcept("type", "version", "signedByWitness");
+	}
 
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
+	@Test
+	void toContractEntity() {
+		//Arrange
+		var dto = createLandLeaseContract();
+
+		//Act
+		var result = contractMapper.toContractEntity("1984", dto);
+
+		//Assert
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "type", "attachments");
 		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments.id", "stakeholders.id")
+			.ignoringFields("id", "type", "attachments", "stakeholders.id", "leaseFees.landLeaseContractId")
+			.withEnumStringComparison()
 			.isEqualTo(dto);
 	}
 
 	@Test
-	void updateEntity() {
+	void toContractEntity_NullValues() {
+		//Arrange
+		var dto = LandLeaseContract.builder().build();
 
-		final var entity = getLandLeaseContractEntity();
-		final var dto = getUpdatedLandLeaseContract();
+		//Act
+		var result = contractMapper.toContractEntity("1984", dto);
 
-		final var result = ContractMapper.updateEntity(entity, dto);
-
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
-		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id", "attachments.id", "stakeholders.id")
-			.isEqualTo(dto);
-
-	}
-
-	@Test
-	void toDto_NullValues() {
-
-		final var entity = LandLeaseContractEntity.builder().build();
-
-		final var result = ContractMapper.toDto(entity);
-
-		assertThat(result).usingRecursiveComparison().isEqualTo(entity);
-	}
-
-	@Test
-	void toEntity_NullValues() {
-
-		final var dto = LandLeaseContract.builder().build();
-
-		final var result = ContractMapper.toEntity(dto);
-
-		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id")
+		//Assert
+		assertThat(result)
+			.usingRecursiveComparison()
+			.withEnumStringComparison()
+			.ignoringFields("id", "municipalityId", "attachments", "version")
 			.isEqualTo(dto);
 	}
-
-	@Test
-	void updateEntity_NullValues() {
-
-		final var entity = LandLeaseContractEntity.builder().build();
-		final var dto = LandLeaseContract.builder().build();
-
-		final var result = ContractMapper.updateEntity(entity, dto);
-
-		assertThat(result).usingRecursiveComparison()
-			.ignoringFields("id")
-			.isEqualTo(dto);
-	}
-
 }

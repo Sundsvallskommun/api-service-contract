@@ -9,9 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.LeaseholdType;
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 class LeaseholdEntityTest {
 
@@ -27,15 +29,16 @@ class LeaseholdEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var type = LeaseholdType.APARTMENT;
-		final var description = "description";
-		final var leasehold = LeaseholdEntity.builder()
-			.withType(type)
+		var type = LeaseholdType.APARTMENT;
+		var description = "description";
+		var leasehold = LeaseholdEntity.builder()
+			.withPurpose(type)
+			.withAdditionalInformation(List.of("info1", "info2"))
 			.withDescription(description)
 			.build();
 
 		assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leasehold.getType()).isEqualTo(type);
+		assertThat(leasehold.getPurpose()).isEqualTo(type);
 		assertThat(leasehold.getDescription()).isEqualTo(description);
 	}
 
@@ -43,5 +46,4 @@ class LeaseholdEntityTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(LeaseholdEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

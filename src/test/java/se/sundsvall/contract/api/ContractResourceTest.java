@@ -3,12 +3,19 @@ package se.sundsvall.contract.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.LandLeaseType.LEASEHOLD;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 
@@ -21,8 +28,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
+import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.service.ContractService;
 
@@ -37,11 +44,11 @@ class ContractResourceTest {
 	private ContractService contractServiceMock;
 
 	@Test
-	void getContractsById() {
-		when(contractServiceMock.getContract("1984", 1L)).thenReturn(LandLeaseContract.builder().build());
+	void getContractsByMunicipalityAndContractId() {
+		when(contractServiceMock.getContract("1984", "2024-12345")).thenReturn(LandLeaseContract.builder().build());
 
-		final var response = webTestClient.get()
-			.uri("/contracts/1984/1")
+		var response = webTestClient.get()
+			.uri("/contracts/1984/2024-12345")
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -50,22 +57,20 @@ class ContractResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isNotNull();
-		verify(contractServiceMock).getContract("1984", 1L);
+		verify(contractServiceMock).getContract("1984", "2024-12345");
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
-	void getContracts() {
+	void getAllContractsOnAMunicipalityId() {
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
-				.queryParam("personId", "1")
+				.queryParam("partyId", "1")
 				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(new ParameterizedTypeReference<List<LandLeaseContract>>() {
-
-			})
+			.expectBody(new ParameterizedTypeReference<List<LandLeaseContract>>() {})
 			.returnResult()
 			.getResponseBody();
 
@@ -74,16 +79,21 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void postContracts() {
-
-		final var id = 123L;
-		final var contract = LandLeaseContract.builder()
-			.withVersion(0)
+	void postContract() {
+		var id = "2024-12345";
+		var contract = LandLeaseContract.builder()
 			.withArea(0)
-			.withPropertyDesignation("SUNDSVALL NORRMALM 1:1")
+			.withInvoicing(Invoicing.builder()
+				.withInvoiceInterval(QUARTERLY.name())
+				.withInvoicedIn(ARREARS.name())
+				.build())
+			.withLandLeaseType(LEASEHOLD.name())
+			.withStatus(ACTIVE.name())
+			.withUsufructType(HUNTING.name())
+			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
 			.build();
 
-		when(contractServiceMock.createContract(any(), any())).thenReturn(id);
+		when(contractServiceMock.createContract("1984", contract)).thenReturn(id);
 
 		webTestClient.post()
 			.uri("/contracts/1984")
@@ -99,17 +109,34 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void patchContracts() {
-		final var contract = TestFactory.getUpdatedLandLeaseContract();
+	void updateContract() {
+		var landLeaseContract = createLandLeaseContract();
 
-		webTestClient.patch()
-			.uri("/contracts/1984/1")
-			.bodyValue(contract)
+		doNothing().when(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
+
+		webTestClient.put()
+			.uri("/contracts/1984/2024-12345")
+			.bodyValue(landLeaseContract)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).updateContract(eq("1984"), eq(1L), any());
+		verify(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
+
+	@Test
+	void testDeleteContract() {
+		doNothing().when(contractServiceMock).deleteContract("1984", "2024-12345");
+
+		webTestClient.delete()
+			.uri("/contracts/1984/2024-12345")
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectBody().isEmpty();
+
+		verify(contractServiceMock).deleteContract("1984", "2024-12345");
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
 }

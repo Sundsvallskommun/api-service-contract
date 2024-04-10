@@ -1,13 +1,15 @@
 package se.sundsvall.contract.api.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.api.model.enums.LeaseholdType.AGRICULTURE;
-import static se.sundsvall.contract.api.model.enums.LeaseholdType.APARTMENT;
-import static se.sundsvall.contract.api.model.enums.LeaseholdType.BUILDING;
-import static se.sundsvall.contract.api.model.enums.LeaseholdType.DWELLING;
-import static se.sundsvall.contract.api.model.enums.LeaseholdType.OTHER;
+import static se.sundsvall.contract.model.enums.LeaseholdType.AGRICULTURE;
+import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
+import static se.sundsvall.contract.model.enums.LeaseholdType.BUILDING;
+import static se.sundsvall.contract.model.enums.LeaseholdType.DWELLING;
+import static se.sundsvall.contract.model.enums.LeaseholdType.OTHER;
 
 import org.junit.jupiter.api.Test;
+
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 class LeaseholdTypeTest {
 
@@ -26,15 +28,4 @@ class LeaseholdTypeTest {
 		assertThat(OTHER).hasToString("OTHER");
 
 	}
-
-	@Test
-	void enumTestValues() {
-
-		assertThat(APARTMENT.getText()).isEqualTo("Lägenhetsarrende");
-		assertThat(BUILDING.getText()).isEqualTo("Anläggningsarrende");
-		assertThat(AGRICULTURE.getText()).isEqualTo("Jordbruksarrende");
-		assertThat(DWELLING.getText()).isEqualTo("Bostadsarrende");
-		assertThat(OTHER.getText()).isEqualTo("Annat");
-	}
-
 }

@@ -9,9 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.AddressType;
+import se.sundsvall.contract.model.enums.AddressType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class AddressTest {
 
@@ -26,16 +29,26 @@ class AddressTest {
 	}
 
 	@Test
-	void testBuilderMethods() {
-		final var type = AddressType.POSTAL_ADDRESS;
-		final var streetAddress = "Testvägen 18";
-		final var postalCode = "123 45";
-		final var town = "Sundsvall";
-		final var country = "Sverige";
-		final var attention = "Test Testorsson";
+	void testAddress_type_hasValidOneOfValues() throws NoSuchFieldException {
+		var oneOf = Address.class.getDeclaredField("type")
+			.getAnnotation(OneOf.class)
+			.value();
 
-		final var address = Address.builder()
-			.withType(type)
+		Arrays.stream(AddressType.values())
+			.forEach(value -> assertThat(oneOf).contains(value.name()));
+	}
+
+	@Test
+	void testBuilderMethods() {
+		var type = AddressType.POSTAL_ADDRESS;
+		var streetAddress = "Testvägen 18";
+		var postalCode = "123 45";
+		var town = "Sundsvall";
+		var country = "Sverige";
+		var attention = "Test Testorsson";
+
+		var address = Address.builder()
+			.withType(type.name())
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)
 			.withTown(town)
@@ -44,7 +57,7 @@ class AddressTest {
 			.build();
 
 		assertThat(address).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(address.getType()).isEqualTo(type);
+		assertThat(address.getType()).isEqualTo(type.name());
 		assertThat(address.getStreetAddress()).isEqualTo(streetAddress);
 		assertThat(address.getPostalCode()).isEqualTo(postalCode);
 		assertThat(address.getTown()).isEqualTo(town);

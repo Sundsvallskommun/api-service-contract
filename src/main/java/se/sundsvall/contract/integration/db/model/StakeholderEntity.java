@@ -1,6 +1,10 @@
 package se.sundsvall.contract.integration.db.model;
 
 import java.util.List;
+import java.util.Objects;
+
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -11,20 +15,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Setter
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(setterPrefix = "with")
@@ -40,8 +45,12 @@ public class StakeholderEntity {
 	private StakeholderType type;
 
 	@ElementCollection
-	@JoinTable(name = "stakeholder_roles")
+	@JoinTable(
+		name = "stakeholder_role",
+		joinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id")
+	)
 	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
 	private List<StakeholderRole> roles;
 
 	@Column(name = "organization_name")
@@ -57,7 +66,7 @@ public class StakeholderEntity {
 	private String lastName;
 
 	@Column(name = "person_id")
-	private String personId;
+	private String partyId;
 
 	@Column(name = "phone_number")
 	private String phoneNumber;
@@ -68,4 +77,19 @@ public class StakeholderEntity {
 	@Embedded
 	private AddressEntity address;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+            return true;
+        }
+		if (!(o instanceof StakeholderEntity that)) {
+            return false;
+        }
+		return Objects.equals(id, that.id) && type == that.type && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(partyId, that.partyId) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(emailAddress, that.emailAddress) && Objects.equals(address, that.address);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, type, organizationName, organizationNumber, firstName, lastName, partyId, phoneNumber, emailAddress, address);
+	}
 }

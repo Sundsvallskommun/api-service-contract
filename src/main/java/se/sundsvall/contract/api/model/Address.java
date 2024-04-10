@@ -1,6 +1,6 @@
 package se.sundsvall.contract.api.model;
 
-import se.sundsvall.contract.api.model.enums.AddressType;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -15,8 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
 
-	@Schema(example = "POSTAL_ADDRESS")
-	private AddressType type;
+	/*
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AddressType}
+	 */
+	@Schema(example = "POSTAL_ADDRESS", description = "Address type")
+	@OneOf({"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"})
+	private String type;
 
 	@Schema(example = "Testvägen 18")
 	private String streetAddress;
@@ -32,5 +36,4 @@ public class Address {
 
 	@Schema(example = "Test Testorsson")
 	private String attention;
-
 }

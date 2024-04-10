@@ -11,10 +11,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.AttachmentCategory;
-
 class AttachmentTest {
-	
+
 	@Test
 	void testBean() {
 		assertThat(Attachment.class, allOf(
@@ -27,34 +25,17 @@ class AttachmentTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var name = "name";
-		final var category = AttachmentCategory.KONTRAKT;
-		final var mimeType = "mimeType";
-		final var file = "file";
-		final var note = "note";
-		final var extension = "extension";
-
-		final var attachment = Attachment.builder()
-			.withName(name)
-			.withCategory(category)
-			.withMimeType(mimeType)
-			.withFile(file)
-			.withNote(note)
-			.withExtension(extension)
+		var attachment = Attachment.builder()
+			.withAttachmentData(AttachmentData.builder().build())
+			.withMetaData(AttachmentMetaData.builder().build())
 			.build();
 
-		assertThat(attachment).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(attachment.getName()).isEqualTo(name);
-		assertThat(attachment.getCategory()).isEqualTo(category);
-		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
-		assertThat(attachment.getFile()).isEqualTo(file);
-		assertThat(attachment.getNote()).isEqualTo(note);
-
+		assertThat(attachment.getAttachmentData()).isNotNull();
+		assertThat(attachment.getMetaData()).isNotNull();
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(Attachment.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

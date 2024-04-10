@@ -1,0 +1,113 @@
+{
+	"type": "LAND_LEASE",
+	"contractId": "2024-12345",
+	"version": 2,
+	"status": "DRAFT",
+	"municipalityId": "1984",
+	"caseId": 666,
+	"indexTerms": [
+		{
+			"header": "More General Terms",
+			"terms": [
+				{
+					"description": "In general the conditions 2 are now...",
+					"term": "General Conditions 2"
+				}
+			]
+		}
+	],
+	"description": "some other description",
+	"additionalTerms": [
+		{
+			"header": "Extraordinary Terms 2",
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			]
+		}
+	],
+	"stakeholders": [
+		{
+			"type": "COMPANY",
+			"roles": [
+				"SELLER"
+			],
+			"organizationName": "another org",
+			"organizationNumber": "771122-2345",
+			"firstName": "Donald",
+			"lastName": "Duck",
+			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99",
+			"phoneNumber": "1234567890",
+			"emailAddress": "donald.duck@sundsvall.se",
+			"address": {
+				"type": "BILLING_ADDRESS",
+				"streetAddress": "another street",
+				"postalCode": "54321",
+				"town": "Ducktown",
+				"country": "SE",
+				"attention": "No Attention"
+			}
+		}
+	],
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
+	"signedByWitness": true,
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
+	"landLeaseType": "SITELEASEHOLD",
+	"leasehold": {
+		"purpose": "APARTMENT",
+		"description": "anotherLeaseholdDescription",
+		"additionalInformation": [
+			"another additional information when posting",
+			"More other information when posting"
+		]
+	},
+	"usufructType": "FISHING",
+	"externalReferenceId": "MK-TEST0009",
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 678:1",
+		"SUNDSVALL NORRMALM 987:1"
+	],
+	"objectIdentity": "anotherObjectIdentity",
+	"leaseDuration": 5,
+	"leaseFees": {
+		"currency": "SEK",
+		"yearly": 2814.72,
+		"monthly": 234.56,
+		"total": 1172.8,
+		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
+		"indexYear": 2022,
+		"indexNumber": 3,
+		"additionalInformation": [
+			"anotherAdditionalInfo1",
+			"anotherAdditionalInfo2"
+		]
+	},
+	"invoicing": {
+		"invoiceInterval": "MONTHLY",
+		"invoicedIn": "ARREARS"
+	},
+	"start": "2024-05-02",
+	"end": "2024-10-02",
+	"autoExtend": true,
+	"leaseExtension": 1,
+	"periodOfNotice": 2,
+	"area": 12
+}

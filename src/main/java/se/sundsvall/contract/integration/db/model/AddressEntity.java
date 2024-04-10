@@ -1,13 +1,12 @@
 package se.sundsvall.contract.integration.db.model;
 
+import se.sundsvall.contract.model.enums.AddressType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-
-import se.sundsvall.contract.api.model.enums.AddressType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,5 +38,4 @@ public class AddressEntity {
 
 	@Column(name = "attention")
 	private String attention;
-
 }

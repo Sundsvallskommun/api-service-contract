@@ -1,9 +1,10 @@
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE contract_attachments;
 TRUNCATE TABLE attachment;
 TRUNCATE TABLE contract;
-TRUNCATE TABLE contract_stakeholders;
+TRUNCATE TABLE contract_stakeholder;
 TRUNCATE TABLE land_lease_contract;
-TRUNCATE TABLE stakeholder_roles;
+TRUNCATE TABLE land_lease_contract_leasehold_additional_information;
+TRUNCATE TABLE land_lease_contract_property_designation;
 TRUNCATE TABLE stakeholder;
+TRUNCATE TABLE stakeholder_role;
 SET FOREIGN_KEY_CHECKS = 1;

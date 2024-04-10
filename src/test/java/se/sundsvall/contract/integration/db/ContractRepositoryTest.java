@@ -2,89 +2,77 @@ package se.sundsvall.contract.integration.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.contract.TestFactory.getLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.ContractRequest;
-import se.sundsvall.contract.api.model.enums.LandLeaseType;
-import se.sundsvall.contract.integration.db.specification.ContractSpecification;
+import se.sundsvall.contract.model.enums.LandLeaseType;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
 @Sql(scripts = {
 	"/db/scripts/truncate.sql",
-	"/db/scripts/ContractRepositoryTest.sql"
+	"/db/scripts/testdata-it.sql"
 })
+@Import(ObjectMapper.class) //Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractRepositoryTest {
 
 	@Autowired
 	private ContractRepository contractRepository;
+	@Autowired
+	private AttachmentRepository attachmentRepository;
 
 	@Test
 	void createContract() {
+		var entity = createLandLeaseContractEntity();
+		entity.getStakeholders().getFirst().setId(null);    // Clear the id
+		var savedEntity = contractRepository.save(entity);
 
-		final var entity = getLandLeaseContractEntity();
-		final var savedEntity = contractRepository.save(entity);
-
-		final var result = contractRepository.findById(savedEntity.getId());
+		var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();
-		assertThat(result.get().getId()).isEqualTo(1L);
+		assertThat(result.get().getId()).isEqualTo(3);
 	}
 
 	@Test
 	void testFindWithAllParameters() {
+		var request = new ContractRequest("2024-12345", "40f14de6-815d-44b2-a34d-b1d38b628e07",
+			"771122-1234", List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"), "MK-TEST0001",
+			LocalDate.of(2023, 10, 10), LandLeaseType.LEASEHOLD.name());
 
-		final var request = new ContractRequest("40f14de9-815d-44a5-a34d-b1d38b628e07"
-			, "771122-1234", "SUNDSVALL GRANLO 2:1", "MK-TEST0001"
-			, "2023-10-10", LandLeaseType.LEASEHOLD);
+		var result = contractRepository.findAll(createContractSpecification("1984", request));
 
-		final var result = contractRepository.findAll(ContractSpecification.createContractSpecification(request));
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	void findByID() {
-		assertThat(contractRepository.findById(1L)).isPresent();
+	void findByMunicipalityIdAndId() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
 	}
 
 	@Test
-	void findByIdNotFound() {
-		assertThat(contractRepository.findById(123L)).isNotPresent();
-	}
-
-
-	@Test
-	void testUpdate() {
-		final var entity = TestFactory.getLandLeaseContractEntity();
-
-		final var persistedEntity = contractRepository.saveAndFlush(entity);
-
-		assertThat(persistedEntity).usingRecursiveComparison().isEqualTo(entity);
-		assertThat(persistedEntity.getId()).isNotZero();
-
-		persistedEntity.setDescription("Updated description");
-
-		final var updatedEntity = contractRepository.saveAndFlush(persistedEntity);
-
-		assertThat(updatedEntity).usingRecursiveComparison().isEqualTo(persistedEntity);
-		assertThat(updatedEntity.getDescription()).isEqualTo("Updated description");
+	void findByMunicipalityIdAndIdNotFound() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-543210")).isNotPresent();
 	}
 
 	@Test
-	void testDelete() {
-		assertThat(contractRepository.findById(2L)).isPresent();
+	void testDeleteAllByMunicipalityIdAndContractId() {
+		attachmentRepository.deleteAllByContractId("2024-12345");
 
-		contractRepository.deleteById(2L);
-
-		assertThat(contractRepository.findById(2L)).isNotPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
+		contractRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isNotPresent();
 	}
-
 }

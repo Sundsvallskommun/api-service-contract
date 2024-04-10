@@ -1,8 +1,8 @@
 package se.sundsvall.contract.integration.db.model;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.api.model.enums.StakeholderRole;
-import se.sundsvall.contract.api.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 class StakeholderEntityTest {
 
@@ -23,26 +23,26 @@ class StakeholderEntityTest {
 		assertThat(StakeholderEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanHashCode(),
-			hasValidBeanEquals(),
+			hasValidBeanHashCodeExcluding("roles"),
+			hasValidBeanEqualsExcluding("roles"),
 			hasValidBeanToString()));
 	}
 
 	@Test
 	void testBuilderMethods() {
-		final var id = 1L;
-		final var type = StakeholderType.COMPANY;
-		final var roles = List.of(StakeholderRole.FULLMAKTSROLL);
-		final var organizationName = "Sundsvalls kommun";
-		final var organizationNumber = "212000-2411";
-		final var firstName = "Test";
-		final var lastName = "Testorsson";
-		final var personId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
-		final var phoneNumber = "0701231212";
-		final var emailAddress = "test.testorsson@test.se";
-		final var address = AddressEntity.builder().build();
+		var id = 1L;
+		var type = StakeholderType.COMPANY;
+		var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
+		var organizationName = "Sundsvalls kommun";
+		var organizationNumber = "212000-2411";
+		var firstName = "Test";
+		var lastName = "Testorsson";
+		var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
+		var phoneNumber = "0701231212";
+		var emailAddress = "test.testorsson@test.se";
+		var address = AddressEntity.builder().build();
 
-		final var stakeholder = StakeholderEntity.builder()
+		var stakeholder = StakeholderEntity.builder()
 			.withId(id)
 			.withType(type)
 			.withRoles(roles)
@@ -50,7 +50,7 @@ class StakeholderEntityTest {
 			.withOrganizationNumber(organizationNumber)
 			.withFirstName(firstName)
 			.withLastName(lastName)
-			.withPersonId(personId)
+			.withPartyId(partyId)
 			.withPhoneNumber(phoneNumber)
 			.withEmailAddress(emailAddress)
 			.withAddress(address)
@@ -64,7 +64,7 @@ class StakeholderEntityTest {
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
-		assertThat(stakeholder.getPersonId()).isEqualTo(personId);
+		assertThat(stakeholder.getPartyId()).isEqualTo(partyId);
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(phoneNumber);
 		assertThat(stakeholder.getEmailAddress()).isEqualTo(emailAddress);
 		assertThat(stakeholder.getAddress()).isEqualTo(address);
@@ -74,5 +74,4 @@ class StakeholderEntityTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(StakeholderEntity.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }
