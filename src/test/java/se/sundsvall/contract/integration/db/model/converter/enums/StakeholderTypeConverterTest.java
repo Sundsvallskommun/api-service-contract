@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.StakeholderType;
 
@@ -13,9 +15,12 @@ class StakeholderTypeConverterTest {
 
 	private final StakeholderTypeConverter converter = new StakeholderTypeConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(StakeholderType.ASSOCIATION)).isEqualTo(StakeholderType.ASSOCIATION.name());
+	@ParameterizedTest
+	@EnumSource(StakeholderType.class)
+	void testConvertToDatabaseColumn(StakeholderType enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class StakeholderTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(StakeholderType.ASSOCIATION.name())).isEqualTo(StakeholderType.ASSOCIATION);
+	@ParameterizedTest
+	@EnumSource(StakeholderType.class)
+	void testConvertToEntityAttribute(StakeholderType enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

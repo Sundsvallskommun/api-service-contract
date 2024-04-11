@@ -2,14 +2,14 @@ package se.sundsvall.contract.integration.db.model.converter.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter.DELIMITER;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.StakeholderRole;
 
@@ -19,7 +19,7 @@ class StakeholderRoleConverterTest {
 
 	private final StakeholderRoleConverter converter = new StakeholderRoleConverter();
 	
-	private final List<StakeholderRole> stakeholderRoles = List.of(StakeholderRole.BUYER, StakeholderRole.GRANTOR, StakeholderRole.POWER_OF_ATTORNEY_ROLE);
+	private final List<StakeholderRole> stakeholderRoles = List.of(StakeholderRole.values());
 
 	@Test
 	void testConvertToDatabaseColumn() {
@@ -39,14 +39,16 @@ class StakeholderRoleConverterTest {
 		assertThat(converter.convertToEntityAttribute(wanted)).isEqualTo(stakeholderRoles);
 	}
 
-	@Test
-	void testConvertSingleAttributeToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(List.of(StakeholderRole.BUYER))).isEqualTo(StakeholderRole.BUYER.name());
+	@ParameterizedTest
+	@EnumSource(StakeholderRole.class)
+	void testConvertSingleAttributeToDatabaseColumn(StakeholderRole enumValue) {
+		assertThat(converter.convertToDatabaseColumn(List.of(enumValue))).isEqualTo(enumValue.name());
 	}
 
-	@Test
-	void testConvertSingleDatabaseAttributeToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(StakeholderRole.BUYER.name())).isEqualTo(List.of(StakeholderRole.BUYER));
+	@ParameterizedTest
+	@EnumSource(StakeholderRole.class)
+	void testConvertSingleDatabaseAttributeToEntityAttribute(StakeholderRole enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(List.of(enumValue));
 	}
 
 	@Test

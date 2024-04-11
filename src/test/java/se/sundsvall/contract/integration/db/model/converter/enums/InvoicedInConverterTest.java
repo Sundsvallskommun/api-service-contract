@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.InvoicedIn;
 
@@ -13,9 +15,12 @@ class InvoicedInConverterTest {
 
 	private final InvoicedInConverter converter = new InvoicedInConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(InvoicedIn.ARREARS)).isEqualTo(InvoicedIn.ARREARS.name());
+	@ParameterizedTest
+	@EnumSource(InvoicedIn.class)
+	void testConvertToDatabaseColumn(InvoicedIn enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class InvoicedInConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(InvoicedIn.ARREARS.name())).isEqualTo(InvoicedIn.ARREARS);
+	@ParameterizedTest
+	@EnumSource(InvoicedIn.class)
+	void testConvertToEntityAttribute(InvoicedIn enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.UsufructType;
 
@@ -13,9 +15,12 @@ class UsufructTypeConverterTest {
 
 	private final UsufructTypeConverter converter = new UsufructTypeConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(UsufructType.HUNTING)).isEqualTo(UsufructType.HUNTING.name());
+	@ParameterizedTest
+	@EnumSource(UsufructType.class)
+	void testConvertToDatabaseColumn(UsufructType enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class UsufructTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(UsufructType.HUNTING.name())).isEqualTo(UsufructType.HUNTING);
+	@ParameterizedTest
+	@EnumSource(UsufructType.class)
+	void testConvertToEntityAttribute(UsufructType enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

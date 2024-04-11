@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.LeaseholdType;
 
@@ -13,9 +15,12 @@ class LeaseholdTypeConverterTest {
 
 	private final LeaseholdTypeConverter converter = new LeaseholdTypeConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(LeaseholdType.APARTMENT)).isEqualTo(LeaseholdType.APARTMENT.name());
+	@ParameterizedTest
+	@EnumSource(LeaseholdType.class)
+	void testConvertToDatabaseColumn(LeaseholdType enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class LeaseholdTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(LeaseholdType.APARTMENT.name())).isEqualTo(LeaseholdType.APARTMENT);
+	@ParameterizedTest
+	@EnumSource(LeaseholdType.class)
+	void testConvertToEntityAttribute(LeaseholdType enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

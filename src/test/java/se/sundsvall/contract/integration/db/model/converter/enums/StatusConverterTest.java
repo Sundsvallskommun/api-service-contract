@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.Status;
 
@@ -13,9 +15,12 @@ class StatusConverterTest {
 
 	private final StatusConverter converter = new StatusConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(Status.ACTIVE)).isEqualTo(Status.ACTIVE.name());
+	@ParameterizedTest
+	@EnumSource(Status.class)
+	void testConvertToDatabaseColumn(Status enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class StatusConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(Status.ACTIVE.name())).isEqualTo(Status.ACTIVE);
+	@ParameterizedTest
+	@EnumSource(Status.class)
+	void testConvertToEntityAttribute(Status enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

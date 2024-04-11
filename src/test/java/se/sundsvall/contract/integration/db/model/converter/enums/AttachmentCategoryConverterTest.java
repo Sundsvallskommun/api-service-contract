@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
@@ -13,9 +15,12 @@ class AttachmentCategoryConverterTest {
 
 	private final AttachmentCategoryConverter converter = new AttachmentCategoryConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(AttachmentCategory.CONTRACT)).isEqualTo(AttachmentCategory.CONTRACT.name());
+	@ParameterizedTest
+	@EnumSource(AttachmentCategory.class)
+	void testConvertToDatabaseColumn(AttachmentCategory enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class AttachmentCategoryConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertFromDatabaseColumn() {
-		assertThat(converter.convertToEntityAttribute(AttachmentCategory.CONTRACT.name())).isEqualTo(AttachmentCategory.CONTRACT);
+	@ParameterizedTest
+	@EnumSource(AttachmentCategory.class)
+	void testConvertToEntityAttribute(AttachmentCategory enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

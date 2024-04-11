@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.IntervalType;
 
@@ -13,9 +15,12 @@ class IntervalTypeConverterTest {
 
 	private final IntervalTypeConverter converter = new IntervalTypeConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(IntervalType.MONTHLY)).isEqualTo(IntervalType.MONTHLY.name());
+	@ParameterizedTest
+	@EnumSource(IntervalType.class)
+	void testConvertToDatabaseColumn(IntervalType enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
 	}
 
 	@Test
@@ -23,9 +28,10 @@ class IntervalTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(IntervalType.MONTHLY.name())).isEqualTo(IntervalType.MONTHLY);
+	@ParameterizedTest
+	@EnumSource(IntervalType.class)
+	void testConvertToEntityAttribute(IntervalType enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test

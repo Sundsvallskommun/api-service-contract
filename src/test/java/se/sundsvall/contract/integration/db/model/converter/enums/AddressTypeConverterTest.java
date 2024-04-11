@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.contract.model.enums.AddressType;
 
@@ -13,9 +15,13 @@ class AddressTypeConverterTest {
 
 	private final AddressTypeConverter converter = new AddressTypeConverter();
 
-	@Test
-	void testConvertToDatabaseColumn() {
-		assertThat(converter.convertToDatabaseColumn(AddressType.BILLING_ADDRESS)).isEqualTo(AddressType.BILLING_ADDRESS.name());
+	@ParameterizedTest
+	@EnumSource(AddressType.class)
+	void testConvertToDatabaseColumn(AddressType enumValue) {
+		assertThat(converter.convertToDatabaseColumn(enumValue))
+			.isNotNull()
+			.isEqualTo(enumValue.name());
+
 	}
 
 	@Test
@@ -23,9 +29,10 @@ class AddressTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
-	@Test
-	void testConvertToEntityAttribute() {
-		assertThat(converter.convertToEntityAttribute(AddressType.BILLING_ADDRESS.name())).isEqualTo(AddressType.BILLING_ADDRESS);
+	@ParameterizedTest
+	@EnumSource(AddressType.class)
+	void testConvertToEntityAttribute(AddressType enumValue) {
+		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test
