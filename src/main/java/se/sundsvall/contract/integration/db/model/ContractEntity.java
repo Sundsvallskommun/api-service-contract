@@ -1,12 +1,12 @@
 package se.sundsvall.contract.integration.db.model;
 
-import static jakarta.persistence.EnumType.STRING;
-
 import java.util.List;
 import java.util.Objects;
 
 import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
 import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.ContractTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.StatusConverter;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.TermGroup;
@@ -17,7 +17,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,12 +59,12 @@ public abstract class ContractEntity {
 	@Column(name = "version")
 	private int version = 1;
 
-	@Enumerated(STRING)
 	@Column(name = "type", updatable = false)
+	@Convert(converter = ContractTypeConverter.class)
 	private ContractType type;
 
-	@Enumerated(STRING)
 	@Column(name = "status")
+	@Convert(converter = StatusConverter.class)
 	private Status status;
 
 	@Column(name = "municipality_id", length = 4)

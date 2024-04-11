@@ -1,12 +1,12 @@
 package se.sundsvall.contract.integration.db.model;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-
+import se.sundsvall.contract.integration.db.model.converter.enums.IntervalTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.InvoicedInConverter;
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
 
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +20,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class InvoicingEntity {
 
-    @Enumerated(EnumType.STRING)
-    private IntervalType invoiceInterval;
+	@Convert(converter = IntervalTypeConverter.class)
+	private IntervalType invoiceInterval;
 
-    @Enumerated(EnumType.STRING)
-    private InvoicedIn invoicedIn;
+	@Convert(converter = InvoicedInConverter.class)
+	private InvoicedIn invoicedIn;
 }
