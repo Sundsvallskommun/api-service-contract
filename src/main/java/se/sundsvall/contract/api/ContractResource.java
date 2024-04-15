@@ -10,10 +10,6 @@ import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +25,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.contract.api.model.Contract;
+import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -40,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @Validated
@@ -99,9 +97,9 @@ class ContractResource {
 		}
 	)
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<List<Contract>> getContracts(
+	ResponseEntity<ContractPaginatedResponse> getContracts(
 			@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-			@ParameterObject final ContractRequest request) {
+			@Valid @ParameterObject final ContractRequest request) {
 		return ok(service.getContracts(municipalityId, request));
 	}
 

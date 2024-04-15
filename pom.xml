@@ -44,6 +44,10 @@
 			<groupId>se.sundsvall.dept44</groupId>
 			<artifactId>dept44-common-validators</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>se.sundsvall.dept44</groupId>
+			<artifactId>dept44-models</artifactId>
+		</dependency>
 
 		<!-- Database-->
 		<dependency>

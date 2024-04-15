@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -16,7 +17,6 @@ import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +27,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.ThrowableProblem;
 
@@ -118,32 +121,42 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void getContracts() {
+	void getPaginatedContracts() {
 		//Arrange
 		var landLeaseContractEntity = createLandLeaseContractEntity();
-		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any())).thenReturn(List.of(landLeaseContractEntity));
 
-		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any()))
-			.thenReturn(List.of(landLeaseContractEntity));
+		Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity));
+
+		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class))).thenReturn(page);
 		when(mockAttachmentRepository.findAllByMunicipalityIdAndContractId(eq(MUNICIPALITY_ID), any(String.class)))
 			.thenReturn(List.of(createAttachmentEntity()));
 
+		var request = ContractRequest.builder().build();
+		request.setPage(1);
+		request.setLimit(5);
+
 		//Act
-		var request = new ContractRequest("contractId", "propertyDesignation", "organizationNumber",
-			List.of("propertyDesignation1", "propertyDesignation2"), "externalReferenceId",
-			LocalDate.of(2023, 10, 10), SITELEASEHOLD.name());
 		var result = contractService.getContracts(MUNICIPALITY_ID, request);
 
 		//Assert
-		assertThat(result).isNotNull().hasSize(1);
-		assertThat(result.getFirst())
+		assertThat(result).isNotNull();
+		assertThat(result.getContracts().getFirst())
 			.isNotNull()
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments", "attachmentMetaData")
+			.ignoringFields("type", "attachmentMetaData")
 			.isEqualTo(landLeaseContractEntity);
 
-		verify(mockContractRepository).findAll(Mockito.<Specification<ContractEntity>>any());
+		var metaData = result.getMetaData();
+		assertThat(metaData).isNotNull();
+		assertThat(metaData.getPage()).isOne();
+		assertThat(metaData.getLimit()).isEqualTo(2);
+		assertThat(metaData.getCount()).isEqualTo(2);
+		assertThat(metaData.getTotalRecords()).isEqualTo(2);
+		assertThat(metaData.getTotalPages()).isOne();
+
+		verify(mockContractRepository).findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class));
+		verify(mockAttachmentRepository, times(2)).findAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, "2024-98765");
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}

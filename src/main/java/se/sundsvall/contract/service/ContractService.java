@@ -2,17 +2,19 @@ package se.sundsvall.contract.service;
 
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
 
-import java.util.List;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import se.sundsvall.contract.api.model.Contract;
+import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
+import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Service
 @Transactional
@@ -49,10 +51,26 @@ public class ContractService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Contract> getContracts(final String municipalityId, final ContractRequest request) {
-		return contractRepository.findAll(createContractSpecification(municipalityId, request)).stream()
+	public ContractPaginatedResponse getContracts(final String municipalityId, final ContractRequest request) {
+		var pagingParameters = getPagingParameters(request);
+
+		//Get all contracts
+		var contractEntities = contractRepository.findAll(createContractSpecification(municipalityId, request), pagingParameters);
+
+		//Map to response objects
+		var contracts = contractEntities.stream()
 			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
 			.toList();
+
+		//Add to response
+		return ContractPaginatedResponse.builder()
+			.withMetaData(PagingAndSortingMetaData.create().withPageData(contractEntities))
+			.withContracts(contracts)
+			.build();
+	}
+
+	private Pageable getPagingParameters(final ContractRequest request) {
+		return PageRequest.of(request.getPage() - 1, request.getLimit());
 	}
 
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
