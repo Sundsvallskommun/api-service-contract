@@ -29,13 +29,13 @@ public final class ContractSpecifications {
 
 	public static Specification<ContractEntity> createContractSpecification(final String municipalityId, final ContractRequest request) {
 		return withMunicipalityId(municipalityId)
-			.and(withContractId(request.contractId()))
-			.and(withPersonId(request.partyId()))
-			.and(withOrganizationNumber(request.organizationNumber()))
-			.and(withEndDate(request.end()))
-			.and(withLandLeaseType(request.landLeaseType()))
-			.and(withExternalReferenceId(request.externalReferenceId()))
-			.and(withPropertyDesignations(request.propertyDesignations()));
+			.and(withContractId(request.getContractId()))
+			.and(withPersonId(request.getPartyId()))
+			.and(withOrganizationNumber(request.getOrganizationNumber()))
+			.and(withEndDate(request.getEnd()))
+			.and(withLandLeaseType(request.getLandLeaseType()))
+			.and(withExternalReferenceId(request.getExternalReferenceId()))
+			.and(withPropertyDesignations(request.getPropertyDesignations()));
 	}
 
 	private static Specification<ContractEntity> withMunicipalityId(final String municipalityId) {

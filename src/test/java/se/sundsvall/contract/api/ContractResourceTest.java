@@ -4,12 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
@@ -23,11 +26,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
 
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
@@ -63,19 +68,44 @@ class ContractResourceTest {
 
 	@Test
 	void getAllContractsOnAMunicipalityId() {
+		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
-				.queryParam("partyId", "1")
+				.queryParam("page", 1)
+				.queryParam("size", 10)
 				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(new ParameterizedTypeReference<List<LandLeaseContract>>() {})
+			.expectBody(ContractPaginatedResponse.class)
 			.returnResult()
 			.getResponseBody();
 
 		verify(contractServiceMock).getContracts(eq("1984"), any(ContractRequest.class));
 		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void testLimitWhenFetchingContracts_shouldGenerateBadRequest() {
+		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+
+		var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
+				.queryParam("page", 1)
+				.queryParam("limit", 101)
+				.build())
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody(ThrowableProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+
+		verifyNoInteractions(contractServiceMock);
 	}
 
 	@Test

@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.contract.api.model.ContractRequest;
-import se.sundsvall.contract.model.enums.LandLeaseType;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
@@ -48,9 +47,14 @@ class ContractRepositoryTest {
 
 	@Test
 	void testFindWithAllParameters() {
-		var request = new ContractRequest("2024-12345", "40f14de6-815d-44b2-a34d-b1d38b628e07",
-			"771122-1234", List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"), "MK-TEST0001",
-			LocalDate.of(2023, 10, 10), LandLeaseType.LEASEHOLD.name());
+		var request = ContractRequest.builder()
+			.withContractId("2024-12345")
+			.withPartyId("40f14de6-815d-44b2-a34d-b1d38b628e07")
+			.withOrganizationNumber("771122-1234")
+			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"))
+			.withExternalReferenceId("MK-TEST0001")
+			.withEnd(LocalDate.of(2023, 10, 10))
+			.build();
 
 		var result = contractRepository.findAll(createContractSpecification("1984", request));
 

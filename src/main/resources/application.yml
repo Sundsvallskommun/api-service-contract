@@ -7,6 +7,13 @@ spring:
     hibernate:
       ddl-auto: validate
 
+dept44:
+  models:
+    api:
+      paging:
+        max:
+          limit: 100
+
 openapi:
   name: ${spring.application.name}
   title: Contracts

@@ -52,7 +52,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test02_readContracts() {
 		setupCall()
-			.withServicePath("/contracts/1984")
+			.withServicePath("/contracts/1984?page=1&limit=9")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
