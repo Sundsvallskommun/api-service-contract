@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRACT_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.VERSION;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.END;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.EXTERNAL_REFERENCE_ID;
 import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.LAND_LEASE_TYPE;
@@ -28,7 +29,8 @@ public final class ContractSpecifications {
 	private ContractSpecifications() { }
 
 	public static Specification<ContractEntity> createContractSpecification(final String municipalityId, final ContractRequest request) {
-		return withMunicipalityId(municipalityId)
+		return withOnlyLatestVersion()
+			.and(withMunicipalityId(municipalityId))
 			.and(withContractId(request.getContractId()))
 			.and(withPersonId(request.getPartyId()))
 			.and(withOrganizationNumber(request.getOrganizationNumber()))
@@ -36,6 +38,17 @@ public final class ContractSpecifications {
 			.and(withLandLeaseType(request.getLandLeaseType()))
 			.and(withExternalReferenceId(request.getExternalReferenceId()))
 			.and(withPropertyDesignations(request.getPropertyDesignations()));
+	}
+
+	public static Specification<ContractEntity> withOnlyLatestVersion() {
+		return (root, query, cb) -> {
+			var subQuery = query.subquery(Integer.class);
+			var subRoot = subQuery.from(ContractEntity.class);
+			subQuery.select(cb.max(subRoot.get(VERSION)))
+				.where(cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)));
+			return cb.equal(root.get(VERSION), subQuery);
+
+		};
 	}
 
 	private static Specification<ContractEntity> withMunicipalityId(final String municipalityId) {
