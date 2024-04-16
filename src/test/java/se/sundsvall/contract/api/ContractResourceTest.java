@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -21,6 +20,7 @@ import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,7 @@ import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
+import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.service.ContractService;
@@ -42,6 +43,9 @@ import se.sundsvall.contract.service.ContractService;
 @ActiveProfiles("junit")
 class ContractResourceTest {
 
+	private static final String MUNICIPALITY_ID = "1984";
+	private static final String CONTRACT_ID = "2024-12345";
+
 	@Autowired
 	private WebTestClient webTestClient;
 
@@ -49,11 +53,11 @@ class ContractResourceTest {
 	private ContractService contractServiceMock;
 
 	@Test
-	void getContractsByMunicipalityAndContractId() {
-		when(contractServiceMock.getContract("1984", "2024-12345")).thenReturn(LandLeaseContract.builder().build());
+	void getContractByMunicipalityAndContractId() {
+		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(LandLeaseContract.builder().build());
 
 		var response = webTestClient.get()
-			.uri("/contracts/1984/2024-12345")
+			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -62,7 +66,29 @@ class ContractResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isNotNull();
-		verify(contractServiceMock).getContract("1984", "2024-12345");
+
+		verify(contractServiceMock).getContract(MUNICIPALITY_ID, CONTRACT_ID, null);
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void getContractByMunicipalityAndContractIdAndVersion() {
+		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(LandLeaseContract.builder().build());
+
+		var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}")
+				.queryParam("version", 2)
+				.build(MUNICIPALITY_ID, CONTRACT_ID))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(LandLeaseContract.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+
+		verify(contractServiceMock).getContract(MUNICIPALITY_ID, CONTRACT_ID, 2);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -71,10 +97,11 @@ class ContractResourceTest {
 		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
+			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
 				.queryParam("page", 1)
 				.queryParam("size", 10)
-				.build())
+				.queryParam("partyId", UUID.randomUUID().toString())
+				.build(MUNICIPALITY_ID))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -82,7 +109,7 @@ class ContractResourceTest {
 			.returnResult()
 			.getResponseBody();
 
-		verify(contractServiceMock).getContracts(eq("1984"), any(ContractRequest.class));
+		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class));
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -102,6 +129,7 @@ class ContractResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		assertThat(response).isNotNull();
 		assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST);
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 
@@ -110,7 +138,6 @@ class ContractResourceTest {
 
 	@Test
 	void postContract() {
-		var id = "2024-12345";
 		var contract = LandLeaseContract.builder()
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
@@ -123,18 +150,46 @@ class ContractResourceTest {
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
 			.build();
 
-		when(contractServiceMock.createContract("1984", contract)).thenReturn(id);
+		when(contractServiceMock.createContract(MUNICIPALITY_ID, contract)).thenReturn(CONTRACT_ID);
 
 		webTestClient.post()
-			.uri("/contracts/1984")
+			.uri("/contracts/{municipalityId}", MUNICIPALITY_ID)
 			.bodyValue(contract)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/contracts/1984/" + id)
+			.expectHeader().location("/contracts/" + MUNICIPALITY_ID + "/" + CONTRACT_ID)
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).createContract("1984", contract);
+		verify(contractServiceMock).createContract(MUNICIPALITY_ID, contract);
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void diffContract() {
+		var diff = new Diff(2, 3, List.of(), List.of(1, 2, 3));
+
+		when(contractServiceMock.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3)).thenReturn(diff);
+
+		var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}/diff")
+				.queryParam("oldVersion", 2)
+				.queryParam("newVersion", 3)
+				.build(MUNICIPALITY_ID, CONTRACT_ID))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(Diff.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(result).isNotNull();
+		assertThat(result.oldVersion()).isEqualTo(diff.oldVersion());
+		assertThat(result.newVersion()).isEqualTo(diff.newVersion());
+		assertThat(result.availableVersions()).isEqualTo(diff.availableVersions());
+		assertThat(result.changes()).isEqualTo(diff.changes());
+
+		verify(contractServiceMock).diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -142,31 +197,30 @@ class ContractResourceTest {
 	void updateContract() {
 		var landLeaseContract = createLandLeaseContract();
 
-		doNothing().when(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
+		doNothing().when(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 
 		webTestClient.put()
-			.uri("/contracts/1984/2024-12345")
+			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.bodyValue(landLeaseContract)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).updateContract("1984", "2024-12345", landLeaseContract);
+		verify(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
-	void testDeleteContract() {
-		doNothing().when(contractServiceMock).deleteContract("1984", "2024-12345");
+	void deleteContract() {
+		doNothing().when(contractServiceMock).deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 
 		webTestClient.delete()
-			.uri("/contracts/1984/2024-12345")
+			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).deleteContract("1984", "2024-12345");
+		verify(contractServiceMock).deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
-
 }

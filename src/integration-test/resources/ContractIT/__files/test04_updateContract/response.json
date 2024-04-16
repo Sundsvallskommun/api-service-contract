@@ -1,7 +1,7 @@
 {
 	"type": "LAND_LEASE",
 	"contractId": "2024-12345",
-	"version": 2,
+	"version": 3,
 	"status": "DRAFT",
 	"municipalityId": "1984",
 	"caseId": 666,

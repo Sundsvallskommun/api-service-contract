@@ -88,9 +88,6 @@ create table stakeholder (
 alter table if exists contract
     add constraint uq_contract_contract_id_version unique (contract_id, version);
 
-alter table if exists contract_stakeholder
-    add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
-
 create index idx_land_lease_contract_property_designation_contract_id
     on land_lease_contract_property_designation (land_lease_contract_id);
 
@@ -98,6 +95,9 @@ alter table if exists attachment
     add constraint fk_attachment_contract_id
         foreign key (contract_id)
             references contract (contract_id);
+
+alter table if exists contract_stakeholder
+    add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
 alter table if exists contract_stakeholder
     add constraint fk_contract_stakeholder_stakeholder_id

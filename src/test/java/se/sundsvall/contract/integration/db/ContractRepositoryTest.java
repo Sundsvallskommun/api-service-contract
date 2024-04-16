@@ -42,7 +42,6 @@ class ContractRepositoryTest {
 
 		var result = contractRepository.findById(savedEntity.getId());
 		assertThat(result).isPresent();
-		assertThat(result.get().getId()).isEqualTo(3);
 	}
 
 	@Test
@@ -62,21 +61,23 @@ class ContractRepositoryTest {
 	}
 
 	@Test
-	void findByMunicipalityIdAndId() {
-		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
+	void findByMunicipalityIdAndIdAndVersion() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isPresent();
 	}
 
 	@Test
-	void findByMunicipalityIdAndIdNotFound() {
-		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-543210")).isNotPresent();
+	void findByMunicipalityIdAndIdAndVersionNotFound() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 12345)).isNotPresent();
 	}
 
 	@Test
 	void testDeleteAllByMunicipalityIdAndContractId() {
 		attachmentRepository.deleteAllByContractId("2024-12345");
 
-		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 2)).isPresent();
 		contractRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
-		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isNotPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isNotPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 2)).isNotPresent();
 	}
 }
