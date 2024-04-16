@@ -80,8 +80,12 @@ public class Differ implements JsonDiffViewer {
     }
 
     @Override
-    public void matchingProperty(final Path path, final JsonDiff diff) { }
+    public void matchingProperty(final Path path, final JsonDiff diff) {
+        // Intentionally empty
+    }
 
     @Override
-    public void primaryMatching(final Path path, final JsonNode value) { }
+    public void primaryMatching(final Path path, final JsonNode value) {
+        // Intentionally empty
+    }
 }
