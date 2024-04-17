@@ -12,7 +12,6 @@ create table attachment (
 create table contract (
                           signed_by_witness bit,
                           version integer,
-                          case_id bigint,
                           additional_terms varchar(255),
                           description varchar(255),
                           id varchar(255) not null,

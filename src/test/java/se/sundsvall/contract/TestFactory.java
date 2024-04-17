@@ -96,7 +96,6 @@ public final class TestFactory {
 			.withVersion(1)
 			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
-			.withCaseId(1L)
 			.withIndexTerms(List.of(
 				TermGroup.builder()
 					.withHeader("Some index terms")
@@ -180,7 +179,6 @@ public final class TestFactory {
 			.withPeriodOfNotice(2)
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
-			.withCaseId(1L)
 			.withIndexTerms(List.of(
 				TermGroup.builder()
 					.withHeader("Some index terms")
@@ -266,7 +264,6 @@ public final class TestFactory {
 			.withVersion(2)
 			.withStatus(Status.TERMINATED.name())
 			.withMunicipalityId("1984")
-			.withCaseId(1L)
 			.withIndexTerms(List.of(
 				TermGroup.builder()
 					.withHeader("Some index terms")

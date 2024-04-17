@@ -19,7 +19,6 @@ create table contract (
     version                 integer,
     type                    varchar(255),
     status                  varchar(255),
-    case_id                 bigint,
     description             varchar(4096),
     signed_by_witness       bit,
     additional_terms        json,

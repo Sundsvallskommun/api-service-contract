@@ -83,7 +83,6 @@ class LandLeaseContractTest {
 		var version = 1;
 		var status = TERMINATED;
 		var municipalityId = "1984";
-		var caseId = 1L;
 		var contractId = "2024-12345";
 		var indexTerms = List.of(
 			TermGroup.builder()
@@ -144,7 +143,6 @@ class LandLeaseContractTest {
 			.withVersion(version)
 			.withStatus(status.name())
 			.withMunicipalityId(municipalityId)
-			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
@@ -178,7 +176,6 @@ class LandLeaseContractTest {
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status.name());
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(contract.getCaseId()).isEqualTo(caseId);
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
