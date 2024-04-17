@@ -73,7 +73,6 @@ class ContractServiceTest {
 	void createContract() {
 		//Arrange
 		var contract = LandLeaseContract.builder()
-			.withCaseId(1L)
 			.withLandLeaseType(SITELEASEHOLD.name())
 			.withUsufructType(HUNTING.name())
 			.withInvoicing(Invoicing.builder()

@@ -70,9 +70,6 @@ public abstract class ContractEntity {
 	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
-	@Column(name = "case_id")
-	private Long caseId;
-
 	@Column(name = "index_terms")
 	@Convert(converter = TermGroupConverter.class)
 	private List<TermGroup> indexTerms;
@@ -118,7 +115,6 @@ public abstract class ContractEntity {
 			type == that.type &&
 			Objects.equals(version, that.version) &&
 			status == that.status &&
-			Objects.equals(caseId, that.caseId) &&
 			Objects.equals(indexTerms, that.indexTerms) &&
 			Objects.equals(description, that.description) &&
 			Objects.equals(additionalTerms, that.additionalTerms) &&
@@ -127,7 +123,7 @@ public abstract class ContractEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, type, version, status, caseId, indexTerms, description, additionalTerms, extraParameters);
+		return Objects.hash(id, type, version, status, indexTerms, description, additionalTerms, extraParameters);
 	}
 
 	@Override
@@ -136,7 +132,6 @@ public abstract class ContractEntity {
 			"id=" + id +
 			", version=" + version +
 			", status=" + status +
-			", caseId=" + caseId +
 			", indexTerms='" + indexTerms + '\'' +
 			", description='" + description + '\'' +
 			", additionalTerms='" + additionalTerms + '\'' +

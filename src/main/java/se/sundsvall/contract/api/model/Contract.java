@@ -55,9 +55,6 @@ public abstract class Contract {
 	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = Schema.AccessMode.READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Eventual caseId for the contract", example = "100")
-	private Long caseId;
-
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
 	private List<TermGroup> indexTerms;
 

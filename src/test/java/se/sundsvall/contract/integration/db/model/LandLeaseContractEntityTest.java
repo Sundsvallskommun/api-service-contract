@@ -57,7 +57,6 @@ class LandLeaseContractEntityTest {
 		var municipalityId = "1984";
 		var contractId = "2024-12345";
 		var id = 1L;
-		var caseId = 1L;
 		var indexTerms = List.of(
 			TermGroup.builder()
 				.withHeader("Some index terms")
@@ -117,7 +116,6 @@ class LandLeaseContractEntityTest {
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
-			.withCaseId(caseId)
 			.withIndexTerms(indexTerms)
 			.withDescription(description)
 			.withAdditionalTerms(additionalTerms)
@@ -151,7 +149,6 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(contract.getCaseId()).isEqualTo(caseId);
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);

@@ -3,7 +3,6 @@
 	"type": "LAND_LEASE",
 	"status": "DRAFT",
 	"municipalityId": "1984",
-	"caseId": 666,
 	"indexTerms": [
 		{
 			"header": "More General Terms",

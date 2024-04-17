@@ -59,7 +59,6 @@ public class ContractMapper {
 		contract.setType(ofNullable(contractEntity.getType()).map(ContractType::name).orElse(null));
 		contract.setStatus(ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null));
 		contract.setMunicipalityId(contractEntity.getMunicipalityId());
-		contract.setCaseId(contractEntity.getCaseId());
 		contract.setIndexTerms(contractEntity.getIndexTerms());
 		contract.setDescription(contractEntity.getDescription());
 		contract.setAdditionalTerms(contractEntity.getAdditionalTerms());
@@ -190,7 +189,6 @@ public class ContractMapper {
 		contractEntity.setType(of(contract.getType()).map(ContractType::valueOf).orElse(null));
 		contractEntity.setStatus(ofNullable(contract.getStatus()).map(Status::valueOf).orElse(null));
 		contractEntity.setMunicipalityId(municipalityId);
-		contractEntity.setCaseId(contract.getCaseId());
 		contractEntity.setIndexTerms(contract.getIndexTerms());
 		contractEntity.setDescription(contract.getDescription());
 		contractEntity.setAdditionalTerms(contract.getAdditionalTerms());
