@@ -12,7 +12,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
-import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
+import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 import static se.sundsvall.contract.model.enums.LandLeaseType.LEASEHOLD;
@@ -32,11 +32,12 @@ import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
-import se.sundsvall.contract.api.model.LandLeaseContract;
+import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.service.ContractService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -54,14 +55,14 @@ class ContractResourceTest {
 
 	@Test
 	void getContractByMunicipalityAndContractId() {
-		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(LandLeaseContract.builder().build());
+		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(Contract.builder().build());
 
 		var response = webTestClient.get()
 			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(LandLeaseContract.class)
+			.expectBody(Contract.class)
 			.returnResult()
 			.getResponseBody();
 
@@ -73,7 +74,7 @@ class ContractResourceTest {
 
 	@Test
 	void getContractByMunicipalityAndContractIdAndVersion() {
-		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(LandLeaseContract.builder().build());
+		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(Contract.builder().build());
 
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}")
@@ -82,7 +83,7 @@ class ContractResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(LandLeaseContract.class)
+			.expectBody(Contract.class)
 			.returnResult()
 			.getResponseBody();
 
@@ -138,7 +139,7 @@ class ContractResourceTest {
 
 	@Test
 	void postContract() {
-		var contract = LandLeaseContract.builder()
+		var contract = Contract.builder()
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY.name())
@@ -148,6 +149,7 @@ class ContractResourceTest {
 			.withStatus(ACTIVE.name())
 			.withUsufructType(HUNTING.name())
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
+			.withType(ContractType.LAND_LEASE.name())
 			.build();
 
 		when(contractServiceMock.createContract(MUNICIPALITY_ID, contract)).thenReturn(CONTRACT_ID);
@@ -195,7 +197,7 @@ class ContractResourceTest {
 
 	@Test
 	void updateContract() {
-		var landLeaseContract = createLandLeaseContract();
+		var landLeaseContract = createContract();
 
 		doNothing().when(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 

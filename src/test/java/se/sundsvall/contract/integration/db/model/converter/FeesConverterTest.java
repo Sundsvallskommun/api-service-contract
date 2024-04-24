@@ -7,13 +7,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.persistence.PersistenceException;
-
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.contract.model.LeaseFees;
+import se.sundsvall.contract.model.Fees;
 
-class LeaseFeesConverterTest {
+import jakarta.persistence.PersistenceException;
+
+class FeesConverterTest {
 
     public static final String JSON = """
         {
@@ -28,7 +28,7 @@ class LeaseFeesConverterTest {
         }
         """;
 
-    private final LeaseFeesConverter converter = new LeaseFeesConverter();
+    private final FeesConverter converter = new FeesConverter();
 
     @Test
     void convertToDatabaseColumnWithNullInputReturnsNull() {
@@ -37,7 +37,7 @@ class LeaseFeesConverterTest {
 
     @Test
     void convertToDatabaseColumn() {
-        var leaseFees = LeaseFees.builder()
+        var fees = Fees.builder()
             .withCurrency("USD")
             .withYearly(BigDecimal.valueOf(123.45))
             .withMonthly(BigDecimal.valueOf(234.56))
@@ -48,7 +48,7 @@ class LeaseFeesConverterTest {
             .withAdditionalInformation(List.of("aaa", "bbb"))
             .build();
 
-        var result = converter.convertToDatabaseColumn(leaseFees);
+        var result = converter.convertToDatabaseColumn(fees);
 
         assertThatJson(result).isEqualTo(JSON);
     }
@@ -67,22 +67,22 @@ class LeaseFeesConverterTest {
     void convertToEntityAttributeWithInvalidInputThrowsException() {
         assertThatExceptionOfType(PersistenceException.class)
             .isThrownBy(() -> converter.convertToEntityAttribute("not-json"))
-            .withMessage("Unable to deserialize lease fees");
+            .withMessage("Unable to deserialize fees");
     }
 
     @Test
     void convertToEntityAttribute() {
         var result = converter.convertToEntityAttribute(JSON);
 
-        assertThat(result).isNotNull().satisfies(leaseFees -> {
-            assertThat(leaseFees.getCurrency()).isEqualTo("USD");
-            assertThat(leaseFees.getYearly()).isEqualTo(BigDecimal.valueOf(123.45));
-            assertThat(leaseFees.getMonthly()).isEqualTo(BigDecimal.valueOf(234.56));
-            assertThat(leaseFees.getTotal()).isEqualTo(BigDecimal.valueOf(345.67));
-            assertThat(leaseFees.getTotalAsText()).isEqualTo("three hundred forty five point six seven");
-            assertThat(leaseFees.getIndexYear()).isEqualTo(1984);
-            assertThat(leaseFees.getIndexNumber()).isEqualTo(7);
-            assertThat(leaseFees.getAdditionalInformation()).containsExactly("aaa", "bbb");
+        assertThat(result).isNotNull().satisfies(fees -> {
+            assertThat(fees.getCurrency()).isEqualTo("USD");
+            assertThat(fees.getYearly()).isEqualTo(BigDecimal.valueOf(123.45));
+            assertThat(fees.getMonthly()).isEqualTo(BigDecimal.valueOf(234.56));
+            assertThat(fees.getTotal()).isEqualTo(BigDecimal.valueOf(345.67));
+            assertThat(fees.getTotalAsText()).isEqualTo("three hundred forty five point six seven");
+            assertThat(fees.getIndexYear()).isEqualTo(1984);
+            assertThat(fees.getIndexNumber()).isEqualTo(7);
+            assertThat(fees.getAdditionalInformation()).containsExactly("aaa", "bbb");
         });
     }
 }

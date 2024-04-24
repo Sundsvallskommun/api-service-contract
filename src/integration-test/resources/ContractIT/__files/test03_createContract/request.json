@@ -106,7 +106,7 @@
 	],
 	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
-	"leaseFees": {
+	"fees": {
 		"currency": "SEK",
 		"yearly": 234.56,
 		"monthly": 123.45,

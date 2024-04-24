@@ -21,6 +21,8 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.diff.Differ;
+import se.sundsvall.contract.service.mapper.DtoMapper;
+import se.sundsvall.contract.service.mapper.EntityMapper;
 import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Service
@@ -32,20 +34,22 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
-	private final ContractMapper contractMapper;
+	private final DtoMapper dtoMapper;
+	private final EntityMapper entityMapper;
 	private final Differ differ;
 
 	public ContractService(final ContractRepository contractRepository,
-			final AttachmentRepository attachmentRepository, final ContractMapper contractMapper,
+			final AttachmentRepository attachmentRepository, DtoMapper dtoMapper, final EntityMapper entityMapper,
 			final Differ differ) {
 		this.contractRepository = contractRepository;
         this.attachmentRepository = attachmentRepository;
-		this.contractMapper = contractMapper;
+		this.dtoMapper = dtoMapper;
+		this.entityMapper = entityMapper;
 		this.differ = differ;
     }
 
 	public String createContract(final String municipalityId, final Contract contract) {
-		var entity = contractMapper.toContractEntity(municipalityId, contract);
+		var entity = entityMapper.toContractEntity(municipalityId, contract);
 
 		return contractRepository.save(entity).getContractId();
 	}
@@ -61,7 +65,7 @@ public class ContractService {
 		}
 
 		return contractEntity
-			.map(entity -> contractMapper.toContractDto(entity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
+			.map(entity -> dtoMapper.toContractDto(entity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(Status.NOT_FOUND)
 				.withDetail(version != null ?
@@ -79,7 +83,7 @@ public class ContractService {
 
 		//Map to response objects
 		var contracts = contractEntities.stream()
-			.map(contractEntity -> contractMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
+			.map(contractEntity -> dtoMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
 			.toList();
 
 		//Add to response
@@ -101,7 +105,7 @@ public class ContractService {
 				.build());
 
 		//Create a new entity and save it
-		var newContractEntity = contractMapper.createNewContractEntity(municipalityId, oldContractEntity, contract);
+		var newContractEntity = entityMapper.createNewContractEntity(municipalityId, oldContractEntity, contract);
 		contractRepository.save(newContractEntity);
 	}
 

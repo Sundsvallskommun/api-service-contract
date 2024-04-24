@@ -1,9 +1,51 @@
 {
-	"type": "LAND_LEASE",
-	"contractId": "2024-12345",
 	"version": 3,
-	"status": "DRAFT",
+	"contractId": "2024-12345",
+	"description": "some other description",
+	"externalReferenceId": "MK-TEST0009",
+	"landLeaseType": "SITELEASEHOLD",
 	"municipalityId": "1984",
+	"objectIdentity": "anotherObjectIdentity",
+	"status": "DRAFT",
+	"type": "LAND_LEASE",
+	"usufructType": "FISHING",
+	"leasehold": {
+		"purpose": "APARTMENT",
+		"description": "anotherLeaseholdDescription",
+		"additionalInformation": [
+			"another additional information when posting",
+			"More other information when posting"
+		]
+	},
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
+	"additionalTerms": [
+		{
+			"header": "Extraordinary Terms 2",
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			]
+		}
+	],
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
 	"indexTerms": [
 		{
 			"header": "More General Terms",
@@ -15,17 +57,9 @@
 			]
 		}
 	],
-	"description": "some other description",
-	"additionalTerms": [
-		{
-			"header": "Extraordinary Terms 2",
-			"terms": [
-				{
-					"description": "Unless something extraordinary has happened...",
-					"term": "Exceptions"
-				}
-			]
-		}
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 678:1",
+		"SUNDSVALL NORRMALM 987:1"
 	],
 	"stakeholders": [
 		{
@@ -50,43 +84,8 @@
 			}
 		}
 	],
-	"attachmentMetaData": [
-		{
-			"id": 1,
-			"category": "CONTRACT",
-			"filename": "someFile.pdf",
-			"mimeType": "application/pdf",
-			"note": "someNote"
-		}
-	],
-	"signedByWitness": true,
-	"extraParameters": [
-		{
-			"name": "Fees",
-			"parameters": {
-				"key1": "value1",
-				"key2": "value2"
-			}
-		}
-	],
-	"landLeaseType": "SITELEASEHOLD",
-	"leasehold": {
-		"purpose": "APARTMENT",
-		"description": "anotherLeaseholdDescription",
-		"additionalInformation": [
-			"another additional information when posting",
-			"More other information when posting"
-		]
-	},
-	"usufructType": "FISHING",
-	"externalReferenceId": "MK-TEST0009",
-	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 678:1",
-		"SUNDSVALL NORRMALM 987:1"
-	],
-	"objectIdentity": "anotherObjectIdentity",
 	"leaseDuration": 5,
-	"leaseFees": {
+	"fees": {
 		"currency": "SEK",
 		"yearly": 2814.72,
 		"monthly": 234.56,
@@ -108,5 +107,6 @@
 	"autoExtend": true,
 	"leaseExtension": 1,
 	"periodOfNotice": 2,
-	"area": 12
+	"area": 12,
+	"signedByWitness": true
 }

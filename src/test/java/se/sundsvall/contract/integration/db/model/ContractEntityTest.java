@@ -1,9 +1,9 @@
 package se.sundsvall.contract.integration.db.model;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.LocalDate.now;
@@ -28,11 +28,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.LeaseFees;
+import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 
-class LandLeaseContractEntityTest {
+class ContractEntityTest {
 
 	@BeforeAll
 	static void setup() {
@@ -41,12 +41,20 @@ class LandLeaseContractEntityTest {
 
 	@Test
 	void testBean() {
-		assertThat(LandLeaseContractEntity.class, allOf(
+		assertThat(ContractEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanHashCodeExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId"),
-			hasValidBeanEqualsExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId"),
-			hasValidBeanToStringExcluding("type", "areaData", "attachments", "stakeholders", "version", "contractId")));
+			hasValidBeanHashCode(),
+			hasValidBeanEquals(),
+			hasValidBeanToString()));
+	}
+
+	@Test
+	void testPrePersist() {
+		var entity = ContractEntity.builder().build();
+		assertThat(entity.getVersion()).isOne();
+		entity.prePersist();
+		assertThat(entity.getVersion()).isEqualTo(2);
 	}
 
 	@Test
@@ -89,7 +97,7 @@ class LandLeaseContractEntityTest {
 		var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
 		var objectIdentity = "objectIdentity";
 		var leaseDuration = 3;
-		var leaseFees = LeaseFees.builder()
+		var fees = Fees.builder()
 			.withCurrency("SEK")
 			.withYearly(BigDecimal.valueOf(4350))
 			.withMonthly(BigDecimal.valueOf(375))
@@ -109,7 +117,7 @@ class LandLeaseContractEntityTest {
 		var area = 1;
 		var areaData = new FeatureCollection();
 
-		var contract = LandLeaseContractEntity.builder()
+		var contract = ContractEntity.builder()
 			.withId(id)
 			.withContractId(contractId)
 			.withType(type)
@@ -128,7 +136,7 @@ class LandLeaseContractEntityTest {
 			.withPropertyDesignations(propertyDesignations)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
-			.withLeaseFees(leaseFees)
+			.withFees(fees)
 			.withInvoicing(InvoicingEntity.builder()
 				.withInvoiceInterval(invoiceInterval)
 				.withInvoicedIn(invoicedIn)
@@ -161,7 +169,7 @@ class LandLeaseContractEntityTest {
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
-		assertThat(contract.getLeaseFees()).isEqualTo(leaseFees);
+		assertThat(contract.getFees()).isEqualTo(fees);
 		assertThat(contract.getInvoicing()).satisfies(invoicing -> {
 			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
 			assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
@@ -177,6 +185,6 @@ class LandLeaseContractEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LandLeaseContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version");
+		assertThat(ContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version");
 	}
 }

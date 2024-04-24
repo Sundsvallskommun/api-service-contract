@@ -11,11 +11,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Builder(setterPrefix = "with")
-@Schema(description = "Lease fees")
-public class LeaseFees {
+@Schema(description = "Fees")
+public class Fees {
 
     @Schema(description = "The currency of the lease fees", example = "SEK")
     private String currency;

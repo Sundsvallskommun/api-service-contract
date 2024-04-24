@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
-@AllArgsConstructor()
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class Address {
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AddressType}
 	 */
 	@Schema(example = "POSTAL_ADDRESS", description = "Address type")
-	@OneOf({"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"})
+	@OneOf(value = {"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"}, nullable = true)
 	private String type;
 
 	@Schema(example = "Testvägen 18")

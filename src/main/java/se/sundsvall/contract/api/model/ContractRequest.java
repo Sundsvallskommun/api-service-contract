@@ -12,6 +12,7 @@ import se.sundsvall.dept44.models.api.paging.AbstractParameterPagingBase;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Builder(setterPrefix = "with")
@@ -29,7 +30,7 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	@Schema(description = "Contract id", example = "2024-12345")
 	private String contractId;
 	
-	@Schema(description = "Identifier for private person", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	@Schema(description = "PartyId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	@ValidUuid(nullable = true)
 	private String partyId;
 	

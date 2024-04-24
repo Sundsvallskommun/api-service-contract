@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
-@AllArgsConstructor()
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Schema(description = "Invoicing details")
 public class Invoicing {
 
@@ -20,13 +20,13 @@ public class Invoicing {
      * Backed by enum {@link se.sundsvall.contract.api.model.enums.IntervalType}
      */
     @Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
-    @OneOf({"YEARLY", "QUARTERLY", "MONTHLY"})
+    @OneOf(value = {"YEARLY", "QUARTERLY", "MONTHLY"}, nullable = true)
     private String invoiceInterval;
 
     /*
      * Backed by enum {@link se.sundsvall.contract.api.model.enums.InvoicedIn}
      */
     @Schema(description = "How the lease is invoiced", example = "ADVANCE")
-    @OneOf({"ADVANCE", "ARREARS"})
+    @OneOf(value = {"ADVANCE", "ARREARS"}, nullable = true)
     private String invoicedIn;
 }

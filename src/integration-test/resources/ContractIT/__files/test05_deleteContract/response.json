@@ -1,12 +1,64 @@
 {
-	"type": "LAND_LEASE",
-	"contractId": "2024-12345",
 	"version": 2,
-	"status": "ACTIVE",
-	"municipalityId": "1984",
-	"indexTerms": [],
+	"contractId": "2024-12345",
 	"description": "someDescription",
-	"additionalTerms": [],
+	"externalReferenceId": "MK-TEST0001",
+	"landLeaseType": "LEASEHOLD",
+	"municipalityId": "1984",
+	"objectIdentity": "someObjectIdentity",
+	"status": "ACTIVE",
+	"type": "PURCHASE_AGREEMENT",
+	"usufructType": "HUNTING",
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Even more additional information"
+		]
+	},
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
+	"additionalTerms": [
+		{
+			"header": "Additional Basic Terms",
+			"terms": [
+				{
+					"description": "The parties involved in the additional lease agreement",
+					"term": "Parties"
+				}
+			]
+		}
+	],
+	"extraParameters": [
+		{
+			"name": "someParameters3",
+			"parameters": {
+				"key5": "value5",
+				"key6": "value6"
+			}
+		}
+	],
+	"indexTerms": [
+		{
+			"header": "Basic Terms",
+			"terms": [
+				{
+					"description": "The parties involved in the lease agreement",
+					"term": "Parties"
+				}
+			]
+		}
+	],
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 1:1"
+	],
 	"stakeholders": [
 		{
 			"type": "PERSON",
@@ -30,32 +82,8 @@
 			}
 		}
 	],
-	"attachmentMetaData": [
-		{
-			"id": 1,
-			"category": "CONTRACT",
-			"filename": "someFile.pdf",
-			"mimeType": "application/pdf",
-			"note": "someNote"
-		}
-	],
-	"signedByWitness": true,
-	"landLeaseType": "LEASEHOLD",
-	"leasehold": {
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription",
-		"additionalInformation": [
-			"Some additional information"
-		]
-	},
-	"usufructType": "HUNTING",
-	"externalReferenceId": "MK-TEST0001",
-	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 1:1"
-	],
-	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
-	"leaseFees": {
+	"fees": {
 		"currency": "SEK",
 		"yearly": 234.56,
 		"monthly": 123.45,
@@ -64,8 +92,8 @@
 		"indexYear": 2021,
 		"indexNumber": 2,
 		"additionalInformation": [
-			"someAdditionalInfo1",
-			"someAdditionalInfo2"
+			"someAdditionalInfo3",
+			"someAdditionalInfo4"
 		]
 	},
 	"invoicing": {
@@ -77,5 +105,6 @@
 	"autoExtend": true,
 	"leaseExtension": 1,
 	"periodOfNotice": 2,
-	"area": 12
+	"area": 12,
+	"signedByWitness": true
 }

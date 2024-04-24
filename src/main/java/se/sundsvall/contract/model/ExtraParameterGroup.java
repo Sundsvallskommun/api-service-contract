@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "Extra parameter group")
 public class ExtraParameterGroup {
 

@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
-@AllArgsConstructor()
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Schema(description = "Leasehold")
 public class Leasehold {
 
@@ -25,8 +25,9 @@ public class Leasehold {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseholdType}
 	 */
 	@Schema(example = "OTHER", description = "Type of leasehold")
-	@OneOf({"AGRICULTURE", "APARTMENT", "BOATING_PLACE", "BUILDING", "DEPOT", "DWELLING", "LAND_COMPLEMENT",
-		"LINEUP", "OTHER", "PARKING", "RECYCLING_STATION", "ROAD", "SIGNBOARD", "SNOW_DUMP", "SPORTS_PURPOSE", "SURFACE_HEAT", "TRAIL"})
+	@OneOf(value = {"AGRICULTURE", "APARTMENT", "BOATING_PLACE", "BUILDING", "DEPOT", "DWELLING",
+		"LAND_COMPLEMENT", "LINEUP", "OTHER", "PARKING", "RECYCLING_STATION", "ROAD", "SIGNBOARD",
+		"SNOW_DUMP", "SPORTS_PURPOSE", "SURFACE_HEAT", "TRAIL"}, nullable = true)
 	private String purpose;
 
 	@Schema(description = "description ", example = "A simple description of the leasehold")

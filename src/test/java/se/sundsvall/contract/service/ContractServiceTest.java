@@ -10,8 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
-import static se.sundsvall.contract.TestFactory.createLandLeaseContract;
-import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createContractEntity;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
@@ -37,16 +36,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
+import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Invoicing;
-import se.sundsvall.contract.api.model.LandLeaseContract;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.integration.db.model.LandLeaseContractEntity;
 import se.sundsvall.contract.model.Change;
+import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.service.diff.Differ;
+import se.sundsvall.contract.service.mapper.DtoMapper;
+import se.sundsvall.contract.service.mapper.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
@@ -58,7 +59,10 @@ class ContractServiceTest {
 	private AttachmentRepository mockAttachmentRepository;
 
 	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private ContractMapper mockContractMapper;
+	private EntityMapper mockEntityMapper;
+
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	private DtoMapper mockDtoMapper;
 
 	@Mock
 	private Differ mockDiffer;
@@ -72,7 +76,7 @@ class ContractServiceTest {
 	@Test
 	void createContract() {
 		//Arrange
-		var contract = LandLeaseContract.builder()
+		var contract = Contract.builder()
 			.withLandLeaseType(SITELEASEHOLD.name())
 			.withUsufructType(HUNTING.name())
 			.withInvoicing(Invoicing.builder()
@@ -80,24 +84,25 @@ class ContractServiceTest {
 				.withInvoicedIn(ARREARS.name())
 				.build())
 			.withStatus(ACTIVE.name())
+			.withType(ContractType.LAND_LEASE.name())
 			.build();
 
-		when(mockContractRepository.save(any(LandLeaseContractEntity.class)))
-			.thenReturn(LandLeaseContractEntity.builder().withContractId(CONTRACT_ID).build());
+		when(mockContractRepository.save(any(ContractEntity.class)))
+			.thenReturn(ContractEntity.builder().withContractId(CONTRACT_ID).build());
 
 		//ACt
 		var result = contractService.createContract(MUNICIPALITY_ID, contract);
 
 		//Assert
 		assertThat(result).isEqualTo(CONTRACT_ID);
-		verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
+		verify(mockContractRepository).save(any(ContractEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
 	}
 
 	@Test
 	void getContract() {
 		//Arrange
-		var landLeaseContractEntity = createLandLeaseContractEntity();
+		var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 
@@ -118,7 +123,7 @@ class ContractServiceTest {
 
 	@Test
 	void getContract_withSpecificVersion() {
-		var landLeaseContractEntity = createLandLeaseContractEntity();
+		var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 2))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 
@@ -153,7 +158,7 @@ class ContractServiceTest {
 	@Test
 	void getPaginatedContracts() {
 		//Arrange
-		var landLeaseContractEntity = createLandLeaseContractEntity();
+		var landLeaseContractEntity = createContractEntity();
 
 		Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity));
 
@@ -194,16 +199,16 @@ class ContractServiceTest {
 	@Test
 	void updateContract() {
 		//Arrange
-		var landLeaseContractEntity = createLandLeaseContractEntity();
+		var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(landLeaseContractEntity));
-		var landLeaseContract = createLandLeaseContract();
+		var landLeaseContract = TestFactory.createContract();
 
 		//Act
 		contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 
 		//Assert
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
-		verify(mockContractRepository).save(any(LandLeaseContractEntity.class));
+		verify(mockContractRepository).save(any(ContractEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
 	}
 
@@ -213,7 +218,7 @@ class ContractServiceTest {
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, createLandLeaseContract()))
+			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()))
 			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(Status.NOT_FOUND));
 
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
@@ -225,7 +230,7 @@ class ContractServiceTest {
 		var availableVersions = List.of(1, 2, 3);
 		var oldVersion = 2;
 		var newVersion = 3;
-		var landLeaseContractEntity = createLandLeaseContractEntity();
+		var landLeaseContractEntity = createContractEntity();
 
 		when(mockContractRepository.findAllContractVersionsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(availableVersions);
