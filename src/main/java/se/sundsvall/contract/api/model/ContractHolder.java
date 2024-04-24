@@ -2,10 +2,9 @@ package se.sundsvall.contract.api.model;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +13,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
-@AllArgsConstructor()
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class ContractHolder {
 
 	@Valid

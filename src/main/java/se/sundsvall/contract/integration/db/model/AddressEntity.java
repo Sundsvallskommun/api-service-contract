@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,9 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @Data
-@AllArgsConstructor
 @Builder(setterPrefix = "with")
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Table(name = "address")
 public class AddressEntity {
 

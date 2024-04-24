@@ -10,6 +10,7 @@ import se.sundsvall.dept44.models.api.paging.PagingMetaData;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +18,8 @@ import lombok.NoArgsConstructor;
 
 
 @Data
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder(setterPrefix = "with")
 @Schema(description = "Paginated response for contracts")
 public class ContractPaginatedResponse {

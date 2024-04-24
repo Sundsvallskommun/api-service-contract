@@ -44,6 +44,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,8 +54,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(setterPrefix = "with")
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "contract",
 	uniqueConstraints = @UniqueConstraint(columnNames = { "contract_id", "version" }))

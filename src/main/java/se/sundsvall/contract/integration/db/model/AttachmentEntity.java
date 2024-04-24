@@ -27,8 +27,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Builder(setterPrefix = "with")
 @Table(name = "attachment")
 public class AttachmentEntity {

@@ -28,8 +28,8 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Builder(setterPrefix = "with")
 @Table(name = "stakeholder")
 public class StakeholderEntity {

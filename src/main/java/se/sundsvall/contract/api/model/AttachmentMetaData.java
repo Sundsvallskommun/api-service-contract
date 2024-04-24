@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Builder(setterPrefix = "with")
 @Schema(description = "Attachment metadata", accessMode = Schema.AccessMode.READ_WRITE)
 public class AttachmentMetaData {

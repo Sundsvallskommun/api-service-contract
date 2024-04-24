@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "Term group")
 public class TermGroup {
 

@@ -98,12 +98,15 @@ class DtoMapperTest {
 		var metadata = mapper.toAttachmentMetaDataDto(attachmentEntity);
 
 		//Assert
-		assertThat(metadata).isEqualTo(new AttachmentMetaData(
-			attachmentEntity.getId(),
-			attachmentEntity.getCategory().name(),
-			attachmentEntity.getFilename(),
-			attachmentEntity.getMimeType(),
-			attachmentEntity.getNote()));
+		var attachmentMetaData = AttachmentMetaData.builder()
+			.withId(attachmentEntity.getId())
+			.withCategory(attachmentEntity.getCategory().name())
+			.withFilename(attachmentEntity.getFilename())
+			.withMimeType(attachmentEntity.getMimeType())
+			.withNote(attachmentEntity.getNote())
+			.build();
+
+		assertThat(metadata).isEqualTo(attachmentMetaData);
 	}
 
 	@Test

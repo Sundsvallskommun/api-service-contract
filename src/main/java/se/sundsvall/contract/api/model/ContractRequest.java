@@ -12,6 +12,7 @@ import se.sundsvall.dept44.models.api.paging.AbstractParameterPagingBase;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Builder(setterPrefix = "with")

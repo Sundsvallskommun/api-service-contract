@@ -16,13 +16,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder(setterPrefix = "with")
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @Schema(description = "Contract")
 public class Contract {
 
@@ -41,8 +40,8 @@ public class Contract {
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
 	 */
-	@Schema(description = "Type of lease", example = "LEASEHOLD", nullable = true)
-	@OneOf({"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"})
+	@Schema(description = "Type of lease", example = "LEASEHOLD")
+	@OneOf(value = {"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"}, nullable = true)
 	private String landLeaseType;
 
 	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = Schema.AccessMode.READ_ONLY)
@@ -54,15 +53,15 @@ public class Contract {
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
 	 */
-	@OneOf({"ACTIVE", "DRAFT", "TERMINATED"})
 	@Schema(description = "Status for contract", example = "ACTIVE")
+	@OneOf({"ACTIVE", "DRAFT", "TERMINATED"})
 	private String status;
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.ContractType}
 	 */
-	@OneOf(value = {"APARTMENT_LEASE", "LAND_LEASE", "PURCHASE_AGREEMENT"})
 	@Schema(description = "Contract type.", example = "LAND_LEASE")
+	@OneOf(value = {"APARTMENT_LEASE", "LAND_LEASE", "PURCHASE_AGREEMENT"})
 	private String type;
 
 	/*
