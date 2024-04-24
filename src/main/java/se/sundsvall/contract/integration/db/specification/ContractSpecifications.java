@@ -4,13 +4,13 @@ import static java.util.function.Predicate.not;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRACT_ID;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.END;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.EXTERNAL_REFERENCE_ID;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.LAND_LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.VERSION;
-import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.END;
-import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.EXTERNAL_REFERENCE_ID;
-import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.LAND_LEASE_TYPE;
-import static se.sundsvall.contract.integration.db.model.LandLeaseContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.ORGANIZATION_NUMBER;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PARTY_ID;
 
@@ -32,7 +32,7 @@ public final class ContractSpecifications {
 		return withOnlyLatestVersion()
 			.and(withMunicipalityId(municipalityId))
 			.and(withContractId(request.getContractId()))
-			.and(withPersonId(request.getPartyId()))
+			.and(withPartyId(request.getPartyId()))
 			.and(withOrganizationNumber(request.getOrganizationNumber()))
 			.and(withEndDate(request.getEnd()))
 			.and(withLandLeaseType(request.getLandLeaseType()))
@@ -63,7 +63,7 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> cb.equal(root.get(CONTRACT_ID), contractId);
 	}
 
-	private static Specification<ContractEntity> withPersonId(final String partyId) {
+	private static Specification<ContractEntity> withPartyId(final String partyId) {
 		if (isBlank(partyId)) {
 			return EMPTY;
 		}

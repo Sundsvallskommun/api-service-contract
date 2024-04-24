@@ -14,11 +14,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-class LeaseFeesTest {
+class FeesTest {
 
 	@Test
 	void testBean() {
-		assertThat(LeaseFees.class, allOf(
+		assertThat(Fees.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -37,7 +37,7 @@ class LeaseFeesTest {
 		var indexNumber = 5;
 		var additionalInformation = List.of("aaa", "bbb");
 
-		var leaseFees = LeaseFees.builder()
+		var fees = Fees.builder()
 			.withCurrency(currency)
 			.withYearly(yearly)
 			.withMonthly(monthly)
@@ -48,19 +48,19 @@ class LeaseFeesTest {
 			.withAdditionalInformation(additionalInformation)
 			.build();
 
-		assertThat(leaseFees).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leaseFees.getCurrency()).isEqualTo(currency);
-		assertThat(leaseFees.getYearly()).isEqualTo(yearly);
-		assertThat(leaseFees.getMonthly()).isEqualTo(monthly);
-		assertThat(leaseFees.getTotal()).isEqualTo(total);
-		assertThat(leaseFees.getTotalAsText()).isEqualTo(totalAsText);
-		assertThat(leaseFees.getIndexYear()).isEqualTo(indexYear);
-		assertThat(leaseFees.getIndexNumber()).isEqualTo(indexNumber);
-		assertThat(leaseFees.getAdditionalInformation()).containsExactlyElementsOf(additionalInformation);
+		assertThat(fees).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(fees.getCurrency()).isEqualTo(currency);
+		assertThat(fees.getYearly()).isEqualTo(yearly);
+		assertThat(fees.getMonthly()).isEqualTo(monthly);
+		assertThat(fees.getTotal()).isEqualTo(total);
+		assertThat(fees.getTotalAsText()).isEqualTo(totalAsText);
+		assertThat(fees.getIndexYear()).isEqualTo(indexYear);
+		assertThat(fees.getIndexNumber()).isEqualTo(indexNumber);
+		assertThat(fees.getAdditionalInformation()).containsExactlyElementsOf(additionalInformation);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(LeaseFees.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(Fees.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }

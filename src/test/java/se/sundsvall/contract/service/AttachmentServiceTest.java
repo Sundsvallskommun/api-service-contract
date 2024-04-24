@@ -26,6 +26,8 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
+import se.sundsvall.contract.service.mapper.DtoMapper;
+import se.sundsvall.contract.service.mapper.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -37,7 +39,10 @@ class AttachmentServiceTest {
 	private AttachmentRepository mockAttachmentRepository;
 
 	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private ContractMapper mockContractMapper;
+	private EntityMapper mockEntityMapper;
+
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	private DtoMapper mockDtoMapper;
 
 	@InjectMocks
 	private AttachmentService attachmentService;
@@ -62,11 +67,11 @@ class AttachmentServiceTest {
 		//Assert
 		assertThat(createdAttachment).isEqualTo(ENTITY_ID);
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
-		verify(mockContractMapper).toAttachmentEntity(MUNICIPALITY_ID, CONTRACT_ID, attachment);
+		verify(mockEntityMapper).toAttachmentEntity(MUNICIPALITY_ID, CONTRACT_ID, attachment);
 		verify(mockAttachmentRepository).save(any(AttachmentEntity.class));
 
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -83,7 +88,7 @@ class AttachmentServiceTest {
 
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -98,9 +103,9 @@ class AttachmentServiceTest {
 		//Assert
 		assertThat(attachment).isNotNull();
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
-		verify(mockContractMapper).toAttachmentDto(any(AttachmentEntity.class));
+		verify(mockDtoMapper).toAttachmentDto(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -117,7 +122,7 @@ class AttachmentServiceTest {
 
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 
 	}
@@ -140,9 +145,9 @@ class AttachmentServiceTest {
 
 		//Assert
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
-		verify(mockContractMapper).updateAttachmentEntity(oldAttachmentEntity, incomingAttachment);
+		verify(mockEntityMapper).updateAttachmentEntity(oldAttachmentEntity, incomingAttachment);
 		verify(mockAttachmentRepository).save(argumentCaptor.capture());
-		verify(mockContractMapper).toAttachmentMetaDataDto(any(AttachmentEntity.class));
+		verify(mockDtoMapper).toAttachmentMetaDataDto(any(AttachmentEntity.class));
 
 		var savedEntity = argumentCaptor.getValue();
 		assertThat(savedEntity.getCategory()).isEqualTo(AttachmentCategory.CONTRACT);
@@ -154,7 +159,7 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getContractId()).isEqualTo("2024-12345");
 
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -171,7 +176,7 @@ class AttachmentServiceTest {
 
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockContractMapper);
+		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 

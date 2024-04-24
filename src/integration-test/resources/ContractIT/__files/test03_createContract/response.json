@@ -1,9 +1,43 @@
 {
-	"type": "LAND_LEASE",
-	"contractId": "2024-00001",
 	"version": 1,
-	"status": "DRAFT",
+	"contractId": "2024-00001",
+	"description": "someDescription",
+	"externalReferenceId": "MK-TEST0003",
+	"landLeaseType": "LEASEHOLD",
 	"municipalityId": "1984",
+	"objectIdentity": "someObjectIdentity",
+	"status": "DRAFT",
+	"type": "LAND_LEASE",
+	"usufructType": "HUNTING",
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Some additional information when posting",
+			"More additional information when posting"
+		]
+	},
+	"attachmentMetaData": [],
+	"additionalTerms": [
+		{
+			"header": "Extraordinary Terms",
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			]
+		}
+	],
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
 	"indexTerms": [
 		{
 			"header": "General Terms",
@@ -15,17 +49,9 @@
 			]
 		}
 	],
-	"description": "someDescription",
-	"additionalTerms": [
-		{
-			"header": "Extraordinary Terms",
-			"terms": [
-				{
-					"description": "Unless something extraordinary has happened...",
-					"term": "Exceptions"
-				}
-			]
-		}
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 123:1",
+		"SUNDSVALL NORRMALM 234:1"
 	],
 	"stakeholders": [
 		{
@@ -71,35 +97,8 @@
 			}
 		}
 	],
-	"attachmentMetaData": [],
-	"signedByWitness": true,
-	"extraParameters": [
-		{
-			"name": "Fees",
-			"parameters": {
-				"key1": "value1",
-				"key2": "value2"
-			}
-		}
-	],
-	"landLeaseType": "LEASEHOLD",
-	"leasehold": {
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription",
-		"additionalInformation": [
-			"Some additional information when posting",
-			"More additional information when posting"
-		]
-	},
-	"usufructType": "HUNTING",
-	"externalReferenceId": "MK-TEST0003",
-	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 123:1",
-		"SUNDSVALL NORRMALM 234:1"
-	],
-	"objectIdentity": "someObjectIdentity",
 	"leaseDuration": 2,
-	"leaseFees": {
+	"fees": {
 		"currency": "SEK",
 		"yearly": 234.56,
 		"monthly": 123.45,
@@ -121,5 +120,6 @@
 	"autoExtend": true,
 	"leaseExtension": 1,
 	"periodOfNotice": 2,
-	"area": 12
+	"area": 12,
+	"signedByWitness": true
 }

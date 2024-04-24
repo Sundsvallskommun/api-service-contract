@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(setterPrefix = "with")
-@Schema(description = "Lease fees")
-public class LeaseFees {
+@Schema(description = "Fees")
+public class Fees {
 
     @Schema(description = "The currency of the lease fees", example = "SEK")
     private String currency;

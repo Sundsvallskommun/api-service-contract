@@ -58,7 +58,7 @@ public class StakeholderEntity {
 	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name = "person_id")
+	@Column(name = "party_id")
 	private String partyId;
 
 	@Column(name = "phone_number")

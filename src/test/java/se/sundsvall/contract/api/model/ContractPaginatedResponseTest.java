@@ -30,7 +30,7 @@ class ContractPaginatedResponseTest {
 	@Test
 	void testBuilderMethods() {
 		var response = ContractPaginatedResponse.builder()
-			.withContracts(List.of(LandLeaseContract.builder().build()))
+			.withContracts(List.of(Contract.builder().build()))
 			.withMetaData(new PagingMetaData())
 			.build();
 

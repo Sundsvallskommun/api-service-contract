@@ -29,7 +29,7 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	@Schema(description = "Contract id", example = "2024-12345")
 	private String contractId;
 	
-	@Schema(description = "Identifier for private person", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	@Schema(description = "PartyId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	@ValidUuid(nullable = true)
 	private String partyId;
 	

@@ -34,11 +34,11 @@ public class LeaseholdEntity {
 
 	@ElementCollection
 	@CollectionTable(
-		name = "land_lease_contract_leasehold_additional_information",
+		name = "additional_information",
 		joinColumns = @JoinColumn(
-			name = "land_lease_contract_id",
+			name = "contract_id",
 			referencedColumnName = "id",
-			foreignKey = @ForeignKey(name = "fk_llc_leasehold_additional_information_land_lease_contract_id")
+			foreignKey = @ForeignKey(name = "fk_additional_information_contract_id")
 		)
 	)
 	private List<String> additionalInformation;

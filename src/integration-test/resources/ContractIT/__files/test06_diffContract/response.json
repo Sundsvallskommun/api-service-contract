@@ -1,28 +1,78 @@
 {
-  "oldVersion": 1,
-  "newVersion": 2,
-  "changes": [
-    {
-      "type": "MODIFICATION",
-      "path": "$.description",
-      "oldValue": "someOldDescription",
-      "newValue": "someDescription"
-    },
-    {
-      "type": "MODIFICATION",
-      "path": "$.signedByWitness",
-      "oldValue": false,
-      "newValue": true
-    },
-    {
-      "type": "MODIFICATION",
-      "path": "$.status",
-      "oldValue": "DRAFT",
-      "newValue": "ACTIVE"
-    }
-  ],
-  "availableVersions": [
-    1,
-    2
-  ]
+	"oldVersion": 1,
+	"newVersion": 2,
+	"changes": [
+		{
+			"type": "MODIFICATION",
+			"path": "$.fees.additionalInformation.0",
+			"oldValue": "someAdditionalInfo1",
+			"newValue": "someAdditionalInfo3"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.fees.additionalInformation.1",
+			"oldValue": "someAdditionalInfo2",
+			"newValue": "someAdditionalInfo4"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.description",
+			"oldValue": "someOldDescription",
+			"newValue": "someDescription"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.extraParameters.0.name",
+			"oldValue": "someParameters",
+			"newValue": "someParameters3"
+		},
+		{
+			"type": "REMOVAL",
+			"path": "$.extraParameters.0.parameters.key1",
+			"oldValue": "value1"
+		},
+		{
+			"type": "REMOVAL",
+			"path": "$.extraParameters.0.parameters.key2",
+			"oldValue": "value2"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.extraParameters.0.parameters.key5",
+			"newValue": "value5"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.extraParameters.0.parameters.key6",
+			"newValue": "value6"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.type",
+			"oldValue": "APARTMENT_LEASE",
+			"newValue": "PURCHASE_AGREEMENT"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.signedByWitness",
+			"oldValue": false,
+			"newValue": true
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.leasehold.additionalInformation.0",
+			"oldValue": "Some additional information",
+			"newValue": "Even more additional information"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.status",
+			"oldValue": "DRAFT",
+			"newValue": "ACTIVE"
+		}
+	],
+	"availableVersions": [
+		1,
+		2
+	]
 }

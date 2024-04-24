@@ -2,7 +2,7 @@ package se.sundsvall.contract.integration.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.contract.TestFactory.createLandLeaseContractEntity;
+import static se.sundsvall.contract.TestFactory.createContractEntity;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
 
 import java.time.LocalDate;
@@ -36,7 +36,7 @@ class ContractRepositoryTest {
 
 	@Test
 	void createContract() {
-		var entity = createLandLeaseContractEntity();
+		var entity = createContractEntity();
 		entity.getStakeholders().getFirst().setId(null);    // Clear the id
 		var savedEntity = contractRepository.save(entity);
 
