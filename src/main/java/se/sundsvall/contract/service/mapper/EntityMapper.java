@@ -88,19 +88,21 @@ public class EntityMapper {
 			.orElse(null);
 	}
 
-	StakeholderEntity toStakeholderEntity(final Stakeholder stakeholder) {
-		return StakeholderEntity.builder()
-			.withAddress(toAddressEntity(stakeholder.getAddress()))
-			.withEmailAddress(stakeholder.getEmailAddress())
-			.withFirstName(stakeholder.getFirstName())
-			.withLastName(stakeholder.getLastName())
-			.withOrganizationName(stakeholder.getOrganizationName())
-			.withOrganizationNumber(stakeholder.getOrganizationNumber())
-			.withPartyId(stakeholder.getPartyId())
-			.withPhoneNumber(stakeholder.getPhoneNumber())
-			.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::valueOf).toList())
-			.withType(ofNullable(stakeholder.getType()).map(StakeholderType::valueOf).orElse(null))
-			.build();
+	StakeholderEntity toStakeholderEntity(final Stakeholder fromStakeholder) {
+		return ofNullable(fromStakeholder)
+			.map(stakeholder -> StakeholderEntity.builder()
+				.withAddress(toAddressEntity(stakeholder.getAddress()))
+				.withEmailAddress(stakeholder.getEmailAddress())
+				.withFirstName(stakeholder.getFirstName())
+				.withLastName(stakeholder.getLastName())
+				.withOrganizationName(stakeholder.getOrganizationName())
+				.withOrganizationNumber(stakeholder.getOrganizationNumber())
+				.withPartyId(stakeholder.getPartyId())
+				.withPhoneNumber(stakeholder.getPhoneNumber())
+				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::valueOf).toList())
+				.withType(ofNullable(stakeholder.getType()).map(StakeholderType::valueOf).orElse(null))
+				.build())
+			.orElse(null);
 	}
 
 	LeaseholdEntity toLeaseholdEntity(final Leasehold fromLeasehold) {
@@ -113,15 +115,17 @@ public class EntityMapper {
 			.orElse(null);
 	}
 
-	AddressEntity toAddressEntity(final Address address) {
-		return AddressEntity.builder()
-			.withAttention(address.getAttention())
-			.withCountry(address.getCountry())
-			.withPostalCode(address.getPostalCode())
-			.withStreetAddress(address.getStreetAddress())
-			.withTown(address.getTown())
-			.withType(Optional.of(AddressType.valueOf(address.getType())).orElse(null))
-			.build();
+	AddressEntity toAddressEntity(final Address fromAddress) {
+		return ofNullable(fromAddress)
+			.map(address -> AddressEntity.builder()
+				.withAttention(address.getAttention())
+				.withCountry(address.getCountry())
+				.withPostalCode(address.getPostalCode())
+				.withStreetAddress(address.getStreetAddress())
+				.withTown(address.getTown())
+				.withType(Optional.of(AddressType.valueOf(address.getType())).orElse(null))
+				.build())
+			.orElse(null);
 	}
 
 	public AttachmentEntity toAttachmentEntity(String municipalityId, final String contractId, Attachment attachment) {

@@ -103,23 +103,27 @@ public class DtoMapper {
 	}
 
 	public AttachmentMetaData toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
-		return AttachmentMetaData.builder()
-			.withCategory(ofNullable(attachmentEntity.getCategory()).map(AttachmentCategory::name).orElse(null))
-			.withFilename(attachmentEntity.getFilename())
-			.withId(attachmentEntity.getId())
-			.withMimeType(attachmentEntity.getMimeType())
-			.withNote(attachmentEntity.getNote())
-			.build();
+		return ofNullable(attachmentEntity)
+			.map(attachment -> AttachmentMetaData.builder()
+				.withCategory(ofNullable(attachment.getCategory()).map(AttachmentCategory::name).orElse(null))
+				.withFilename(attachment.getFilename())
+				.withId(attachment.getId())
+				.withMimeType(attachment.getMimeType())
+				.withNote(attachment.getNote())
+				.build())
+			.orElse(null);
 	}
 
 	Leasehold toLeaseholdDto(final LeaseholdEntity leaseholdEntity) {
-		return Leasehold.builder()
-			.withPurpose(ofNullable(leaseholdEntity.getPurpose())
+		return ofNullable(leaseholdEntity)
+			.map(leasehold -> Leasehold.builder()
+			.withPurpose(ofNullable(leasehold.getPurpose())
 				.map(LeaseholdType::name)
 				.orElse(null))
-			.withAdditionalInformation(leaseholdEntity.getAdditionalInformation())
-			.withDescription(leaseholdEntity.getDescription())
-			.build();
+			.withAdditionalInformation(leasehold.getAdditionalInformation())
+			.withDescription(leasehold.getDescription())
+			.build())
+			.orElse(null);
 	}
 
 	List<Stakeholder> toStakeholderDtos(final List<StakeholderEntity> stakeholders) {
@@ -131,43 +135,49 @@ public class DtoMapper {
 	}
 
 	Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
-		return Stakeholder.builder()
-			.withAddress(toAddressDto(stakeholderEntity.getAddress()))
-			.withEmailAddress(stakeholderEntity.getEmailAddress())
-			.withFirstName(stakeholderEntity.getFirstName())
-			.withLastName(stakeholderEntity.getLastName())
-			.withOrganizationName(stakeholderEntity.getOrganizationName())
-			.withOrganizationNumber(stakeholderEntity.getOrganizationNumber())
-			.withPartyId(stakeholderEntity.getPartyId())
-			.withPhoneNumber(stakeholderEntity.getPhoneNumber())
-			.withRoles(stakeholderEntity.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::name).toList())
-			.withType(ofNullable(stakeholderEntity.getType()).map(StakeholderType::name).orElse(null))
-			.build();
+		return ofNullable(stakeholderEntity)
+			.map(stakeholder -> Stakeholder.builder()
+				.withAddress(toAddressDto(stakeholder.getAddress()))
+				.withEmailAddress(stakeholder.getEmailAddress())
+				.withFirstName(stakeholder.getFirstName())
+				.withLastName(stakeholder.getLastName())
+				.withOrganizationName(stakeholder.getOrganizationName())
+				.withOrganizationNumber(stakeholder.getOrganizationNumber())
+				.withPartyId(stakeholder.getPartyId())
+				.withPhoneNumber(stakeholder.getPhoneNumber())
+				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::name).toList())
+				.withType(ofNullable(stakeholder.getType()).map(StakeholderType::name).orElse(null))
+				.build())
+			.orElse(null);
 	}
 
 	Address toAddressDto(final AddressEntity addressEntity) {
-		return Address.builder()
-			.withAttention(addressEntity.getAttention())
-			.withCountry(addressEntity.getCountry())
-			.withPostalCode(addressEntity.getPostalCode())
-			.withStreetAddress(addressEntity.getStreetAddress())
-			.withTown(addressEntity.getTown())
-			.withType(ofNullable(addressEntity.getType()).map(AddressType::name).orElse(null))
-			.build();
+		return ofNullable(addressEntity)
+			.map(address -> Address.builder()
+				.withAttention(address.getAttention())
+				.withCountry(address.getCountry())
+				.withPostalCode(address.getPostalCode())
+				.withStreetAddress(address.getStreetAddress())
+				.withTown(address.getTown())
+				.withType(ofNullable(address.getType()).map(AddressType::name).orElse(null))
+				.build())
+			.orElse(null);
 	}
 
 	public Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
-		return Attachment.builder()
+		return ofNullable(attachmentEntity)
+			.map(attachment -> Attachment.builder()
 			.withAttachmentData(AttachmentData.builder()
-				.withContent(new String(attachmentEntity.getContent(), StandardCharsets.UTF_8))
+				.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
 				.build())
 			.withMetaData(AttachmentMetaData.builder()
-				.withCategory(attachmentEntity.getCategory().toString())
-				.withFilename(attachmentEntity.getFilename())
-				.withId(attachmentEntity.getId())
-				.withMimeType(attachmentEntity.getMimeType())
-				.withNote(attachmentEntity.getNote())
+				.withCategory(attachment.getCategory().toString())
+				.withFilename(attachment.getFilename())
+				.withId(attachment.getId())
+				.withMimeType(attachment.getMimeType())
+				.withNote(attachment.getNote())
 				.build())
-			.build();
+			.build())
+			.orElse(null);
 	}
 }
