@@ -11,7 +11,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.Status;
 
 class DtoMapperTest {
 
@@ -201,5 +204,21 @@ class DtoMapperTest {
 		assertThat(attachment.getMetaData().getId()).isEqualTo(entity.getId());
 		assertThat(attachment.getMetaData().getMimeType()).isEqualTo(entity.getMimeType());
 		assertThat(attachment.getMetaData().getNote()).isEqualTo(entity.getNote());
+	}
+
+	@Test
+	void testMinimalToContractDto() {
+		//Arrange
+		var contract = ContractEntity.builder()
+			.withStatus(Status.DRAFT)
+			.withType(ContractType.LAND_LEASE)
+			.build();
+
+		//Act
+		var dto = mapper.toContractDto(contract, List.of());
+
+		//Assert
+		assertThat(dto.getStatus()).isEqualTo(contract.getStatus().name());
+		assertThat(dto.getType()).isEqualTo(contract.getType().name());
 	}
 }

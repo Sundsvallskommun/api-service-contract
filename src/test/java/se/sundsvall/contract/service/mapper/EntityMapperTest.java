@@ -8,6 +8,7 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.model.enums.AddressType;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.model.enums.ContractType;
@@ -188,5 +189,21 @@ class EntityMapperTest {
 
 		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion());
 		assertThat(updatedEntity.getContractId()).isEqualTo(oldContractEntity.getContractId());
+	}
+
+	@Test
+	void testMinimalToContractEntity() {
+		//Arrange
+		var dto = Contract.builder()
+			.withStatus(Status.DRAFT.name())
+			.withType(ContractType.LAND_LEASE.name())
+			.build();
+
+		//Act
+		var entity = mapper.toContractEntity(MUNICIPALITY_ID, dto);
+
+		//Assert
+		assertThat(entity.getStatus()).isEqualTo(Status.valueOf(dto.getStatus()));
+		assertThat(entity.getType()).isEqualTo(ContractType.valueOf(dto.getType()));
 	}
 }
