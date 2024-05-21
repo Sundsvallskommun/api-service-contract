@@ -18,6 +18,8 @@ import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+
 class StakeholderTest {
 
 	@Test
@@ -40,12 +42,12 @@ class StakeholderTest {
 	}
 
 	@Test
-	void testStakeholder_roles_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = Stakeholder.class.getDeclaredField("roles")
-			.getAnnotation(OneOf.class);
+	void testStakeholder_roles_hasCorrectDescription() throws NoSuchFieldException {
+		var schema = Stakeholder.class.getDeclaredField("roles")
+			.getAnnotation(ArraySchema.class).schema();
 
 		Arrays.stream(StakeholderRole.values())
-			.forEach(value -> assertThat(oneOf.value()).contains(value.name()));
+			.forEach(value -> assertThat(schema.description()).contains(value.name()));
 	}
 
 	@Test

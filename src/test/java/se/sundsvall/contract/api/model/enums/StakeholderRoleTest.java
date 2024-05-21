@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.StakeholderRole.BUYER;
 import static se.sundsvall.contract.model.enums.StakeholderRole.CONTACT_PERSON;
 import static se.sundsvall.contract.model.enums.StakeholderRole.GRANTOR;
-import static se.sundsvall.contract.model.enums.StakeholderRole.LAND_OWNER;
-import static se.sundsvall.contract.model.enums.StakeholderRole.LEASE_HOLDER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.LAND_RIGHT_OWNER;
+import static se.sundsvall.contract.model.enums.StakeholderRole.LEASEHOLDER;
 import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_CHECK;
 import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
 import static se.sundsvall.contract.model.enums.StakeholderRole.SELLER;
@@ -22,8 +22,8 @@ class StakeholderRoleTest {
 			BUYER,
 			CONTACT_PERSON,
 			GRANTOR,
-			LAND_OWNER,
-			LEASE_HOLDER,
+			LAND_RIGHT_OWNER,
+			LEASEHOLDER,
 			POWER_OF_ATTORNEY_CHECK,
 			POWER_OF_ATTORNEY_ROLE,
 			SELLER,
@@ -35,8 +35,8 @@ class StakeholderRoleTest {
 		assertThat(BUYER).hasToString("BUYER");
 		assertThat(CONTACT_PERSON).hasToString("CONTACT_PERSON");
 		assertThat(GRANTOR).hasToString("GRANTOR");
-		assertThat(LAND_OWNER).hasToString("LAND_OWNER");
-		assertThat(LEASE_HOLDER).hasToString("LEASE_HOLDER");
+		assertThat(LAND_RIGHT_OWNER).hasToString("LAND_RIGHT_OWNER");
+		assertThat(LEASEHOLDER).hasToString("LEASEHOLDER");
 		assertThat(POWER_OF_ATTORNEY_CHECK).hasToString("POWER_OF_ATTORNEY_CHECK");
 		assertThat(POWER_OF_ATTORNEY_ROLE).hasToString("POWER_OF_ATTORNEY_ROLE");
 		assertThat(SELLER).hasToString("SELLER");
