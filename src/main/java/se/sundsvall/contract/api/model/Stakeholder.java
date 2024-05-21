@@ -28,9 +28,9 @@ public class Stakeholder {
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
 	 */
-	@ArraySchema(schema = @Schema(description = "List of roles", example = "BUYER"))
-	@OneOf(value = {"BUYER", "CONTACT_PERSON", "GRANTOR", "LAND_OWNER", "LEASE_HOLDER", "POWER_OF_ATTORNEY_CHECK",
-		"POWER_OF_ATTORNEY_ROLE", "SELLER", "SIGNATORY"}, nullable = true)
+	@ArraySchema(schema = @Schema(description =
+		"List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | " +
+			"POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY", example = "BUYER"))
 	private List<String> roles;
 
 	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")
