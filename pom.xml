@@ -20,11 +20,7 @@
 		<json-diff.version>1.1.0</json-diff.version>
 		<assertj-core.version>3.26.0</assertj-core.version>
 
-		<!-- Pipeline properties -->
-		<docker.image.name>ms-contract</docker.image.name>
 		<exposed.app.port>8080</exposed.app.port>
-		<published.container.port.test>8702</published.container.port.test>
-		<published.container.port.production>8702</published.container.port.production>
 	</properties>
 
 	<dependencies>
