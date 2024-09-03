@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<project
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-		xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>6.0.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>6.0.1</version>
+		<relativePath/>
+		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
@@ -104,7 +103,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/se/sundsvall/contract/Application*</exclude>
-						<exclude>**/se/sundsvall/contract/integration/db/model/*_**</exclude><!-- JPAModelGen classes -->
+						<exclude>**/se/sundsvall/contract/integration/db/model/*_**</exclude>						<!-- JPAModelGen classes -->
 					</excludes>
 				</configuration>
 			</plugin>
@@ -122,7 +121,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/annotations</source> <!-- JPAModelGen classes -->
+								<source>${project.build.directory}/generated-sources/annotations</source>								<!-- JPAModelGen classes -->
 							</sources>
 						</configuration>
 					</execution>
