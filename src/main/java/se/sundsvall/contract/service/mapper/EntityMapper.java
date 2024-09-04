@@ -122,6 +122,7 @@ public class EntityMapper {
 				.withCountry(address.getCountry())
 				.withPostalCode(address.getPostalCode())
 				.withStreetAddress(address.getStreetAddress())
+				.withCareOf(address.getCareOf())
 				.withTown(address.getTown())
 				.withType(Optional.of(AddressType.valueOf(address.getType())).orElse(null))
 				.build())

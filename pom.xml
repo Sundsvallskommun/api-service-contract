@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
-	<version>2.0</version>
+	<version>2.1</version>
 	<name>api-service-contract</name>
 
 	<properties>

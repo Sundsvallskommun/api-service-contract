@@ -24,6 +24,9 @@ public class Address {
 
 	@Schema(example = "Testvägen 18")
 	private String streetAddress;
+	
+	@Schema(example = "c/o Test Testorsson")
+	private String careOf;
 
 	@Schema(example = "123 45")
 	private String postalCode;
