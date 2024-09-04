@@ -158,6 +158,7 @@ public class DtoMapper {
 				.withCountry(address.getCountry())
 				.withPostalCode(address.getPostalCode())
 				.withStreetAddress(address.getStreetAddress())
+				.withCareOf(address.getCareOf())
 				.withTown(address.getTown())
 				.withType(ofNullable(address.getType()).map(AddressType::name).orElse(null))
 				.build())

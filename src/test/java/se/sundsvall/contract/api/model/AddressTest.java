@@ -30,7 +30,7 @@ class AddressTest {
 
 	@Test
 	void testAddress_type_hasValidOneOfValues() throws NoSuchFieldException {
-		var oneOf = Address.class.getDeclaredField("type")
+		final var oneOf = Address.class.getDeclaredField("type")
 			.getAnnotation(OneOf.class)
 			.value();
 
@@ -40,20 +40,22 @@ class AddressTest {
 
 	@Test
 	void testBuilderMethods() {
-		var type = AddressType.POSTAL_ADDRESS;
-		var streetAddress = "Testvägen 18";
-		var postalCode = "123 45";
-		var town = "Sundsvall";
-		var country = "Sverige";
-		var attention = "Test Testorsson";
+		final var type = AddressType.POSTAL_ADDRESS;
+		final var streetAddress = "Testvägen 18";
+		final var postalCode = "123 45";
+		final var town = "Sundsvall";
+		final var country = "Sverige";
+		final var attention = "Test Testorsson";
+		final var careOf = "c/o Test Testorsson";
 
-		var address = Address.builder()
+		final var address = Address.builder()
 			.withType(type.name())
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)
 			.withTown(town)
 			.withCountry(country)
 			.withAttention(attention)
+			.withCareOf(careOf)
 			.build();
 
 		assertThat(address).isNotNull().hasNoNullFieldsOrProperties();
@@ -63,6 +65,7 @@ class AddressTest {
 		assertThat(address.getTown()).isEqualTo(town);
 		assertThat(address.getCountry()).isEqualTo(country);
 		assertThat(address.getAttention()).isEqualTo(attention);
+		assertThat(address.getCareOf()).isEqualTo(careOf);
 	}
 
 	@Test

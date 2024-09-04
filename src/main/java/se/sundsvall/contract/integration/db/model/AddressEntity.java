@@ -28,6 +28,9 @@ public class AddressEntity {
 	@Column(name = "street_address")
 	private String streetAddress;
 
+	@Column(name = "care_of")
+	private String careOf;
+
 	@Column(name = "postal_code")
 	private String postalCode;
 
