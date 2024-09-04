@@ -8,6 +8,7 @@ import static se.sundsvall.contract.model.enums.StakeholderRole.LAND_RIGHT_OWNER
 import static se.sundsvall.contract.model.enums.StakeholderRole.LEASEHOLDER;
 import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_CHECK;
 import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
+import static se.sundsvall.contract.model.enums.StakeholderRole.PROPERTY_OWNER;
 import static se.sundsvall.contract.model.enums.StakeholderRole.SELLER;
 import static se.sundsvall.contract.model.enums.StakeholderRole.SIGNATORY;
 import static se.sundsvall.contract.model.enums.StakeholderRole.values;
@@ -24,6 +25,7 @@ class StakeholderRoleTest {
 			GRANTOR,
 			LAND_RIGHT_OWNER,
 			LEASEHOLDER,
+			PROPERTY_OWNER,
 			POWER_OF_ATTORNEY_CHECK,
 			POWER_OF_ATTORNEY_ROLE,
 			SELLER,
@@ -37,6 +39,7 @@ class StakeholderRoleTest {
 		assertThat(GRANTOR).hasToString("GRANTOR");
 		assertThat(LAND_RIGHT_OWNER).hasToString("LAND_RIGHT_OWNER");
 		assertThat(LEASEHOLDER).hasToString("LEASEHOLDER");
+		assertThat(PROPERTY_OWNER).hasToString("PROPERTY_OWNER");
 		assertThat(POWER_OF_ATTORNEY_CHECK).hasToString("POWER_OF_ATTORNEY_CHECK");
 		assertThat(POWER_OF_ATTORNEY_ROLE).hasToString("POWER_OF_ATTORNEY_ROLE");
 		assertThat(SELLER).hasToString("SELLER");
