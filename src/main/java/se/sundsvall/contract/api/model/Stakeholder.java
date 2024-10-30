@@ -22,15 +22,16 @@ public class Stakeholder {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderType}
 	 */
 	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION")
-	@OneOf(value = {"PERSON", "COMPANY", "ASSOCIATION"}, nullable = true)
+	@OneOf(value = {
+		"PERSON", "COMPANY", "ASSOCIATION"
+	}, nullable = true)
 	private String type;
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
 	 */
-	@ArraySchema(schema = @Schema(description =
-		"List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | " +
-			"PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY", example = "BUYER"))
+	@ArraySchema(schema = @Schema(description = "List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | " +
+		"PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY", example = "BUYER"))
 	private List<String> roles;
 
 	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")

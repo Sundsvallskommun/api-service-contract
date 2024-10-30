@@ -1,125 +1,111 @@
 {
-	"version": 1,
-	"contractId": "2024-00001",
-	"description": "someDescription",
-	"externalReferenceId": "MK-TEST0003",
-	"landLeaseType": "LEASEHOLD",
 	"municipalityId": "1984",
-	"objectIdentity": "someObjectIdentity",
-	"status": "DRAFT",
-	"type": "LAND_LEASE",
-	"usufructType": "HUNTING",
-	"leasehold": {
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription",
+	"fees": {
 		"additionalInformation": [
-			"Some additional information when posting",
-			"More additional information when posting"
-		]
+			"someAdditionalInfo1",
+			"someAdditionalInfo2"
+		],
+		"total": 500,
+		"totalAsText": "five hundred",
+		"monthly": 123.45,
+		"currency": "SEK",
+		"indexNumber": 2,
+		"yearly": 234.56,
+		"indexYear": 2021
 	},
-	"attachmentMetaData": [],
-	"additionalTerms": [
+	"usufructType": "HUNTING",
+	"description": "someDescription",
+	"extraParameters": [{
+		"name": "Fees",
+		"parameters": {
+			"key1": "value1",
+			"key2": "value2"
+		}
+	}],
+	"stakeholders": [
 		{
-			"header": "Extraordinary Terms",
-			"terms": [
-				{
-					"description": "Unless something extraordinary has happened...",
-					"term": "Exceptions"
-				}
-			]
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "POSTAL_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": ["SIGNATORY"],
+			"type": "PERSON",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+		},
+		{
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "VISITING_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": ["POWER_OF_ATTORNEY_ROLE"],
+			"type": "PERSON",
+			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
 		}
 	],
-	"extraParameters": [
-		{
-			"name": "Fees",
-			"parameters": {
-				"key1": "value1",
-				"key2": "value2"
-			}
-		}
-	],
-	"indexTerms": [
-		{
-			"header": "General Terms",
-			"terms": [
-				{
-					"description": "In general the conditions are...",
-					"term": "General Conditions"
-				}
-			]
-		}
-	],
+	"type": "LAND_LEASE",
+	"externalReferenceId": "MK-TEST0003",
 	"propertyDesignations": [
 		"SUNDSVALL NORRMALM 123:1",
 		"SUNDSVALL NORRMALM 234:1"
 	],
-	"stakeholders": [
-		{
-			"type": "PERSON",
-			"roles": [
-				"SIGNATORY"
-			],
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
-			"emailAddress": "someEmail",
-			"address": {
-				"type": "POSTAL_ADDRESS",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
-				"town": "someTown",
-				"country": "SE",
-				"attention": "someAttention"
-			}
-		},
-		{
-			"type": "PERSON",
-			"roles": [
-				"POWER_OF_ATTORNEY_ROLE"
-			],
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
-			"emailAddress": "someEmail",
-			"address": {
-				"type": "VISITING_ADDRESS",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
-				"town": "someTown",
-				"country": "SE",
-				"attention": "someAttention"
-			}
-		}
-	],
+	"objectIdentity": "someObjectIdentity",
+	"end": "2023-10-10",
+	"area": 12,
+	"start": "2023-10-02",
+	"periodOfNotice": 2,
+	"version": 1,
+	"landLeaseType": "LEASEHOLD",
 	"leaseDuration": 2,
-	"fees": {
-		"currency": "SEK",
-		"yearly": 234.56,
-		"monthly": 123.45,
-		"total": 500.0,
-		"totalAsText": "five hundred",
-		"indexYear": 2021,
-		"indexNumber": 2,
+	"autoExtend": true,
+	"attachmentMetaData": [],
+	"leaseExtension": 1,
+	"indexTerms": [{
+		"terms": [{
+			"description": "In general the conditions are...",
+			"term": "General Conditions"
+		}],
+		"header": "General Terms"
+	}],
+	"signedByWitness": true,
+	"leasehold": {
 		"additionalInformation": [
-			"someAdditionalInfo1",
-			"someAdditionalInfo2"
-		]
+			"Some additional information when posting",
+			"More additional information when posting"
+		],
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription"
 	},
+	"additionalTerms": [{
+		"terms": [{
+			"description": "Unless something extraordinary has happened...",
+			"term": "Exceptions"
+		}],
+		"header": "Extraordinary Terms"
+	}],
+	"contractId": "2024-00001",
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"start": "2023-10-02",
-	"end": "2023-10-10",
-	"autoExtend": true,
-	"leaseExtension": 1,
-	"periodOfNotice": 2,
-	"area": 12,
-	"signedByWitness": true
+	"status": "DRAFT"
 }

@@ -39,14 +39,14 @@ public class ContractService {
 	private final Differ differ;
 
 	public ContractService(final ContractRepository contractRepository,
-			final AttachmentRepository attachmentRepository, DtoMapper dtoMapper, final EntityMapper entityMapper,
-			final Differ differ) {
+		final AttachmentRepository attachmentRepository, DtoMapper dtoMapper, final EntityMapper entityMapper,
+		final Differ differ) {
 		this.contractRepository = contractRepository;
-        this.attachmentRepository = attachmentRepository;
+		this.attachmentRepository = attachmentRepository;
 		this.dtoMapper = dtoMapper;
 		this.entityMapper = entityMapper;
 		this.differ = differ;
-    }
+	}
 
 	public String createContract(final String municipalityId, final Contract contract) {
 		var entity = entityMapper.toContractEntity(municipalityId, contract);
@@ -68,9 +68,7 @@ public class ContractService {
 			.map(entity -> dtoMapper.toContractDto(entity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(Status.NOT_FOUND)
-				.withDetail(version != null ?
-					CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND.formatted(contractId, version, municipalityId) :
-					CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
+				.withDetail(version != null ? CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND.formatted(contractId, version, municipalityId) : CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build());
 	}
 
@@ -78,15 +76,15 @@ public class ContractService {
 	public ContractPaginatedResponse getContracts(final String municipalityId, final ContractRequest request) {
 		var pagingParameters = getPagingParameters(request);
 
-		//Get all contracts
+		// Get all contracts
 		var contractEntities = contractRepository.findAll(createContractSpecification(municipalityId, request), pagingParameters);
 
-		//Map to response objects
+		// Map to response objects
 		var contracts = contractEntities.stream()
 			.map(contractEntity -> dtoMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
 			.toList();
 
-		//Add to response
+		// Add to response
 		return ContractPaginatedResponse.builder()
 			.withMetaData(PagingAndSortingMetaData.create().withPageData(contractEntities))
 			.withContracts(contracts)
@@ -104,7 +102,7 @@ public class ContractService {
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build());
 
-		//Create a new entity and save it
+		// Create a new entity and save it
 		var newContractEntity = entityMapper.createNewContractEntity(municipalityId, oldContractEntity, contract);
 		contractRepository.save(newContractEntity);
 	}

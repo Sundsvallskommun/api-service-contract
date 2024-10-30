@@ -28,13 +28,13 @@ class EntityMapperTest {
 
 	@Test
 	void testToContractEntity() {
-		//Arrange
+		// Arrange
 		var dto = createContract();
 
-		//Act
+		// Act
 		var entity = mapper.toContractEntity(MUNICIPALITY_ID, dto);
 
-		//Assert
+		// Assert
 		assertThat(entity.getAdditionalTerms()).isEqualTo(dto.getAdditionalTerms());
 		assertThat(entity.getArea()).isEqualTo(dto.getArea());
 		assertThat(entity.getAreaData()).isEqualTo(dto.getAreaData());
@@ -47,17 +47,17 @@ class EntityMapperTest {
 		assertThat(entity.getFees()).isEqualTo(dto.getFees());
 		assertThat(entity.getFees()).isEqualTo(dto.getFees());
 		assertThat(entity.getIndexTerms()).isEqualTo(dto.getIndexTerms());
-		assertThat(entity.getInvoicing()).isNotNull();  //Is tested in its own method
+		assertThat(entity.getInvoicing()).isNotNull();  // Is tested in its own method
 		assertThat(entity.getLandLeaseType()).isEqualTo(LandLeaseType.valueOf(dto.getLandLeaseType()));
 		assertThat(entity.getLeaseDuration()).isEqualTo(dto.getLeaseDuration());
 		assertThat(entity.getLeaseExtension()).isEqualTo(dto.getLeaseExtension());
-		assertThat(entity.getLeasehold()).isNotNull(); //Is tested in its own method
+		assertThat(entity.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getObjectIdentity()).isEqualTo(dto.getObjectIdentity());
 		assertThat(entity.getPeriodOfNotice()).isEqualTo(dto.getPeriodOfNotice());
 		assertThat(entity.getPropertyDesignations()).isEqualTo(dto.getPropertyDesignations());
 		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
-		assertThat(entity.getStakeholders()).isNotNull(); //Is tested in its own method
+		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getStart()).isEqualTo(dto.getStart());
 		assertThat(entity.getStatus()).isEqualTo(Status.valueOf(dto.getStatus()));
 		assertThat(entity.getType()).isEqualTo(ContractType.valueOf(dto.getType()));
@@ -67,39 +67,39 @@ class EntityMapperTest {
 
 	@Test
 	void testToInvoicingEntity() {
-		//Arrange
+		// Arrange
 		var dto = createContract();
 
-		//Act
+		// Act
 		var entity = mapper.toInvoicingEntity(dto.getInvoicing());
 
-		//Assert
+		// Assert
 		assertThat(entity.getInvoicedIn()).isEqualTo(InvoicedIn.valueOf(dto.getInvoicing().getInvoicedIn()));
 		assertThat(entity.getInvoiceInterval()).isEqualTo(IntervalType.valueOf(dto.getInvoicing().getInvoiceInterval()));
 	}
 
 	@Test
 	void testToStakeholderEntities() {
-		//Arrange
+		// Arrange
 		var dto = createContract();
 
-		//Act
+		// Act
 		var entities = mapper.toStakeholderEntities(dto.getStakeholders());
 
-		//Assert
+		// Assert
 		assertThat(entities).isNotNull().isNotEmpty().hasSize(dto.getStakeholders().size());
 	}
 
 	@Test
 	void testToStakeholderEntity() {
-		//Arrange
+		// Arrange
 		var dto = createContract().getStakeholders().getFirst();
 
-		//Act
+		// Act
 		var entity = mapper.toStakeholderEntity(dto);
 
-		//Assert
-		assertThat(entity.getAddress()).isNotNull();    //Mapping is tested in another method
+		// Assert
+		assertThat(entity.getAddress()).isNotNull();    // Mapping is tested in another method
 		assertThat(entity.getEmailAddress()).isEqualTo(dto.getEmailAddress());
 		assertThat(entity.getFirstName()).isEqualTo(dto.getFirstName());
 		assertThat(entity.getLastName()).isEqualTo(dto.getLastName());
@@ -107,20 +107,20 @@ class EntityMapperTest {
 		assertThat(entity.getOrganizationNumber()).isEqualTo(dto.getOrganizationNumber());
 		assertThat(entity.getPartyId()).isEqualTo(dto.getPartyId());
 		assertThat(entity.getPhoneNumber()).isEqualTo(dto.getPhoneNumber());
-		//Assert that all roles are mapped
+		// Assert that all roles are mapped
 		var array = dto.getRoles().stream().map(StakeholderRole::valueOf).toList();
 		assertThat(entity.getRoles()).containsAll(array);
 	}
 
 	@Test
 	void testToLeaseholdEntity() {
-		//Arrange
+		// Arrange
 		var dto = createContract().getLeasehold();
 
-		//Act
+		// Act
 		var entity = mapper.toLeaseholdEntity(dto);
 
-		//Assert
+		// Assert
 		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
 		assertThat(entity.getAdditionalInformation()).isEqualTo(dto.getAdditionalInformation());
 		assertThat(entity.getPurpose()).isEqualTo(LeaseholdType.valueOf(dto.getPurpose()));
@@ -128,13 +128,13 @@ class EntityMapperTest {
 
 	@Test
 	void testToAddressEntity() {
-		//Arrange
+		// Arrange
 		var dto = createContract().getStakeholders().getFirst().getAddress();
 
-		//Act
+		// Act
 		var entity = mapper.toAddressEntity(dto);
 
-		//Assert
+		// Assert
 		assertThat(entity.getAttention()).isEqualTo(dto.getAttention());
 		assertThat(entity.getCountry()).isEqualTo(dto.getCountry());
 		assertThat(entity.getPostalCode()).isEqualTo(dto.getPostalCode());
@@ -145,13 +145,13 @@ class EntityMapperTest {
 
 	@Test
 	void testToAttachmentEntity() {
-		//Arrange
+		// Arrange
 		var dto = createAttachment();
 
-		//Act
+		// Act
 		var entity = mapper.toAttachmentEntity(MUNICIPALITY_ID, "2024-12345", dto);
 
-		//Assert
+		// Assert
 		assertThat(entity.getCategory()).isEqualTo(AttachmentCategory.valueOf(dto.getMetaData().getCategory()));
 		assertThat(entity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
 		assertThat(entity.getContractId()).isEqualTo("2024-12345");
@@ -163,14 +163,14 @@ class EntityMapperTest {
 
 	@Test
 	void testUpdateAttachmentEntity() {
-		//Arrange
+		// Arrange
 		var entity = createAttachmentEntity();
 		var dto = createAttachment();
 
-		//Act
+		// Act
 		var updatedEntity = mapper.updateAttachmentEntity(entity, dto);
 
-		//Assert
+		// Assert
 		assertThat(updatedEntity.getCategory()).isEqualTo(AttachmentCategory.valueOf(dto.getMetaData().getCategory()));
 		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getMetaData().getFilename());
 		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMetaData().getMimeType());
@@ -180,11 +180,11 @@ class EntityMapperTest {
 
 	@Test
 	void testCreateNewContractEntity() {
-		//Arrange
+		// Arrange
 		var oldContractEntity = createContractEntity();
 		var newContract = createContract();
 
-		//Act
+		// Act
 		var updatedEntity = mapper.createNewContractEntity(MUNICIPALITY_ID, oldContractEntity, newContract);
 
 		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion());
@@ -193,16 +193,16 @@ class EntityMapperTest {
 
 	@Test
 	void testMinimalToContractEntity() {
-		//Arrange
+		// Arrange
 		var dto = Contract.builder()
 			.withStatus(Status.DRAFT.name())
 			.withType(ContractType.LAND_LEASE.name())
 			.build();
 
-		//Act
+		// Act
 		var entity = mapper.toContractEntity(MUNICIPALITY_ID, dto);
 
-		//Assert
+		// Assert
 		assertThat(entity.getStatus()).isEqualTo(Status.valueOf(dto.getStatus()));
 		assertThat(entity.getType()).isEqualTo(ContractType.valueOf(dto.getType()));
 	}

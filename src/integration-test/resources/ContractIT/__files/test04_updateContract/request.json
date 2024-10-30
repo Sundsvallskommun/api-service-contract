@@ -1,102 +1,88 @@
 {
-	"contractId": "2024-12345",
-	"type": "LAND_LEASE",
-	"status": "DRAFT",
 	"municipalityId": "1984",
-	"indexTerms": [
-		{
-			"header": "More General Terms",
-			"terms": [
-				{
-					"term": "General Conditions 2",
-					"description": "In general the conditions 2 are now..."
-				}
-			]
-		}
-	],
-	"description": "some other description",
-	"signedByWitness": true,
-	"additionalTerms": [
-		{
-			"header": "Extraordinary Terms 2",
-			"terms": [
-				{
-					"term": "Exceptions",
-					"description": "Unless something extraordinary has happened..."
-				}
-			]
-		}
-	],
-	"extraParameters": [
-		{
-			"name": "Fees",
-			"parameters": {
-				"key1": "value1",
-				"key2": "value2"
-			}
-		}
-	],
-	"stakeholders": [
-		{
-			"type": "COMPANY",
-			"roles": [
-				"SELLER"
-			],
-			"organizationName": "another org",
-			"organizationNumber": "771122-2345",
-			"firstName": "Donald",
-			"lastName": "Duck",
-			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99",
-			"phoneNumber": "1234567890",
-			"emailAddress": "donald.duck@sundsvall.se",
-			"address": {
-				"type": "BILLING_ADDRESS",
-				"streetAddress": "another street",
-				"postalCode": "54321",
-				"town": "Ducktown",
-				"country": "SE",
-				"attention": "No Attention"
-			}
-		}
-	],
-	"landLeaseType": "SITELEASEHOLD",
-	"leasehold": {
-		"purpose": "APARTMENT",
-		"description": "anotherLeaseholdDescription",
+	"fees": {
 		"additionalInformation": [
-			"another additional information when posting",
-			"More other information when posting"
-		]
+			"anotherAdditionalInfo1",
+			"anotherAdditionalInfo2"
+		],
+		"total": 1172.8,
+		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
+		"monthly": 234.56,
+		"currency": "SEK",
+		"indexNumber": 3,
+		"yearly": 2814.72,
+		"indexYear": 2022
 	},
 	"usufructType": "FISHING",
+	"description": "some other description",
+	"extraParameters": [{
+		"name": "Fees",
+		"parameters": {
+			"key1": "value1",
+			"key2": "value2"
+		}
+	}],
+	"stakeholders": [{
+		"firstName": "Donald",
+		"lastName": "Duck",
+		"emailAddress": "donald.duck@sundsvall.se",
+		"phoneNumber": "1234567890",
+		"address": {
+			"country": "SE",
+			"town": "Ducktown",
+			"streetAddress": "another street",
+			"postalCode": "54321",
+			"attention": "No Attention",
+			"type": "BILLING_ADDRESS"
+		},
+		"organizationName": "another org",
+		"organizationNumber": "771122-2345",
+		"roles": ["SELLER"],
+		"type": "COMPANY",
+		"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
+	}],
+	"type": "LAND_LEASE",
 	"externalReferenceId": "MK-TEST0009",
 	"propertyDesignations": [
 		"SUNDSVALL NORRMALM 678:1",
 		"SUNDSVALL NORRMALM 987:1"
 	],
 	"objectIdentity": "anotherObjectIdentity",
+	"end": "2024-10-02",
+	"area": 12,
+	"start": "2024-05-02",
+	"periodOfNotice": 2,
+	"landLeaseType": "SITELEASEHOLD",
 	"leaseDuration": 5,
-	"fees": {
-		"currency": "SEK",
-		"yearly": 2814.72,
-		"monthly": 234.56,
-		"total": 1172.8,
-		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
-		"indexYear": 2022,
-		"indexNumber": 3,
+	"autoExtend": true,
+	"leaseExtension": 1,
+	"indexTerms": [{
+		"terms": [{
+			"description": "In general the conditions 2 are now...",
+			"term": "General Conditions 2"
+		}],
+		"header": "More General Terms"
+	}],
+	"signedByWitness": true,
+	"additionalTerms": [{
+		"terms": [{
+			"description": "Unless something extraordinary has happened...",
+			"term": "Exceptions"
+		}],
+		"header": "Extraordinary Terms 2"
+	}],
+	"leasehold": {
 		"additionalInformation": [
-			"anotherAdditionalInfo1",
-			"anotherAdditionalInfo2"
-		]
+			"another additional information when posting",
+			"More other information when posting"
+		],
+		"purpose": "APARTMENT",
+		"description": "anotherLeaseholdDescription"
 	},
+	"contractId": "2024-12345",
 	"invoicing": {
 		"invoiceInterval": "MONTHLY",
 		"invoicedIn": "ARREARS"
 	},
-	"start": "2024-05-02",
-	"end": "2024-10-02",
-	"autoExtend": true,
-	"leaseExtension": 1,
-	"periodOfNotice": 2,
-	"area": 12
+	"status": "DRAFT"
 }

@@ -17,7 +17,7 @@ import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class AttachmentMetaDataTest {
-	
+
 	@Test
 	void testBean() {
 		assertThat(AttachmentMetaData.class, allOf(

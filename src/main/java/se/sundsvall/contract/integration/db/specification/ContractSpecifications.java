@@ -26,7 +26,7 @@ public final class ContractSpecifications {
 
 	private static final Specification<ContractEntity> EMPTY = Specification.where(null);
 
-	private ContractSpecifications() { }
+	private ContractSpecifications() {}
 
 	public static Specification<ContractEntity> createContractSpecification(final String municipalityId, final ContractRequest request) {
 		return withOnlyLatestVersion()

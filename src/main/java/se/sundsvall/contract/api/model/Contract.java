@@ -41,7 +41,9 @@ public class Contract {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
 	 */
 	@Schema(description = "Type of lease", example = "LEASEHOLD")
-	@OneOf(value = {"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"}, nullable = true)
+	@OneOf(value = {
+		"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"
+	}, nullable = true)
 	private String landLeaseType;
 
 	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = Schema.AccessMode.READ_ONLY)
@@ -54,21 +56,27 @@ public class Contract {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
 	 */
 	@Schema(description = "Status for contract", example = "ACTIVE")
-	@OneOf({"ACTIVE", "DRAFT", "TERMINATED"})
+	@OneOf({
+		"ACTIVE", "DRAFT", "TERMINATED"
+	})
 	private String status;
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.ContractType}
 	 */
 	@Schema(description = "Contract type.", example = "LAND_LEASE")
-	@OneOf(value = {"APARTMENT_LEASE", "LAND_LEASE", "PURCHASE_AGREEMENT"})
+	@OneOf(value = {
+		"APARTMENT_LEASE", "LAND_LEASE", "PURCHASE_AGREEMENT"
+	})
 	private String type;
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.UsufructType}
 	 */
 	@Schema(description = "Type of right of use", example = "HUNTING")
-	@OneOf(value = {"HUNTING", "FISHING", "MAINTENANCE", "OTHER"}, nullable = true)
+	@OneOf(value = {
+		"HUNTING", "FISHING", "MAINTENANCE", "OTHER"
+	}, nullable = true)
 	private String usufructType;
 
 	@Schema(description = "Type of leasehold")
@@ -124,51 +132,50 @@ public class Contract {
 
 	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = """
 		{
-		    "features": [
-		        {
-		            "geometry": {
-		                "coordinates": [
-		                    [
-		                        [
-		                            1730072021484375,
-		                            6238137830626575
-		                        ],
-		                        [
-		                            17297286987304688,
-		                            6238050291927199
-		                        ],
-		                        [
-		                            17297801971435547,
-		                            6237922958346664
-		                        ],
-		                        [
-		                            17301406860351562,
-		                            62378194958300895
-		                        ],
-		                        [
-		                            17303810119628906,
-		                            62379149998183046
-		                        ],
-		                        [
-		                            17303638458251953,
-		                            6238066208244492
-		                        ],
-		                        [
-		                            1730072021484375,
-		                            6238137830626575
-		                        ]
-		                    ]
-		                ],
-		                "type": "Polygon"
-		            },
-		            "properties": {},
-		            "type": "Feature"
-		        }
-		    ],
-		    "type": "FeatureCollection"
+			"features": [
+				{
+					"geometry": {
+						"coordinates": [
+							[
+								[
+									1730072021484375,
+									6238137830626575
+								],
+								[
+									17297286987304688,
+									6238050291927199
+								],
+								[
+									17297801971435547,
+									6237922958346664
+								],
+								[
+									17301406860351562,
+									62378194958300895
+								],
+								[
+									17303810119628906,
+									62379149998183046
+								],
+								[
+									17303638458251953,
+									6238066208244492
+								],
+								[
+									1730072021484375,
+									6238137830626575
+								]
+							]
+						],
+						"type": "Polygon"
+					},
+					"properties": {},
+					"type": "Feature"
+				}
+			],
+			"type": "FeatureCollection"
 		}
 		""")
 	private FeatureCollection areaData;
-
 
 }

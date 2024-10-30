@@ -1,11 +1,9 @@
 {
-	"attachmentData": {
-		"content": "YXNkZg=="
-	},
 	"metaData": {
-		"category": "CONTRACT",
+		"note": "The contract was a little wrinkled when scanned",
 		"filename": "LeaseContract12.pdf",
 		"mimeType": "application/pdf",
-		"note": "The contract was a little wrinkled when scanned"
-	}
+		"category": "CONTRACT"
+	},
+	"attachmentData": {"content": "YXNkZg=="}
 }

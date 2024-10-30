@@ -30,7 +30,7 @@ class TermGroupTest {
 		var header = "term header";
 		var terms = List.of(
 			Term.builder().build(),
-				Term.builder().build());
+			Term.builder().build());
 
 		var termGroup = TermGroup.builder()
 			.withHeader(header)

@@ -1,6 +1,5 @@
 package se.sundsvall.contract.api.model;
 
-
 import java.util.List;
 
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
@@ -13,7 +12,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -25,9 +23,11 @@ public class Leasehold {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseholdType}
 	 */
 	@Schema(example = "OTHER", description = "Type of leasehold")
-	@OneOf(value = {"AGRICULTURE", "APARTMENT", "BOATING_PLACE", "BUILDING", "DEPOT", "DWELLING",
+	@OneOf(value = {
+		"AGRICULTURE", "APARTMENT", "BOATING_PLACE", "BUILDING", "DEPOT", "DWELLING",
 		"LAND_COMPLEMENT", "LINEUP", "OTHER", "PARKING", "RECYCLING_STATION", "ROAD", "SIGNBOARD",
-		"SNOW_DUMP", "SPORTS_PURPOSE", "SURFACE_HEAT", "TRAIL"}, nullable = true)
+		"SNOW_DUMP", "SPORTS_PURPOSE", "SURFACE_HEAT", "TRAIL"
+	}, nullable = true)
 	private String purpose;
 
 	@Schema(description = "description ", example = "A simple description of the leasehold")

@@ -58,7 +58,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "contract",
-	uniqueConstraints = @UniqueConstraint(columnNames = { "contract_id", "version" }))
+	uniqueConstraints = @UniqueConstraint(columnNames = {
+		"contract_id", "version"
+	}))
 public class ContractEntity {
 
 	@Id
@@ -98,8 +100,7 @@ public class ContractEntity {
 	@JoinTable(
 		name = "contract_stakeholder",
 		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id")
-	)
+		inverseJoinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id"))
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<StakeholderEntity> stakeholders;
 
@@ -177,14 +178,22 @@ public class ContractEntity {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof ContractEntity that)) return false;
-		return version == that.version && signedByWitness == that.signedByWitness && Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && type == that.type && status == that.status && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(indexTerms, that.indexTerms) && Objects.equals(description, that.description) && Objects.equals(additionalTerms, that.additionalTerms) && Objects.equals(stakeholders, that.stakeholders) && Objects.equals(extraParameters, that.extraParameters) && landLeaseType == that.landLeaseType && Objects.equals(leasehold, that.leasehold) && usufructType == that.usufructType && Objects.equals(externalReferenceId, that.externalReferenceId) && Objects.equals(propertyDesignations, that.propertyDesignations) && Objects.equals(objectIdentity, that.objectIdentity) && Objects.equals(leaseDuration, that.leaseDuration) && Objects.equals(fees, that.fees) && Objects.equals(invoicing, that.invoicing) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(autoExtend, that.autoExtend) && Objects.equals(leaseExtension, that.leaseExtension) && Objects.equals(periodOfNotice, that.periodOfNotice) && Objects.equals(area, that.area) && Objects.equals(areaData, that.areaData);
+		if (this == o)
+			return true;
+		if (!(o instanceof ContractEntity that))
+			return false;
+		return version == that.version && signedByWitness == that.signedByWitness && Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && type == that.type && status == that.status && Objects.equals(municipalityId,
+			that.municipalityId) && Objects.equals(indexTerms, that.indexTerms) && Objects.equals(description, that.description) && Objects.equals(additionalTerms, that.additionalTerms) && Objects.equals(stakeholders, that.stakeholders) && Objects.equals(
+				extraParameters, that.extraParameters) && landLeaseType == that.landLeaseType && Objects.equals(leasehold, that.leasehold) && usufructType == that.usufructType && Objects.equals(externalReferenceId, that.externalReferenceId) && Objects
+					.equals(propertyDesignations, that.propertyDesignations) && Objects.equals(objectIdentity, that.objectIdentity) && Objects.equals(leaseDuration, that.leaseDuration) && Objects.equals(fees, that.fees) && Objects.equals(invoicing,
+						that.invoicing) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(autoExtend, that.autoExtend) && Objects.equals(leaseExtension, that.leaseExtension) && Objects.equals(periodOfNotice,
+							that.periodOfNotice) && Objects.equals(area, that.area) && Objects.equals(areaData, that.areaData);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, contractId, version, type, status, municipalityId, indexTerms, description, additionalTerms, stakeholders, signedByWitness, extraParameters, landLeaseType, leasehold, usufructType, externalReferenceId, propertyDesignations, objectIdentity, leaseDuration, fees, invoicing, start, end, autoExtend, leaseExtension, periodOfNotice, area, areaData);
+		return Objects.hash(id, contractId, version, type, status, municipalityId, indexTerms, description, additionalTerms, stakeholders, signedByWitness, extraParameters, landLeaseType, leasehold, usufructType, externalReferenceId, propertyDesignations,
+			objectIdentity, leaseDuration, fees, invoicing, start, end, autoExtend, leaseExtension, periodOfNotice, area, areaData);
 	}
 
 	@Override

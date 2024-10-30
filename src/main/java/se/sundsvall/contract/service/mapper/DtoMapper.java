@@ -117,12 +117,12 @@ public class DtoMapper {
 	Leasehold toLeaseholdDto(final LeaseholdEntity leaseholdEntity) {
 		return ofNullable(leaseholdEntity)
 			.map(leasehold -> Leasehold.builder()
-			.withPurpose(ofNullable(leasehold.getPurpose())
-				.map(LeaseholdType::name)
-				.orElse(null))
-			.withAdditionalInformation(leasehold.getAdditionalInformation())
-			.withDescription(leasehold.getDescription())
-			.build())
+				.withPurpose(ofNullable(leasehold.getPurpose())
+					.map(LeaseholdType::name)
+					.orElse(null))
+				.withAdditionalInformation(leasehold.getAdditionalInformation())
+				.withDescription(leasehold.getDescription())
+				.build())
 			.orElse(null);
 	}
 
@@ -168,17 +168,17 @@ public class DtoMapper {
 	public Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> Attachment.builder()
-			.withAttachmentData(AttachmentData.builder()
-				.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
+				.withAttachmentData(AttachmentData.builder()
+					.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
+					.build())
+				.withMetaData(AttachmentMetaData.builder()
+					.withCategory(attachment.getCategory().toString())
+					.withFilename(attachment.getFilename())
+					.withId(attachment.getId())
+					.withMimeType(attachment.getMimeType())
+					.withNote(attachment.getNote())
+					.build())
 				.build())
-			.withMetaData(AttachmentMetaData.builder()
-				.withCategory(attachment.getCategory().toString())
-				.withFilename(attachment.getFilename())
-				.withId(attachment.getId())
-				.withMimeType(attachment.getMimeType())
-				.withNote(attachment.getNote())
-				.build())
-			.build())
 			.orElse(null);
 	}
 }

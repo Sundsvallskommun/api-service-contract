@@ -17,27 +17,27 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Fees")
 public class Fees {
 
-    @Schema(description = "The currency of the lease fees", example = "SEK")
-    private String currency;
+	@Schema(description = "The currency of the lease fees", example = "SEK")
+	private String currency;
 
-    @Schema(description = "Yearly fee", example = "1000")
-    private BigDecimal yearly;
+	@Schema(description = "Yearly fee", example = "1000")
+	private BigDecimal yearly;
 
-    @Schema(description = "Monthly fee", example = "100")
-    private BigDecimal monthly;
+	@Schema(description = "Monthly fee", example = "100")
+	private BigDecimal monthly;
 
-    @Schema(description = "Total fee", example = "1200")
-    private BigDecimal total;
+	@Schema(description = "Total fee", example = "1200")
+	private BigDecimal total;
 
-    @Schema(description = "Total fee as text", example = "One thousand two hundred")
-    private String totalAsText;
+	@Schema(description = "Total fee as text", example = "One thousand two hundred")
+	private String totalAsText;
 
-    @Schema(description = "Index year", example = "2021")
-    private Integer indexYear;
+	@Schema(description = "Index year", example = "2021")
+	private Integer indexYear;
 
-    @Schema(description = "Index number", example = "1")
-    private Integer indexNumber;
+	@Schema(description = "Index number", example = "1")
+	private Integer indexNumber;
 
-    @Schema(description = "Additional information")
-    private List<String> additionalInformation;
+	@Schema(description = "Additional information")
+	private List<String> additionalInformation;
 }

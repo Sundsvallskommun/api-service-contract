@@ -18,14 +18,14 @@ import jakarta.persistence.PersistenceException;
 class StakeholderRoleConverterTest {
 
 	private final StakeholderRoleConverter converter = new StakeholderRoleConverter();
-	
+
 	private final List<StakeholderRole> stakeholderRoles = List.of(StakeholderRole.values());
 
 	@Test
 	void testConvertToDatabaseColumn() {
 		var wanted = stakeholderRoles.stream()
-				.map(Enum::name)
-				.collect(Collectors.joining(DELIMITER));
+			.map(Enum::name)
+			.collect(Collectors.joining(DELIMITER));
 
 		assertThat(converter.convertToDatabaseColumn(stakeholderRoles)).isEqualTo(wanted);
 	}
@@ -33,8 +33,8 @@ class StakeholderRoleConverterTest {
 	@Test
 	void testConvertToEntityAttribute() {
 		var wanted = stakeholderRoles.stream()
-				.map(Enum::name)
-				.collect(Collectors.joining(DELIMITER));
+			.map(Enum::name)
+			.collect(Collectors.joining(DELIMITER));
 
 		assertThat(converter.convertToEntityAttribute(wanted)).isEqualTo(stakeholderRoles);
 	}
@@ -71,7 +71,7 @@ class StakeholderRoleConverterTest {
 
 	@Test
 	void testDelimiter() {
-		//Don't change delimiter...
+		// Don't change delimiter...
 		assertThat(DELIMITER).isEqualTo(",");
 	}
 }

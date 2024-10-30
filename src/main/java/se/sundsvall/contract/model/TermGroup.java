@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Term group")
 public class TermGroup {
 
-    @Schema(description = "The term group header", example = "Basic Terms")
-    private String header;
+	@Schema(description = "The term group header", example = "Basic Terms")
+	private String header;
 
-    @ArraySchema(schema = @Schema(description = "Terms"))
-    private List<Term> terms;
+	@ArraySchema(schema = @Schema(description = "Terms"))
+	private List<Term> terms;
 }

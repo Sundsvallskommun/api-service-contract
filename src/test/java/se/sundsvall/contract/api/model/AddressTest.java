@@ -73,5 +73,4 @@ class AddressTest {
 		assertThat(Address.builder().build()).hasAllNullFieldsOrProperties();
 	}
 
-
 }

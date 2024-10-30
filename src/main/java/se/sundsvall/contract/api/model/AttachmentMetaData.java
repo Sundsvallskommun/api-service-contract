@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
@@ -24,7 +23,9 @@ public class AttachmentMetaData {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AttachmentCategory}
 	 */
 	@Schema(description = "The attachment category. Possible values: CONTRACT | OTHER", example = "CONTRACT")
-	@OneOf({"CONTRACT", "OTHER"})
+	@OneOf({
+		"CONTRACT", "OTHER"
+	})
 	private String category;
 
 	@Schema(description = "The attachment filename", example = "LeaseContract12.pdf")

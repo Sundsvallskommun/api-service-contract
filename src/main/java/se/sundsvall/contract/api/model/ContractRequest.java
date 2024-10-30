@@ -26,24 +26,24 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 @Schema(description = "Contract request")
 public class ContractRequest extends AbstractParameterPagingBase {
-	
+
 	@Schema(description = "Contract id", example = "2024-12345")
 	private String contractId;
-	
+
 	@Schema(description = "PartyId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	@ValidUuid(nullable = true)
 	private String partyId;
-	
+
 	@Schema(description = "Organization number", example = "771122-1234")
 	@ValidOrganizationNumber(nullable = true)
 	private String organizationNumber;
-	
+
 	@ArraySchema(schema = @Schema(description = "Property designations"))
 	private List<String> propertyDesignations;
-	
+
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
-	
+
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	@Schema(description = "End date (format: yyyy-MM-dd)", example = "2023-01-01")
 	private LocalDate end;
@@ -52,6 +52,8 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
 	 */
 	@Schema(description = "Lease type", example = "LEASEHOLD")
-	@OneOf(value = {"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"}, nullable = true)
+	@OneOf(value = {
+		"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"
+	}, nullable = true)
 	private String landLeaseType;
 }
