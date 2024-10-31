@@ -1,18 +1,14 @@
 package se.sundsvall.contract.api;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
@@ -36,13 +31,15 @@ import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @RestController
 @Validated
@@ -82,7 +79,9 @@ class ContractResource {
 					schema = @Schema(type = "string")),
 				useReturnTypeSchema = true)
 		})
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = {
+		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	ResponseEntity<Void> createContract(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@RequestBody @Valid final Contract contract) {
@@ -171,8 +170,8 @@ class ContractResource {
 		@Parameter(description = "Contract id") @PathVariable("contractId") final String contractId,
 		@Parameter(description = "Old version") @Positive @RequestParam(name = "oldVersion", required = false) final Integer oldVersion,
 		@Parameter(description = "New version") @Positive @RequestParam(name = "newVersion", required = false) final Integer newVersion) {
-		var oldVersionNull = oldVersion == null;
-		var newVersionNull = newVersion == null;
+		final var oldVersionNull = oldVersion == null;
+		final var newVersionNull = newVersion == null;
 		if (oldVersionNull ^ newVersionNull) {
 			throw Problem.valueOf(Status.BAD_REQUEST, "Either both or none of 'oldVersion' and 'newVersion' must be set");
 		}
