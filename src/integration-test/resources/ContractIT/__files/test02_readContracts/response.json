@@ -1,221 +1,185 @@
 {
+	"_meta": {
+		"totalRecords": 2,
+		"limit": 9,
+		"count": 2,
+		"totalPages": 1,
+		"page": 1
+	},
 	"contracts": [
 		{
-			"version": 1,
-			"contractId": "2024-23456",
-			"description": "someDescription",
-			"externalReferenceId": "MK-TEST0002",
-			"landLeaseType": "LEASEHOLD",
 			"municipalityId": "1984",
-			"objectIdentity": "someObjectIdentity",
-			"status": "DRAFT",
-			"type": "LAND_LEASE",
-			"usufructType": "HUNTING",
-			"leasehold": {
-				"purpose": "AGRICULTURE",
-				"description": "SomeLeaseholdDescription",
-				"additionalInformation": [
-					"More additional information"
-				]
-			},
-			"attachmentMetaData": [],
-			"additionalTerms": [
-				{
-					"header": "Additional Basic Terms",
-					"terms": [
-						{
-							"description": "The parties involved in the additional lease agreement",
-							"term": "Parties"
-						}
-					]
-				}
-			],
-			"extraParameters": [
-				{
-					"name": "someParameters2",
-					"parameters": {
-						"key3": "value3",
-						"key4": "value5"
-					}
-				}
-			],
-			"indexTerms": [
-				{
-					"header": "Basic Terms",
-					"terms": [
-						{
-							"description": "The parties involved in the lease agreement",
-							"term": "Parties"
-						}
-					]
-				}
-			],
-			"propertyDesignations": [
-				"SUNDSVALL NORRMALM 2:1"
-			],
-			"stakeholders": [
-				{
-					"type": "PERSON",
-					"roles": [
-						"POWER_OF_ATTORNEY_ROLE",
-						"SIGNATORY"
-					],
-					"organizationName": "someOrganizationName",
-					"organizationNumber": "771122-1234",
-					"firstName": "someFirstName",
-					"lastName": "someLastName",
-					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-					"phoneNumber": "somePhoneNumber",
-					"emailAddress": "someEmail",
-					"address": {
-						"type": "VISITING_ADDRESS",
-						"streetAddress": "someStreetAddress",
-						"postalCode": "12345",
-						"town": "someTown",
-						"country": "SE",
-						"attention": "someAttention"
-					}
-				}
-			],
-			"leaseDuration": 2,
 			"fees": {
-				"currency": "EUR",
-				"yearly": 1000,
-				"monthly": 120,
+				"additionalInformation": [],
 				"total": 5000,
 				"totalAsText": "five thousand",
-				"indexYear": 2021,
+				"monthly": 120,
+				"currency": "EUR",
 				"indexNumber": 3,
-				"additionalInformation": []
+				"yearly": 1000,
+				"indexYear": 2021
 			},
+			"usufructType": "HUNTING",
+			"description": "someDescription",
+			"extraParameters": [{
+				"name": "someParameters2",
+				"parameters": {
+					"key3": "value3",
+					"key4": "value5"
+				}
+			}],
+			"stakeholders": [{
+				"firstName": "someFirstName",
+				"lastName": "someLastName",
+				"emailAddress": "someEmail",
+				"phoneNumber": "somePhoneNumber",
+				"address": {
+					"country": "SE",
+					"town": "someTown",
+					"streetAddress": "someStreetAddress",
+					"postalCode": "12345",
+					"attention": "someAttention",
+					"type": "VISITING_ADDRESS"
+				},
+				"organizationName": "someOrganizationName",
+				"organizationNumber": "771122-1234",
+				"roles": [
+					"POWER_OF_ATTORNEY_ROLE",
+					"SIGNATORY"
+				],
+				"type": "PERSON",
+				"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
+			}],
+			"type": "LAND_LEASE",
+			"externalReferenceId": "MK-TEST0002",
+			"propertyDesignations": ["SUNDSVALL NORRMALM 2:1"],
+			"objectIdentity": "someObjectIdentity",
+			"end": "2023-10-10",
+			"area": 12,
+			"start": "2023-10-02",
+			"periodOfNotice": 2,
+			"version": 1,
+			"landLeaseType": "LEASEHOLD",
+			"leaseDuration": 2,
+			"autoExtend": true,
+			"attachmentMetaData": [],
+			"leaseExtension": 1,
+			"indexTerms": [{
+				"terms": [{
+					"description": "The parties involved in the lease agreement",
+					"term": "Parties"
+				}],
+				"header": "Basic Terms"
+			}],
+			"signedByWitness": false,
+			"leasehold": {
+				"additionalInformation": ["More additional information"],
+				"purpose": "AGRICULTURE",
+				"description": "SomeLeaseholdDescription"
+			},
+			"additionalTerms": [{
+				"terms": [{
+					"description": "The parties involved in the additional lease agreement",
+					"term": "Parties"
+				}],
+				"header": "Additional Basic Terms"
+			}],
+			"contractId": "2024-23456",
 			"invoicing": {
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ARREARS"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
-			"area": 12,
-			"signedByWitness": false
+			"status": "DRAFT"
 		},
 		{
-			"version": 2,
-			"contractId": "2024-12345",
-			"description": "someDescription",
-			"externalReferenceId": "MK-TEST0001",
-			"landLeaseType": "LEASEHOLD",
 			"municipalityId": "1984",
-			"objectIdentity": "someObjectIdentity",
-			"status": "ACTIVE",
-			"type": "PURCHASE_AGREEMENT",
-			"usufructType": "HUNTING",
-			"leasehold": {
-				"purpose": "AGRICULTURE",
-				"description": "SomeLeaseholdDescription",
-				"additionalInformation": [
-					"Even more additional information"
-				]
-			},
-			"attachmentMetaData": [
-				{
-					"id": 1,
-					"category": "CONTRACT",
-					"filename": "someFile.pdf",
-					"mimeType": "application/pdf",
-					"note": "someNote"
-				}
-			],
-			"additionalTerms": [
-				{
-					"header": "Additional Basic Terms",
-					"terms": [
-						{
-							"description": "The parties involved in the additional lease agreement",
-							"term": "Parties"
-						}
-					]
-				}
-			],
-			"extraParameters": [
-				{
-					"name": "someParameters3",
-					"parameters": {
-						"key5": "value5",
-						"key6": "value6"
-					}
-				}
-			],
-			"indexTerms": [
-				{
-					"header": "Basic Terms",
-					"terms": [
-						{
-							"description": "The parties involved in the lease agreement",
-							"term": "Parties"
-						}
-					]
-				}
-			],
-			"propertyDesignations": [
-				"SUNDSVALL NORRMALM 1:1"
-			],
-			"stakeholders": [
-				{
-					"type": "PERSON",
-					"roles": [
-						"SIGNATORY"
-					],
-					"organizationName": "someOrganizationName",
-					"organizationNumber": "771122-1234",
-					"firstName": "someFirstName",
-					"lastName": "someLastName",
-					"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
-					"phoneNumber": "somePhoneNumber",
-					"emailAddress": "someEmail",
-					"address": {
-						"type": "POSTAL_ADDRESS",
-						"streetAddress": "someStreetAddress",
-						"postalCode": "12345",
-						"town": "someTown",
-						"country": "SE",
-						"attention": "someAttention"
-					}
-				}
-			],
-			"leaseDuration": 2,
 			"fees": {
-				"currency": "SEK",
-				"yearly": 234.56,
-				"monthly": 123.45,
-				"total": 500,
-				"totalAsText": "five hundred",
-				"indexYear": 2021,
-				"indexNumber": 2,
 				"additionalInformation": [
 					"someAdditionalInfo3",
 					"someAdditionalInfo4"
-				]
+				],
+				"total": 500,
+				"totalAsText": "five hundred",
+				"monthly": 123.45,
+				"currency": "SEK",
+				"indexNumber": 2,
+				"yearly": 234.56,
+				"indexYear": 2021
 			},
+			"usufructType": "HUNTING",
+			"description": "someDescription",
+			"extraParameters": [{
+				"name": "someParameters3",
+				"parameters": {
+					"key5": "value5",
+					"key6": "value6"
+				}
+			}],
+			"stakeholders": [{
+				"firstName": "someFirstName",
+				"lastName": "someLastName",
+				"emailAddress": "someEmail",
+				"phoneNumber": "somePhoneNumber",
+				"address": {
+					"country": "SE",
+					"town": "someTown",
+					"streetAddress": "someStreetAddress",
+					"postalCode": "12345",
+					"attention": "someAttention",
+					"type": "POSTAL_ADDRESS"
+				},
+				"organizationName": "someOrganizationName",
+				"organizationNumber": "771122-1234",
+				"roles": ["SIGNATORY"],
+				"type": "PERSON",
+				"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+			}],
+			"type": "PURCHASE_AGREEMENT",
+			"externalReferenceId": "MK-TEST0001",
+			"propertyDesignations": ["SUNDSVALL NORRMALM 1:1"],
+			"objectIdentity": "someObjectIdentity",
+			"end": "2023-10-10",
+			"area": 12,
+			"start": "2023-10-02",
+			"periodOfNotice": 2,
+			"version": 2,
+			"landLeaseType": "LEASEHOLD",
+			"leaseDuration": 2,
+			"autoExtend": true,
+			"attachmentMetaData": [{
+				"note": "someNote",
+				"filename": "someFile.pdf",
+				"id": 1,
+				"mimeType": "application/pdf",
+				"category": "CONTRACT"
+			}],
+			"leaseExtension": 1,
+			"indexTerms": [{
+				"terms": [{
+					"description": "The parties involved in the lease agreement",
+					"term": "Parties"
+				}],
+				"header": "Basic Terms"
+			}],
+			"signedByWitness": true,
+			"leasehold": {
+				"additionalInformation": ["Even more additional information"],
+				"purpose": "AGRICULTURE",
+				"description": "SomeLeaseholdDescription"
+			},
+			"additionalTerms": [{
+				"terms": [{
+					"description": "The parties involved in the additional lease agreement",
+					"term": "Parties"
+				}],
+				"header": "Additional Basic Terms"
+			}],
+			"contractId": "2024-12345",
 			"invoicing": {
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ADVANCE"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
-			"area": 12,
-			"signedByWitness": true
+			"status": "ACTIVE"
 		}
-	],
-	"_meta": {
-		"page": 1,
-		"limit": 9,
-		"count": 2,
-		"totalRecords": 2,
-		"totalPages": 1
-	}
+	]
 }

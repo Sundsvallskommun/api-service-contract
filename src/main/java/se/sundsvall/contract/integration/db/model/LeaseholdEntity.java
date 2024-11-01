@@ -38,8 +38,6 @@ public class LeaseholdEntity {
 		joinColumns = @JoinColumn(
 			name = "contract_id",
 			referencedColumnName = "id",
-			foreignKey = @ForeignKey(name = "fk_additional_information_contract_id")
-		)
-	)
+			foreignKey = @ForeignKey(name = "fk_additional_information_contract_id")))
 	private List<String> additionalInformation;
 }

@@ -29,7 +29,7 @@ import jakarta.persistence.PersistenceException;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
-@Import(ObjectMapper.class) //Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
+@Import(ObjectMapper.class) // Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractIdGeneratorTest {
 
 	@Mock

@@ -41,11 +41,11 @@ class ContractAttachmentResourceTest {
 
 	@Test
 	void testGetAttachmentById() {
-		//Arrange
+		// Arrange
 		var attachment = TestFactory.createAttachment();
 		when(attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L)).thenReturn(attachment);
 
-		//Act
+		// Act
 		var response = webTestClient.get()
 			.uri("/contracts/1984/2024-12345/attachments/1")
 			.exchange()
@@ -55,7 +55,7 @@ class ContractAttachmentResourceTest {
 			.returnResult()
 			.getResponseBody();
 
-		//Assert
+		// Assert
 		assertNotNull(response);
 		verify(attachmentService).getAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
@@ -63,7 +63,7 @@ class ContractAttachmentResourceTest {
 
 	@Test
 	void testCreateAttachment() {
-		//Arrange
+		// Arrange
 		Attachment attachment = Attachment.builder()
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someContent")
@@ -79,7 +79,7 @@ class ContractAttachmentResourceTest {
 
 		when(attachmentService.createAttachment(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), any())).thenReturn(1L);
 
-		//Act
+		// Act
 		webTestClient.post()
 			.uri("/contracts/1984/2024-12345/attachments")
 			.bodyValue(attachment)
@@ -88,14 +88,14 @@ class ContractAttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().valueEquals("Location", "/contracts/1984/2024-12345/attachments/1");
 
-		//Assert
+		// Assert
 		verify(attachmentService).createAttachment("1984", CONTRACT_ID, attachment);
 		verifyNoMoreInteractions(attachmentService);
 	}
 
 	@Test
 	void testUpdateAttachmentMetaData() {
-		//Arrange
+		// Arrange
 		var attachmentMetaData = AttachmentMetaData.builder()
 			.withCategory("aNewCategory")
 			.withFilename("aNewFilename")
@@ -113,7 +113,7 @@ class ContractAttachmentResourceTest {
 
 		when(attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment)).thenReturn(attachmentMetaData);
 
-		//Act
+		// Act
 		var response = webTestClient.put()
 			.uri("/contracts/1984/2024-12345/attachments/1")
 			.bodyValue(attachment)
@@ -124,7 +124,7 @@ class ContractAttachmentResourceTest {
 			.returnResult()
 			.getResponseBody();
 
-		//Assert
+		// Assert
 		assertNotNull(response);
 		assertThat(response).isEqualTo(attachmentMetaData);
 		verify(attachmentService).updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment);
@@ -133,16 +133,16 @@ class ContractAttachmentResourceTest {
 
 	@Test
 	void testDeleteAttachment() {
-		//Arrange
+		// Arrange
 		doNothing().when(attachmentService).deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 
-		//Act
+		// Act
 		webTestClient.delete()
 			.uri("/contracts/1984/2024-12345/attachments/1")
 			.exchange()
 			.expectStatus().isNoContent();
 
-		//Assert
+		// Assert
 		verify(attachmentService).deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
 	}

@@ -16,17 +16,21 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Invoicing details")
 public class Invoicing {
 
-    /*
-     * Backed by enum {@link se.sundsvall.contract.api.model.enums.IntervalType}
-     */
-    @Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
-    @OneOf(value = {"YEARLY", "QUARTERLY", "MONTHLY"}, nullable = true)
-    private String invoiceInterval;
+	/*
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.IntervalType}
+	 */
+	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
+	@OneOf(value = {
+		"YEARLY", "QUARTERLY", "MONTHLY"
+	}, nullable = true)
+	private String invoiceInterval;
 
-    /*
-     * Backed by enum {@link se.sundsvall.contract.api.model.enums.InvoicedIn}
-     */
-    @Schema(description = "How the lease is invoiced", example = "ADVANCE")
-    @OneOf(value = {"ADVANCE", "ARREARS"}, nullable = true)
-    private String invoicedIn;
+	/*
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.InvoicedIn}
+	 */
+	@Schema(description = "How the lease is invoiced", example = "ADVANCE")
+	@OneOf(value = {
+		"ADVANCE", "ARREARS"
+	}, nullable = true)
+	private String invoicedIn;
 }

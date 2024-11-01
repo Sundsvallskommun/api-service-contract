@@ -26,7 +26,7 @@ import se.sundsvall.contract.api.model.ContractRequest;
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"
 })
-@Import(ObjectMapper.class) //Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
+@Import(ObjectMapper.class) // Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractRepositoryTest {
 
 	@Autowired

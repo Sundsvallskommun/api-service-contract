@@ -10,7 +10,9 @@ import org.hibernate.annotations.ValueGenerationType;
 
 @ValueGenerationType(generatedBy = ContractIdGenerator.class)
 @Retention(RUNTIME)
-@Target({FIELD})
+@Target({
+	FIELD
+})
 public @interface GenerateOnInsert {
 
 }

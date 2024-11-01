@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Term")
 public class Term {
 
-    @JsonProperty("term")
-    @Schema(description = "Term (name)", example = "Parties")
-    private String name;
+	@JsonProperty("term")
+	@Schema(description = "Term (name)", example = "Parties")
+	private String name;
 
-    @Schema(description = "Term description", example = "The parties involved in the lease agreement")
-    private String description;
+	@Schema(description = "Term description", example = "The parties involved in the lease agreement")
+	private String description;
 }

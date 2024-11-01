@@ -32,10 +32,10 @@ class ExtraParameterGroupConverterExceptionTest {
 
 	@Test
 	void testConvertToDatabaseColumn_shouldThrowPersistenceException_whenSerializationFails() throws JsonProcessingException {
-		//Arrange
+		// Arrange
 		when(mockObjectMapper.writeValueAsString(any())).thenThrow(new RuntimeException("error"));
 
-		//Act & Assert
+		// Act & Assert
 		assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> converter.convertToDatabaseColumn(List.of(new ExtraParameterGroup())))
 			.withMessage("Unable to serialize extra parameter groups");
 
@@ -44,11 +44,11 @@ class ExtraParameterGroupConverterExceptionTest {
 
 	@Test
 	void testConvertToEntityAttribute_shouldThrowPersistenceException_whenSerializationFails() throws JsonProcessingException {
-		//Arrange
+		// Arrange
 		var json = "[{\"name\":\"name\",\"parameters\":{\"someKey\":\"someValue\"}}]";
 		when(mockObjectMapper.readValue(anyString(), any(JavaType.class))).thenThrow(new RuntimeException("error"));
 
-		//Act & Assert
+		// Act & Assert
 		assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> converter.convertToEntityAttribute(json))
 			.withMessage("Unable to deserialize extra parameter groups");
 	}

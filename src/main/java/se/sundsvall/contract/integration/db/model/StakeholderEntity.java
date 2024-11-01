@@ -73,12 +73,13 @@ public class StakeholderEntity {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
-            return true;
-        }
+			return true;
+		}
 		if (!(o instanceof StakeholderEntity that)) {
-            return false;
-        }
-		return Objects.equals(id, that.id) && type == that.type && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(partyId, that.partyId) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(emailAddress, that.emailAddress) && Objects.equals(address, that.address);
+			return false;
+		}
+		return Objects.equals(id, that.id) && type == that.type && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(firstName, that.firstName) && Objects.equals(
+			lastName, that.lastName) && Objects.equals(partyId, that.partyId) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(emailAddress, that.emailAddress) && Objects.equals(address, that.address);
 	}
 
 	@Override

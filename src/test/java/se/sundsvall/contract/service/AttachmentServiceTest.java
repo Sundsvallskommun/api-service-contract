@@ -53,18 +53,18 @@ class AttachmentServiceTest {
 
 	@Test
 	void testCreateAttachment() {
-		//Arrange
+		// Arrange
 		var attachment = TestFactory.createAttachment();
 
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
 		when(mockAttachmentRepository.save(any(AttachmentEntity.class))).thenReturn(AttachmentEntity.builder()
-				.withId(ENTITY_ID)
+			.withId(ENTITY_ID)
 			.build());
 
-		//Act
+		// Act
 		var createdAttachment = attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, attachment);
 
-		//Assert
+		// Assert
 		assertThat(createdAttachment).isEqualTo(ENTITY_ID);
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verify(mockEntityMapper).toAttachmentEntity(MUNICIPALITY_ID, CONTRACT_ID, attachment);
@@ -77,10 +77,10 @@ class AttachmentServiceTest {
 
 	@Test
 	void testCreateAttachment_shouldThrow404_whenNotFound() {
-		//Arrange
+		// Arrange
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 
-		//Act & Assert
+		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, Attachment.builder().build()))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
@@ -94,13 +94,13 @@ class AttachmentServiceTest {
 
 	@Test
 	void testGetAttachment() {
-		//Arrange
+		// Arrange
 		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(TestFactory.createAttachmentEntity()));
 
-		//Act
+		// Act
 		var attachment = attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
-		//Assert
+		// Assert
 		assertThat(attachment).isNotNull();
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verify(mockDtoMapper).toAttachmentDto(any(AttachmentEntity.class));
@@ -111,10 +111,10 @@ class AttachmentServiceTest {
 
 	@Test
 	void testGetAttachment_shouldThrow404_whenNotFound() {
-		//Arrange
+		// Arrange
 		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
-		//Act & Assert
+		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
@@ -129,21 +129,21 @@ class AttachmentServiceTest {
 
 	@Test
 	void testUpdateAttachment() {
-		//Arrange
-		//Set up a captor since we want to verify what's being saved, not what comes back.
+		// Arrange
+		// Set up a captor since we want to verify what's being saved, not what comes back.
 		var argumentCaptor = ArgumentCaptor.forClass(AttachmentEntity.class);
 
 		var incomingAttachment = TestFactory.createAttachment();
 		var oldAttachmentEntity = TestFactory.createAttachmentEntity();
 		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.of(oldAttachmentEntity));
 		when(mockAttachmentRepository.save(any(AttachmentEntity.class))).thenReturn(AttachmentEntity.builder()
-				.withContractId("2024-12345")
+			.withContractId("2024-12345")
 			.build());
 
-		//Act
+		// Act
 		attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, incomingAttachment);
 
-		//Assert
+		// Assert
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
 		verify(mockEntityMapper).updateAttachmentEntity(oldAttachmentEntity, incomingAttachment);
 		verify(mockAttachmentRepository).save(argumentCaptor.capture());
@@ -165,10 +165,10 @@ class AttachmentServiceTest {
 
 	@Test
 	void testUpdateAttachment_shouldThrow404_whenNotFound() {
-		//Arrange
+		// Arrange
 		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.empty());
 
-		//Act & Assert
+		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, Attachment.builder().build()))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
@@ -182,14 +182,14 @@ class AttachmentServiceTest {
 
 	@Test
 	void testDeleteAttachment() {
-		//Arrange
+		// Arrange
 		when(mockAttachmentRepository.existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(true);
 		doNothing().when(mockAttachmentRepository).deleteByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
-		//Act
+		// Act
 		attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
-		//Assert
+		// Assert
 		verify(mockAttachmentRepository).existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verify(mockAttachmentRepository).deleteByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 
@@ -198,10 +198,10 @@ class AttachmentServiceTest {
 
 	@Test
 	void testDeleteAttachment_shouldThrow404_whenNotFound() {
-		//Arrange
+		// Arrange
 		when(mockAttachmentRepository.existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(false);
 
-		//Act & Assert
+		// Act & Assert
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))

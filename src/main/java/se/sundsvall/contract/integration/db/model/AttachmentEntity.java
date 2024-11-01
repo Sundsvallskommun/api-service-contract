@@ -68,7 +68,8 @@ public class AttachmentEntity {
 		if (!(o instanceof AttachmentEntity that)) {
 			return false;
 		}
-		return Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && Objects.equals(municipalityId, that.municipalityId) && category == that.category && Objects.equals(filename, that.filename) && Objects.equals(mimeType, that.mimeType) && Objects.equals(note, that.note) && Objects.deepEquals(content, that.content);
+		return Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && Objects.equals(municipalityId, that.municipalityId) && category == that.category && Objects.equals(filename, that.filename) && Objects.equals(mimeType,
+			that.mimeType) && Objects.equals(note, that.note) && Objects.deepEquals(content, that.content);
 	}
 
 	@Override

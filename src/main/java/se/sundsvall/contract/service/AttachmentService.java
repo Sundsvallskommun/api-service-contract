@@ -33,7 +33,7 @@ public class AttachmentService {
 	}
 
 	public Long createAttachment(final String municipalityId, final String contractId, final Attachment attachment) {
-		if(!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
+		if (!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
 			throw Problem.builder()
 				.withStatus(Status.NOT_FOUND)
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
@@ -65,7 +65,7 @@ public class AttachmentService {
 	}
 
 	public void deleteAttachment(final String municipalityId, final String contractId, final Long attachmentId) {
-		if(!attachmentRepository.existsByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId)) {
+		if (!attachmentRepository.existsByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId)) {
 			throw Problem.builder()
 				.withStatus(Status.NOT_FOUND)
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))

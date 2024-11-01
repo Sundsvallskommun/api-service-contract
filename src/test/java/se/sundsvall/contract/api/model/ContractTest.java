@@ -46,7 +46,7 @@ class ContractTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-	
+
 	@Test
 	void testSetAndGetAllFields() {
 		var version = 1;
@@ -140,7 +140,6 @@ class ContractTest {
 		assertThat(contract.isSignedByWitness()).isEqualTo(signedByWitness);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

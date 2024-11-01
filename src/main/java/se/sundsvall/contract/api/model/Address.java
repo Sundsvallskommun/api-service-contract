@@ -19,12 +19,14 @@ public class Address {
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AddressType}
 	 */
 	@Schema(example = "POSTAL_ADDRESS", description = "Address type")
-	@OneOf(value = {"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"}, nullable = true)
+	@OneOf(value = {
+		"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"
+	}, nullable = true)
 	private String type;
 
 	@Schema(example = "Testvägen 18")
 	private String streetAddress;
-	
+
 	@Schema(example = "c/o Test Testorsson")
 	private String careOf;
 

@@ -64,8 +64,8 @@ public class EntityMapper {
 			.withSignedByWitness(contract.isSignedByWitness())
 			.withStakeholders(toStakeholderEntities(contract.getStakeholders()))
 			.withStart(contract.getStart())
-			.withStatus(Status.valueOf(contract.getStatus()))   //Cannot / shouldn't be null
-			.withType(ContractType.valueOf(contract.getType())) //Cannot / shouldn't be null
+			.withStatus(Status.valueOf(contract.getStatus()))   // Cannot / shouldn't be null
+			.withType(ContractType.valueOf(contract.getType())) // Cannot / shouldn't be null
 			.withUsufructType(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null))
 			.withVersion(contract.getVersion())
 			.build();
@@ -154,9 +154,9 @@ public class EntityMapper {
 	public ContractEntity createNewContractEntity(String municipalityId, ContractEntity oldContract, Contract contract) {
 		var contractEntity = toContractEntity(municipalityId, contract);
 
-		//Set the version, the PrePersist / PreUpdate will take care of upping the version by one.
+		// Set the version, the PrePersist / PreUpdate will take care of upping the version by one.
 		contractEntity.setVersion(oldContract.getVersion());
-		//Set the contractId since it will be generated otherwise.
+		// Set the contractId since it will be generated otherwise.
 		contractEntity.setContractId(oldContract.getContractId());
 
 		return contractEntity;

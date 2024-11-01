@@ -1,11 +1,9 @@
 {
-	"attachmentData": {
-		"content": "UHV0U29tZXRoaW5nSGVyZQ=="
-	},
 	"metaData": {
-		"category": "CONTRACT",
+		"note": "Replaced with a not-so-wrinkly contract.",
 		"filename": "LeaseContract13.pdf",
 		"mimeType": "application/pdf",
-		"note": "Replaced with a not-so-wrinkly contract."
-	}
+		"category": "CONTRACT"
+	},
+	"attachmentData": {"content": "UHV0U29tZXRoaW5nSGVyZQ=="}
 }
