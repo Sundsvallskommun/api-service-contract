@@ -17,11 +17,10 @@ import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.deblock.jsondiff.matcher.Path;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -35,7 +34,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractRequest;

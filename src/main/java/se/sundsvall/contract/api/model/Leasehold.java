@@ -1,16 +1,14 @@
 package se.sundsvall.contract.api.model;
 
-import java.util.List;
-
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Data
 @Builder(setterPrefix = "with")

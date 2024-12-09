@@ -15,32 +15,38 @@
 	},
 	"usufructType": "FISHING",
 	"description": "some other description",
-	"extraParameters": [{
-		"name": "Fees",
-		"parameters": {
-			"key1": "value1",
-			"key2": "value2"
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
 		}
-	}],
-	"stakeholders": [{
-		"firstName": "Donald",
-		"lastName": "Duck",
-		"emailAddress": "donald.duck@sundsvall.se",
-		"phoneNumber": "1234567890",
-		"address": {
-			"country": "SE",
-			"town": "Ducktown",
-			"streetAddress": "another street",
-			"postalCode": "54321",
-			"attention": "No Attention",
-			"type": "BILLING_ADDRESS"
-		},
-		"organizationName": "another org",
-		"organizationNumber": "771122-2345",
-		"roles": ["SELLER"],
-		"type": "COMPANY",
-		"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
-	}],
+	],
+	"stakeholders": [
+		{
+			"firstName": "Donald",
+			"lastName": "Duck",
+			"emailAddress": "donald.duck@sundsvall.se",
+			"phoneNumber": "1234567890",
+			"address": {
+				"country": "SE",
+				"town": "Ducktown",
+				"streetAddress": "another street",
+				"postalCode": "54321",
+				"attention": "No Attention",
+				"type": "BILLING_ADDRESS"
+			},
+			"organizationName": "another org",
+			"organizationNumber": "771122-2345",
+			"roles": [
+				"SELLER"
+			],
+			"type": "COMPANY",
+			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
+		}
+	],
 	"type": "LAND_LEASE",
 	"externalReferenceId": "MK-TEST0009",
 	"propertyDesignations": [
@@ -56,21 +62,29 @@
 	"leaseDuration": 5,
 	"autoExtend": true,
 	"leaseExtension": 1,
-	"indexTerms": [{
-		"terms": [{
-			"description": "In general the conditions 2 are now...",
-			"term": "General Conditions 2"
-		}],
-		"header": "More General Terms"
-	}],
+	"indexTerms": [
+		{
+			"terms": [
+				{
+					"description": "In general the conditions 2 are now...",
+					"term": "General Conditions 2"
+				}
+			],
+			"header": "More General Terms"
+		}
+	],
 	"signedByWitness": true,
-	"additionalTerms": [{
-		"terms": [{
-			"description": "Unless something extraordinary has happened...",
-			"term": "Exceptions"
-		}],
-		"header": "Extraordinary Terms 2"
-	}],
+	"additionalTerms": [
+		{
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			],
+			"header": "Extraordinary Terms 2"
+		}
+	],
 	"leasehold": {
 		"additionalInformation": [
 			"another additional information when posting",

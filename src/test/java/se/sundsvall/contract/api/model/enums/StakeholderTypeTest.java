@@ -6,7 +6,6 @@ import static se.sundsvall.contract.model.enums.StakeholderType.COMPANY;
 import static se.sundsvall.contract.model.enums.StakeholderType.PERSON;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.StakeholderType;
 
 class StakeholderTypeTest {

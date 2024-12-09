@@ -16,9 +16,7 @@ import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PART
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.data.jpa.domain.Specification;
-
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 

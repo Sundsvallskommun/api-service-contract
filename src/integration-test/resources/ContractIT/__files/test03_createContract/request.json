@@ -13,23 +13,27 @@
 		"yearly": 234.56,
 		"indexYear": 2021
 	},
-	"attachments": [{
-		"note": "1",
-		"extension": ".pdf",
-		"file": "someFile",
-		"name": "someName",
-		"mimeType": "application/pdf",
-		"category": "CONTRACT"
-	}],
+	"attachments": [
+		{
+			"note": "1",
+			"extension": ".pdf",
+			"file": "someFile",
+			"name": "someName",
+			"mimeType": "application/pdf",
+			"category": "CONTRACT"
+		}
+	],
 	"usufructType": "HUNTING",
 	"description": "someDescription",
-	"extraParameters": [{
-		"name": "Fees",
-		"parameters": {
-			"key1": "value1",
-			"key2": "value2"
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
 		}
-	}],
+	],
 	"stakeholders": [
 		{
 			"firstName": "someFirstName",
@@ -46,7 +50,9 @@
 			},
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
-			"roles": ["SIGNATORY"],
+			"roles": [
+				"SIGNATORY"
+			],
 			"type": "PERSON",
 			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
 		},
@@ -65,7 +71,9 @@
 			},
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
-			"roles": ["POWER_OF_ATTORNEY_ROLE"],
+			"roles": [
+				"POWER_OF_ATTORNEY_ROLE"
+			],
 			"type": "PERSON",
 			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
 		}
@@ -85,21 +93,29 @@
 	"leaseDuration": 2,
 	"autoExtend": true,
 	"leaseExtension": 1,
-	"indexTerms": [{
-		"terms": [{
-			"description": "In general the conditions are...",
-			"term": "General Conditions"
-		}],
-		"header": "General Terms"
-	}],
+	"indexTerms": [
+		{
+			"terms": [
+				{
+					"description": "In general the conditions are...",
+					"term": "General Conditions"
+				}
+			],
+			"header": "General Terms"
+		}
+	],
 	"signedByWitness": true,
-	"additionalTerms": [{
-		"terms": [{
-			"description": "Unless something extraordinary has happened...",
-			"term": "Exceptions"
-		}],
-		"header": "Extraordinary Terms"
-	}],
+	"additionalTerms": [
+		{
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			],
+			"header": "Extraordinary Terms"
+		}
+	],
 	"leasehold": {
 		"additionalInformation": [
 			"Some additional information when posting",

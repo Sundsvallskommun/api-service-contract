@@ -5,7 +5,6 @@ import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 import static se.sundsvall.contract.model.enums.AttachmentCategory.OTHER;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 class AttachmentMetaDataCategoryTest {

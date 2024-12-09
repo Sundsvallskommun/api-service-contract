@@ -3,12 +3,10 @@ package se.sundsvall.contract.integration.db.model.converter.enums;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
-import org.apache.commons.lang3.StringUtils;
-
-import se.sundsvall.contract.model.enums.ContractType;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
+import org.apache.commons.lang3.StringUtils;
+import se.sundsvall.contract.model.enums.ContractType;
 
 public class ContractTypeConverter implements AttributeConverter<ContractType, String> {
 

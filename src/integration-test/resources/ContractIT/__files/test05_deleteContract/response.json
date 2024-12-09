@@ -15,35 +15,43 @@
 	},
 	"usufructType": "HUNTING",
 	"description": "someDescription",
-	"extraParameters": [{
-		"name": "someParameters3",
-		"parameters": {
-			"key5": "value5",
-			"key6": "value6"
+	"extraParameters": [
+		{
+			"name": "someParameters3",
+			"parameters": {
+				"key5": "value5",
+				"key6": "value6"
+			}
 		}
-	}],
-	"stakeholders": [{
-		"firstName": "someFirstName",
-		"lastName": "someLastName",
-		"emailAddress": "someEmail",
-		"phoneNumber": "somePhoneNumber",
-		"address": {
-			"country": "SE",
-			"town": "someTown",
-			"streetAddress": "someStreetAddress",
-			"postalCode": "12345",
-			"attention": "someAttention",
-			"type": "POSTAL_ADDRESS"
-		},
-		"organizationName": "someOrganizationName",
-		"organizationNumber": "771122-1234",
-		"roles": ["SIGNATORY"],
-		"type": "PERSON",
-		"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
-	}],
+	],
+	"stakeholders": [
+		{
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "POSTAL_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": [
+				"SIGNATORY"
+			],
+			"type": "PERSON",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+		}
+	],
 	"type": "PURCHASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0001",
-	"propertyDesignations": ["SUNDSVALL NORRMALM 1:1"],
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 1:1"
+	],
 	"objectIdentity": "someObjectIdentity",
 	"end": "2023-10-10",
 	"area": 12,
@@ -53,34 +61,46 @@
 	"landLeaseType": "LEASEHOLD",
 	"leaseDuration": 2,
 	"autoExtend": true,
-	"attachmentMetaData": [{
-		"note": "someNote",
-		"filename": "someFile.pdf",
-		"id": 1,
-		"mimeType": "application/pdf",
-		"category": "CONTRACT"
-	}],
+	"attachmentMetaData": [
+		{
+			"note": "someNote",
+			"filename": "someFile.pdf",
+			"id": 1,
+			"mimeType": "application/pdf",
+			"category": "CONTRACT"
+		}
+	],
 	"leaseExtension": 1,
-	"indexTerms": [{
-		"terms": [{
-			"description": "The parties involved in the lease agreement",
-			"term": "Parties"
-		}],
-		"header": "Basic Terms"
-	}],
+	"indexTerms": [
+		{
+			"terms": [
+				{
+					"description": "The parties involved in the lease agreement",
+					"term": "Parties"
+				}
+			],
+			"header": "Basic Terms"
+		}
+	],
 	"signedByWitness": true,
 	"leasehold": {
-		"additionalInformation": ["Even more additional information"],
+		"additionalInformation": [
+			"Even more additional information"
+		],
 		"purpose": "AGRICULTURE",
 		"description": "SomeLeaseholdDescription"
 	},
-	"additionalTerms": [{
-		"terms": [{
-			"description": "The parties involved in the additional lease agreement",
-			"term": "Parties"
-		}],
-		"header": "Additional Basic Terms"
-	}],
+	"additionalTerms": [
+		{
+			"terms": [
+				{
+					"description": "The parties involved in the additional lease agreement",
+					"term": "Parties"
+				}
+			],
+			"header": "Additional Basic Terms"
+		}
+	],
 	"contractId": "2024-12345",
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",

@@ -1,28 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-
-import org.geojson.FeatureCollection;
-import org.hibernate.Length;
-
-import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
-import se.sundsvall.contract.integration.db.model.converter.FeesConverter;
-import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.ContractTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.LandLeaseTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.StatusConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.UsufructTypeConverter;
-import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -44,12 +21,32 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.geojson.FeatureCollection;
+import org.hibernate.Length;
+import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
+import se.sundsvall.contract.integration.db.model.converter.FeesConverter;
+import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.ContractTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.LandLeaseTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.StatusConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.UsufructTypeConverter;
+import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
+import se.sundsvall.contract.model.ExtraParameterGroup;
+import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.Status;
+import se.sundsvall.contract.model.enums.UsufructType;
 
 @Getter
 @Setter

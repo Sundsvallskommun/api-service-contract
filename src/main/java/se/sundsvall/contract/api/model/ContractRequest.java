@@ -1,23 +1,20 @@
 package se.sundsvall.contract.api.model;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
-import se.sundsvall.dept44.common.validators.annotation.ValidOrganizationNumber;
-import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
-import se.sundsvall.dept44.models.api.paging.AbstractParameterPagingBase;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.dept44.common.validators.annotation.ValidOrganizationNumber;
+import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+import se.sundsvall.dept44.models.api.paging.AbstractParameterPagingBase;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

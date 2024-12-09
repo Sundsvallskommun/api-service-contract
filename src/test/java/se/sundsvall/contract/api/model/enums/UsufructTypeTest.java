@@ -7,7 +7,6 @@ import static se.sundsvall.contract.model.enums.UsufructType.MAINTENANCE;
 import static se.sundsvall.contract.model.enums.UsufructType.OTHER;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.UsufructType;
 
 class UsufructTypeTest {

@@ -6,5 +6,7 @@
 		"mimeType": "application/pdf",
 		"category": "CONTRACT"
 	},
-	"attachmentData": {"content": "someBase64Content"}
+	"attachmentData": {
+		"content": "someBase64Content"
+	}
 }

@@ -4,16 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter.DELIMITER;
 
+import jakarta.persistence.PersistenceException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-
 import se.sundsvall.contract.model.enums.StakeholderRole;
-
-import jakarta.persistence.PersistenceException;
 
 class StakeholderRoleConverterTest {
 

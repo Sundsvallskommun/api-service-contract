@@ -5,5 +5,7 @@
 		"mimeType": "application/pdf",
 		"category": "CONTRACT"
 	},
-	"attachmentData": {"content": "UHV0U29tZXRoaW5nSGVyZQ=="}
+	"attachmentData": {
+		"content": "UHV0U29tZXRoaW5nSGVyZQ=="
+	}
 }

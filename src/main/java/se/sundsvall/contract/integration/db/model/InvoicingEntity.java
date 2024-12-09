@@ -1,10 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import se.sundsvall.contract.integration.db.model.converter.enums.IntervalTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.InvoicedInConverter;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.contract.model.enums.InvoicedIn;
-
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -12,6 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.contract.integration.db.model.converter.enums.IntervalTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.InvoicedInConverter;
+import se.sundsvall.contract.model.enums.IntervalType;
+import se.sundsvall.contract.model.enums.InvoicedIn;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

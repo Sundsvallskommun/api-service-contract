@@ -5,9 +5,7 @@ import static java.util.Optional.ofNullable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;

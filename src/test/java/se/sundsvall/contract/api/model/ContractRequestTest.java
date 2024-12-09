@@ -13,11 +13,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.LandLeaseType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
