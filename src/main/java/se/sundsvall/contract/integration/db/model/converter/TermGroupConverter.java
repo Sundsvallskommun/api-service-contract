@@ -3,15 +3,12 @@ package se.sundsvall.contract.integration.db.model.converter;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import se.sundsvall.contract.model.TermGroup;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
+import se.sundsvall.contract.model.TermGroup;
 
 public class TermGroupConverter implements AttributeConverter<List<TermGroup>, String> {
 

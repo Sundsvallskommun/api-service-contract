@@ -4,12 +4,9 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.List;
-
 import jakarta.persistence.PersistenceException;
-
+import java.util.List;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 

@@ -5,7 +5,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
 import org.hibernate.annotations.ValueGenerationType;
 
 @ValueGenerationType(generatedBy = ContractIdGenerator.class)

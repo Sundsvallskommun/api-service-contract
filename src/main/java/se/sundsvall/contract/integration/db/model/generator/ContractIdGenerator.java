@@ -1,15 +1,13 @@
 package se.sundsvall.contract.integration.db.model.generator;
 
+import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import java.util.EnumSet;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
 import org.hibernate.generator.EventTypeSets;
-
-import jakarta.persistence.PersistenceException;
 
 public class ContractIdGenerator implements BeforeExecutionGenerator {
 

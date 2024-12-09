@@ -1,13 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import java.util.List;
-import java.util.Objects;
-
-import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderTypeConverter;
-import se.sundsvall.contract.model.enums.StakeholderRole;
-import se.sundsvall.contract.model.enums.StakeholderType;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -16,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +17,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderTypeConverter;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 @Entity
 @Setter

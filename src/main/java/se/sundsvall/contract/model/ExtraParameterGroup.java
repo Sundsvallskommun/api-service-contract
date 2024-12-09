@@ -1,8 +1,7 @@
 package se.sundsvall.contract.model;
 
-import java.util.Map;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

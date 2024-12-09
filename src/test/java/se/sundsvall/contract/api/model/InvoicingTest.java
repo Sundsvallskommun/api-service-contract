@@ -12,9 +12,7 @@ import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 

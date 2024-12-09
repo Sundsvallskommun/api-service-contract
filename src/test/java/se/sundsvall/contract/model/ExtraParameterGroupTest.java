@@ -10,10 +10,8 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Map;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.api.model.Address;
 
 class ExtraParameterGroupTest {

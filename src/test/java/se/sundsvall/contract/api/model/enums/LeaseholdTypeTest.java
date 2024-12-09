@@ -20,7 +20,6 @@ import static se.sundsvall.contract.model.enums.LeaseholdType.SURFACE_HEAT;
 import static se.sundsvall.contract.model.enums.LeaseholdType.TRAIL;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.LeaseholdType;
 
 class LeaseholdTypeTest {

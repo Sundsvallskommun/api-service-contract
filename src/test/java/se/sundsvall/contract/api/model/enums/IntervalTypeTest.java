@@ -6,7 +6,6 @@ import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.IntervalType;
 
 class IntervalTypeTest {
