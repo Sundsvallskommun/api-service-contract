@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "2.1"
 servers:
-  - url: http://localhost:58117
+  - url: http://localhost:52326
     description: Generated server url
 tags:
   - name: Contract attachments
@@ -465,7 +465,7 @@ paths:
           schema:
             type: string
             description: External referenceId
-            example: 123
+            example: "123"
           example: 123
         - name: end
           in: query
@@ -474,6 +474,7 @@ paths:
           schema:
             type: string
             description: "End date (format: yyyy-MM-dd)"
+            format: date
             example: 2023-01-01
           example: 2023-01-01
         - name: landLeaseType
@@ -491,10 +492,11 @@ paths:
           required: false
           schema:
             minimum: 1
-            type: string
+            type: integer
             description: Page number
+            format: int32
             example: 1
-            default: "1"
+            default: 1
           example: 1
         - name: limit
           in: query
@@ -502,9 +504,10 @@ paths:
           required: false
           schema:
             minimum: 1
-            type: string
+            type: integer
             description: Result size per page. Maximum allowed value is dynamically
               configured
+            format: int32
             example: 15
           example: 15
       responses:
@@ -578,30 +581,30 @@ paths:
         "500":
           description: Internal Server Error
           content:
-            '*/*':
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            '*/*':
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            '*/*':
+            application/problem+json:
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+            '*/*':
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
@@ -771,20 +774,20 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     Address:
       type: object
       properties:
@@ -1434,12 +1437,12 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
