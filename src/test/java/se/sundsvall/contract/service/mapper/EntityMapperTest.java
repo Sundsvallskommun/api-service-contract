@@ -7,7 +7,6 @@ import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.model.enums.AddressType;
 import se.sundsvall.contract.model.enums.AttachmentCategory;

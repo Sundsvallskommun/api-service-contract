@@ -6,7 +6,6 @@ import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.LandLeaseType.USUFRUCT;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.LandLeaseType;
 
 class LandLeaseTypeTest {

@@ -21,16 +21,14 @@ import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
@@ -50,14 +48,14 @@ class ContractResourceTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
-	@MockBean
+	@MockitoBean
 	private ContractService contractServiceMock;
 
 	@Test
 	void getContractByMunicipalityAndContractId() {
 		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(Contract.builder().build());
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isOk()
@@ -76,7 +74,7 @@ class ContractResourceTest {
 	void getContractByMunicipalityAndContractIdAndVersion() {
 		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(Contract.builder().build());
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}")
 				.queryParam("version", 2)
 				.build(MUNICIPALITY_ID, CONTRACT_ID))
@@ -118,7 +116,7 @@ class ContractResourceTest {
 	void testLimitWhenFetchingContracts_shouldGenerateBadRequest() {
 		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
 				.queryParam("page", 1)
 				.queryParam("limit", 101)
@@ -139,7 +137,7 @@ class ContractResourceTest {
 
 	@Test
 	void postContract() {
-		var contract = Contract.builder()
+		final var contract = Contract.builder()
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY.name())
@@ -169,11 +167,11 @@ class ContractResourceTest {
 
 	@Test
 	void diffContract() {
-		var diff = new Diff(2, 3, List.of(), List.of(1, 2, 3));
+		final var diff = new Diff(2, 3, List.of(), List.of(1, 2, 3));
 
 		when(contractServiceMock.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3)).thenReturn(diff);
 
-		var result = webTestClient.post()
+		final var result = webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}/diff")
 				.queryParam("oldVersion", 2)
 				.queryParam("newVersion", 3)
@@ -197,7 +195,7 @@ class ContractResourceTest {
 
 	@Test
 	void updateContract() {
-		var landLeaseContract = createContract();
+		final var landLeaseContract = createContract();
 
 		doNothing().when(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 

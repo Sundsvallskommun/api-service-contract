@@ -3,17 +3,14 @@ package se.sundsvall.contract.integration.db.model.converter.enums;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.PersistenceException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
-
 import se.sundsvall.contract.model.enums.StakeholderRole;
-
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.PersistenceException;
 
 public class StakeholderRoleConverter implements AttributeConverter<List<StakeholderRole>, String> {
 

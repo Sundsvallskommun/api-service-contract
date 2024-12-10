@@ -7,9 +7,7 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;

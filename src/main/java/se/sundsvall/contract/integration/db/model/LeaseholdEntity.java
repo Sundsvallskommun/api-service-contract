@@ -1,10 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import java.util.List;
-
-import se.sundsvall.contract.integration.db.model.converter.enums.LeaseholdTypeConverter;
-import se.sundsvall.contract.model.enums.LeaseholdType;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -12,11 +7,14 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.contract.integration.db.model.converter.enums.LeaseholdTypeConverter;
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 @Data
 @Embeddable

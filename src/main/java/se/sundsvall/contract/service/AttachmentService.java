@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.integration.db.AttachmentRepository;

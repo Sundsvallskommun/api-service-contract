@@ -14,9 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
 import org.geojson.FeatureCollection;
-
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;

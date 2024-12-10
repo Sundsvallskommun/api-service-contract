@@ -3,12 +3,10 @@ package se.sundsvall.contract.integration.db.model.converter.enums;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
-import org.apache.commons.lang3.StringUtils;
-
-import se.sundsvall.contract.model.enums.IntervalType;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
+import org.apache.commons.lang3.StringUtils;
+import se.sundsvall.contract.model.enums.IntervalType;
 
 public class IntervalTypeConverter implements AttributeConverter<IntervalType, String> {
 

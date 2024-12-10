@@ -6,7 +6,6 @@ import static se.sundsvall.contract.model.enums.Status.DRAFT;
 import static se.sundsvall.contract.model.enums.Status.TERMINATED;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.Status;
 
 class StatusTest {

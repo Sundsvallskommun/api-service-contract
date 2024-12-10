@@ -9,16 +9,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
-
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 
 class StakeholderTest {
 

@@ -4,11 +4,9 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import se.sundsvall.contract.model.Fees;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
+import se.sundsvall.contract.model.Fees;
 
 public class FeesConverter implements AttributeConverter<Fees, String> {
 

@@ -2,12 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import java.util.Arrays;
-import java.util.Objects;
-
-import se.sundsvall.contract.integration.db.model.converter.enums.AttachmentCategoryConverter;
-import se.sundsvall.contract.model.enums.AttachmentCategory;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -15,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import java.util.Arrays;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import se.sundsvall.contract.integration.db.model.converter.enums.AttachmentCategoryConverter;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 @Entity
 @Getter

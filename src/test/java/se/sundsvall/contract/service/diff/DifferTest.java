@@ -8,9 +8,6 @@ import static se.sundsvall.contract.model.Change.Type.ADDITION;
 import static se.sundsvall.contract.model.Change.Type.MODIFICATION;
 import static se.sundsvall.contract.model.Change.Type.REMOVAL;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,14 +15,15 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.flipkart.zjsonpatch.JsonPatch;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.Term;
 
@@ -42,11 +40,19 @@ class DifferTest {
 		}
 		""";
 
-	@SpyBean
+	@MockitoSpyBean
 	private ObjectMapper objectMapper;
 
 	@Autowired
 	private Differ differ;
+
+	private static Stream<TestCase> provideDiffTestData() {
+		return Stream.of(
+			new TestCase("[{'op': 'remove', 'path': '/description'}]", REMOVAL, "$.description", new TextNode("someText"), null),
+			new TestCase("[{'op': 'add', 'path': '/name', 'value': 12345}]", ADDITION, "$.name", null, new IntNode(12345)),
+			new TestCase("[{'op': 'replace', 'path': '/flag', 'value': false}]", MODIFICATION, "$.flag", BooleanNode.TRUE, BooleanNode.FALSE),
+			new TestCase("[{'op': 'replace', 'path': '/description', 'value': 'someNewText'}]", MODIFICATION, "$.description", new TextNode("someText"), new TextNode("someNewText")));
+	}
 
 	@Test
 	void testDiff() throws Exception {
@@ -58,9 +64,9 @@ class DifferTest {
 	@ParameterizedTest
 	@MethodSource("provideDiffTestData")
 	void testJsonDiff(final TestCase testCase) {
-		var patch = toJsonNode(testCase.jsonPatch());
-		var newJson = JsonPatch.apply(patch, toJsonNode(JSON));
-		var changes = differ.diffJson(JSON, newJson.toString());
+		final var patch = toJsonNode(testCase.jsonPatch());
+		final var newJson = JsonPatch.apply(patch, toJsonNode(JSON));
+		final var changes = differ.diffJson(JSON, newJson.toString());
 
 		assertThat(changes).isNotNull().hasSize(1).allSatisfy(change -> {
 			assertThat(change.type()).isEqualTo(testCase.type);
@@ -72,32 +78,25 @@ class DifferTest {
 
 	@Test
 	void testJsonDiff_withExcludedPath() {
-		var testCase = provideDiffTestData().toList().getFirst();
+		final var testCase = provideDiffTestData().toList().getFirst();
 
-		var patch = toJsonNode(testCase.jsonPatch());
-		var newJson = JsonPatch.apply(patch, toJsonNode(JSON));
-		var changes = differ.diffJson(JSON, newJson.toString(), List.of("$.description"));
+		final var patch = toJsonNode(testCase.jsonPatch());
+		final var newJson = JsonPatch.apply(patch, toJsonNode(JSON));
+		final var changes = differ.diffJson(JSON, newJson.toString(), List.of("$.description"));
 
 		assertThat(changes).isEmpty();
-	}
-
-	private static Stream<TestCase> provideDiffTestData() {
-		return Stream.of(
-			new TestCase("[{'op': 'remove', 'path': '/description'}]", REMOVAL, "$.description", new TextNode("someText"), null),
-			new TestCase("[{'op': 'add', 'path': '/name', 'value': 12345}]", ADDITION, "$.name", null, new IntNode(12345)),
-			new TestCase("[{'op': 'replace', 'path': '/flag', 'value': false}]", MODIFICATION, "$.flag", BooleanNode.TRUE, BooleanNode.FALSE),
-			new TestCase("[{'op': 'replace', 'path': '/description', 'value': 'someNewText'}]", MODIFICATION, "$.description", new TextNode("someText"), new TextNode("someNewText")));
 	}
 
 	private JsonNode toJsonNode(final String json) {
 		try {
 			return objectMapper.readTree(json.replace("'", "\""));
-		} catch (JsonProcessingException e) {
+		} catch (final JsonProcessingException e) {
 			throw new RuntimeJsonProcessingException(e);
 		}
 	}
 
-	record TestCase(String jsonPatch, Change.Type type, String path, JsonNode oldValue, JsonNode newValue) {}
+	record TestCase(String jsonPatch, Change.Type type, String path, JsonNode oldValue, JsonNode newValue) {
+	}
 
 	static class RuntimeJsonProcessingException extends RuntimeException {
 

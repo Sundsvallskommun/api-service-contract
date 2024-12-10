@@ -15,10 +15,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
@@ -30,23 +29,22 @@ import se.sundsvall.contract.service.AttachmentService;
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 class ContractAttachmentResourceTest {
 
-	@MockBean
-	private AttachmentService attachmentService;
-
-	@Autowired
-	private WebTestClient webTestClient;
-
 	private static final String CONTRACT_ID = "2024-12345";
 	private static final String MUNICIPALITY_ID = "1984";
+
+	@MockitoBean
+	private AttachmentService attachmentService;
+	@Autowired
+	private WebTestClient webTestClient;
 
 	@Test
 	void testGetAttachmentById() {
 		// Arrange
-		var attachment = TestFactory.createAttachment();
+		final var attachment = TestFactory.createAttachment();
 		when(attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L)).thenReturn(attachment);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri("/contracts/1984/2024-12345/attachments/1")
 			.exchange()
 			.expectStatus().isOk()
@@ -64,7 +62,7 @@ class ContractAttachmentResourceTest {
 	@Test
 	void testCreateAttachment() {
 		// Arrange
-		Attachment attachment = Attachment.builder()
+		final Attachment attachment = Attachment.builder()
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someContent")
 				.build())
@@ -96,7 +94,7 @@ class ContractAttachmentResourceTest {
 	@Test
 	void testUpdateAttachmentMetaData() {
 		// Arrange
-		var attachmentMetaData = AttachmentMetaData.builder()
+		final var attachmentMetaData = AttachmentMetaData.builder()
 			.withCategory("aNewCategory")
 			.withFilename("aNewFilename")
 			.withMimeType("aNewMimeType")
@@ -104,7 +102,7 @@ class ContractAttachmentResourceTest {
 			.withCategory("OTHER")
 			.build();
 
-		Attachment attachment = Attachment.builder()
+		final Attachment attachment = Attachment.builder()
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someNewContent")
 				.build())
@@ -114,7 +112,7 @@ class ContractAttachmentResourceTest {
 		when(attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment)).thenReturn(attachmentMetaData);
 
 		// Act
-		var response = webTestClient.put()
+		final var response = webTestClient.put()
 			.uri("/contracts/1984/2024-12345/attachments/1")
 			.bodyValue(attachment)
 			.exchange()

@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -19,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.integration.db.AttachmentRepository;

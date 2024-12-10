@@ -1,22 +1,19 @@
 package se.sundsvall.contract.api.model;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.geojson.FeatureCollection;
-
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.geojson.FeatureCollection;
+import se.sundsvall.contract.model.ExtraParameterGroup;
+import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Data
 @Builder(setterPrefix = "with")

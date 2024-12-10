@@ -2,10 +2,10 @@ package se.sundsvall.contract.apptest;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import java.util.List;
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +15,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import se.sundsvall.dept44.util.ResourceUtils;
 import se.sundsvall.contract.Application;
-import net.javacrumbs.jsonunit.core.Option;
+import se.sundsvall.dept44.util.ResourceUtils;
 
 @ActiveProfiles("it")
 @SpringBootTest(
@@ -50,10 +48,11 @@ class OpenApiSpecificationIT {
 	void compareOpenApiSpecifications() {
 		final String existingOpenApiSpecification = ResourceUtils.asString(openApiResource);
 		final String currentOpenApiSpecification = getCurrentOpenApiSpecification();
-		assertThatJson(toJson(existingOpenApiSpecification))
+
+		assertThatJson(toJson(currentOpenApiSpecification))
 			.withOptions(List.of(Option.IGNORING_ARRAY_ORDER))
 			.whenIgnoringPaths("servers")
-			.isEqualTo(toJson(currentOpenApiSpecification));
+			.isEqualTo(toJson(existingOpenApiSpecification));
 	}
 
 	/**
