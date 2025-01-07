@@ -100,6 +100,8 @@ class DifferTest {
 
 	static class RuntimeJsonProcessingException extends RuntimeException {
 
+		private static final long serialVersionUID = -2498824485966592543L;
+
 		public RuntimeJsonProcessingException(final JsonProcessingException cause) {
 			super(cause);
 		}

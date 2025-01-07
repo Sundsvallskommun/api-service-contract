@@ -11,6 +11,7 @@ import org.hibernate.generator.EventTypeSets;
 
 public class ContractIdGenerator implements BeforeExecutionGenerator {
 
+	private static final long serialVersionUID = -1562799557423722146L;
 	private static final String GENERATE_ID_QUERY = "SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))";
 
 	@Override

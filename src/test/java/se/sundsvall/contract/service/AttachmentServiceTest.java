@@ -76,11 +76,12 @@ class AttachmentServiceTest {
 	@Test
 	void testCreateAttachment_shouldThrow404_whenNotFound() {
 		// Arrange
+		final var attachment = Attachment.builder().build();
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, Attachment.builder().build()))
+			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, attachment))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
 			.withMessage("Contract with contractId 2024-12345 is not present within municipality 1984.");
 
@@ -164,11 +165,12 @@ class AttachmentServiceTest {
 	@Test
 	void testUpdateAttachment_shouldThrow404_whenNotFound() {
 		// Arrange
+		final var attachment = Attachment.builder().build();
 		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, Attachment.builder().build()))
+			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, attachment))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
 			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
 

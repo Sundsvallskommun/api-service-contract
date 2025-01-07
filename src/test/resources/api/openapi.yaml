@@ -1,54 +1,51 @@
 openapi: 3.0.1
 info:
   title: Contracts
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "2.1"
 servers:
-  - url: http://localhost:52326
-    description: Generated server url
+- url: http://localhost:8080
+  description: Generated server url
 tags:
-  - name: Contract attachments
-    description: Contract attachment resources
-  - name: Contracts
-    description: Contract resources
+- name: Contract attachments
+  description: Contract attachment resources
+- name: Contracts
+  description: Contract resources
 paths:
   /contracts/{municipalityId}/{contractId}:
     get:
       tags:
-        - Contracts
+      - Contracts
       summary: Get a contract
       operationId: getContractById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
-        - name: version
-          in: query
-          description: Contract version
-          required: false
-          schema:
-            type: integer
-            format: int32
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: query
+        description: Contract version
+        required: false
+        schema:
+          type: integer
+          format: int32
       responses:
         "200":
           description: Ok
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Contract"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Contract"
         "404":
@@ -57,25 +54,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
@@ -84,31 +66,32 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Contracts
+      - Contracts
       summary: Update a contract
       operationId: updateContract
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -121,116 +104,102 @@ paths:
         "404":
           description: Not Found
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            application/json:
+            '*/*':
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Contracts
+      - Contracts
       summary: Delete a contract
       operationId: deleteContract
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           description: No Content
         "404":
           description: Not Found
           content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Problem"
   /contracts/{municipalityId}/{contractId}/attachments/{attachmentId}:
     get:
       tags:
-        - Contract attachments
+      - Contract attachments
       summary: Get a contracts attachment(s) and its metadata
       operationId: getAttachmentById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
-        - name: attachmentId
-          in: path
-          description: Attachment id
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: Ok
@@ -238,25 +207,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Attachment"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Attachment"
         "404":
           description: Not Found
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "502":
@@ -265,47 +219,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Contract attachments
+      - Contract attachments
       summary: Update a contract attachment
       operationId: updateAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
-        - name: attachmentId
-          in: path
-          description: Attachment id
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -319,34 +271,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AttachmentMetaData"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/AttachmentMetaData"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
@@ -355,161 +289,162 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Contract attachments
+      - Contract attachments
       summary: Delete a contract attachment
       operationId: deleteAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
-        - name: attachmentId
-          in: path
-          description: Attachment id
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Problem"
   /contracts/{municipalityId}:
     get:
       tags:
-        - Contracts
+      - Contracts
       summary: Get a list of contracts
       operationId: getContracts
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: query
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: query
+        description: Contract id
+        required: false
+        schema:
+          type: string
           description: Contract id
-          required: false
-          schema:
-            type: string
-            description: Contract id
-            example: 2024-12345
           example: 2024-12345
-        - name: partyId
-          in: query
+        example: 2024-12345
+      - name: partyId
+        in: query
+        description: PartyId
+        required: false
+        schema:
+          type: string
           description: PartyId
-          required: false
-          schema:
-            type: string
-            description: PartyId
-            example: 40f14de9-815d-44a5-a34d-b1d38b628e07
           example: 40f14de9-815d-44a5-a34d-b1d38b628e07
-        - name: organizationNumber
-          in: query
+        example: 40f14de9-815d-44a5-a34d-b1d38b628e07
+      - name: organizationNumber
+        in: query
+        description: Organization number
+        required: false
+        schema:
+          type: string
           description: Organization number
-          required: false
-          schema:
-            type: string
-            description: Organization number
-            example: 771122-1234
           example: 771122-1234
-        - name: propertyDesignations
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-              description: Property designations
-        - name: externalReferenceId
-          in: query
+        example: 771122-1234
+      - name: propertyDesignations
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            description: Property designations
+      - name: externalReferenceId
+        in: query
+        description: External referenceId
+        required: false
+        schema:
+          type: string
           description: External referenceId
-          required: false
-          schema:
-            type: string
-            description: External referenceId
-            example: "123"
-          example: 123
-        - name: end
-          in: query
+          example: "123"
+        example: 123
+      - name: end
+        in: query
+        description: "End date (format: yyyy-MM-dd)"
+        required: false
+        schema:
+          type: string
           description: "End date (format: yyyy-MM-dd)"
-          required: false
-          schema:
-            type: string
-            description: "End date (format: yyyy-MM-dd)"
-            format: date
-            example: 2023-01-01
+          format: date
           example: 2023-01-01
-        - name: landLeaseType
-          in: query
+        example: 2023-01-01
+      - name: landLeaseType
+        in: query
+        description: Lease type
+        required: false
+        schema:
+          type: string
           description: Lease type
-          required: false
-          schema:
-            type: string
-            description: Lease type
-            example: LEASEHOLD
           example: LEASEHOLD
-        - name: page
-          in: query
+        example: LEASEHOLD
+      - name: page
+        in: query
+        description: Page number
+        required: false
+        schema:
+          minimum: 1
+          type: integer
           description: Page number
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            description: Page number
-            format: int32
-            example: 1
-            default: 1
+          format: int32
           example: 1
-        - name: limit
-          in: query
-          description: Result size per page. Maximum allowed value is dynamically configured
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            description: Result size per page. Maximum allowed value is dynamically
-              configured
-            format: int32
-            example: 15
+          default: 1
+        example: 1
+      - name: limit
+        in: query
+        description: Result size per page. Maximum allowed value is dynamically configured
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          description: Result size per page. Maximum allowed value is dynamically
+            configured
+          format: int32
           example: 15
+        example: 15
       responses:
         "200":
           description: Ok
@@ -517,25 +452,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContractPaginatedResponse"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ContractPaginatedResponse"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
@@ -544,25 +464,26 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Contracts
+      - Contracts
       summary: Create contract
       operationId: createContract
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -578,70 +499,59 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
             '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
             '*/*':
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Problem"
   /contracts/{municipalityId}/{contractId}/diff:
     post:
       tags:
-        - Contracts
+      - Contracts
       summary: Diff two versions of a contract
       operationId: diffContract
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
-        - name: oldVersion
-          in: query
-          description: Old version
-          required: false
-          schema:
-            type: integer
-            format: int32
-        - name: newVersion
-          in: query
-          description: New version
-          required: false
-          schema:
-            type: integer
-            format: int32
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: oldVersion
+        in: query
+        description: Old version
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: newVersion
+        in: query
+        description: New version
+        required: false
+        schema:
+          type: integer
+          format: int32
       responses:
         "404":
           description: Not Found
@@ -649,25 +559,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
@@ -676,32 +571,33 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-            application/problem+json:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                $ref: "#/components/schemas/Problem"
   /contracts/{municipalityId}/{contractId}/attachments:
     post:
       tags:
-        - Contract attachments
+      - Contract attachments
       summary: Create a contract attachment
       operationId: createAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-        - name: contractId
-          in: path
-          description: Contract id
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -720,33 +616,33 @@ paths:
         "404":
           description: Not Found
           content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "502":
           description: Bad Gateway
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
-            application/problem+json:
+            '*/*':
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
-        - API
+      - API
       summary: OpenAPI
       operationId: getApiDocs
       responses:
@@ -783,11 +679,11 @@ components:
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     Address:
       type: object
       properties:
@@ -969,8 +865,8 @@ components:
         type:
           type: string
           enum:
-            - name
-            - link
+          - name
+          - link
         properties:
           type: object
           additionalProperties:
@@ -1009,15 +905,15 @@ components:
             type: object
         geometry:
           oneOf:
-            - $ref: "#/components/schemas/Feature"
-            - $ref: "#/components/schemas/FeatureCollection"
-            - $ref: "#/components/schemas/GeometryCollection"
-            - $ref: "#/components/schemas/LineString"
-            - $ref: "#/components/schemas/MultiLineString"
-            - $ref: "#/components/schemas/MultiPoint"
-            - $ref: "#/components/schemas/MultiPolygon"
-            - $ref: "#/components/schemas/Point"
-            - $ref: "#/components/schemas/Polygon"
+          - $ref: "#/components/schemas/Feature"
+          - $ref: "#/components/schemas/FeatureCollection"
+          - $ref: "#/components/schemas/GeometryCollection"
+          - $ref: "#/components/schemas/LineString"
+          - $ref: "#/components/schemas/MultiLineString"
+          - $ref: "#/components/schemas/MultiPoint"
+          - $ref: "#/components/schemas/MultiPolygon"
+          - $ref: "#/components/schemas/Point"
+          - $ref: "#/components/schemas/Polygon"
         id:
           type: string
     FeatureCollection:
@@ -1038,25 +934,25 @@ components:
         using polygon(s)
       example:
         features:
-          - geometry:
-              coordinates:
-                - - - 1730072021484375
-                    - 6238137830626575
-                  - - 17297286987304688
-                    - 6238050291927199
-                  - - 17297801971435547
-                    - 6237922958346664
-                  - - 17301406860351562
-                    - 62378194958300895
-                  - - 17303810119628906
-                    - 62379149998183046
-                  - - 17303638458251953
-                    - 6238066208244492
-                  - - 1730072021484375
-                    - 6238137830626575
-              type: Polygon
-            properties: { }
-            type: Feature
+        - geometry:
+            coordinates:
+            - - - 1730072021484375
+                - 6238137830626575
+              - - 17297286987304688
+                - 6238050291927199
+              - - 17297801971435547
+                - 6237922958346664
+              - - 17301406860351562
+                - 62378194958300895
+              - - 17303810119628906
+                - 62379149998183046
+              - - 17303638458251953
+                - 6238066208244492
+              - - 1730072021484375
+                - 6238137830626575
+            type: Polygon
+          properties: {}
+          type: Feature
         type: FeatureCollection
     Fees:
       type: object
@@ -1100,7 +996,7 @@ components:
       description: Fees
     GeoJsonObject:
       required:
-        - type
+      - type
       type: object
       properties:
         crs:
@@ -1117,22 +1013,22 @@ components:
     GeometryCollection:
       type: object
       allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            geometries:
-              type: array
-              items:
-                oneOf:
-                  - $ref: "#/components/schemas/Feature"
-                  - $ref: "#/components/schemas/FeatureCollection"
-                  - $ref: "#/components/schemas/GeometryCollection"
-                  - $ref: "#/components/schemas/LineString"
-                  - $ref: "#/components/schemas/MultiLineString"
-                  - $ref: "#/components/schemas/MultiPoint"
-                  - $ref: "#/components/schemas/MultiPolygon"
-                  - $ref: "#/components/schemas/Point"
-                  - $ref: "#/components/schemas/Polygon"
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          geometries:
+            type: array
+            items:
+              oneOf:
+              - $ref: "#/components/schemas/Feature"
+              - $ref: "#/components/schemas/FeatureCollection"
+              - $ref: "#/components/schemas/GeometryCollection"
+              - $ref: "#/components/schemas/LineString"
+              - $ref: "#/components/schemas/MultiLineString"
+              - $ref: "#/components/schemas/MultiPoint"
+              - $ref: "#/components/schemas/MultiPolygon"
+              - $ref: "#/components/schemas/Point"
+              - $ref: "#/components/schemas/Polygon"
     Invoicing:
       type: object
       properties:
@@ -1166,13 +1062,13 @@ components:
     LineString:
       type: object
       allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                $ref: "#/components/schemas/LngLatAlt"
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              $ref: "#/components/schemas/LngLatAlt"
     LngLatAlt:
       type: object
       properties:
@@ -1193,59 +1089,59 @@ components:
     MultiLineString:
       type: object
       allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  $ref: "#/components/schemas/LngLatAlt"
-    MultiPoint:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            type: array
+            items:
               type: array
               items:
                 $ref: "#/components/schemas/LngLatAlt"
+    MultiPoint:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              $ref: "#/components/schemas/LngLatAlt"
     MultiPolygon:
       type: object
       allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/LngLatAlt"
-    Point:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
-              $ref: "#/components/schemas/LngLatAlt"
-    Polygon:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/GeoJsonObject"
-        - type: object
-          properties:
-            coordinates:
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            type: array
+            items:
               type: array
               items:
                 type: array
                 items:
                   $ref: "#/components/schemas/LngLatAlt"
+    Point:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            $ref: "#/components/schemas/LngLatAlt"
+    Polygon:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GeoJsonObject"
+      - type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              type: array
+              items:
+                $ref: "#/components/schemas/LngLatAlt"
     Stakeholder:
       type: object
       properties:
@@ -1485,8 +1381,8 @@ components:
           type: string
     Attachment:
       required:
-        - attachmentData
-        - metaData
+      - attachmentData
+      - metaData
       type: object
       properties:
         attachmentData:
@@ -1548,4 +1444,4 @@ components:
           example: 23
       description: PagingMetaData model
       readOnly: true
-  securitySchemes: { }
+  securitySchemes: {}

@@ -116,7 +116,7 @@
 			"header": "Extraordinary Terms"
 		}
 	],
-	"contractId": "2024-00001",
+	"contractId": "${json-unit.regex}^\\d{4}-00001$",
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"

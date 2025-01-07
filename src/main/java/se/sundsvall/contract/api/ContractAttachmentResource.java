@@ -4,7 +4,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -73,9 +72,7 @@ class ContractAttachmentResource {
 				description = "Not Found",
 				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@GetMapping(path = "/{attachmentId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(path = "/{attachmentId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Attachment> getAttachmentById(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
@@ -99,7 +96,7 @@ class ContractAttachmentResource {
 				description = "Not Found",
 				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@PostMapping(consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> createAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
@@ -123,9 +120,7 @@ class ContractAttachmentResource {
 				description = "Not Found",
 				content = @Content(schema = @Schema(implementation = Problem.class)))
 		})
-	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<AttachmentMetaData> updateAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
@@ -143,7 +138,7 @@ class ContractAttachmentResource {
 				responseCode = "204",
 				description = "No content")
 		})
-	@DeleteMapping(path = "/{attachmentId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(path = "/{attachmentId}")
 	ResponseEntity<Void> deleteAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
