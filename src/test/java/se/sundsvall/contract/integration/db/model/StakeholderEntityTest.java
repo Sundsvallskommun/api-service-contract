@@ -28,19 +28,20 @@ class StakeholderEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		var id = 1L;
-		var type = StakeholderType.COMPANY;
-		var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
-		var organizationName = "Sundsvalls kommun";
-		var organizationNumber = "212000-2411";
-		var firstName = "Test";
-		var lastName = "Testorsson";
-		var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
-		var phoneNumber = "0701231212";
-		var emailAddress = "test.testorsson@test.se";
-		var address = AddressEntity.builder().build();
+		final var id = 1L;
+		final var type = StakeholderType.COMPANY;
+		final var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
+		final var organizationName = "Sundsvalls kommun";
+		final var organizationNumber = "212000-2411";
+		final var firstName = "Test";
+		final var lastName = "Testorsson";
+		final var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
+		final var phoneNumber = "0701231212";
+		final var emailAddress = "test.testorsson@test.se";
+		final var address = AddressEntity.builder().build();
+		final var parameters = List.of(StakeholderParameterEntity.builder().build());
 
-		var stakeholder = StakeholderEntity.builder()
+		final var stakeholder = StakeholderEntity.builder()
 			.withId(id)
 			.withType(type)
 			.withRoles(roles)
@@ -52,6 +53,7 @@ class StakeholderEntityTest {
 			.withPhoneNumber(phoneNumber)
 			.withEmailAddress(emailAddress)
 			.withAddress(address)
+			.withParameters(parameters)
 			.build();
 
 		assertThat(stakeholder).isNotNull().hasNoNullFieldsOrProperties();
@@ -66,6 +68,7 @@ class StakeholderEntityTest {
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(phoneNumber);
 		assertThat(stakeholder.getEmailAddress()).isEqualTo(emailAddress);
 		assertThat(stakeholder.getAddress()).isEqualTo(address);
+		assertThat(stakeholder.getParameters()).isEqualTo(parameters);
 	}
 
 	@Test
