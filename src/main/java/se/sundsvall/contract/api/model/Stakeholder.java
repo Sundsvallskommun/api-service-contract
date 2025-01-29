@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,4 +56,7 @@ public class Stakeholder {
 
 	@Schema(description = "Address for stakeholder")
 	private Address address;
+
+	@Schema(description = "Parameters for the stakeholder")
+	private List<@Valid Parameter> parameters;
 }
