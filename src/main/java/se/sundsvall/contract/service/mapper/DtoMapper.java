@@ -1,6 +1,7 @@
 package se.sundsvall.contract.service.mapper;
 
 import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -68,7 +69,7 @@ public class DtoMapper {
 			.build();
 	}
 
-	Fees toFeesDto(ContractEntity contractEntity) {
+	Fees toFeesDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getFees())
 			.map(feesEntity -> Fees.builder()
 				.withAdditionalInformation(feesEntity.getAdditionalInformation())
@@ -83,7 +84,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	Invoicing toInvoicingDto(ContractEntity contractEntity) {
+	Invoicing toInvoicingDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getInvoicing())
 			.map(invoicing -> Invoicing.builder()
 				.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::name).orElse(null))
@@ -92,7 +93,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	List<AttachmentMetaData> toAttachmentMetadataDtos(List<AttachmentEntity> attachmentEntities) {
+	List<AttachmentMetaData> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
 		return ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
 				.map(this::toAttachmentMetaDataDto)
@@ -145,6 +146,7 @@ public class DtoMapper {
 				.withPhoneNumber(stakeholder.getPhoneNumber())
 				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::name).toList())
 				.withType(ofNullable(stakeholder.getType()).map(StakeholderType::name).orElse(null))
+				.withParameters(toParameterList(stakeholderEntity.getParameters()))
 				.build())
 			.orElse(null);
 	}

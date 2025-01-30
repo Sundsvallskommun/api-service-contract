@@ -51,6 +51,7 @@
 						"SIGNATORY"
 					],
 					"type": "PERSON",
+					"parameters": [],
 					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
 				}
 			],
@@ -153,6 +154,7 @@
 						"SIGNATORY"
 					],
 					"type": "PERSON",
+					"parameters": [],
 					"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
 				}
 			],
