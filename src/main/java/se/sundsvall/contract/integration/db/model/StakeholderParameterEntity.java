@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -33,6 +34,7 @@ public class StakeholderParameterEntity {
 	@Column(name = "id")
 	private long id;
 
+	@With
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "stakeholder_id", nullable = false, foreignKey = @ForeignKey(name = "fk_stakeholder_parameter_stakeholder_id"))
 	private StakeholderEntity stakeholderEntity;

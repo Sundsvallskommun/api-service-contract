@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter;
 import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderTypeConverter;
 import se.sundsvall.contract.model.enums.StakeholderRole;
@@ -66,6 +67,7 @@ public class StakeholderEntity {
 	@Embedded
 	private AddressEntity address;
 
+	@With
 	@OneToMany(mappedBy = "stakeholderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderColumn(name = "parameter_order", nullable = false, columnDefinition = "integer default 0")
 	private List<StakeholderParameterEntity> parameters;

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Data
@@ -57,6 +58,7 @@ public class Stakeholder {
 	@Schema(description = "Address for stakeholder")
 	private Address address;
 
+	@With
 	@Schema(description = "Parameters for the stakeholder")
 	private List<@Valid Parameter> parameters;
 }

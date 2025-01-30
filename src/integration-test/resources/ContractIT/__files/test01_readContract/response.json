@@ -38,6 +38,7 @@
 				"attention": "someAttention",
 				"type": "POSTAL_ADDRESS"
 			},
+			"parameters": [],
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
 			"roles": [

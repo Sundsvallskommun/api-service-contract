@@ -1,8 +1,10 @@
 package se.sundsvall.contract.service.mapper;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -37,6 +39,12 @@ import se.sundsvall.contract.model.enums.UsufructType;
 @Component
 public class EntityMapper {
 
+	private static <T> void setPropertyUnlessNull(final T sourceValue, final Consumer<T> setter) {
+		if (nonNull(sourceValue)) {
+			setter.accept(sourceValue);
+		}
+	}
+
 	public ContractEntity toContractEntity(final String municipalityId, final Contract contract) {
 		return ContractEntity.builder()
 			.withAdditionalTerms(contract.getAdditionalTerms())
@@ -69,7 +77,7 @@ public class EntityMapper {
 			.build();
 	}
 
-	InvoicingEntity toInvoicingEntity(Invoicing contract) {
+	InvoicingEntity toInvoicingEntity(final Invoicing contract) {
 		return ofNullable(contract)
 			.map(invoicing -> InvoicingEntity.builder()
 				.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
@@ -78,12 +86,16 @@ public class EntityMapper {
 			.orElse(null);
 	}
 
-	List<StakeholderEntity> toStakeholderEntities(List<Stakeholder> stakeholderList) {
+	List<StakeholderEntity> toStakeholderEntities(final List<Stakeholder> stakeholderList) {
 		return ofNullable(stakeholderList)
 			.map(holders -> holders.stream()
-				.map(this::toStakeholderEntity)
+				.map(fromStakeholder -> {
+					final var stakeholderEntity = toStakeholderEntity(fromStakeholder);
+					return stakeholderEntity.withParameters(
+						toStakeholderParameterEntityList(fromStakeholder.getParameters(), stakeholderEntity));
+				})
 				.toList())
-			.orElse(null);
+			.orElse(emptyList());
 	}
 
 	StakeholderEntity toStakeholderEntity(final Stakeholder fromStakeholder) {
@@ -127,7 +139,7 @@ public class EntityMapper {
 			.orElse(null);
 	}
 
-	public AttachmentEntity toAttachmentEntity(String municipalityId, final String contractId, Attachment attachment) {
+	public AttachmentEntity toAttachmentEntity(final String municipalityId, final String contractId, final Attachment attachment) {
 		return AttachmentEntity.builder()
 			.withCategory(of(AttachmentCategory.valueOf(attachment.getMetaData().getCategory())).orElse(null))
 			.withContent(attachment.getAttachmentData().getContent().getBytes(StandardCharsets.UTF_8))
@@ -149,8 +161,8 @@ public class EntityMapper {
 		return entity;
 	}
 
-	public ContractEntity createNewContractEntity(String municipalityId, ContractEntity oldContract, Contract contract) {
-		var contractEntity = toContractEntity(municipalityId, contract);
+	public ContractEntity createNewContractEntity(final String municipalityId, final ContractEntity oldContract, final Contract contract) {
+		final var contractEntity = toContractEntity(municipalityId, contract);
 
 		// Set the version, the PrePersist / PreUpdate will take care of upping the version by one.
 		contractEntity.setVersion(oldContract.getVersion());
@@ -158,11 +170,5 @@ public class EntityMapper {
 		contractEntity.setContractId(oldContract.getContractId());
 
 		return contractEntity;
-	}
-
-	private static <T> void setPropertyUnlessNull(final T sourceValue, final Consumer<T> setter) {
-		if (nonNull(sourceValue)) {
-			setter.accept(sourceValue);
-		}
 	}
 }
