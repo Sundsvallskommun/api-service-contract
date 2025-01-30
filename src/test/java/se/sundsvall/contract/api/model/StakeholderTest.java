@@ -31,7 +31,7 @@ class StakeholderTest {
 
 	@Test
 	void testStakeholder_type_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = Stakeholder.class.getDeclaredField("type")
+		final var oneOf = Stakeholder.class.getDeclaredField("type")
 			.getAnnotation(OneOf.class);
 
 		Arrays.stream(oneOf.value())
@@ -40,7 +40,7 @@ class StakeholderTest {
 
 	@Test
 	void testStakeholder_roles_hasCorrectDescription() throws NoSuchFieldException {
-		var schema = Stakeholder.class.getDeclaredField("roles")
+		final var schema = Stakeholder.class.getDeclaredField("roles")
 			.getAnnotation(ArraySchema.class).schema();
 
 		Arrays.stream(StakeholderRole.values())
@@ -50,18 +50,19 @@ class StakeholderTest {
 	@Test
 	void testBuilderMethods() {
 
-		var type = StakeholderType.COMPANY;
-		var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
-		var organizationName = "Sundsvalls kommun";
-		var organizationNumber = "212000-2411";
-		var firstName = "Test";
-		var lastName = "Testorsson";
-		var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
-		var phoneNumber = "0701231212";
-		var emailAddress = "test.testorsson@test.se";
-		var address = Address.builder().build();
+		final var type = StakeholderType.COMPANY;
+		final var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
+		final var organizationName = "Sundsvalls kommun";
+		final var organizationNumber = "212000-2411";
+		final var firstName = "Test";
+		final var lastName = "Testorsson";
+		final var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
+		final var phoneNumber = "0701231212";
+		final var emailAddress = "test.testorsson@test.se";
+		final var address = Address.builder().build();
+		final var parameters = List.of(Parameter.builder().build());
 
-		var stakeholder = Stakeholder.builder()
+		final var stakeholder = Stakeholder.builder()
 			.withType(type.name())
 			.withRoles(roles.stream().map(StakeholderRole::name).toList())
 			.withOrganizationName(organizationName)
@@ -72,6 +73,7 @@ class StakeholderTest {
 			.withPhoneNumber(phoneNumber)
 			.withEmailAddress(emailAddress)
 			.withAddress(address)
+			.withParameters(parameters)
 			.build();
 
 		assertThat(stakeholder).isNotNull().hasNoNullFieldsOrProperties();
@@ -85,6 +87,7 @@ class StakeholderTest {
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(phoneNumber);
 		assertThat(stakeholder.getEmailAddress()).isEqualTo(emailAddress);
 		assertThat(stakeholder.getAddress()).isEqualTo(address);
+		assertThat(stakeholder.getParameters()).isEqualTo(parameters);
 
 	}
 

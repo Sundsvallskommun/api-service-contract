@@ -50,31 +50,25 @@ import se.sundsvall.contract.service.mapper.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
 
-	@Mock
-	private ContractRepository mockContractRepository;
-
-	@Mock
-	private AttachmentRepository mockAttachmentRepository;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private EntityMapper mockEntityMapper;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private DtoMapper mockDtoMapper;
-
-	@Mock
-	private Differ mockDiffer;
-
-	@InjectMocks
-	private ContractService contractService;
-
 	private static final String MUNICIPALITY_ID = "1984";
 	private static final String CONTRACT_ID = "2024-12345";
+	@Mock
+	private ContractRepository mockContractRepository;
+	@Mock
+	private AttachmentRepository mockAttachmentRepository;
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	private EntityMapper mockEntityMapper;
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	private DtoMapper mockDtoMapper;
+	@Mock
+	private Differ mockDiffer;
+	@InjectMocks
+	private ContractService contractService;
 
 	@Test
 	void createContract() {
 		// Arrange
-		var contract = Contract.builder()
+		final var contract = Contract.builder()
 			.withLandLeaseType(SITELEASEHOLD.name())
 			.withUsufructType(HUNTING.name())
 			.withInvoicing(Invoicing.builder()
@@ -89,7 +83,7 @@ class ContractServiceTest {
 			.thenReturn(ContractEntity.builder().withContractId(CONTRACT_ID).build());
 
 		// ACt
-		var result = contractService.createContract(MUNICIPALITY_ID, contract);
+		final var result = contractService.createContract(MUNICIPALITY_ID, contract);
 
 		// Assert
 		assertThat(result).isEqualTo(CONTRACT_ID);
@@ -100,19 +94,19 @@ class ContractServiceTest {
 	@Test
 	void getContract() {
 		// Arrange
-		var landLeaseContractEntity = createContractEntity();
+		final var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 
 		// Act
-		var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID, null);
+		final var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID, null);
 
 		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result)
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments", "attachmentMetaData")
+			.ignoringFields("type", "attachments", "attachmentMetaData", "stakeholders.parameters") // TODO compare parameters when Entity has been updated
 			.isEqualTo(landLeaseContractEntity);
 
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
@@ -121,19 +115,19 @@ class ContractServiceTest {
 
 	@Test
 	void getContract_withSpecificVersion() {
-		var landLeaseContractEntity = createContractEntity();
+		final var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 2))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 
 		// Act
-		var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2);
+		final var result = contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2);
 
 		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result)
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachments", "attachmentMetaData")
+			.ignoringFields("type", "attachments", "attachmentMetaData", "stakeholders.parameters") // TODO compare parameters when Entity has been updated
 			.isEqualTo(landLeaseContractEntity);
 
 		verify(mockContractRepository).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 2);
@@ -156,20 +150,20 @@ class ContractServiceTest {
 	@Test
 	void getPaginatedContracts() {
 		// Arrange
-		var landLeaseContractEntity = createContractEntity();
+		final var landLeaseContractEntity = createContractEntity();
 
-		Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity));
+		final Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity));
 
 		when(mockContractRepository.findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class))).thenReturn(page);
 		when(mockAttachmentRepository.findAllByMunicipalityIdAndContractId(eq(MUNICIPALITY_ID), any(String.class)))
 			.thenReturn(List.of(createAttachmentEntity()));
 
-		var request = ContractRequest.builder().build();
+		final var request = ContractRequest.builder().build();
 		request.setPage(1);
 		request.setLimit(5);
 
 		// Act
-		var result = contractService.getContracts(MUNICIPALITY_ID, request);
+		final var result = contractService.getContracts(MUNICIPALITY_ID, request);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -177,10 +171,10 @@ class ContractServiceTest {
 			.isNotNull()
 			.usingRecursiveComparison()
 			.withEnumStringComparison()
-			.ignoringFields("type", "attachmentMetaData")
+			.ignoringFields("type", "attachmentMetaData", "stakeholders.parameters") // TODO compare parameters when Entity has been updated
 			.isEqualTo(landLeaseContractEntity);
 
-		var metaData = result.getMetaData();
+		final var metaData = result.getMetaData();
 		assertThat(metaData).isNotNull();
 		assertThat(metaData.getPage()).isOne();
 		assertThat(metaData.getLimit()).isEqualTo(2);
@@ -197,9 +191,9 @@ class ContractServiceTest {
 	@Test
 	void updateContract() {
 		// Arrange
-		var landLeaseContractEntity = createContractEntity();
+		final var landLeaseContractEntity = createContractEntity();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(landLeaseContractEntity));
-		var landLeaseContract = TestFactory.createContract();
+		final var landLeaseContract = TestFactory.createContract();
 
 		// Act
 		contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
@@ -212,11 +206,12 @@ class ContractServiceTest {
 
 	@Test
 	void updateContract_shouldThrow404_whenNoMatch() {
+		final var contract = TestFactory.createContract();
 		when(mockContractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class)))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()))
+			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, contract))
 			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(Status.NOT_FOUND));
 
 		verify(mockContractRepository).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
@@ -225,10 +220,10 @@ class ContractServiceTest {
 
 	@Test
 	void diffContract() {
-		var availableVersions = List.of(1, 2, 3);
-		var oldVersion = 2;
-		var newVersion = 3;
-		var landLeaseContractEntity = createContractEntity();
+		final var availableVersions = List.of(1, 2, 3);
+		final var oldVersion = 2;
+		final var newVersion = 3;
+		final var landLeaseContractEntity = createContractEntity();
 
 		when(mockContractRepository.findAllContractVersionsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(availableVersions);
@@ -239,7 +234,7 @@ class ContractServiceTest {
 		when(mockDiffer.diff(any(Contract.class), any(Contract.class), anyList()))
 			.thenReturn(List.of(Change.modification(new Path(), new TextNode("oldValue"), new TextNode("newValue"))));
 
-		var diff = contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, oldVersion, newVersion);
+		final var diff = contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, oldVersion, newVersion);
 
 		assertThat(diff.oldVersion()).isEqualTo(oldVersion);
 		assertThat(diff.newVersion()).isEqualTo(newVersion);
