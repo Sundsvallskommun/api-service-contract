@@ -54,6 +54,29 @@
 				"SIGNATORY"
 			],
 			"type": "PERSON",
+			"parameters": [
+				{
+					"values": [
+						"value1",
+						"value2"
+					],
+					"key": "stakeholderparam-key-1"
+				},
+				{
+					"displayName": "The second stakeholderparam key",
+					"values": [
+						"the second value"
+					],
+					"key": "stakeholderparam-key-2"
+				},
+				{
+					"values": [
+						"value3",
+						"value4"
+					],
+					"key": "stakeholderparam-key-1"
+				}
+			],
 			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
 		},
 		{
