@@ -1,26 +1,34 @@
-INSERT INTO contract (id, contract_id, version, status, municipality_id, index_terms, description, additional_terms, signed_by_witness, area, auto_extend, end, land_lease_type, lease_duration,
-                      lease_extension, period_of_notice, start, external_reference_id, invoice_interval, invoiced_in, leasehold_description, leasehold_type, object_identity, usufruct_type, fees, extra_parameters, type)
-VALUES
-    (1, '2024-12345', 1, 'DRAFT', '1984', '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
-        'someOldDescription', '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
+INSERT INTO contract (id, contract_id, version, status, municipality_id, index_terms, description, additional_terms,
+                      signed_by_witness, area, auto_extend, end, land_lease_type, lease_duration,
+                      lease_extension, period_of_notice, start, external_reference_id, invoice_interval, invoiced_in,
+                      leasehold_description, leasehold_type, object_identity, usufruct_type, fees, extra_parameters,
+                      type)
+VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
+        '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
+        'someOldDescription',
+        '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, '2023-10-02', 'MK-TEST0001',
         'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 'HUNTING',
         '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexYear":2021,"additionalInformation":["someAdditionalInfo1","someAdditionalInfo2"]}',
         '[{"name":"someParameters","parameters":{"key1":"value1","key2":"value2"}}]', 'APARTMENT_LEASE'),
 
-    (2, '2024-23456', 1, 'DRAFT', '1984', '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
-        'someDescription', '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
+       (2, '2024-23456', 1, 'DRAFT', '1984',
+        '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
+        'someDescription',
+        '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, '2023-10-02', 'MK-TEST0002',
         'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 'HUNTING',
         '{"currency":"EUR","yearly":1000,"monthly":120,"total":5000,"totalAsText":"five thousand","indexNumber":3,"indexYear":2021,"additionalInformation":[]}',
         '[{"name":"someParameters2","parameters":{"key3":"value3","key4":"value5"}}]', 'LAND_LEASE'),
 
-    (3, '2024-12345', 2, 'ACTIVE', '1984', '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
-        'someDescription', '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
+       (3, '2024-12345', 2, 'ACTIVE', '1984',
+        '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
+        'someDescription',
+        '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
         true, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 2, '2023-10-02', 'MK-TEST0001',
         'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 'HUNTING',
         '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexYear":2021,"additionalInformation":["someAdditionalInfo3","someAdditionalInfo4"]}',
-        '[{"name":"someParameters3","parameters":{"key5":"value5","key6":"value6"}}]', 'PURCHASE_AGREEMENT' );
+        '[{"name":"someParameters3","parameters":{"key5":"value5","key6":"value6"}}]', 'PURCHASE_AGREEMENT');
 
 INSERT INTO property_designation (contract_id, property_designation)
 VALUES (1, 'SUNDSVALL NORRMALM 1:1'),
@@ -58,3 +66,13 @@ INSERT INTO contract_stakeholder (contract_id, stakeholder_id)
 VALUES (1, 1),
        (2, 2),
        (3, 3);
+
+-- -----------------------------------
+-- StakeholderParameter
+-- ----------------------------------
+INSERT INTO stakeholder_parameter(id, stakeholder_id, display_name, parameters_key)
+VALUES (201, 2, 'Parameter X', 'parameterX');
+INSERT INTO stakeholder_parameter_values(stakeholder_parameter_id, `value`)
+VALUES (201, 'value-x1');
+INSERT INTO stakeholder_parameter_values(stakeholder_parameter_id, `value`)
+VALUES (201, 'value-x2');

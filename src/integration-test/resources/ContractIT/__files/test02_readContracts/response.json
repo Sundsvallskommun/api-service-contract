@@ -51,7 +51,16 @@
 						"SIGNATORY"
 					],
 					"type": "PERSON",
-					"parameters": [],
+					"parameters": [
+						{
+							"displayName": "Parameter X",
+							"key": "parameterX",
+							"values": [
+								"value-x1",
+								"value-x2"
+							]
+						}
+					],
 					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
 				}
 			],
