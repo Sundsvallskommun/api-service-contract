@@ -19,7 +19,11 @@ public final class StakeholderParameterMapper {
 
 	public static List<StakeholderParameterEntity> toStakeholderParameterEntityList(final List<Parameter> parameters, final StakeholderEntity entity) {
 		return new ArrayList<>(toUniqueKeyList(parameters).stream()
-			.map(parameter -> toStakeholderParameterEntity(parameter).withStakeholderEntity(entity))
+			.map(parameter -> {
+				final var result = toStakeholderParameterEntity(parameter);
+				result.setStakeholderEntity(entity);
+				return result;
+			})
 			.toList());
 	}
 

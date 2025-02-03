@@ -26,48 +26,65 @@
 	],
 	"stakeholders": [
 		{
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"emailAddress": "someEmail",
-			"phoneNumber": "somePhoneNumber",
 			"address": {
-				"country": "SE",
-				"town": "someTown",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
 				"attention": "someAttention",
+				"country": "SE",
+				"postalCode": "12345",
+				"streetAddress": "someStreetAddress",
+				"town": "someTown",
 				"type": "POSTAL_ADDRESS"
 			},
+			"emailAddress": "someEmail",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
+			"parameters": [
+				{
+					"key": "stakeholderparam-key-1",
+					"values": [
+						"value1",
+						"value2",
+						"value3",
+						"value4"
+					]
+				},
+				{
+					"displayName": "The second stakeholderparam key",
+					"key": "stakeholderparam-key-2",
+					"values": [
+						"the second value"
+					]
+				}
+			],
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
 			"roles": [
 				"SIGNATORY"
 			],
-			"type": "PERSON",
-			"parameters": [],
-			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+			"type": "PERSON"
 		},
 		{
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"emailAddress": "someEmail",
-			"phoneNumber": "somePhoneNumber",
 			"address": {
-				"country": "SE",
-				"town": "someTown",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
 				"attention": "someAttention",
+				"country": "SE",
+				"postalCode": "12345",
+				"streetAddress": "someStreetAddress",
+				"town": "someTown",
 				"type": "VISITING_ADDRESS"
 			},
+			"emailAddress": "someEmail",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
+			"parameters": [],
+			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
 			"roles": [
 				"POWER_OF_ATTORNEY_ROLE"
 			],
-			"type": "PERSON",
-			"parameters": [],
-			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
+			"type": "PERSON"
 		}
 	],
 	"type": "LAND_LEASE",

@@ -91,8 +91,8 @@ public class EntityMapper {
 			.map(holders -> holders.stream()
 				.map(fromStakeholder -> {
 					final var stakeholderEntity = toStakeholderEntity(fromStakeholder);
-					return stakeholderEntity.withParameters(
-						toStakeholderParameterEntityList(fromStakeholder.getParameters(), stakeholderEntity));
+					stakeholderEntity.setParameters(toStakeholderParameterEntityList(fromStakeholder.getParameters(), stakeholderEntity));
+					return stakeholderEntity;
 				})
 				.toList())
 			.orElse(emptyList());
