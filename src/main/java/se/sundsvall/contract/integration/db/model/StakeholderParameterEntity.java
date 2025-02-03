@@ -2,7 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -20,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.With;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -35,8 +33,7 @@ public class StakeholderParameterEntity {
 	@Column(name = "id")
 	private long id;
 
-	@With
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "stakeholder_id", nullable = false, foreignKey = @ForeignKey(name = "fk_stakeholder_parameter_stakeholder_id"))
 	private StakeholderEntity stakeholderEntity;
 
