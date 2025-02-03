@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -41,17 +42,17 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @ApiResponse(
 	responseCode = "400",
 	description = "Bad Request",
-	content = @Content(schema = @Schema(oneOf = {
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 		Problem.class, ConstraintViolationProblem.class
 	})))
 @ApiResponse(
 	responseCode = "500",
 	description = "Internal Server Error",
-	content = @Content(schema = @Schema(implementation = Problem.class)))
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(
 	responseCode = "502",
 	description = "Bad Gateway",
-	content = @Content(schema = @Schema(implementation = Problem.class)))
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class ContractAttachmentResource {
 
 	private final AttachmentService attachmentService;
@@ -70,7 +71,7 @@ class ContractAttachmentResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@GetMapping(path = "/{attachmentId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Attachment> getAttachmentById(
@@ -94,14 +95,14 @@ class ContractAttachmentResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@PostMapping(consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> createAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
 		@RequestBody @Valid final Attachment attachment) {
-		var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
+		final var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
 
 		return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
@@ -118,7 +119,7 @@ class ContractAttachmentResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<AttachmentMetaData> updateAttachment(
@@ -126,7 +127,7 @@ class ContractAttachmentResource {
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
 		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
 		@Valid @RequestBody final Attachment attachment) {
-		var result = attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment);
+		final var result = attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment);
 
 		return ok(result);
 	}

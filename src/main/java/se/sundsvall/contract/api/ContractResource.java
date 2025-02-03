@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -47,17 +48,17 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @ApiResponse(
 	responseCode = "400",
 	description = "Bad Request",
-	content = @Content(schema = @Schema(oneOf = {
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 		Problem.class, ConstraintViolationProblem.class
 	})))
 @ApiResponse(
 	responseCode = "500",
 	description = "Internal Server Error",
-	content = @Content(schema = @Schema(implementation = Problem.class)))
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(
 	responseCode = "502",
 	description = "Bad Gateway",
-	content = @Content(schema = @Schema(implementation = Problem.class)))
+	content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class ContractResource {
 
 	private final ContractService service;
@@ -135,7 +136,7 @@ class ContractResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@PutMapping(path = "/{contractId}", consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> updateContract(
@@ -153,7 +154,7 @@ class ContractResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@PostMapping(path = "/{contractId}/diff", consumes = ALL_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Diff> diffContract(
@@ -180,7 +181,7 @@ class ContractResource {
 			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
-				content = @Content(schema = @Schema(implementation = Problem.class)))
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@DeleteMapping(path = "/{contractId}")
 	ResponseEntity<Void> deleteContract(
