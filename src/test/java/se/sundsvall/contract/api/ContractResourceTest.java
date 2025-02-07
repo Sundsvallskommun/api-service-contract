@@ -93,7 +93,7 @@ class ContractResourceTest {
 
 	@Test
 	void getAllContractsOnAMunicipalityId() {
-		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
@@ -108,6 +108,28 @@ class ContractResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class));
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void getAllContractsByMunicipalityAndTerm() {
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+
+		var responseBody = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
+				.queryParam("page", 1)
+				.queryParam("size", 10)
+				.queryParam("term", "a term")
+				.build(MUNICIPALITY_ID))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(ContractPaginatedResponse.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(responseBody).isNotNull();
 		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class));
 		verifyNoMoreInteractions(contractServiceMock);
 	}
