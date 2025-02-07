@@ -53,4 +53,7 @@ public class ContractRequest extends AbstractParameterPagingBase {
 		"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"
 	}, nullable = true)
 	private String landLeaseType;
+
+	@Schema(description = "Specific term to search for", example = "term")
+	private String term;
 }

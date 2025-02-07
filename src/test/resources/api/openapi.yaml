@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
   title: Contracts
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.2"
+  version: "2.3"
 servers:
-  - url: http://localhost:49908
+  - url: http://127.0.0.1:8080
     description: Generated server url
 tags:
   - name: Contract attachments
@@ -54,12 +54,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -70,6 +64,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -107,12 +107,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -123,6 +117,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -154,12 +154,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -170,6 +164,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -213,12 +213,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -229,6 +223,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -277,12 +277,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -293,6 +287,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -325,12 +325,6 @@ paths:
       responses:
         "204":
           description: No content
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -341,6 +335,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -421,6 +421,15 @@ paths:
             description: Lease type
             example: LEASEHOLD
           example: LEASEHOLD
+        - name: term
+          in: query
+          description: Specific term to search for
+          required: false
+          schema:
+            type: string
+            description: Specific term to search for
+            example: term
+          example: term
         - name: page
           in: query
           description: Page number
@@ -452,12 +461,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContractPaginatedResponse"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -468,6 +471,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -499,12 +508,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -515,6 +518,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -559,12 +568,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -575,6 +578,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -619,12 +628,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -635,6 +638,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -679,11 +688,11 @@ components:
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     Address:
       type: object
       properties:
@@ -951,7 +960,7 @@ components:
                   - - 1730072021484375
                     - 6238137830626575
               type: Polygon
-            properties: { }
+            properties: {}
             type: Feature
         type: FeatureCollection
     Fees:
@@ -1470,4 +1479,4 @@ components:
           example: 23
       description: PagingMetaData model
       readOnly: true
-  securitySchemes: { }
+  securitySchemes: {}
