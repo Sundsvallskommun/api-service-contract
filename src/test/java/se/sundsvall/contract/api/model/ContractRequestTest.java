@@ -45,6 +45,7 @@ class ContractRequestTest {
 		var externalReferenceId = "externalReferenceId";
 		var endDate = LocalDate.of(2023, 10, 10);
 		var landLeaseType = LandLeaseType.SITELEASEHOLD;
+		var term = "term";
 
 		var request = ContractRequest.builder()
 			.withContractId(contractId)
@@ -54,6 +55,7 @@ class ContractRequestTest {
 			.withExternalReferenceId(externalReferenceId)
 			.withEnd(endDate)
 			.withLandLeaseType(landLeaseType.name())
+			.withTerm(term)
 			.build();
 
 		assertThat(request).isNotNull().hasNoNullFieldsOrProperties();
@@ -64,6 +66,7 @@ class ContractRequestTest {
 		assertThat(request.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(request.getEnd()).isEqualTo(endDate);
 		assertThat(request.getLandLeaseType()).isEqualTo(landLeaseType.name());
+		assertThat(request.getTerm()).isEqualTo(term);
 	}
 
 	@Test
