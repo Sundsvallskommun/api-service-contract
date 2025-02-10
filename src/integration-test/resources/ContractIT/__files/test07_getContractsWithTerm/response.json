@@ -1,116 +1,6 @@
 {
 	"contracts": [
 		{
-			"version": 1,
-			"contractId": "2024-23456",
-			"description": "someDescription",
-			"externalReferenceId": "MK-TEST0002",
-			"landLeaseType": "LEASEHOLD",
-			"municipalityId": "1984",
-			"objectIdentity": "someObjectIdentity",
-			"status": "DRAFT",
-			"type": "LAND_LEASE",
-			"usufructType": "HUNTING",
-			"leasehold": {
-				"purpose": "AGRICULTURE",
-				"description": "SomeLeaseholdDescription",
-				"additionalInformation": [
-					"More additional information"
-				]
-			},
-			"attachmentMetaData": [],
-			"additionalTerms": [
-				{
-					"header": "Additional Basic Terms",
-					"terms": [
-						{
-							"description": "Additional terms",
-							"term": "Party"
-						}
-					]
-				}
-			],
-			"extraParameters": [
-				{
-					"name": "someParameters2",
-					"parameters": {
-						"key3": "value3",
-						"key4": "value5"
-					}
-				}
-			],
-			"indexTerms": [
-				{
-					"header": "Basic Terms",
-					"terms": [
-						{
-							"description": "Description for basic terms",
-							"term": "Some Parties"
-						}
-					]
-				}
-			],
-			"propertyDesignations": [
-				"SUNDSVALL NORRMALM 2:1"
-			],
-			"stakeholders": [
-				{
-					"type": "PERSON",
-					"roles": [
-						"POWER_OF_ATTORNEY_ROLE",
-						"SIGNATORY"
-					],
-					"organizationName": "someOrganizationName",
-					"organizationNumber": "771122-1234",
-					"firstName": "someFirstName",
-					"lastName": "someLastName",
-					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-					"phoneNumber": "somePhoneNumber",
-					"emailAddress": "someEmail",
-					"address": {
-						"type": "VISITING_ADDRESS",
-						"streetAddress": "someStreetAddress",
-						"postalCode": "12345",
-						"town": "someTown",
-						"country": "SE",
-						"attention": "someAttention"
-					},
-					"parameters": [
-						{
-							"key": "parameterX",
-							"displayName": "Parameter X",
-							"values": [
-								"value-x1",
-								"value-x2"
-							]
-						}
-					]
-				}
-			],
-			"leaseDuration": 2,
-			"fees": {
-				"currency": "EUR",
-				"yearly": 1000,
-				"monthly": 120,
-				"total": 5000,
-				"totalAsText": "five thousand",
-				"indexYear": 2021,
-				"indexNumber": 3,
-				"additionalInformation": []
-			},
-			"invoicing": {
-				"invoiceInterval": "QUARTERLY",
-				"invoicedIn": "ARREARS"
-			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
-			"area": 12,
-			"signedByWitness": false
-		},
-		{
 			"version": 2,
 			"contractId": "2024-12345",
 			"description": "someDescription",
@@ -224,9 +114,9 @@
 	],
 	"_meta": {
 		"page": 1,
-		"limit": 9,
-		"count": 2,
-		"totalRecords": 2,
+		"limit": 15,
+		"count": 1,
+		"totalRecords": 1,
 		"totalPages": 1
 	}
 }
