@@ -1,20 +1,41 @@
 {
-	"municipalityId": "1984",
-	"fees": {
-		"additionalInformation": [
-			"someAdditionalInfo3",
-			"someAdditionalInfo4"
-		],
-		"total": 500,
-		"totalAsText": "five hundred",
-		"monthly": 123.45,
-		"currency": "SEK",
-		"indexNumber": 2,
-		"yearly": 234.56,
-		"indexYear": 2021
-	},
-	"usufructType": "HUNTING",
+	"version": 2,
+	"contractId": "2024-12345",
 	"description": "someDescription",
+	"externalReferenceId": "MK-TEST0001",
+	"landLeaseType": "LEASEHOLD",
+	"municipalityId": "1984",
+	"objectIdentity": "someObjectIdentity",
+	"status": "ACTIVE",
+	"type": "PURCHASE_AGREEMENT",
+	"usufructType": "HUNTING",
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Even more additional information"
+		]
+	},
+	"attachmentMetaData": [
+		{
+			"id": 1,
+			"category": "CONTRACT",
+			"filename": "someFile.pdf",
+			"mimeType": "application/pdf",
+			"note": "someNote"
+		}
+	],
+	"additionalTerms": [
+		{
+			"header": "More information",
+			"terms": [
+				{
+					"description": "No pöle vaulting indoors",
+					"term": "Respected by all parties"
+				}
+			]
+		}
+	],
 	"extraParameters": [
 		{
 			"name": "someParameters3",
@@ -24,88 +45,67 @@
 			}
 		}
 	],
-	"stakeholders": [
+	"indexTerms": [
 		{
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"emailAddress": "someEmail",
-			"phoneNumber": "somePhoneNumber",
-			"address": {
-				"country": "SE",
-				"town": "someTown",
-				"streetAddress": "someStreetAddress",
-				"postalCode": "12345",
-				"attention": "someAttention",
-				"type": "POSTAL_ADDRESS"
-			},
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"roles": [
-				"SIGNATORY"
-			],
-			"type": "PERSON",
-			"parameters": [],
-			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+			"header": "Basic Terms Here",
+			"terms": [
+				{
+					"description": "Something something",
+					"term": "Donald must be happy"
+				}
+			]
 		}
 	],
-	"type": "PURCHASE_AGREEMENT",
-	"externalReferenceId": "MK-TEST0001",
 	"propertyDesignations": [
 		"SUNDSVALL NORRMALM 1:1"
 	],
-	"objectIdentity": "someObjectIdentity",
-	"end": "2023-10-10",
-	"area": 12,
-	"start": "2023-10-02",
-	"periodOfNotice": 2,
-	"version": 2,
-	"landLeaseType": "LEASEHOLD",
+	"stakeholders": [
+		{
+			"type": "PERSON",
+			"roles": [
+				"SIGNATORY"
+			],
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
+			"emailAddress": "someEmail",
+			"address": {
+				"type": "POSTAL_ADDRESS",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"town": "someTown",
+				"country": "SE",
+				"attention": "someAttention"
+			},
+			"parameters": []
+		}
+	],
 	"leaseDuration": 2,
-	"autoExtend": true,
-	"attachmentMetaData": [
-		{
-			"note": "someNote",
-			"filename": "someFile.pdf",
-			"id": 1,
-			"mimeType": "application/pdf",
-			"category": "CONTRACT"
-		}
-	],
-	"leaseExtension": 1,
-	"indexTerms": [
-		{
-			"terms": [
-				{
-					"description": "The parties involved in the lease agreement",
-					"term": "Parties"
-				}
-			],
-			"header": "Basic Terms"
-		}
-	],
-	"signedByWitness": true,
-	"leasehold": {
+	"fees": {
+		"currency": "SEK",
+		"yearly": 234.56,
+		"monthly": 123.45,
+		"total": 500,
+		"totalAsText": "five hundred",
+		"indexYear": 2021,
+		"indexNumber": 2,
 		"additionalInformation": [
-			"Even more additional information"
-		],
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription"
+			"someAdditionalInfo3",
+			"someAdditionalInfo4"
+		]
 	},
-	"additionalTerms": [
-		{
-			"terms": [
-				{
-					"description": "The parties involved in the additional lease agreement",
-					"term": "Parties"
-				}
-			],
-			"header": "Additional Basic Terms"
-		}
-	],
-	"contractId": "2024-12345",
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"status": "ACTIVE"
+	"start": "2023-10-02",
+	"end": "2023-10-10",
+	"autoExtend": true,
+	"leaseExtension": 1,
+	"periodOfNotice": 2,
+	"area": 12,
+	"signedByWitness": true
 }

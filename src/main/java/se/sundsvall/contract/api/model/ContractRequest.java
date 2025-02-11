@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -54,6 +55,7 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	}, nullable = true)
 	private String landLeaseType;
 
-	@Schema(description = "Specific term to search for", example = "term")
+	@Schema(description = "Specific term to search for", example = "term", nullable = true)
+	@Size(min = 2, message = "Term must be at least 2 characters long if provided")
 	private String term;
 }

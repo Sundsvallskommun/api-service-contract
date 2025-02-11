@@ -1,76 +1,112 @@
 {
-	"changes": [
-		{
-			"path": "$.fees.additionalInformation.0",
-			"newValue": "someAdditionalInfo3",
-			"oldValue": "someAdditionalInfo1",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.fees.additionalInformation.1",
-			"newValue": "someAdditionalInfo4",
-			"oldValue": "someAdditionalInfo2",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.description",
-			"newValue": "someDescription",
-			"oldValue": "someOldDescription",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.extraParameters.0.name",
-			"newValue": "someParameters3",
-			"oldValue": "someParameters",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.extraParameters.0.parameters.key1",
-			"oldValue": "value1",
-			"type": "REMOVAL"
-		},
-		{
-			"path": "$.extraParameters.0.parameters.key2",
-			"oldValue": "value2",
-			"type": "REMOVAL"
-		},
-		{
-			"path": "$.extraParameters.0.parameters.key5",
-			"newValue": "value5",
-			"type": "ADDITION"
-		},
-		{
-			"path": "$.extraParameters.0.parameters.key6",
-			"newValue": "value6",
-			"type": "ADDITION"
-		},
-		{
-			"path": "$.type",
-			"newValue": "PURCHASE_AGREEMENT",
-			"oldValue": "APARTMENT_LEASE",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.signedByWitness",
-			"newValue": true,
-			"oldValue": false,
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.leasehold.additionalInformation.0",
-			"newValue": "Even more additional information",
-			"oldValue": "Some additional information",
-			"type": "MODIFICATION"
-		},
-		{
-			"path": "$.status",
-			"newValue": "ACTIVE",
-			"oldValue": "DRAFT",
-			"type": "MODIFICATION"
-		}
-	],
 	"oldVersion": 1,
 	"newVersion": 2,
+	"changes": [
+		{
+			"type": "MODIFICATION",
+			"path": "$.fees.additionalInformation.0",
+			"oldValue": "someAdditionalInfo1",
+			"newValue": "someAdditionalInfo3"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.fees.additionalInformation.1",
+			"oldValue": "someAdditionalInfo2",
+			"newValue": "someAdditionalInfo4"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.description",
+			"oldValue": "someOldDescription",
+			"newValue": "someDescription"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.extraParameters.0.name",
+			"oldValue": "someParameters",
+			"newValue": "someParameters3"
+		},
+		{
+			"type": "REMOVAL",
+			"path": "$.extraParameters.0.parameters.key1",
+			"oldValue": "value1"
+		},
+		{
+			"type": "REMOVAL",
+			"path": "$.extraParameters.0.parameters.key2",
+			"oldValue": "value2"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.extraParameters.0.parameters.key5",
+			"newValue": "value5"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.extraParameters.0.parameters.key6",
+			"newValue": "value6"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.type",
+			"oldValue": "APARTMENT_LEASE",
+			"newValue": "PURCHASE_AGREEMENT"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.indexTerms.0.terms.0.description",
+			"oldValue": "The parties involved in the lease agreement",
+			"newValue": "Something something"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.indexTerms.0.terms.0.term",
+			"oldValue": "Parties",
+			"newValue": "Donald must be happy"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.indexTerms.0.header",
+			"oldValue": "Basic Terms",
+			"newValue": "Basic Terms Here"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.signedByWitness",
+			"oldValue": false,
+			"newValue": true
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.leasehold.additionalInformation.0",
+			"oldValue": "Some additional information",
+			"newValue": "Even more additional information"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.additionalTerms.0.terms.0.description",
+			"oldValue": "The parties involved in the additional lease agreement",
+			"newValue": "No pöle vaulting indoors"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.additionalTerms.0.terms.0.term",
+			"oldValue": "Parties",
+			"newValue": "Respected by all parties"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.additionalTerms.0.header",
+			"oldValue": "Additional Basic Terms",
+			"newValue": "More information"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.status",
+			"oldValue": "DRAFT",
+			"newValue": "ACTIVE"
+		}
+	],
 	"availableVersions": [
 		1,
 		2

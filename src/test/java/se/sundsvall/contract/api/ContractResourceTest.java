@@ -1,6 +1,7 @@
 package se.sundsvall.contract.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -21,7 +22,10 @@ import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,6 +33,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
+import org.zalando.problem.violations.ConstraintViolationProblem;
+import org.zalando.problem.violations.Violation;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.ContractPaginatedResponse;
@@ -120,7 +126,7 @@ class ContractResourceTest {
 			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
 				.queryParam("page", 1)
 				.queryParam("size", 10)
-				.queryParam("term", "a term")
+				.queryParam("term", "ey")
 				.build(MUNICIPALITY_ID))
 			.exchange()
 			.expectStatus().isOk()
@@ -244,5 +250,36 @@ class ContractResourceTest {
 
 		verify(contractServiceMock).deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@ParameterizedTest
+	@MethodSource("invalidTermProvider")
+	void testGetAllContractsByMunicipalityAndTooShortTerm_shouldGenerateBadRequest(String term) {
+		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
+				.queryParam("page", 1)
+				.queryParam("term", term)
+				.build())
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactlyInAnyOrder(tuple("term", "Term must be at least 2 characters long if provided"));
+
+		verifyNoInteractions(contractServiceMock);
+	}
+
+	private static Stream<String> invalidTermProvider() {
+		return Stream.of("a", "", " ", null);
 	}
 }

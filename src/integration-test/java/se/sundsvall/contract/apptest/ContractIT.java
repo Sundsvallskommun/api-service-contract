@@ -16,11 +16,9 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
@@ -181,6 +179,17 @@ class ContractIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(POST)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test07_getContractsWithTerm() {
+		setupCall()
+			.withServicePath("/contracts/" + MUNICIPALITY_ID + "?term=pöle vault&page=1&limit=15")  // To prevent double encoding
+			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)

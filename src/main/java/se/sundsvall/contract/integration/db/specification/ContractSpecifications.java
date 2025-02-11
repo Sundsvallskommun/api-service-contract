@@ -3,9 +3,11 @@ package se.sundsvall.contract.integration.db.specification;
 import static java.util.function.Predicate.not;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.ADDITIONAL_TERMS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRACT_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.END;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.EXTERNAL_REFERENCE_ID;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.INDEX_TERMS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.LAND_LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.PROPERTY_DESIGNATIONS;
@@ -14,7 +16,9 @@ import static se.sundsvall.contract.integration.db.model.ContractEntity_.VERSION
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.ORGANIZATION_NUMBER;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PARTY_ID;
 
+import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.contract.api.model.ContractRequest;
@@ -23,6 +27,12 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 public final class ContractSpecifications {
 
 	private static final Specification<ContractEntity> EMPTY = Specification.where(null);
+	private static final String JSON_SEARCH = "JSON_SEARCH";
+	private static final String LOWER = "LOWER";
+	private static final String HEADER_JSON_PATH = "$[*].header";
+	private static final String DESCRIPTION_JSON_PATH = "$[*].terms[*].description";
+	private static final String TERM_JSON_PATH = "$[*].terms[*].term";
+	private static final String LITERAL_ALL = "all";
 
 	private ContractSpecifications() {}
 
@@ -35,7 +45,8 @@ public final class ContractSpecifications {
 			.and(withEndDate(request.getEnd()))
 			.and(withLandLeaseType(request.getLandLeaseType()))
 			.and(withExternalReferenceId(request.getExternalReferenceId()))
-			.and(withPropertyDesignations(request.getPropertyDesignations()));
+			.and(withPropertyDesignations(request.getPropertyDesignations()))
+			.and(withTerm(request.getTerm()));
 	}
 
 	public static Specification<ContractEntity> withOnlyLatestVersion() {
@@ -111,5 +122,30 @@ public final class ContractSpecifications {
 			.map(propertyDesignation -> cb.isMember(propertyDesignation, root.get(PROPERTY_DESIGNATIONS)))
 			.reduce(cb::or)
 			.orElse(null);
+	}
+
+	private static Specification<ContractEntity> withTerm(final String term) {
+		if (isBlank(term)) {
+			return EMPTY;
+		}
+
+		return (root, query, cb) -> {
+			String wildcardSearchTerm = "%" + term.toLowerCase() + "%";
+
+			var searchPaths = List.of(HEADER_JSON_PATH, DESCRIPTION_JSON_PATH, TERM_JSON_PATH);
+			var jsonColumns = List.of(INDEX_TERMS, ADDITIONAL_TERMS);
+			List<Predicate> predicates = new ArrayList<>();
+
+			// Create a predicate for each search path and json column
+			for (String jsonColumn : jsonColumns) {
+				for (String searchPath : searchPaths) {
+					Predicate predicate = cb.isNotNull(
+						cb.function(JSON_SEARCH, String.class, cb.function(LOWER, String.class, root.get(jsonColumn)), cb.literal(LITERAL_ALL), cb.literal(wildcardSearchTerm), cb.literal(null), cb.literal(searchPath)));
+					predicates.add(predicate);
+				}
+			}
+
+			return cb.or(predicates.toArray(new Predicate[0]));
+		};
 	}
 }
