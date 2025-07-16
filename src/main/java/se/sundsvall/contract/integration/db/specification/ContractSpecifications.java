@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.db.specification;
 
+import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -26,7 +27,7 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 
 public final class ContractSpecifications {
 
-	private static final Specification<ContractEntity> EMPTY = Specification.where(null);
+	private static final Specification<ContractEntity> EMPTY = Specification.allOf(emptyList());
 	private static final String JSON_SEARCH = "JSON_SEARCH";
 	private static final String LOWER = "LOWER";
 	private static final String HEADER_JSON_PATH = "$[*].header";
@@ -51,8 +52,8 @@ public final class ContractSpecifications {
 
 	public static Specification<ContractEntity> withOnlyLatestVersion() {
 		return (root, query, cb) -> {
-			var subQuery = query.subquery(Integer.class);
-			var subRoot = subQuery.from(ContractEntity.class);
+			final var subQuery = query.subquery(Integer.class);
+			final var subRoot = subQuery.from(ContractEntity.class);
 			subQuery.select(cb.max(subRoot.get(VERSION)))
 				.where(cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)));
 			return cb.equal(root.get(VERSION), subQuery);
@@ -130,16 +131,16 @@ public final class ContractSpecifications {
 		}
 
 		return (root, query, cb) -> {
-			String wildcardSearchTerm = "%" + term.toLowerCase() + "%";
+			final var wildcardSearchTerm = "%" + term.toLowerCase() + "%";
 
-			var searchPaths = List.of(HEADER_JSON_PATH, DESCRIPTION_JSON_PATH, TERM_JSON_PATH);
-			var jsonColumns = List.of(INDEX_TERMS, ADDITIONAL_TERMS);
-			List<Predicate> predicates = new ArrayList<>();
+			final var searchPaths = List.of(HEADER_JSON_PATH, DESCRIPTION_JSON_PATH, TERM_JSON_PATH);
+			final var jsonColumns = List.of(INDEX_TERMS, ADDITIONAL_TERMS);
+			final List<Predicate> predicates = new ArrayList<>();
 
 			// Create a predicate for each search path and json column
-			for (String jsonColumn : jsonColumns) {
-				for (String searchPath : searchPaths) {
-					Predicate predicate = cb.isNotNull(
+			for (final String jsonColumn : jsonColumns) {
+				for (final String searchPath : searchPaths) {
+					final var predicate = cb.isNotNull(
 						cb.function(JSON_SEARCH, String.class, cb.function(LOWER, String.class, root.get(jsonColumn)), cb.literal(LITERAL_ALL), cb.literal(wildcardSearchTerm), cb.literal(null), cb.literal(searchPath)));
 					predicates.add(predicate);
 				}

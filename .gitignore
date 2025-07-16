@@ -51,7 +51,7 @@ target/
 .env
 
 # Spring
-application-default.properties
+application-default.*
 
 # OSX
 .DS_Store

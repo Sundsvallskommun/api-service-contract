@@ -2,7 +2,7 @@ spring:
   application:
     name: api-contract
   flyway:
-    enabled: true
+    enabled: false
   jpa:
     hibernate:
       ddl-auto: validate
