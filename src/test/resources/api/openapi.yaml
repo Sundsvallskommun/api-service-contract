@@ -39,6 +39,8 @@ paths:
         description: Contract version
         required: false
         schema:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           format: int32
       responses:
@@ -555,6 +557,8 @@ paths:
         description: Old version
         required: false
         schema:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           format: int32
       - name: newVersion
@@ -562,6 +566,8 @@ paths:
         description: New version
         required: false
         schema:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           format: int32
       responses:
@@ -672,8 +678,6 @@ components:
     Problem:
       type: object
       properties:
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -684,6 +688,8 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
@@ -1362,8 +1368,6 @@ components:
                 type: boolean
         message:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -1374,6 +1378,8 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
