@@ -75,9 +75,9 @@ class ContractAttachmentResource {
 		})
 	@GetMapping(path = "/{attachmentId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Attachment> getAttachmentById(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
+		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable final Long attachmentId) {
 		return ok(attachmentService.getAttachment(municipalityId, contractId, attachmentId));
 	}
 
@@ -99,11 +99,11 @@ class ContractAttachmentResource {
 		})
 	@PostMapping(consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> createAttachment(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
 		@RequestBody @Valid final Attachment attachment) {
-		final var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
 
+		final var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
 		return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -123,13 +123,12 @@ class ContractAttachmentResource {
 		})
 	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<AttachmentMetaData> updateAttachment(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId,
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
+		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable final Long attachmentId,
 		@Valid @RequestBody final Attachment attachment) {
-		final var result = attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment);
 
-		return ok(result);
+		return ok(attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment));
 	}
 
 	@Operation(
@@ -141,12 +140,11 @@ class ContractAttachmentResource {
 		})
 	@DeleteMapping(path = "/{attachmentId}")
 	ResponseEntity<Void> deleteAttachment(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable("municipalityId") final String municipalityId,
-		@Parameter(name = "contractId", description = "Contract id") @PathVariable("contractId") final String contractId,
-		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable("attachmentId") final Long attachmentId) {
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
+		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable final Long attachmentId) {
 
 		attachmentService.deleteAttachment(municipalityId, contractId, attachmentId);
-
 		return noContent().build();
 	}
 }

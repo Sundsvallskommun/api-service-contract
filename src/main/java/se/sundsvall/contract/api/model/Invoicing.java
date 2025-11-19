@@ -20,7 +20,7 @@ public class Invoicing {
 	 */
 	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
 	@OneOf(value = {
-		"YEARLY", "QUARTERLY", "MONTHLY"
+		"YEARLY", "HALF_YEARLY", "QUARTERLY", "MONTHLY"
 	}, nullable = true)
 	private String invoiceInterval;
 

@@ -1,6 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -23,37 +22,34 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
 import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
 import se.sundsvall.contract.integration.db.model.converter.FeesConverter;
 import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
 import se.sundsvall.contract.integration.db.model.converter.enums.ContractTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.LandLeaseTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.LeaseTypeConverter;
 import se.sundsvall.contract.integration.db.model.converter.enums.StatusConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.UsufructTypeConverter;
+import se.sundsvall.contract.integration.db.model.converter.enums.TimeUnitConverter;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
-@Getter
-@Setter
+@Entity
+@Data
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@Entity
 @Table(name = "contract",
 	uniqueConstraints = @UniqueConstraint(columnNames = {
 		"contract_id", "version"
@@ -108,16 +104,12 @@ public class ContractEntity {
 	@Convert(converter = ExtraParameterGroupConverter.class)
 	private List<ExtraParameterGroup> extraParameters;
 
-	@Column(name = "land_lease_type")
-	@Convert(converter = LandLeaseTypeConverter.class)
-	private LandLeaseType landLeaseType;
+	@Column(name = "lease_type")
+	@Convert(converter = LeaseTypeConverter.class)
+	private LeaseType leaseType;
 
 	@Embedded
-	private LeaseholdEntity leasehold;
-
-	@Column(name = "usufruct_type")
-	@Convert(converter = UsufructTypeConverter.class)
-	private UsufructType usufructType;
+	private LeaseholdEmbeddable leasehold;
 
 	@Column(name = "external_reference_id")
 	private String externalReferenceId;
@@ -133,23 +125,33 @@ public class ContractEntity {
 	@Column(name = "property_designation")
 	private List<String> propertyDesignations;
 
-	@Schema(name = "object_identity")
+	@ElementCollection
+	@CollectionTable(
+		name = "contract_notice",
+		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_contract_notice_contract_id")))
+	private List<NoticeEmbeddable> notices;
+
+	@Column(name = "object_identity")
 	private String objectIdentity;
 
-	@Schema(name = "lease_duration")
+	@Column(name = "lease_duration")
 	private Integer leaseDuration;
+
+	@Column(name = "lease_duration_unit", length = 32)
+	@Convert(converter = TimeUnitConverter.class)
+	private TimeUnit leaseDurationUnit;
 
 	@Column(name = "fees", length = 2048)
 	@Convert(converter = FeesConverter.class)
 	private Fees fees;
 
 	@Embedded
-	private InvoicingEntity invoicing;
+	private InvoicingEmbeddable invoicing;
 
-	@Schema(name = "start")
+	@Column(name = "start")
 	private LocalDate start;
 
-	@Schema(name = "end")
+	@Column(name = "end")
 	private LocalDate end;
 
 	@Column(name = "auto_extend")
@@ -158,8 +160,9 @@ public class ContractEntity {
 	@Column(name = "lease_extension")
 	private Integer leaseExtension;
 
-	@Column(name = "period_of_notice")
-	private Integer periodOfNotice;
+	@Column(name = "lease_extension_unit", length = 32)
+	@Convert(converter = TimeUnitConverter.class)
+	private TimeUnit leaseExtensionUnit;
 
 	@Column(name = "area")
 	private Integer area;
@@ -171,59 +174,5 @@ public class ContractEntity {
 	@PreUpdate
 	public void prePersist() {
 		this.version++;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof ContractEntity that))
-			return false;
-		return version == that.version && signedByWitness == that.signedByWitness && Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && type == that.type && status == that.status && Objects.equals(municipalityId,
-			that.municipalityId) && Objects.equals(indexTerms, that.indexTerms) && Objects.equals(description, that.description) && Objects.equals(additionalTerms, that.additionalTerms) && Objects.equals(stakeholders, that.stakeholders) && Objects.equals(
-				extraParameters, that.extraParameters) && landLeaseType == that.landLeaseType && Objects.equals(leasehold, that.leasehold) && usufructType == that.usufructType && Objects.equals(externalReferenceId, that.externalReferenceId) && Objects
-					.equals(propertyDesignations, that.propertyDesignations) && Objects.equals(objectIdentity, that.objectIdentity) && Objects.equals(leaseDuration, that.leaseDuration) && Objects.equals(fees, that.fees) && Objects.equals(invoicing,
-						that.invoicing) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(autoExtend, that.autoExtend) && Objects.equals(leaseExtension, that.leaseExtension) && Objects.equals(periodOfNotice,
-							that.periodOfNotice) && Objects.equals(area, that.area) && Objects.equals(areaData, that.areaData);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, contractId, version, type, status, municipalityId, indexTerms, description, additionalTerms, stakeholders, signedByWitness, extraParameters, landLeaseType, leasehold, usufructType, externalReferenceId, propertyDesignations,
-			objectIdentity, leaseDuration, fees, invoicing, start, end, autoExtend, leaseExtension, periodOfNotice, area, areaData);
-	}
-
-	@Override
-	public String toString() {
-		return "ContractEntity{" +
-			"id=" + id +
-			", contractId='" + contractId + '\'' +
-			", version=" + version +
-			", type=" + type +
-			", status=" + status +
-			", municipalityId='" + municipalityId + '\'' +
-			", indexTerms=" + indexTerms +
-			", description='" + description + '\'' +
-			", additionalTerms=" + additionalTerms +
-			", stakeholders=" + stakeholders +
-			", signedByWitness=" + signedByWitness +
-			", extraParameters=" + extraParameters +
-			", landLeaseType=" + landLeaseType +
-			", leasehold=" + leasehold +
-			", usufructType=" + usufructType +
-			", externalReferenceId='" + externalReferenceId + '\'' +
-			", propertyDesignations=" + propertyDesignations +
-			", objectIdentity='" + objectIdentity + '\'' +
-			", leaseDuration=" + leaseDuration +
-			", fees=" + fees +
-			", invoicing=" + invoicing +
-			", start=" + start +
-			", end=" + end +
-			", autoExtend=" + autoExtend +
-			", leaseExtension=" + leaseExtension +
-			", periodOfNotice=" + periodOfNotice +
-			", area=" + area +
-			", areaData=" + areaData +
-			'}';
 	}
 }

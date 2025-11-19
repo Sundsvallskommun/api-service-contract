@@ -1,20 +1,33 @@
 {
-	"municipalityId": "1984",
-	"fees": {
-		"additionalInformation": [
-			"someAdditionalInfo1",
-			"someAdditionalInfo2"
-		],
-		"total": 500,
-		"totalAsText": "five hundred",
-		"monthly": 123.45,
-		"currency": "SEK",
-		"indexNumber": 2,
-		"yearly": 234.56,
-		"indexYear": 2021
-	},
-	"usufructType": "HUNTING",
+	"version": 1,
+	"contractId": "${json-unit.regex}^\\d{4}-00001$",
 	"description": "someDescription",
+	"externalReferenceId": "MK-TEST0003",
+	"leaseType": "LEASEHOLD",
+	"municipalityId": "1984",
+	"objectIdentity": "someObjectIdentity",
+	"status": "DRAFT",
+	"type": "LEASE_AGREEMENT",
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Some additional information when posting",
+			"More additional information when posting"
+		]
+	},
+	"attachmentMetaData": [],
+	"additionalTerms": [
+		{
+			"header": "Extraordinary Terms",
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			]
+		}
+	],
 	"extraParameters": [
 		{
 			"name": "Fees",
@@ -24,21 +37,42 @@
 			}
 		}
 	],
+	"indexTerms": [
+		{
+			"header": "General Terms",
+			"terms": [
+				{
+					"description": "In general the conditions are...",
+					"term": "General Conditions"
+				}
+			]
+		}
+	],
+	"propertyDesignations": [
+		"SUNDSVALL NORRMALM 123:1",
+		"SUNDSVALL NORRMALM 234:1"
+	],
 	"stakeholders": [
 		{
-			"address": {
-				"attention": "someAttention",
-				"country": "SE",
-				"postalCode": "12345",
-				"streetAddress": "someStreetAddress",
-				"town": "someTown",
-				"type": "POSTAL_ADDRESS"
-			},
-			"emailAddress": "someEmail",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
+			"type": "PERSON",
+			"roles": [
+				"SIGNATORY"
+			],
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
+			"emailAddress": "someEmail",
+			"address": {
+				"type": "POSTAL_ADDRESS",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"town": "someTown",
+				"country": "SE",
+				"attention": "someAttention"
+			},
 			"parameters": [
 				{
 					"key": "stakeholderparam-key-1",
@@ -50,95 +84,78 @@
 					]
 				},
 				{
-					"displayName": "The second stakeholderparam key",
 					"key": "stakeholderparam-key-2",
+					"displayName": "The second stakeholderparam key",
 					"values": [
 						"the second value"
 					]
 				}
-			],
-			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
-			"roles": [
-				"SIGNATORY"
-			],
-			"type": "PERSON"
+			]
 		},
 		{
-			"address": {
-				"attention": "someAttention",
-				"country": "SE",
-				"postalCode": "12345",
-				"streetAddress": "someStreetAddress",
-				"town": "someTown",
-				"type": "VISITING_ADDRESS"
-			},
-			"emailAddress": "someEmail",
-			"firstName": "someFirstName",
-			"lastName": "someLastName",
-			"organizationName": "someOrganizationName",
-			"organizationNumber": "771122-1234",
-			"parameters": [],
-			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
-			"phoneNumber": "somePhoneNumber",
+			"type": "PERSON",
 			"roles": [
 				"POWER_OF_ATTORNEY_ROLE"
 			],
-			"type": "PERSON"
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
+			"emailAddress": "someEmail",
+			"address": {
+				"type": "VISITING_ADDRESS",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"town": "someTown",
+				"country": "SE",
+				"attention": "someAttention"
+			},
+			"parameters": []
 		}
 	],
-	"type": "LAND_LEASE",
-	"externalReferenceId": "MK-TEST0003",
-	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 123:1",
-		"SUNDSVALL NORRMALM 234:1"
-	],
-	"objectIdentity": "someObjectIdentity",
-	"end": "2023-10-10",
-	"area": 12,
-	"start": "2023-10-02",
-	"periodOfNotice": 2,
-	"version": 1,
-	"landLeaseType": "LEASEHOLD",
-	"leaseDuration": 2,
-	"autoExtend": true,
-	"attachmentMetaData": [],
-	"leaseExtension": 1,
-	"indexTerms": [
-		{
-			"terms": [
-				{
-					"description": "In general the conditions are...",
-					"term": "General Conditions"
-				}
-			],
-			"header": "General Terms"
-		}
-	],
-	"signedByWitness": true,
-	"leasehold": {
-		"additionalInformation": [
-			"Some additional information when posting",
-			"More additional information when posting"
-		],
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription"
+	"duration": {
+		"leaseDuration": 2,
+		"unit": "MONTHS"
 	},
-	"additionalTerms": [
-		{
-			"terms": [
-				{
-					"description": "Unless something extraordinary has happened...",
-					"term": "Exceptions"
-				}
-			],
-			"header": "Extraordinary Terms"
-		}
-	],
-	"contractId": "${json-unit.regex}^\\d{4}-00001$",
+	"extension": {
+		"autoExtend": true,
+		"leaseExtension": 1,
+		"unit": "MONTHS"
+	},
+	"fees": {
+		"currency": "SEK",
+		"yearly": 234.56,
+		"monthly": 123.45,
+		"total": 500,
+		"totalAsText": "five hundred",
+		"indexYear": 2021,
+		"indexNumber": 2,
+		"indexationRate": 0.4,
+		"additionalInformation": [
+			"someAdditionalInfo1",
+			"someAdditionalInfo2"
+		]
+	},
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"status": "DRAFT"
+	"start": "2023-10-02",
+	"end": "2023-10-10",
+	"notices": [
+		{
+			"party": "LESSOR",
+			"periodOfNotice": 1,
+			"unit": "MONTHS"
+		},
+		{
+			"party": "LESSEE",
+			"periodOfNotice": 2,
+			"unit": "MONTHS"
+		}
+	],
+	"area": 12,
+	"signedByWitness": true
 }

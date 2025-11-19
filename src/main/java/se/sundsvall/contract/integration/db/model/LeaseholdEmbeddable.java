@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 import se.sundsvall.contract.integration.db.model.converter.enums.LeaseholdTypeConverter;
 import se.sundsvall.contract.model.enums.LeaseholdType;
 
-@Data
 @Embeddable
+@Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-public class LeaseholdEntity {
+public class LeaseholdEmbeddable {
 
 	@Column(name = "leasehold_type")
 	@Convert(converter = LeaseholdTypeConverter.class)

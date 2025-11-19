@@ -1,11 +1,14 @@
 package se.sundsvall.contract.apptest;
 
+import static java.nio.file.Files.writeString;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
-import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +29,7 @@ import se.sundsvall.dept44.util.ResourceUtils;
 		"spring.main.banner-mode=off",
 		"logging.level.se.sundsvall.dept44.payload=OFF",
 		"wiremock.server.port=10101"
-	}
-)
+	})
 class OpenApiSpecificationIT {
 
 	private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
@@ -45,12 +47,14 @@ class OpenApiSpecificationIT {
 	private TestRestTemplate restTemplate;
 
 	@Test
-	void compareOpenApiSpecifications() {
+	void compareOpenApiSpecifications() throws IOException {
 		final String existingOpenApiSpecification = ResourceUtils.asString(openApiResource);
 		final String currentOpenApiSpecification = getCurrentOpenApiSpecification();
 
+		writeString(Path.of("target/generated-api.yaml"), currentOpenApiSpecification);
+
 		assertThatJson(toJson(currentOpenApiSpecification))
-			.withOptions(List.of(Option.IGNORING_ARRAY_ORDER))
+			.withOptions(List.of(IGNORING_ARRAY_ORDER))
 			.whenIgnoringPaths("servers")
 			.isEqualTo(toJson(existingOpenApiSpecification));
 	}
@@ -71,8 +75,8 @@ class OpenApiSpecificationIT {
 	/**
 	 * Attempts to convert the given YAML (no YAML-check...) to JSON.
 	 *
-	 * @param yaml the YAML to convert
-	 * @return a JSON string
+	 * @param  yaml the YAML to convert
+	 * @return      a JSON string
 	 */
 	private String toJson(final String yaml) {
 		try {
@@ -81,5 +85,4 @@ class OpenApiSpecificationIT {
 			throw new IllegalStateException("Unable to convert YAML to JSON", e);
 		}
 	}
-
 }

@@ -9,11 +9,11 @@
 		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
 		"monthly": 234.56,
 		"currency": "SEK",
+		"indexationRate": 0.5,
 		"indexNumber": 3,
 		"yearly": 2814.72,
 		"indexYear": 2022
 	},
-	"usufructType": "FISHING",
 	"description": "some other description",
 	"extraParameters": [
 		{
@@ -47,7 +47,7 @@
 			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
 		}
 	],
-	"type": "LAND_LEASE",
+	"type": "LEASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0009",
 	"propertyDesignations": [
 		"SUNDSVALL NORRMALM 678:1",
@@ -57,11 +57,28 @@
 	"end": "2024-10-02",
 	"area": 12,
 	"start": "2024-05-02",
-	"periodOfNotice": 2,
-	"landLeaseType": "SITELEASEHOLD",
-	"leaseDuration": 5,
-	"autoExtend": true,
-	"leaseExtension": 1,
+	"leaseType": "LAND_LEASE_RESIDENTIAL",
+	"duration": {
+		"leaseDuration": 5,
+		"unit": "MONTHS"
+	},
+	"extension": {
+		"leaseExtension": 1,
+		"unit": "MONTHS",
+		"autoExtend": true
+	},
+	"notices": [
+		{
+			"party": "LESSOR",
+			"periodOfNotice": 1,
+			"unit": "MONTHS"
+		},
+		{
+			"party": "LESSEE",
+			"periodOfNotice": 2,
+			"unit": "MONTHS"
+		}
+	],
 	"indexTerms": [
 		{
 			"terms": [

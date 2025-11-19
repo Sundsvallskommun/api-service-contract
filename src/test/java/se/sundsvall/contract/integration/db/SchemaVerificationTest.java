@@ -1,0 +1,40 @@
+package se.sundsvall.contract.integration.db;
+
+import static java.nio.file.Files.readString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import se.sundsvall.contract.Application;
+
+@SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
+@ActiveProfiles("junit")
+class SchemaVerificationTest {
+
+	private static final String STORED_SCHEMA_FILE = "db/schema/schema.sql";
+
+	@Value("${spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-target}")
+	private String generatedSchemaFile;
+
+	@Test
+	void verifySchemaUpdates() throws IOException, URISyntaxException {
+
+		final var storedSchema = getResourceString(STORED_SCHEMA_FILE);
+		final var generatedSchema = readString(Path.of(generatedSchemaFile));
+
+		assertThat(storedSchema)
+			.as(String.format("Please reflect modifications to entities in file: %s", STORED_SCHEMA_FILE))
+			.isEqualToNormalizingWhitespace(generatedSchema);
+	}
+
+	private String getResourceString(final String fileName) throws IOException, URISyntaxException {
+		return readString(Paths.get(getClass().getClassLoader().getResource(fileName).toURI()));
+	}
+}

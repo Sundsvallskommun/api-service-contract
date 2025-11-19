@@ -9,7 +9,7 @@ import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRAC
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.END;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.EXTERNAL_REFERENCE_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.INDEX_TERMS;
-import static se.sundsvall.contract.integration.db.model.ContractEntity_.LAND_LEASE_TYPE;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
@@ -44,7 +44,7 @@ public final class ContractSpecifications {
 			.and(withPartyId(request.getPartyId()))
 			.and(withOrganizationNumber(request.getOrganizationNumber()))
 			.and(withEndDate(request.getEnd()))
-			.and(withLandLeaseType(request.getLandLeaseType()))
+			.and(withLeaseType(request.getLeaseType()))
 			.and(withExternalReferenceId(request.getExternalReferenceId()))
 			.and(withPropertyDesignations(request.getPropertyDesignations()))
 			.and(withTerm(request.getTerm()));
@@ -89,12 +89,12 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> cb.equal(root.join(STAKEHOLDERS).get(ORGANIZATION_NUMBER), organizationNumber);
 	}
 
-	private static Specification<ContractEntity> withLandLeaseType(final String landLeaseType) {
-		if (isBlank(landLeaseType)) {
+	private static Specification<ContractEntity> withLeaseType(final String leaseType) {
+		if (isBlank(leaseType)) {
 			return EMPTY;
 		}
 
-		return (root, query, cb) -> cb.equal(root.get(LAND_LEASE_TYPE), landLeaseType);
+		return (root, query, cb) -> cb.equal(root.get(LEASE_TYPE), leaseType);
 	}
 
 	private static Specification<ContractEntity> withEndDate(final LocalDate endDate) {

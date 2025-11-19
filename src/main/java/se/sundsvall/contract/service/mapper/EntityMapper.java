@@ -15,26 +15,31 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
+import se.sundsvall.contract.api.model.Duration;
+import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
+import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.integration.db.model.InvoicingEntity;
-import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
+import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
+import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.enums.AddressType;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.LeaseholdType;
+import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 @Component
 public class EntityMapper {
@@ -50,7 +55,7 @@ public class EntityMapper {
 			.withAdditionalTerms(contract.getAdditionalTerms())
 			.withArea(contract.getArea())
 			.withAreaData(contract.getAreaData())
-			.withAutoExtend(contract.getAutoExtend())
+			.withAutoExtend(ofNullable(contract.getExtension()).map(Extension::getAutoExtend).orElse(null))
 			.withContractId(contract.getContractId())
 			.withDescription(contract.getDescription())
 			.withEnd(contract.getEnd())
@@ -59,27 +64,46 @@ public class EntityMapper {
 			.withFees(contract.getFees())
 			.withIndexTerms(contract.getIndexTerms())
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
-			.withLandLeaseType(ofNullable(contract.getLandLeaseType()).map(LandLeaseType::valueOf).orElse(null))
-			.withLeaseDuration(contract.getLeaseDuration())
-			.withLeaseExtension(contract.getLeaseExtension())
+			.withLeaseType(ofNullable(contract.getLeaseType()).map(LeaseType::valueOf).orElse(null))
+			.withLeaseDuration(ofNullable(contract.getDuration()).map(Duration::getLeaseDuration).orElse(null))
+			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).map(TimeUnit::valueOf).orElse(TimeUnit.DAYS))
+			.withLeaseExtension(ofNullable(contract.getExtension()).map(Extension::getLeaseExtension).orElse(null))
+			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).map(TimeUnit::valueOf).orElse(TimeUnit.DAYS))
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
-			.withPeriodOfNotice(contract.getPeriodOfNotice())
+			.withNotices(toNoticeEmbeddables(contract.getNotices()))
 			.withPropertyDesignations(contract.getPropertyDesignations())
 			.withSignedByWitness(contract.isSignedByWitness())
 			.withStakeholders(toStakeholderEntities(contract.getStakeholders()))
 			.withStart(contract.getStart())
 			.withStatus(Status.valueOf(contract.getStatus()))   // Cannot / shouldn't be null
 			.withType(ContractType.valueOf(contract.getType())) // Cannot / shouldn't be null
-			.withUsufructType(ofNullable(contract.getUsufructType()).map(UsufructType::valueOf).orElse(null))
 			.withVersion(contract.getVersion())
 			.build();
 	}
 
-	InvoicingEntity toInvoicingEntity(final Invoicing contract) {
+	List<NoticeEmbeddable> toNoticeEmbeddables(final List<Notice> noticeList) {
+		return ofNullable(noticeList)
+			.map(notices -> notices.stream()
+				.map(this::toNoticeEmbeddable)
+				.toList())
+			.orElse(null);
+	}
+
+	NoticeEmbeddable toNoticeEmbeddable(final Notice notice) {
+		return ofNullable(notice)
+			.map(object -> NoticeEmbeddable.builder()
+				.withPeriodOfNotice(object.getPeriodOfNotice())
+				.withParty(ofNullable(notice.getParty()).map(Party::valueOf).orElse(null))
+				.withUnit(ofNullable(notice.getUnit()).map(TimeUnit::valueOf).orElse(null))
+				.build())
+			.orElse(null);
+	}
+
+	InvoicingEmbeddable toInvoicingEntity(final Invoicing contract) {
 		return ofNullable(contract)
-			.map(invoicing -> InvoicingEntity.builder()
+			.map(invoicing -> InvoicingEmbeddable.builder()
 				.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::valueOf).orElse(null))
 				.withInvoicedIn(ofNullable(invoicing.getInvoicedIn()).map(InvoicedIn::valueOf).orElse(null))
 				.build())
@@ -115,9 +139,9 @@ public class EntityMapper {
 			.orElse(null);
 	}
 
-	LeaseholdEntity toLeaseholdEntity(final Leasehold fromLeasehold) {
+	LeaseholdEmbeddable toLeaseholdEntity(final Leasehold fromLeasehold) {
 		return ofNullable(fromLeasehold)
-			.map(leasehold -> LeaseholdEntity.builder()
+			.map(leasehold -> LeaseholdEmbeddable.builder()
 				.withAdditionalInformation(leasehold.getAdditionalInformation())
 				.withDescription(leasehold.getDescription())
 				.withPurpose(ofNullable(leasehold.getPurpose()).map(LeaseholdType::valueOf).orElse(null))

@@ -6,26 +6,26 @@ import static java.util.function.Predicate.not;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
-import se.sundsvall.contract.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
-public class UsufructTypeConverter implements AttributeConverter<UsufructType, String> {
+public class TimeUnitConverter implements AttributeConverter<TimeUnit, String> {
 
 	@Override
-	public String convertToDatabaseColumn(UsufructType attribute) {
+	public String convertToDatabaseColumn(TimeUnit attribute) {
 		return ofNullable(attribute)
-			.map(UsufructType::name)
+			.map(TimeUnit::name)
 			.orElse(null);
 	}
 
 	@Override
-	public UsufructType convertToEntityAttribute(String dbData) {
+	public TimeUnit convertToEntityAttribute(String dbData) {
 		try {
 			return ofNullable(dbData)
 				.filter(not(StringUtils::isBlank))
-				.map(UsufructType::valueOf)
+				.map(TimeUnit::valueOf)
 				.orElse(null);
 		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + UsufructType.class, e);
+			throw new PersistenceException("Unable to deserialize " + dbData + " to " + TimeUnit.class, e);
 		}
 	}
 }

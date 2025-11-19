@@ -9,6 +9,7 @@
 		"totalAsText": "five hundred",
 		"monthly": 123.45,
 		"currency": "SEK",
+		"indexationRate": 0.4,
 		"indexNumber": 2,
 		"yearly": 234.56,
 		"indexYear": 2021
@@ -23,7 +24,6 @@
 			"category": "CONTRACT"
 		}
 	],
-	"usufructType": "HUNTING",
 	"description": "someDescription",
 	"extraParameters": [
 		{
@@ -101,7 +101,7 @@
 			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
 		}
 	],
-	"type": "LAND_LEASE",
+	"type": "LEASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0003",
 	"propertyDesignations": [
 		"SUNDSVALL NORRMALM 123:1",
@@ -111,11 +111,7 @@
 	"end": "2023-10-10",
 	"area": 12,
 	"start": "2023-10-02",
-	"periodOfNotice": 2,
-	"landLeaseType": "LEASEHOLD",
-	"leaseDuration": 2,
-	"autoExtend": true,
-	"leaseExtension": 1,
+	"leaseType": "LEASEHOLD",
 	"indexTerms": [
 		{
 			"terms": [
@@ -151,5 +147,26 @@
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"status": "DRAFT"
+	"status": "DRAFT",
+	"duration": {
+		"leaseDuration": 2,
+		"unit": "MONTHS"
+	},
+	"extension": {
+		"leaseExtension": 1,
+		"unit": "MONTHS",
+		"autoExtend": true
+	},
+	"notices": [
+		{
+			"party": "LESSOR",
+			"periodOfNotice": 1,
+			"unit": "MONTHS"
+		},
+		{
+			"party": "LESSEE",
+			"periodOfNotice": 2,
+			"unit": "MONTHS"
+		}
+	]
 }

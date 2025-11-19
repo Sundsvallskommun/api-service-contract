@@ -21,6 +21,7 @@ class FeesConverterTest {
 			"totalAsText": "three hundred forty five point six seven",
 			"indexYear": 1984,
 			"indexNumber": 7,
+			"indexationRate": 0.5,
 			"additionalInformation": [ "aaa","bbb" ]
 		}
 		""";
@@ -42,6 +43,7 @@ class FeesConverterTest {
 			.withTotalAsText("three hundred forty five point six seven")
 			.withIndexYear(1984)
 			.withIndexNumber(7)
+			.withIndexationRate(BigDecimal.valueOf(0.5))
 			.withAdditionalInformation(List.of("aaa", "bbb"))
 			.build();
 

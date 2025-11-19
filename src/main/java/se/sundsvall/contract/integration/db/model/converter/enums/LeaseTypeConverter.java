@@ -6,26 +6,26 @@ import static java.util.function.Predicate.not;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 
-public class LandLeaseTypeConverter implements AttributeConverter<LandLeaseType, String> {
+public class LeaseTypeConverter implements AttributeConverter<LeaseType, String> {
 
 	@Override
-	public String convertToDatabaseColumn(LandLeaseType attribute) {
+	public String convertToDatabaseColumn(LeaseType attribute) {
 		return ofNullable(attribute)
-			.map(LandLeaseType::name)
+			.map(LeaseType::name)
 			.orElse(null);
 	}
 
 	@Override
-	public LandLeaseType convertToEntityAttribute(String dbData) {
+	public LeaseType convertToEntityAttribute(String dbData) {
 		try {
 			return ofNullable(dbData)
 				.filter(not(StringUtils::isBlank))
-				.map(LandLeaseType::valueOf)
+				.map(LeaseType::valueOf)
 				.orElse(null);
 		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + LandLeaseType.class, e);
+			throw new PersistenceException("Unable to deserialize " + dbData + " to " + LeaseType.class, e);
 		}
 	}
 }

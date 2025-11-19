@@ -5,12 +5,11 @@
 			"contractId": "2024-23456",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0002",
-			"landLeaseType": "LEASEHOLD",
+			"leaseType": "LEASEHOLD",
 			"municipalityId": "1984",
 			"objectIdentity": "someObjectIdentity",
 			"status": "DRAFT",
-			"type": "LAND_LEASE",
-			"usufructType": "HUNTING",
+			"type": "LEASE_AGREEMENT",
 			"leasehold": {
 				"purpose": "AGRICULTURE",
 				"description": "SomeLeaseholdDescription",
@@ -87,7 +86,15 @@
 					]
 				}
 			],
-			"leaseDuration": 2,
+			"duration": {
+				"leaseDuration": 2,
+				"unit": "DAYS"
+			},
+			"extension": {
+				"autoExtend": true,
+				"leaseExtension": 1,
+				"unit": "DAYS"
+			},
 			"fees": {
 				"currency": "EUR",
 				"yearly": 1000,
@@ -96,6 +103,7 @@
 				"totalAsText": "five thousand",
 				"indexYear": 2021,
 				"indexNumber": 3,
+				"indexationRate": 0.3,
 				"additionalInformation": []
 			},
 			"invoicing": {
@@ -104,9 +112,18 @@
 			},
 			"start": "2023-10-02",
 			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
+			"notices": [
+				{
+					"party": "LESSOR",
+					"periodOfNotice": 30,
+					"unit": "DAYS"
+				},
+				{
+					"party": "LESSEE",
+					"periodOfNotice": 60,
+					"unit": "DAYS"
+				}
+			],
 			"area": 12,
 			"signedByWitness": false
 		},
@@ -115,12 +132,11 @@
 			"contractId": "2024-12345",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0001",
-			"landLeaseType": "LEASEHOLD",
+			"leaseType": "LEASEHOLD",
 			"municipalityId": "1984",
 			"objectIdentity": "someObjectIdentity",
 			"status": "ACTIVE",
 			"type": "PURCHASE_AGREEMENT",
-			"usufructType": "HUNTING",
 			"leasehold": {
 				"purpose": "AGRICULTURE",
 				"description": "SomeLeaseholdDescription",
@@ -195,7 +211,15 @@
 					"parameters": []
 				}
 			],
-			"leaseDuration": 2,
+			"duration": {
+				"leaseDuration": 2,
+				"unit": "DAYS"
+			},
+			"extension": {
+				"autoExtend": true,
+				"leaseExtension": 1,
+				"unit": "DAYS"
+			},
 			"fees": {
 				"currency": "SEK",
 				"yearly": 234.56,
@@ -204,6 +228,7 @@
 				"totalAsText": "five hundred",
 				"indexYear": 2021,
 				"indexNumber": 2,
+				"indexationRate": 0.5,
 				"additionalInformation": [
 					"someAdditionalInfo3",
 					"someAdditionalInfo4"
@@ -215,9 +240,18 @@
 			},
 			"start": "2023-10-02",
 			"end": "2023-10-10",
-			"autoExtend": true,
-			"leaseExtension": 1,
-			"periodOfNotice": 2,
+			"notices": [
+				{
+					"party": "LESSOR",
+					"periodOfNotice": 1,
+					"unit": "YEARS"
+				},
+				{
+					"party": "LESSEE",
+					"periodOfNotice": 2,
+					"unit": "YEARS"
+				}
+			],
 			"area": 12,
 			"signedByWitness": true
 		}

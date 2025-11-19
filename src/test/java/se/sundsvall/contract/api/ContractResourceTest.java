@@ -16,9 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
-import static se.sundsvall.contract.model.enums.LandLeaseType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.model.enums.UsufructType.HUNTING;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +40,7 @@ import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.service.ContractService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -171,11 +170,10 @@ class ContractResourceTest {
 				.withInvoiceInterval(QUARTERLY.name())
 				.withInvoicedIn(ARREARS.name())
 				.build())
-			.withLandLeaseType(LEASEHOLD.name())
+			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL.name())
 			.withStatus(ACTIVE.name())
-			.withUsufructType(HUNTING.name())
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
-			.withType(ContractType.LAND_LEASE.name())
+			.withType(ContractType.LEASE_AGREEMENT.name())
 			.build();
 
 		when(contractServiceMock.createContract(MUNICIPALITY_ID, contract)).thenReturn(CONTRACT_ID);

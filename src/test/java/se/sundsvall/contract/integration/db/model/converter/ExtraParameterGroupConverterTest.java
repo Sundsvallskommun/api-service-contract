@@ -17,7 +17,7 @@ class ExtraParameterGroupConverterTest {
 	private ExtraParameterGroupConverter converter;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		this.converter = new ExtraParameterGroupConverter(new ObjectMapper());
 	}
 

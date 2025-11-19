@@ -7,36 +7,36 @@ import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.Party;
 
-class LandLeaseTypeConverterTest {
+class PartyConverterTest {
 
-	private final LandLeaseTypeConverter converter = new LandLeaseTypeConverter();
+	private final PartyConverter converter = new PartyConverter();
 
 	@ParameterizedTest
-	@EnumSource(LandLeaseType.class)
-	void testConvertToDatabaseColumn(LandLeaseType enumValue) {
+	@EnumSource(Party.class)
+	void testConvertToDatabaseColumn(Party enumValue) {
 		assertThat(converter.convertToDatabaseColumn(enumValue))
 			.isNotNull()
 			.isEqualTo(enumValue.name());
 	}
 
 	@Test
-	void testConvertNullToDatabaseColumn_shouldReturnNull() {
+	void testConvertNullToDatabaseColumnShouldReturnNull() {
 		assertThat(converter.convertToDatabaseColumn(null)).isNull();
 	}
 
 	@ParameterizedTest
-	@EnumSource(LandLeaseType.class)
-	void testConvertToEntityAttribute(LandLeaseType enumValue) {
+	@EnumSource(Party.class)
+	void testConvertToEntityAttribute(Party enumValue) {
 		assertThat(converter.convertToEntityAttribute(enumValue.name())).isEqualTo(enumValue);
 	}
 
 	@Test
-	void testConvertToEntityAttribute_shouldThrowException_whenUnableToDeserialize() {
+	void testConvertToEntityAttributeShouldThrowExceptionWhenUnableToDeserialize() {
 		assertThatExceptionOfType(PersistenceException.class)
 			.isThrownBy(() -> converter.convertToEntityAttribute("INVALID"))
-			.withMessage("Unable to deserialize INVALID to class se.sundsvall.contract.model.enums.LandLeaseType")
+			.withMessage("Unable to deserialize INVALID to class se.sundsvall.contract.model.enums.Party")
 			.satisfies(problem -> assertThat(problem.getCause()).isInstanceOf(IllegalArgumentException.class));
 	}
 }

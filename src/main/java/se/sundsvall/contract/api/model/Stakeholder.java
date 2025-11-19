@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.With;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Data
@@ -21,17 +20,18 @@ public class Stakeholder {
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderType}
 	 */
-	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION")
+	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION | MUNICIPALITY | REGION | OTHER")
 	@OneOf(value = {
-		"PERSON", "COMPANY", "ASSOCIATION"
+		"PERSON", "COMPANY", "ASSOCIATION", "MUNICIPALITY", "REGION", "OTHER"
 	}, nullable = true)
 	private String type;
 
 	/*
 	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
 	 */
-	@ArraySchema(schema = @Schema(description = "List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | " +
-		"PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY", example = "BUYER"))
+	@ArraySchema(schema = @Schema(
+		description = "List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY | PRIMARY_BILLING_PARTY | LESSOR | LESSEE",
+		example = "BUYER"))
 	private List<String> roles;
 
 	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")
@@ -58,7 +58,6 @@ public class Stakeholder {
 	@Schema(description = "Address for stakeholder")
 	private Address address;
 
-	@With
 	@Schema(description = "Parameters for the stakeholder")
 	private List<@Valid Parameter> parameters;
 }

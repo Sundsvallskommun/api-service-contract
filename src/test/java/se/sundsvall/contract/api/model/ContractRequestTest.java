@@ -16,7 +16,7 @@ import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class ContractRequestTest {
@@ -44,7 +44,7 @@ class ContractRequestTest {
 		var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
 		var externalReferenceId = "externalReferenceId";
 		var endDate = LocalDate.of(2023, 10, 10);
-		var landLeaseType = LandLeaseType.SITELEASEHOLD;
+		var leaseType = LeaseType.SITE_LEASE_COMMERCIAL;
 		var term = "term";
 
 		var request = ContractRequest.builder()
@@ -54,7 +54,7 @@ class ContractRequestTest {
 			.withPropertyDesignations(propertyDesignations)
 			.withExternalReferenceId(externalReferenceId)
 			.withEnd(endDate)
-			.withLandLeaseType(landLeaseType.name())
+			.withLeaseType(leaseType.name())
 			.withTerm(term)
 			.build();
 
@@ -65,17 +65,17 @@ class ContractRequestTest {
 		assertThat(request.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(request.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(request.getEnd()).isEqualTo(endDate);
-		assertThat(request.getLandLeaseType()).isEqualTo(landLeaseType.name());
+		assertThat(request.getLeaseType()).isEqualTo(leaseType.name());
 		assertThat(request.getTerm()).isEqualTo(term);
 	}
 
 	@Test
 	void testContractRequest_landLeaseType_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = ContractRequest.class.getDeclaredField("landLeaseType")
+		var oneOf = ContractRequest.class.getDeclaredField("leaseType")
 			.getAnnotation(OneOf.class)
 			.value();
 
-		Arrays.stream(LandLeaseType.values())
+		Arrays.stream(LeaseType.values())
 			.forEach(value -> assertThat(oneOf).contains(value.name()));
 	}
 }

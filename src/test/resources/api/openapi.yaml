@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.3"
+  version: "3.0"
 servers:
-- url: http://localhost:8080
+- url: http://localhost:51699
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -414,7 +414,7 @@ paths:
           format: date
           example: 2023-01-01
         example: 2023-01-01
-      - name: landLeaseType
+      - name: leaseType
         in: query
         description: Lease type
         required: false
@@ -690,18 +690,18 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     Address:
       type: object
       properties:
@@ -776,7 +776,7 @@ components:
           type: string
           description: External referenceId
           example: "123"
-        landLeaseType:
+        leaseType:
           type: string
           description: Type of lease
           example: LEASEHOLD
@@ -796,11 +796,7 @@ components:
         type:
           type: string
           description: Contract type.
-          example: LAND_LEASE
-        usufructType:
-          type: string
-          description: Type of right of use
-          example: HUNTING
+          example: LEASE_AGREEMENT
         leasehold:
           $ref: "#/components/schemas/Leasehold"
         attachmentMetaData:
@@ -831,11 +827,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Stakeholder"
-        leaseDuration:
-          type: integer
-          description: The duration of the lease in years
-          format: int32
-          example: 9
+        duration:
+          $ref: "#/components/schemas/Duration"
+        extension:
+          $ref: "#/components/schemas/Extension"
         fees:
           $ref: "#/components/schemas/Fees"
         invoicing:
@@ -850,22 +845,10 @@ components:
           description: Lease period end date
           format: date
           example: 2022-12-31
-        autoExtend:
-          type: boolean
-          description: Marker for whether an agreement should be extended automatically
-            or not
-          example: true
-          default: true
-        leaseExtension:
-          type: integer
-          description: Extension period in days
-          format: int32
-          example: 30
-        periodOfNotice:
-          type: integer
-          description: Termination period in days
-          format: int32
-          example: 30
+        notices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Notice"
         area:
           type: integer
           description: Leased area (m2)
@@ -889,6 +872,38 @@ components:
           type: object
           additionalProperties:
             type: object
+    Duration:
+      type: object
+      properties:
+        leaseDuration:
+          type: integer
+          description: The lease duration value
+          format: int32
+          example: 9
+        unit:
+          type: string
+          description: The unit of the duration value
+          example: MONTHS
+      description: Duration
+    Extension:
+      type: object
+      properties:
+        autoExtend:
+          type: boolean
+          description: Marker for whether an agreement should be extended automatically
+            or not
+          example: true
+          default: true
+        leaseExtension:
+          type: integer
+          description: The lease extension value
+          format: int32
+          example: 2
+        unit:
+          type: string
+          description: The unit of the extension value
+          example: MONTHS
+      description: Extension
     ExtraParameterGroup:
       type: object
       properties:
@@ -982,15 +997,15 @@ components:
         yearly:
           type: number
           description: Yearly fee
-          example: 1000
+          example: 1000.5
         monthly:
           type: number
           description: Monthly fee
-          example: 100
+          example: 100.5
         total:
           type: number
           description: Total fee
-          example: 1200
+          example: 1200.5
         totalAsText:
           type: string
           description: Total fee as text
@@ -1005,6 +1020,15 @@ components:
           description: Index number
           format: int32
           example: 1
+        indexationRate:
+          maximum: 1.0
+          exclusiveMaximum: false
+          minimum: 0.0
+          exclusiveMinimum: false
+          type: number
+          description: Specifies what proportion of the consumer price index should
+            be used for invoicing.
+          example: 0.5
         additionalInformation:
           type: array
           description: Additional information
@@ -1140,6 +1164,25 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/LngLatAlt"
+    Notice:
+      required:
+      - periodOfNotice
+      type: object
+      properties:
+        party:
+          type: string
+          description: The party type
+          example: LESSOR
+        periodOfNotice:
+          type: integer
+          description: The period of notice
+          format: int32
+          example: 3
+        unit:
+          type: string
+          description: The unit of the periodOfNotice value
+          example: MONTHS
+      description: Notice
     Parameter:
       required:
       - key
@@ -1187,7 +1230,8 @@ components:
       properties:
         type:
           type: string
-          description: "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION"
+          description: "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION\
+            \ | MUNICIPALITY | REGION | OTHER"
           example: ASSOCIATION
         roles:
           type: array
@@ -1195,7 +1239,8 @@ components:
             type: string
             description: "List of roles, possible values: BUYER | CONTACT_PERSON |\
               \ GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK\
-              \ | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY"
+              \ | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY | PRIMARY_BILLING_PARTY\
+              \ | LESSOR | LESSEE"
             example: BUYER
         organizationName:
           type: string
@@ -1380,9 +1425,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
         suppressed:
           type: array

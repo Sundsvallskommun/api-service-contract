@@ -54,7 +54,7 @@ class ContractIdGeneratorTest {
 	private ContractIdGenerator contractIdGenerator;
 
 	@BeforeEach
-	public void setUp() throws SQLException {
+	void setUp() throws SQLException {
 		when(mockSession.getJdbcCoordinator()).thenReturn(mockJdbcCoordinator);
 		when(mockJdbcCoordinator.getStatementPreparer()).thenReturn(mockStatementPreparer);
 		when(mockStatementPreparer.prepareStatement(GENERATE_ID_QUERY)).thenReturn(mockPreparedStatement);

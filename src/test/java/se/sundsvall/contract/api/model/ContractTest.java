@@ -23,9 +23,8 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class ContractTest {
@@ -51,12 +50,11 @@ class ContractTest {
 		var contractId = "2024-12345";
 		var description = "A simple description of the contract";
 		var externalReferenceId = "123";
-		var landLeaseType = "LEASEHOLD";
+		var leaseType = "USUFRUCT_MISC";
 		var municipalityId = "1984";
 		var objectIdentity = "909a6a80-d1a4-90ec-e040-ed8f66444c3f";
 		var status = "ACTIVE";
 		var type = "LAND_LEASE";
-		var usufructType = "HUNTING";
 		var leasehold = new Leasehold();
 		var attachmentMetaData = List.of(new AttachmentMetaData());
 		var additionalTerms = List.of(new TermGroup());
@@ -64,14 +62,13 @@ class ContractTest {
 		var indexTerms = List.of(new TermGroup());
 		var propertyDesignations = List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2");
 		var stakeholders = List.of(new Stakeholder());
-		var leaseDuration = 9;
+		var notices = List.of(new Notice());
+		var duration = Duration.builder().build();
+		var extension = Extension.builder().build();
 		var fees = Fees.builder().build();
 		var invoicing = new Invoicing();
 		var start = LocalDate.of(2020, 1, 1);
 		var end = LocalDate.of(2022, 12, 31);
-		var autoExtend = true;
-		var leaseExtension = 30;
-		var periodOfNotice = 30;
 		var area = 150;
 		var signedByWitness = true;
 		var areaData = new FeatureCollection();
@@ -82,12 +79,11 @@ class ContractTest {
 			.withContractId(contractId)
 			.withDescription(description)
 			.withExternalReferenceId(externalReferenceId)
-			.withLandLeaseType(landLeaseType)
+			.withLeaseType(leaseType)
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(objectIdentity)
 			.withStatus(status)
 			.withType(type)
-			.withUsufructType(usufructType)
 			.withLeasehold(leasehold)
 			.withAttachmentMetaData(attachmentMetaData)
 			.withAdditionalTerms(additionalTerms)
@@ -95,14 +91,13 @@ class ContractTest {
 			.withIndexTerms(indexTerms)
 			.withPropertyDesignations(propertyDesignations)
 			.withStakeholders(stakeholders)
-			.withLeaseDuration(leaseDuration)
+			.withDuration(duration)
 			.withFees(fees)
 			.withInvoicing(invoicing)
 			.withStart(start)
 			.withEnd(end)
-			.withAutoExtend(autoExtend)
-			.withLeaseExtension(leaseExtension)
-			.withPeriodOfNotice(periodOfNotice)
+			.withExtension(extension)
+			.withNotices(notices)
 			.withArea(area)
 			.withSignedByWitness(signedByWitness)
 			.withAreaData(areaData)
@@ -113,12 +108,11 @@ class ContractTest {
 		assertThat(contract.getContractId()).isEqualTo(contractId);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
-		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
+		assertThat(contract.getLeaseType()).isEqualTo(leaseType);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getType()).isEqualTo(type);
-		assertThat(contract.getUsufructType()).isEqualTo(usufructType);
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
 		assertThat(contract.getAttachmentMetaData()).isEqualTo(attachmentMetaData);
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
@@ -126,14 +120,13 @@ class ContractTest {
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
+		assertThat(contract.getDuration()).isEqualTo(duration);
 		assertThat(contract.getFees()).isEqualTo(fees);
 		assertThat(contract.getInvoicing()).isEqualTo(invoicing);
 		assertThat(contract.getStart()).isEqualTo(start);
 		assertThat(contract.getEnd()).isEqualTo(end);
-		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
-		assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
-		assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
+		assertThat(contract.getExtension()).isEqualTo(extension);
+		assertThat(contract.getNotices()).isEqualTo(notices);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.isSignedByWitness()).isEqualTo(signedByWitness);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
@@ -146,12 +139,12 @@ class ContractTest {
 	}
 
 	@Test
-	void test_landLeaseType_hasCorrectOneOf() throws NoSuchFieldException {
-		var oneOf = Contract.class.getDeclaredField("landLeaseType")
+	void test_leaseType_hasCorrectOneOf() throws NoSuchFieldException {
+		var oneOf = Contract.class.getDeclaredField("leaseType")
 			.getAnnotation(OneOf.class)
 			.value();
 
-		Arrays.stream(LandLeaseType.values())
+		Arrays.stream(LeaseType.values())
 			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
 	}
 
@@ -172,16 +165,6 @@ class ContractTest {
 			.value();
 
 		Arrays.stream(ContractType.values())
-			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
-	}
-
-	@Test
-	void test_usufructType_hasCorrectOneOf() throws NoSuchFieldException {
-		var oneOf = Contract.class.getDeclaredField("usufructType")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(UsufructType.values())
 			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
 	}
 }

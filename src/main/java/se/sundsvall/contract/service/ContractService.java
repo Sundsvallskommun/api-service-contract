@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -18,6 +19,7 @@ import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.service.diff.Differ;
 import se.sundsvall.contract.service.mapper.DtoMapper;
 import se.sundsvall.contract.service.mapper.EntityMapper;
@@ -29,6 +31,7 @@ public class ContractService {
 
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId %s is not present within municipality %s.";
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND = "Contract with contractId %s, version %d is not present within municipality %s.";
+	private static final Sort VERSION_ASC = Sort.by("version").ascending();
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
@@ -107,7 +110,10 @@ public class ContractService {
 
 	@Transactional(readOnly = true)
 	public Diff diffContract(final String municipalityId, final String contractId, final Integer oldVersion, final Integer newVersion) {
-		var availableVersions = contractRepository.findAllContractVersionsByMunicipalityIdAndContractId(municipalityId, contractId);
+		var availableVersions = contractRepository.findByMunicipalityIdAndContractId(municipalityId, contractId, VERSION_ASC)
+			.stream()
+			.map(ContractVersionProjection::getVersion)
+			.toList();
 
 		if (availableVersions.size() < 2) {
 			throw Problem.valueOf(Status.BAD_REQUEST, "Unable to diff since a single version of the contract with contractId %s within municipality %s".formatted(municipalityId, contractId));

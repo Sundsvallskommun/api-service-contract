@@ -12,13 +12,17 @@ import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
 import se.sundsvall.contract.api.model.Contract;
+import se.sundsvall.contract.api.model.Duration;
+import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
+import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.integration.db.model.LeaseholdEntity;
+import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.enums.AddressType;
@@ -26,12 +30,13 @@ import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
-import se.sundsvall.contract.model.enums.LandLeaseType;
+import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.LeaseholdType;
+import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.contract.model.enums.UsufructType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 @Component
 public class DtoMapper {
@@ -42,7 +47,6 @@ public class DtoMapper {
 			.withArea(contractEntity.getArea())
 			.withAreaData(contractEntity.getAreaData())
 			.withAttachmentMetaData(toAttachmentMetadataDtos(attachmentEntities))
-			.withAutoExtend(contractEntity.getAutoExtend())
 			.withContractId(contractEntity.getContractId())
 			.withDescription(contractEntity.getDescription())
 			.withEnd(contractEntity.getEnd())
@@ -51,22 +55,58 @@ public class DtoMapper {
 			.withFees(toFeesDto(contractEntity))
 			.withIndexTerms(contractEntity.getIndexTerms())
 			.withInvoicing(toInvoicingDto(contractEntity))
-			.withLandLeaseType(ofNullable(contractEntity.getLandLeaseType()).map(LandLeaseType::name).orElse(null))
-			.withLeaseDuration(contractEntity.getLeaseDuration())
-			.withLeaseExtension(contractEntity.getLeaseExtension())
+			.withLeaseType(ofNullable(contractEntity.getLeaseType()).map(LeaseType::name).orElse(null))
+			.withDuration(toDurationDto(contractEntity))
+			.withExtension(toExtensionDto(contractEntity))
 			.withLeasehold(toLeaseholdDto(contractEntity.getLeasehold()))
 			.withMunicipalityId(contractEntity.getMunicipalityId())
 			.withObjectIdentity(contractEntity.getObjectIdentity())
-			.withPeriodOfNotice(contractEntity.getPeriodOfNotice())
+			.withNotices(toNoticeDtos(contractEntity.getNotices()))
 			.withPropertyDesignations(contractEntity.getPropertyDesignations())
 			.withSignedByWitness(contractEntity.isSignedByWitness())
 			.withStakeholders(toStakeholderDtos(contractEntity.getStakeholders()))
 			.withStart(contractEntity.getStart())
 			.withStatus(ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null))
 			.withType(ofNullable(contractEntity.getType()).map(ContractType::name).orElse(null))
-			.withUsufructType(ofNullable(contractEntity.getUsufructType()).map(UsufructType::name).orElse(null))
 			.withVersion(contractEntity.getVersion())
 			.build();
+	}
+
+	Duration toDurationDto(final ContractEntity contractEntity) {
+		return ofNullable(contractEntity)
+			.map(entity -> Duration.builder()
+				.withLeaseDuration(entity.getLeaseDuration())
+				.withUnit(ofNullable(entity.getLeaseDurationUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.build())
+			.orElse(null);
+	}
+
+	Extension toExtensionDto(final ContractEntity contractEntity) {
+		return ofNullable(contractEntity)
+			.map(entity -> Extension.builder()
+				.withAutoExtend(contractEntity.getAutoExtend())
+				.withLeaseExtension(contractEntity.getLeaseExtension())
+				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.build())
+			.orElse(null);
+	}
+
+	List<Notice> toNoticeDtos(final List<NoticeEmbeddable> noticeEmbeddableList) {
+		return ofNullable(noticeEmbeddableList)
+			.map(noticeEmbeddables -> noticeEmbeddables.stream()
+				.map(this::toNoticeDto)
+				.toList())
+			.orElse(null);
+	}
+
+	Notice toNoticeDto(final NoticeEmbeddable noticeEmbeddable) {
+		return ofNullable(noticeEmbeddable)
+			.map(embeddable -> Notice.builder()
+				.withPeriodOfNotice(embeddable.getPeriodOfNotice())
+				.withParty(ofNullable(embeddable.getParty()).map(Party::name).orElse(null))
+				.withUnit(ofNullable(embeddable.getUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.build())
+			.orElse(null);
 	}
 
 	Fees toFeesDto(final ContractEntity contractEntity) {
@@ -74,6 +114,7 @@ public class DtoMapper {
 			.map(feesEntity -> Fees.builder()
 				.withAdditionalInformation(feesEntity.getAdditionalInformation())
 				.withCurrency(feesEntity.getCurrency())
+				.withIndexationRate(feesEntity.getIndexationRate())
 				.withIndexNumber(feesEntity.getIndexNumber())
 				.withIndexYear(feesEntity.getIndexYear())
 				.withMonthly(feesEntity.getMonthly())
@@ -113,7 +154,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	Leasehold toLeaseholdDto(final LeaseholdEntity leaseholdEntity) {
+	Leasehold toLeaseholdDto(final LeaseholdEmbeddable leaseholdEntity) {
 		return ofNullable(leaseholdEntity)
 			.map(leasehold -> Leasehold.builder()
 				.withPurpose(ofNullable(leasehold.getPurpose())

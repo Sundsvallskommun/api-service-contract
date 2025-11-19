@@ -13,9 +13,7 @@ import se.sundsvall.contract.integration.db.model.StakeholderParameterEntity;
 
 public final class StakeholderParameterMapper {
 
-	private StakeholderParameterMapper() {
-		// Intentionally empty
-	}
+	private StakeholderParameterMapper() {}
 
 	public static List<StakeholderParameterEntity> toStakeholderParameterEntityList(final List<Parameter> parameters, final StakeholderEntity entity) {
 		return new ArrayList<>(toUniqueKeyList(parameters).stream()

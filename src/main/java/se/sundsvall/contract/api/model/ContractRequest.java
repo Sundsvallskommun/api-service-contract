@@ -1,5 +1,7 @@
 package se.sundsvall.contract.api.model;
 
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
@@ -42,18 +44,18 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	@DateTimeFormat(iso = DATE)
 	@Schema(description = "End date (format: yyyy-MM-dd)", example = "2023-01-01")
 	private LocalDate end;
 
 	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
+	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseType}
 	 */
 	@Schema(description = "Lease type", example = "LEASEHOLD")
 	@OneOf(value = {
-		"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"
+		"LAND_LEASE_PUBLIC", "SITE_LEASE_COMMERCIAL", "LAND_LEASE_RESIDENTIAL", "OBJECT_LEASE", "LAND_LEASE_MISC", "USUFRUCT_MOORING", "USUFRUCT_HUNTING", "USUFRUCT_FARMING", "USUFRUCT_MISC", "LEASEHOLD", "OTHER_FEE"
 	}, nullable = true)
-	private String landLeaseType;
+	private String leaseType;
 
 	@Schema(description = "Specific term to search for", example = "term", nullable = true)
 	@Size(min = 2, message = "Term must be at least 2 characters long if provided")

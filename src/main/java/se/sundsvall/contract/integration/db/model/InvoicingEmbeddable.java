@@ -12,12 +12,12 @@ import se.sundsvall.contract.integration.db.model.converter.enums.InvoicedInConv
 import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
 
+@Embeddable
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-@Embeddable
-public class InvoicingEntity {
+public class InvoicingEmbeddable {
 
 	@Convert(converter = IntervalTypeConverter.class)
 	private IntervalType invoiceInterval;

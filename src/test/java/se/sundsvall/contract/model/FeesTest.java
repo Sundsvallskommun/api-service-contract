@@ -27,21 +27,24 @@ class FeesTest {
 
 	@Test
 	void testBuilderMethods() {
-		var currency = "USD";
-		var yearly = BigDecimal.valueOf(12.50);
-		var monthly = BigDecimal.valueOf(1.50);
-		var total = BigDecimal.valueOf(25);
-		var totalAsText = "twenty five";
-		var indexYear = 2022;
-		var indexNumber = 5;
-		var additionalInformation = List.of("aaa", "bbb");
 
-		var fees = Fees.builder()
+		final var currency = "USD";
+		final var yearly = BigDecimal.valueOf(12.50);
+		final var monthly = BigDecimal.valueOf(1.50);
+		final var total = BigDecimal.valueOf(25);
+		final var totalAsText = "twenty five";
+		final var indexationRate = BigDecimal.valueOf(0.5);
+		final var indexYear = 2022;
+		final var indexNumber = 5;
+		final var additionalInformation = List.of("aaa", "bbb");
+
+		final var fees = Fees.builder()
 			.withCurrency(currency)
 			.withYearly(yearly)
 			.withMonthly(monthly)
 			.withTotal(total)
 			.withTotalAsText(totalAsText)
+			.withIndexationRate(indexationRate)
 			.withIndexYear(indexYear)
 			.withIndexNumber(indexNumber)
 			.withAdditionalInformation(additionalInformation)
@@ -53,6 +56,7 @@ class FeesTest {
 		assertThat(fees.getMonthly()).isEqualTo(monthly);
 		assertThat(fees.getTotal()).isEqualTo(total);
 		assertThat(fees.getTotalAsText()).isEqualTo(totalAsText);
+		assertThat(fees.getIndexationRate()).isEqualTo(indexationRate);
 		assertThat(fees.getIndexYear()).isEqualTo(indexYear);
 		assertThat(fees.getIndexNumber()).isEqualTo(indexNumber);
 		assertThat(fees.getAdditionalInformation()).containsExactlyElementsOf(additionalInformation);

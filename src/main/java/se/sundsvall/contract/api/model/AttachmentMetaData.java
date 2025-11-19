@@ -1,5 +1,7 @@
 package se.sundsvall.contract.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +17,7 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Schema(description = "Attachment metadata", accessMode = Schema.AccessMode.READ_WRITE)
 public class AttachmentMetaData {
 
-	@Schema(description = "The attachment id", example = "1234", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The attachment id", example = "1234", accessMode = READ_ONLY)
 	private Long id;
 
 	/*

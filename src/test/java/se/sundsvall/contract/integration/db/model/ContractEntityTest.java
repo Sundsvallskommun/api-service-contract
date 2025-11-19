@@ -10,12 +10,9 @@ import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
-import static se.sundsvall.contract.model.enums.LandLeaseType.SITELEASEHOLD;
 import static se.sundsvall.contract.model.enums.Status.TERMINATED;
-import static se.sundsvall.contract.model.enums.UsufructType.FISHING;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +26,9 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 class ContractEntityTest {
 
@@ -57,7 +57,7 @@ class ContractEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		var type = LAND_LEASE;
+		var type = ContractType.LEASE_AGREEMENT;
 		var version = 1;
 		var status = TERMINATED;
 		var municipalityId = "1984";
@@ -88,13 +88,13 @@ class ContractEntityTest {
 				.withParameters(Map.of("someParameter", "someValue"))
 				.build());
 		var stakeholders = List.of(StakeholderEntity.builder().build());
-		var landLeaseType = SITELEASEHOLD;
-		var leasehold = LeaseholdEntity.builder().build();
-		var usufructType = FISHING;
+		var leaseType = LeaseType.LEASEHOLD;
+		var leasehold = LeaseholdEmbeddable.builder().build();
 		var externalReferenceId = "externalReferenceId";
 		var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
 		var objectIdentity = "objectIdentity";
 		var leaseDuration = 3;
+		var leaseDurationUnit = TimeUnit.MONTHS;
 		var fees = Fees.builder()
 			.withCurrency("SEK")
 			.withYearly(BigDecimal.valueOf(4350))
@@ -102,6 +102,7 @@ class ContractEntityTest {
 			.withTotal(BigDecimal.valueOf(52200))
 			.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
 			.withIndexYear(2023)
+			.withIndexationRate(BigDecimal.valueOf(0.5))
 			.withIndexNumber(2)
 			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
 			.build();
@@ -111,7 +112,8 @@ class ContractEntityTest {
 		var end = now();
 		var autoExtend = true;
 		var leaseExtension = 4;
-		var periodOfNotice = 1;
+		var leaseExtensionUnit = TimeUnit.YEARS;
+		var notices = List.of(NoticeEmbeddable.builder().build());
 		var area = 1;
 		var areaData = new FeatureCollection();
 
@@ -127,15 +129,15 @@ class ContractEntityTest {
 			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
-			.withLandLeaseType(landLeaseType)
+			.withLeaseType(leaseType)
 			.withLeasehold(leasehold)
-			.withUsufructType(usufructType)
 			.withExternalReferenceId(externalReferenceId)
 			.withPropertyDesignations(propertyDesignations)
 			.withObjectIdentity(objectIdentity)
 			.withLeaseDuration(leaseDuration)
+			.withLeaseDurationUnit(leaseDurationUnit)
 			.withFees(fees)
-			.withInvoicing(InvoicingEntity.builder()
+			.withInvoicing(InvoicingEmbeddable.builder()
 				.withInvoiceInterval(invoiceInterval)
 				.withInvoicedIn(invoicedIn)
 				.build())
@@ -143,7 +145,8 @@ class ContractEntityTest {
 			.withEnd(end)
 			.withAutoExtend(autoExtend)
 			.withLeaseExtension(leaseExtension)
-			.withPeriodOfNotice(periodOfNotice)
+			.withLeaseExtensionUnit(leaseExtensionUnit)
+			.withNotices(notices)
 			.withArea(area)
 			.withAreaData(areaData)
 			.build();
@@ -160,9 +163,8 @@ class ContractEntityTest {
 		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getLandLeaseType()).isEqualTo(landLeaseType);
+		assertThat(contract.getLeaseType()).isEqualTo(leaseType);
 		assertThat(contract.getLeasehold()).isEqualTo(leasehold);
-		assertThat(contract.getUsufructType()).isEqualTo(usufructType);
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
@@ -176,7 +178,7 @@ class ContractEntityTest {
 		assertThat(contract.getEnd()).isEqualTo(end);
 		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
 		assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
-		assertThat(contract.getPeriodOfNotice()).isEqualTo(periodOfNotice);
+		assertThat(contract.getNotices()).isEqualTo(notices);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
 	}
