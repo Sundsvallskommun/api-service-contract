@@ -16,9 +16,9 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 
 class EntityMapperTest {
 
-	private EntityMapper mapper = new EntityMapper();
-
 	private static final String MUNICIPALITY_ID = "1984";
+
+	private EntityMapper mapper = new EntityMapper();
 
 	@Test
 	void testToContractEntity() {
@@ -153,13 +153,13 @@ class EntityMapperTest {
 		final var entity = mapper.toAttachmentEntity(MUNICIPALITY_ID, "2024-12345", dto);
 
 		// Assert
-		assertThat(entity.getCategory()).isEqualTo(dto.getMetaData().getCategory());
+		assertThat(entity.getCategory()).isEqualTo(dto.getMetadata().getCategory());
 		assertThat(entity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
 		assertThat(entity.getContractId()).isEqualTo("2024-12345");
-		assertThat(entity.getFilename()).isEqualTo(dto.getMetaData().getFilename());
-		assertThat(entity.getMimeType()).isEqualTo(dto.getMetaData().getMimeType());
+		assertThat(entity.getFilename()).isEqualTo(dto.getMetadata().getFilename());
+		assertThat(entity.getMimeType()).isEqualTo(dto.getMetadata().getMimeType());
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-		assertThat(entity.getNote()).isEqualTo(dto.getMetaData().getNote());
+		assertThat(entity.getNote()).isEqualTo(dto.getMetadata().getNote());
 	}
 
 	@Test
@@ -173,10 +173,10 @@ class EntityMapperTest {
 		final var updatedEntity = mapper.updateAttachmentEntity(entity, dto);
 
 		// Assert
-		assertThat(updatedEntity.getCategory()).isEqualTo(dto.getMetaData().getCategory());
-		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getMetaData().getFilename());
-		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMetaData().getMimeType());
-		assertThat(updatedEntity.getNote()).isEqualTo(dto.getMetaData().getNote());
+		assertThat(updatedEntity.getCategory()).isEqualTo(dto.getMetadata().getCategory());
+		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getMetadata().getFilename());
+		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMetadata().getMimeType());
+		assertThat(updatedEntity.getNote()).isEqualTo(dto.getMetadata().getNote());
 		assertThat(updatedEntity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
 	}
 

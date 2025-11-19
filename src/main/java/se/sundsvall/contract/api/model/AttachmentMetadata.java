@@ -15,7 +15,7 @@ import se.sundsvall.contract.model.enums.AttachmentCategory;
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
 @Schema(description = "Attachment metadata", accessMode = Schema.AccessMode.READ_WRITE)
-public class AttachmentMetaData {
+public class AttachmentMetadata {
 
 	@Schema(description = "The attachment id", example = "1234", accessMode = READ_ONLY)
 	private Long id;

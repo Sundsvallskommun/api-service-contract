@@ -200,7 +200,7 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void updateContract_shouldThrow404_whenNoMatch() {
+	void updateContractShouldThrow404WhenNoMatch() {
 		final var contract = TestFactory.createContract();
 		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class)))
 			.thenReturn(Optional.empty());
@@ -266,7 +266,7 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void deleteContract_shouldThrow404_whenNoMatch() {
+	void deleteContractShouldThrow404WhenNoMatch() {
 		// Arrange
 		when(contractRepositoryMock.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
 

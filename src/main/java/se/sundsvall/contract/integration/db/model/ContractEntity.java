@@ -3,7 +3,6 @@ package se.sundsvall.contract.integration.db.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -29,13 +28,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
-import se.sundsvall.contract.integration.db.model.converter.ExtraParameterGroupConverter;
-import se.sundsvall.contract.integration.db.model.converter.FeesConverter;
-import se.sundsvall.contract.integration.db.model.converter.TermGroupConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.ContractTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.LeaseTypeConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.StatusConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.TimeUnitConverter;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
@@ -69,25 +61,21 @@ public class ContractEntity {
 	private int version = 1;
 
 	@Column(name = "type", updatable = false)
-	@Convert(converter = ContractTypeConverter.class)
 	private ContractType type;
 
 	@Column(name = "status")
-	@Convert(converter = StatusConverter.class)
 	private Status status;
 
 	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
 	@Column(name = "index_terms")
-	@Convert(converter = TermGroupConverter.class)
 	private List<TermGroup> indexTerms;
 
 	@Column(name = "description", length = 4096)
 	private String description;
 
 	@Column(name = "additional_terms")
-	@Convert(converter = TermGroupConverter.class)
 	private List<TermGroup> additionalTerms;
 
 	@JoinTable(
@@ -101,11 +89,9 @@ public class ContractEntity {
 	private boolean signedByWitness;
 
 	@Column(name = "extra_parameters")
-	@Convert(converter = ExtraParameterGroupConverter.class)
 	private List<ExtraParameterGroup> extraParameters;
 
 	@Column(name = "lease_type")
-	@Convert(converter = LeaseTypeConverter.class)
 	private LeaseType leaseType;
 
 	@Embedded
@@ -138,11 +124,9 @@ public class ContractEntity {
 	private Integer leaseDuration;
 
 	@Column(name = "lease_duration_unit", length = 32)
-	@Convert(converter = TimeUnitConverter.class)
 	private TimeUnit leaseDurationUnit;
 
 	@Column(name = "fees", length = 2048)
-	@Convert(converter = FeesConverter.class)
 	private Fees fees;
 
 	@Embedded
@@ -161,7 +145,6 @@ public class ContractEntity {
 	private Integer leaseExtension;
 
 	@Column(name = "lease_extension_unit", length = 32)
-	@Convert(converter = TimeUnitConverter.class)
 	private TimeUnit leaseExtensionUnit;
 
 	@Column(name = "area")

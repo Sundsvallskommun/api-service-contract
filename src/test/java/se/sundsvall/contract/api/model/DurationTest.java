@@ -30,7 +30,7 @@ class DurationTest {
 		final var leaseDuration = 3;
 		final var unit = TimeUnit.DAYS;
 
-		var object = Duration.builder()
+		final var object = Duration.builder()
 			.withLeaseDuration(leaseDuration)
 			.withUnit(unit)
 			.build();

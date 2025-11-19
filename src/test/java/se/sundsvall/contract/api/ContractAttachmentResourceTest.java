@@ -22,7 +22,7 @@ import se.sundsvall.contract.Application;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.service.AttachmentService;
 
@@ -67,7 +67,7 @@ class ContractAttachmentResourceTest {
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someContent")
 				.build())
-			.withMetaData(AttachmentMetaData.builder()
+			.withMetadata(AttachmentMetadata.builder()
 				.withCategory(AttachmentCategory.OTHER)
 				.withFilename("aFilename")
 				.withMimeType("aMimeType")
@@ -94,7 +94,7 @@ class ContractAttachmentResourceTest {
 	@Test
 	void testUpdateAttachmentMetaData() {
 		// Arrange
-		final var attachmentMetaData = AttachmentMetaData.builder()
+		final var attachmentMetaData = AttachmentMetadata.builder()
 			.withFilename("aNewFilename")
 			.withMimeType("aNewMimeType")
 			.withNote("aNewNote")
@@ -105,7 +105,7 @@ class ContractAttachmentResourceTest {
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someNewContent")
 				.build())
-			.withMetaData(attachmentMetaData)
+			.withMetadata(attachmentMetaData)
 			.build();
 
 		when(attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, attachment)).thenReturn(attachmentMetaData);
@@ -117,7 +117,7 @@ class ContractAttachmentResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(AttachmentMetaData.class)
+			.expectBody(AttachmentMetadata.class)
 			.returnResult()
 			.getResponseBody();
 

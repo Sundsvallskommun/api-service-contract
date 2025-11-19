@@ -14,7 +14,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
-import org.assertj.core.api.Assertions;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,35 +43,36 @@ class ContractTest {
 
 	@Test
 	void testSetAndGetAllFields() {
-		var version = 1;
-		var contractId = "2024-12345";
-		var description = "A simple description of the contract";
-		var externalReferenceId = "123";
-		var leaseType = LeaseType.LAND_LEASE_PUBLIC;
-		var municipalityId = "1984";
-		var objectIdentity = "909a6a80-d1a4-90ec-e040-ed8f66444c3f";
-		var status = Status.ACTIVE;
-		var type = ContractType.PURCHASE_AGREEMENT;
-		var leasehold = new Leasehold();
-		var attachmentMetaData = List.of(new AttachmentMetaData());
-		var additionalTerms = List.of(new TermGroup());
-		var extraParameters = List.of(new ExtraParameterGroup());
-		var indexTerms = List.of(new TermGroup());
-		var propertyDesignations = List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2");
-		var stakeholders = List.of(new Stakeholder());
-		var notices = List.of(new Notice());
-		var duration = Duration.builder().build();
-		var extension = Extension.builder().build();
-		var fees = Fees.builder().build();
-		var invoicing = new Invoicing();
-		var start = LocalDate.of(2020, 1, 1);
-		var end = LocalDate.of(2022, 12, 31);
-		var area = 150;
-		var signedByWitness = true;
-		var areaData = new FeatureCollection();
+
+		final var version = 1;
+		final var contractId = "2024-12345";
+		final var description = "A simple description of the contract";
+		final var externalReferenceId = "123";
+		final var leaseType = LeaseType.LAND_LEASE_PUBLIC;
+		final var municipalityId = "1984";
+		final var objectIdentity = "909a6a80-d1a4-90ec-e040-ed8f66444c3f";
+		final var status = Status.ACTIVE;
+		final var type = ContractType.PURCHASE_AGREEMENT;
+		final var leasehold = new Leasehold();
+		final var attachmentMetaData = List.of(new AttachmentMetadata());
+		final var additionalTerms = List.of(new TermGroup());
+		final var extraParameters = List.of(new ExtraParameterGroup());
+		final var indexTerms = List.of(new TermGroup());
+		final var propertyDesignations = List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2");
+		final var stakeholders = List.of(new Stakeholder());
+		final var notices = List.of(new Notice());
+		final var duration = Duration.builder().build();
+		final var extension = Extension.builder().build();
+		final var fees = Fees.builder().build();
+		final var invoicing = new Invoicing();
+		final var start = LocalDate.of(2020, 1, 1);
+		final var end = LocalDate.of(2022, 12, 31);
+		final var area = 150;
+		final var signedByWitness = true;
+		final var areaData = new FeatureCollection();
 
 		// Create a new Contract object
-		var contract = Contract.builder()
+		final var contract = Contract.builder()
 			.withVersion(version)
 			.withContractId(contractId)
 			.withDescription(description)
@@ -132,7 +132,6 @@ class ContractTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		Assertions.assertThat(Contract.builder().build())
-			.hasAllNullFieldsOrPropertiesExcept("version", "signedByWitness");
+		assertThat(Contract.builder().build()).hasAllNullFieldsOrPropertiesExcept("version", "signedByWitness");
 	}
 }

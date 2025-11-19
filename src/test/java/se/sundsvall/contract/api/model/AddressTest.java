@@ -26,6 +26,7 @@ class AddressTest {
 
 	@Test
 	void testBuilderMethods() {
+
 		final var type = AddressType.POSTAL_ADDRESS;
 		final var streetAddress = "Testvägen 18";
 		final var postalCode = "123 45";

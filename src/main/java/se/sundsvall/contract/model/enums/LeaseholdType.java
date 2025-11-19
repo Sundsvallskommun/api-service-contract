@@ -2,7 +2,7 @@ package se.sundsvall.contract.model.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "LeaseholdType", enumAsRef = true)
+@Schema(description = "Leasehold type", enumAsRef = true)
 public enum LeaseholdType {
 	AGRICULTURE,
 	APARTMENT,

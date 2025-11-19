@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -122,7 +122,7 @@ class ContractAttachmentResource {
 				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 		})
 	@PutMapping(path = "/{attachmentId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	ResponseEntity<AttachmentMetaData> updateAttachment(
+	ResponseEntity<AttachmentMetadata> updateAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
 		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable final Long attachmentId,

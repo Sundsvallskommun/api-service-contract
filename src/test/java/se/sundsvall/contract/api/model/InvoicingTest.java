@@ -32,10 +32,10 @@ class InvoicingTest {
 
 	@Test
 	void testBuilderMethods() {
-		var invoiceInterval = MONTHLY;
-		var invoicedIn = ADVANCE;
+		final var invoiceInterval = MONTHLY;
+		final var invoicedIn = ADVANCE;
 
-		var invoicing = Invoicing.builder()
+		final var invoicing = Invoicing.builder()
 			.withInvoiceInterval(invoiceInterval)
 			.withInvoicedIn(invoicedIn)
 			.build();

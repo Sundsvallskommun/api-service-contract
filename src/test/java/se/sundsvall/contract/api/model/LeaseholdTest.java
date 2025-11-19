@@ -28,11 +28,10 @@ class LeaseholdTest {
 	@Test
 	void testBuilderMethods() {
 
-		var type = LeaseholdType.APARTMENT;
+		final var type = LeaseholdType.APARTMENT;
+		final var description = "description";
 
-		var description = "description";
-
-		var leasehold = Leasehold.builder()
+		final var leasehold = Leasehold.builder()
 			.withAdditionalInformation(Arrays.asList("info", "info2"))
 			.withPurpose(type)
 			.withDescription(description)

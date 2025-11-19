@@ -2,7 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ForeignKey;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.contract.integration.db.model.converter.enums.LeaseholdTypeConverter;
 import se.sundsvall.contract.model.enums.LeaseholdType;
 
 @Embeddable
@@ -24,7 +22,6 @@ import se.sundsvall.contract.model.enums.LeaseholdType;
 public class LeaseholdEmbeddable {
 
 	@Column(name = "leasehold_type")
-	@Convert(converter = LeaseholdTypeConverter.class)
 	private LeaseholdType purpose;
 
 	@Column(name = "leasehold_description")

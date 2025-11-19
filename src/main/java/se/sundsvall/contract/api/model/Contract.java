@@ -59,7 +59,7 @@ public class Contract {
 	private Leasehold leasehold;
 
 	@ArraySchema(schema = @Schema(description = "Metadata for all attachments", accessMode = READ_ONLY))
-	private List<AttachmentMetaData> attachmentMetaData;
+	private List<AttachmentMetadata> attachmentMetaData;
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
 	private List<TermGroup> additionalTerms;

@@ -1,13 +1,14 @@
 package se.sundsvall.contract.integration.db.model.converter.enums;
 
 import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.AddressType;
 
+@Converter(autoApply = true)
 public class AddressTypeConverter implements AttributeConverter<AddressType, String> {
 
 	@Override
@@ -21,7 +22,7 @@ public class AddressTypeConverter implements AttributeConverter<AddressType, Str
 	public AddressType convertToEntityAttribute(String dbData) {
 		try {
 			return ofNullable(dbData)
-				.filter(not(StringUtils::isBlank))
+				.filter(StringUtils::isNotBlank)
 				.map(AddressType::valueOf)
 				.orElse(null);
 		} catch (Exception e) {

@@ -25,8 +25,8 @@ class AttachmentDataTest {
 
 	@Test
 	void testBuilderMethods() {
-		var content = "base64Content";
-		var attachmentData = AttachmentData.builder()
+		final var content = "base64Content";
+		final var attachmentData = AttachmentData.builder()
 			.withContent(content)
 			.build();
 

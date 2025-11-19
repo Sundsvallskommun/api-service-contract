@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
@@ -123,7 +123,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	List<AttachmentMetaData> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
+	List<AttachmentMetadata> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
 		return ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
 				.map(this::toAttachmentMetaDataDto)
@@ -131,9 +131,9 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	public AttachmentMetaData toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
+	public AttachmentMetadata toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
-			.map(attachment -> AttachmentMetaData.builder()
+			.map(attachment -> AttachmentMetadata.builder()
 				.withCategory(attachment.getCategory())
 				.withFilename(attachment.getFilename())
 				.withId(attachment.getId())
@@ -199,7 +199,7 @@ public class DtoMapper {
 				.withAttachmentData(AttachmentData.builder()
 					.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
 					.build())
-				.withMetaData(AttachmentMetaData.builder()
+				.withMetadata(AttachmentMetadata.builder()
 					.withCategory(attachment.getCategory())
 					.withFilename(attachment.getFilename())
 					.withId(attachment.getId())

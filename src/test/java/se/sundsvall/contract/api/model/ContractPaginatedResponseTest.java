@@ -27,7 +27,7 @@ class ContractPaginatedResponseTest {
 
 	@Test
 	void testBuilderMethods() {
-		var response = ContractPaginatedResponse.builder()
+		final var response = ContractPaginatedResponse.builder()
 			.withContracts(List.of(Contract.builder().build()))
 			.withMetaData(new PagingMetaData())
 			.build();

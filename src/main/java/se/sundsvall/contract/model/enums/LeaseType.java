@@ -2,7 +2,7 @@ package se.sundsvall.contract.model.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "LeaseType", enumAsRef = true)
+@Schema(description = "Lease type", enumAsRef = true)
 public enum LeaseType {
 	LAND_LEASE_PUBLIC,
 	LAND_LEASE_RESIDENTIAL,

@@ -1,11 +1,12 @@
 package se.sundsvall.contract.service;
 
+import static org.zalando.problem.Status.NOT_FOUND;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.service.mapper.DtoMapper;
@@ -34,7 +35,7 @@ public class AttachmentService {
 	public Long createAttachment(final String municipalityId, final String contractId, final Attachment attachment) {
 		if (!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
 			throw Problem.builder()
-				.withStatus(Status.NOT_FOUND)
+				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build();
 		}
@@ -46,19 +47,19 @@ public class AttachmentService {
 		return attachmentRepository.findByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId)
 			.map(dtoMapper::toAttachmentDto)
 			.orElseThrow(() -> Problem.builder()
-				.withStatus(Status.NOT_FOUND)
+				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
 				.build());
 	}
 
-	public AttachmentMetaData updateAttachment(@ValidMunicipalityId String municipalityId, String contractId, final Long attachmentId, final Attachment attachment) {
-		var result = attachmentRepository.findById(attachmentId)
+	public AttachmentMetadata updateAttachment(@ValidMunicipalityId String municipalityId, String contractId, final Long attachmentId, final Attachment attachment) {
+		final var result = attachmentRepository.findById(attachmentId)
 			.orElseThrow(() -> Problem.builder()
-				.withStatus(Status.NOT_FOUND)
+				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
 				.build());
 
-		var updatedEntity = entityMapper.updateAttachmentEntity(result, attachment);
+		final var updatedEntity = entityMapper.updateAttachmentEntity(result, attachment);
 
 		return dtoMapper.toAttachmentMetaDataDto(attachmentRepository.save(updatedEntity));
 	}
@@ -66,7 +67,7 @@ public class AttachmentService {
 	public void deleteAttachment(final String municipalityId, final String contractId, final Long attachmentId) {
 		if (!attachmentRepository.existsByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId)) {
 			throw Problem.builder()
-				.withStatus(Status.NOT_FOUND)
+				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
 				.build();
 		}

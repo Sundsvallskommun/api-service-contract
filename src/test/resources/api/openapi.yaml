@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "3.0"
 servers:
-- url: http://localhost:56932
+- url: http://localhost:59704
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -272,7 +272,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AttachmentMetaData"
+                $ref: "#/components/schemas/AttachmentMetadata"
         "404":
           description: Not Found
           content:
@@ -695,11 +695,11 @@ components:
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     Address:
       type: object
       properties:
@@ -726,7 +726,7 @@ components:
       description: Address for stakeholder
     AddressType:
       type: string
-      description: AddressType
+      description: Address type
       example: POSTAL_ADDRESS
       enum:
       - POSTAL_ADDRESS
@@ -734,11 +734,11 @@ components:
       - VISITING_ADDRESS
     AttachmentCategory:
       type: string
-      description: AttachmentCategory
+      description: Attachment category
       enum:
       - CONTRACT
       - OTHER
-    AttachmentMetaData:
+    AttachmentMetadata:
       type: object
       properties:
         id:
@@ -808,7 +808,7 @@ components:
           type: array
           readOnly: true
           items:
-            $ref: "#/components/schemas/AttachmentMetaData"
+            $ref: "#/components/schemas/AttachmentMetadata"
         additionalTerms:
           type: array
           items:
@@ -867,7 +867,7 @@ components:
       description: Contract
     ContractType:
       type: string
-      description: ContractType
+      description: Contract type
       enum:
       - LEASE_AGREEMENT
       - PURCHASE_AGREEMENT
@@ -1086,7 +1086,7 @@ components:
               - $ref: "#/components/schemas/Polygon"
     IntervalType:
       type: string
-      description: IntervalType
+      description: Interval type
       example: QUARTERLY
       enum:
       - YEARLY
@@ -1095,7 +1095,7 @@ components:
       - MONTHLY
     InvoicedIn:
       type: string
-      description: InvoicedIn
+      description: Invoiced in
       enum:
       - ADVANCE
       - ARREARS
@@ -1109,7 +1109,7 @@ components:
       description: Invoicing details
     LeaseType:
       type: string
-      description: LeaseType
+      description: Lease type
       enum:
       - LAND_LEASE_PUBLIC
       - LAND_LEASE_RESIDENTIAL
@@ -1140,7 +1140,7 @@ components:
       description: Leasehold
     LeaseholdType:
       type: string
-      description: LeaseholdType
+      description: Leasehold type
       enum:
       - AGRICULTURE
       - APARTMENT
@@ -1334,7 +1334,7 @@ components:
       description: List of stakeholders
     StakeholderRole:
       type: string
-      description: StakeholderRole
+      description: Stakeholder role
       example: BUYER
       enum:
       - BUYER
@@ -1352,7 +1352,7 @@ components:
       - LESSEE
     StakeholderType:
       type: string
-      description: StakeholderType
+      description: Stakeholder type
       example: ASSOCIATION
       enum:
       - PERSON
@@ -1394,7 +1394,7 @@ components:
       description: Term group
     TimeUnit:
       type: string
-      description: TimeUnit
+      description: Time unit
       example: MONTHS
       enum:
       - DAYS
@@ -1570,13 +1570,13 @@ components:
     Attachment:
       required:
       - attachmentData
-      - metaData
+      - metadata
       type: object
       properties:
         attachmentData:
           $ref: "#/components/schemas/AttachmentData"
-        metaData:
-          $ref: "#/components/schemas/AttachmentMetaData"
+        metadata:
+          $ref: "#/components/schemas/AttachmentMetadata"
       description: Attachment
     AttachmentData:
       type: object

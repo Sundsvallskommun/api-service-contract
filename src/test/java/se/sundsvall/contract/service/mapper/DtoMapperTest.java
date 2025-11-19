@@ -8,7 +8,7 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
@@ -100,7 +100,7 @@ class DtoMapperTest {
 		var metadata = mapper.toAttachmentMetaDataDto(attachmentEntity);
 
 		// Assert
-		var attachmentMetaData = AttachmentMetaData.builder()
+		var attachmentMetaData = AttachmentMetadata.builder()
 			.withId(attachmentEntity.getId())
 			.withCategory(attachmentEntity.getCategory())
 			.withFilename(attachmentEntity.getFilename())
@@ -229,11 +229,11 @@ class DtoMapperTest {
 
 		// Assert
 		assertThat(attachment.getAttachmentData().getContent()).isEqualTo(new String(entity.getContent(), StandardCharsets.UTF_8));
-		assertThat(attachment.getMetaData().getCategory()).isEqualTo(entity.getCategory());
-		assertThat(attachment.getMetaData().getFilename()).isEqualTo(entity.getFilename());
-		assertThat(attachment.getMetaData().getId()).isEqualTo(entity.getId());
-		assertThat(attachment.getMetaData().getMimeType()).isEqualTo(entity.getMimeType());
-		assertThat(attachment.getMetaData().getNote()).isEqualTo(entity.getNote());
+		assertThat(attachment.getMetadata().getCategory()).isEqualTo(entity.getCategory());
+		assertThat(attachment.getMetadata().getFilename()).isEqualTo(entity.getFilename());
+		assertThat(attachment.getMetadata().getId()).isEqualTo(entity.getId());
+		assertThat(attachment.getMetadata().getMimeType()).isEqualTo(entity.getMimeType());
+		assertThat(attachment.getMetadata().getNote()).isEqualTo(entity.getNote());
 	}
 
 	@Test

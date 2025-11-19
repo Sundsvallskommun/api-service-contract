@@ -1,6 +1,7 @@
 package se.sundsvall.contract;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static se.sundsvall.contract.model.enums.AddressType.VISITING_ADDRESS;
 import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
@@ -9,7 +10,10 @@ import static se.sundsvall.contract.model.enums.LeaseType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
 import static se.sundsvall.contract.model.enums.Party.LESSEE;
 import static se.sundsvall.contract.model.enums.Party.LESSOR;
+import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
+import static se.sundsvall.contract.model.enums.StakeholderType.ASSOCIATION;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.model.enums.TimeUnit.MONTHS;
 
 import java.math.BigDecimal;
@@ -20,7 +24,7 @@ import org.geojson.FeatureCollection;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
@@ -39,10 +43,6 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.AddressType;
-import se.sundsvall.contract.model.enums.AttachmentCategory;
-import se.sundsvall.contract.model.enums.StakeholderRole;
-import se.sundsvall.contract.model.enums.StakeholderType;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 public final class TestFactory {
@@ -141,12 +141,12 @@ public final class TestFactory {
 					.withPostalCode("somePostalCode")
 					.withCountry("someCountry")
 					.withAttention("someAttention")
-					.withType(AddressType.VISITING_ADDRESS)
+					.withType(VISITING_ADDRESS)
 					.build())
-				.withRoles(List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE))
+				.withRoles(List.of(POWER_OF_ATTORNEY_ROLE))
 				.withEmailAddress("someEmailAddress")
 				.withPhoneNumber("somePhoneNumber")
-				.withType(StakeholderType.ASSOCIATION)
+				.withType(ASSOCIATION)
 				.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(List.of(
@@ -172,7 +172,7 @@ public final class TestFactory {
 			.withObjectIdentity("someObjectIdentity")
 			.withDuration(Duration.builder()
 				.withLeaseDuration(30)
-				.withUnit(TimeUnit.DAYS)
+				.withUnit(DAYS)
 				.build())
 			.withExtension(Extension.builder()
 				.withAutoExtend(true)
@@ -240,12 +240,12 @@ public final class TestFactory {
 						.withPostalCode("somePostalCode")
 						.withCountry("someCountry")
 						.withAttention("someAttention")
-						.withType(AddressType.VISITING_ADDRESS)
+						.withType(VISITING_ADDRESS)
 						.build())
-					.withRoles(List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE))
+					.withRoles(List.of(POWER_OF_ATTORNEY_ROLE))
 					.withEmailAddress("someEmailAddress")
 					.withPhoneNumber("somePhoneNumber")
-					.withType(StakeholderType.ASSOCIATION)
+					.withType(ASSOCIATION)
 					.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(List.of(
@@ -261,9 +261,9 @@ public final class TestFactory {
 			.withAttachmentData(AttachmentData.builder()
 				.withContent("someContent")
 				.build())
-			.withMetaData(AttachmentMetaData.builder()
+			.withMetadata(AttachmentMetadata.builder()
 				.withNote("aNote")
-				.withCategory(AttachmentCategory.CONTRACT)
+				.withCategory(CONTRACT)
 				.withMimeType("mimeType")
 				.withFilename("file.pdf")
 				.build())
@@ -277,7 +277,7 @@ public final class TestFactory {
 			.withPostalCode("somePostalCode")
 			.withCountry("someCountry")
 			.withAttention("someAttention")
-			.withType(AddressType.VISITING_ADDRESS)
+			.withType(VISITING_ADDRESS)
 			.build();
 	}
 }

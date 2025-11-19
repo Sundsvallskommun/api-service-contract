@@ -4,6 +4,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 
+@Converter(autoApply = true)
 public class StakeholderRoleConverter implements AttributeConverter<List<StakeholderRole>, String> {
 
 	public static final String DELIMITER = ",";
@@ -28,7 +30,7 @@ public class StakeholderRoleConverter implements AttributeConverter<List<Stakeho
 	public List<StakeholderRole> convertToEntityAttribute(String dbData) {
 		try {
 			return Arrays.stream(dbData.split(DELIMITER))
-				.filter(not(StringUtils::isBlank))
+				.filter(StringUtils::isNotBlank)
 				.map(StakeholderRole::valueOf)
 				.toList();
 		} catch (Exception e) {

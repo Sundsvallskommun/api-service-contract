@@ -2,7 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,8 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderRoleConverter;
-import se.sundsvall.contract.integration.db.model.converter.enums.StakeholderTypeConverter;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
 
@@ -35,11 +32,9 @@ public class StakeholderEntity {
 	private Long id;
 
 	@Column(name = "type")
-	@Convert(converter = StakeholderTypeConverter.class)
 	private StakeholderType type;
 
 	@Column(name = "roles")
-	@Convert(converter = StakeholderRoleConverter.class)
 	private List<StakeholderRole> roles;
 
 	@Column(name = "organization_name")

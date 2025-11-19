@@ -152,21 +152,21 @@ public class EntityMapper {
 
 	public AttachmentEntity toAttachmentEntity(final String municipalityId, final String contractId, final Attachment attachment) {
 		return AttachmentEntity.builder()
-			.withCategory(attachment.getMetaData().getCategory())
+			.withCategory(attachment.getMetadata().getCategory())
 			.withContent(attachment.getAttachmentData().getContent().getBytes(StandardCharsets.UTF_8))
 			.withContractId(contractId)
-			.withFilename(attachment.getMetaData().getFilename())
-			.withMimeType(attachment.getMetaData().getMimeType())
+			.withFilename(attachment.getMetadata().getFilename())
+			.withMimeType(attachment.getMetadata().getMimeType())
 			.withMunicipalityId(municipalityId)
-			.withNote(attachment.getMetaData().getNote())
+			.withNote(attachment.getMetadata().getNote())
 			.build();
 	}
 
 	public AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final Attachment attachment) {
-		setPropertyUnlessNull(attachment.getMetaData().getCategory(), entity::setCategory);
-		setPropertyUnlessNull(attachment.getMetaData().getFilename(), entity::setFilename);
-		setPropertyUnlessNull(attachment.getMetaData().getMimeType(), entity::setMimeType);
-		setPropertyUnlessNull(attachment.getMetaData().getNote(), entity::setNote);
+		setPropertyUnlessNull(attachment.getMetadata().getCategory(), entity::setCategory);
+		setPropertyUnlessNull(attachment.getMetadata().getFilename(), entity::setFilename);
+		setPropertyUnlessNull(attachment.getMetadata().getMimeType(), entity::setMimeType);
+		setPropertyUnlessNull(attachment.getMetadata().getNote(), entity::setNote);
 		setPropertyUnlessNull(attachment.getAttachmentData().getContent().getBytes(StandardCharsets.UTF_8), entity::setContent);
 
 		return entity;

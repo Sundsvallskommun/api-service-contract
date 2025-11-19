@@ -2,6 +2,7 @@ package se.sundsvall.contract.service.mapper;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,13 @@ public final class StakeholderParameterMapper {
 	private StakeholderParameterMapper() {}
 
 	public static List<StakeholderParameterEntity> toStakeholderParameterEntityList(final List<Parameter> parameters, final StakeholderEntity entity) {
-		return new ArrayList<>(toUniqueKeyList(parameters).stream()
+		return toUniqueKeyList(parameters).stream()
 			.map(parameter -> {
 				final var result = toStakeholderParameterEntity(parameter);
 				result.setStakeholderEntity(entity);
 				return result;
 			})
-			.toList());
+			.collect(toCollection(ArrayList::new));
 	}
 
 	public static StakeholderParameterEntity toStakeholderParameterEntity(final Parameter parameter) {
@@ -48,7 +49,7 @@ public final class StakeholderParameterMapper {
 	}
 
 	public static List<Parameter> toUniqueKeyList(final List<Parameter> parameterList) {
-		return new ArrayList<>(Optional.ofNullable(parameterList).orElse(emptyList()).stream()
+		return Optional.ofNullable(parameterList).orElse(emptyList()).stream()
 			.collect(groupingBy(Parameter::getKey))
 			.entrySet()
 			.stream()
@@ -61,6 +62,6 @@ public final class StakeholderParameterMapper {
 					.flatMap(List::stream)
 					.toList()))
 				.build())
-			.toList());
+			.collect(toCollection(ArrayList::new));
 	}
 }

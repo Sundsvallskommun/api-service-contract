@@ -31,7 +31,7 @@ class ExtensionTest {
 		final var leaseExtension = 3;
 		final var unit = TimeUnit.DAYS;
 
-		var object = Extension.builder()
+		final var object = Extension.builder()
 			.withAutoExtend(autoExtend)
 			.withLeaseExtension(leaseExtension)
 			.withUnit(unit)

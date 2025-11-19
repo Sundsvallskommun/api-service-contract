@@ -36,16 +36,16 @@ class ContractRequestTest {
 
 	@Test
 	void testBuilderMethods() {
-		var contractId = "2024-12345";
-		var partyId = "partyId";
-		var organizationNumber = "organizationNumber";
-		var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
-		var externalReferenceId = "externalReferenceId";
-		var endDate = LocalDate.of(2023, 10, 10);
-		var leaseType = LeaseType.SITE_LEASE_COMMERCIAL;
-		var term = "term";
+		final var contractId = "2024-12345";
+		final var partyId = "partyId";
+		final var organizationNumber = "organizationNumber";
+		final var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
+		final var externalReferenceId = "externalReferenceId";
+		final var endDate = LocalDate.of(2023, 10, 10);
+		final var leaseType = LeaseType.SITE_LEASE_COMMERCIAL;
+		final var term = "term";
 
-		var request = ContractRequest.builder()
+		final var request = ContractRequest.builder()
 			.withContractId(contractId)
 			.withPartyId(partyId)
 			.withOrganizationNumber(organizationNumber)

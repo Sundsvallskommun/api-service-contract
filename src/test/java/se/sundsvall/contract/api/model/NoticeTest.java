@@ -32,7 +32,7 @@ class NoticeTest {
 		final var periodOfNotice = 3;
 		final var unit = TimeUnit.DAYS;
 
-		var object = Notice.builder()
+		final var object = Notice.builder()
 			.withParty(party)
 			.withPeriodOfNotice(periodOfNotice)
 			.withUnit(unit)

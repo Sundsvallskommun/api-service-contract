@@ -23,5 +23,5 @@ public class Attachment {
 
 	@Valid
 	@Schema(description = "Attachment metadata", requiredMode = REQUIRED)
-	private AttachmentMetaData metaData;
+	private AttachmentMetadata metadata;
 }
