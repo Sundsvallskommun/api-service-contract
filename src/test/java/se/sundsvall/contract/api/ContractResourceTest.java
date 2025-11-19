@@ -167,13 +167,13 @@ class ContractResourceTest {
 		final var contract = Contract.builder()
 			.withArea(0)
 			.withInvoicing(Invoicing.builder()
-				.withInvoiceInterval(QUARTERLY.name())
-				.withInvoicedIn(ARREARS.name())
+				.withInvoiceInterval(QUARTERLY)
+				.withInvoicedIn(ARREARS)
 				.build())
-			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL.name())
-			.withStatus(ACTIVE.name())
+			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
+			.withStatus(ACTIVE)
 			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
-			.withType(ContractType.LEASE_AGREEMENT.name())
+			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 
 		when(contractServiceMock.createContract(MUNICIPALITY_ID, contract)).thenReturn(CONTRACT_ID);

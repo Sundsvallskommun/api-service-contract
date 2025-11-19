@@ -23,6 +23,7 @@ import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.service.AttachmentService;
 
 @ActiveProfiles("junit")
@@ -67,11 +68,10 @@ class ContractAttachmentResourceTest {
 				.withContent("someContent")
 				.build())
 			.withMetaData(AttachmentMetaData.builder()
-				.withCategory("aCategory")
+				.withCategory(AttachmentCategory.OTHER)
 				.withFilename("aFilename")
 				.withMimeType("aMimeType")
 				.withNote("aNote")
-				.withCategory("CONTRACT")
 				.build())
 			.build();
 
@@ -95,11 +95,10 @@ class ContractAttachmentResourceTest {
 	void testUpdateAttachmentMetaData() {
 		// Arrange
 		final var attachmentMetaData = AttachmentMetaData.builder()
-			.withCategory("aNewCategory")
 			.withFilename("aNewFilename")
 			.withMimeType("aNewMimeType")
 			.withNote("aNewNote")
-			.withCategory("OTHER")
+			.withCategory(AttachmentCategory.OTHER)
 			.build();
 
 		final Attachment attachment = Attachment.builder()

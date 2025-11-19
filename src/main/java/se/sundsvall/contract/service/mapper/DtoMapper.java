@@ -25,17 +25,6 @@ import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.enums.AddressType;
-import se.sundsvall.contract.model.enums.AttachmentCategory;
-import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.contract.model.enums.InvoicedIn;
-import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.model.enums.LeaseholdType;
-import se.sundsvall.contract.model.enums.Party;
-import se.sundsvall.contract.model.enums.StakeholderRole;
-import se.sundsvall.contract.model.enums.StakeholderType;
-import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 @Component
@@ -55,7 +44,7 @@ public class DtoMapper {
 			.withFees(toFeesDto(contractEntity))
 			.withIndexTerms(contractEntity.getIndexTerms())
 			.withInvoicing(toInvoicingDto(contractEntity))
-			.withLeaseType(ofNullable(contractEntity.getLeaseType()).map(LeaseType::name).orElse(null))
+			.withLeaseType(contractEntity.getLeaseType())
 			.withDuration(toDurationDto(contractEntity))
 			.withExtension(toExtensionDto(contractEntity))
 			.withLeasehold(toLeaseholdDto(contractEntity.getLeasehold()))
@@ -66,8 +55,8 @@ public class DtoMapper {
 			.withSignedByWitness(contractEntity.isSignedByWitness())
 			.withStakeholders(toStakeholderDtos(contractEntity.getStakeholders()))
 			.withStart(contractEntity.getStart())
-			.withStatus(ofNullable(contractEntity.getStatus()).map(Status::name).orElse(null))
-			.withType(ofNullable(contractEntity.getType()).map(ContractType::name).orElse(null))
+			.withStatus(contractEntity.getStatus())
+			.withType(contractEntity.getType())
 			.withVersion(contractEntity.getVersion())
 			.build();
 	}
@@ -76,7 +65,7 @@ public class DtoMapper {
 		return ofNullable(contractEntity)
 			.map(entity -> Duration.builder()
 				.withLeaseDuration(entity.getLeaseDuration())
-				.withUnit(ofNullable(entity.getLeaseDurationUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.withUnit(ofNullable(entity.getLeaseDurationUnit()).orElse(TimeUnit.DAYS))
 				.build())
 			.orElse(null);
 	}
@@ -86,7 +75,7 @@ public class DtoMapper {
 			.map(entity -> Extension.builder()
 				.withAutoExtend(contractEntity.getAutoExtend())
 				.withLeaseExtension(contractEntity.getLeaseExtension())
-				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).orElse(TimeUnit.DAYS))
 				.build())
 			.orElse(null);
 	}
@@ -103,8 +92,8 @@ public class DtoMapper {
 		return ofNullable(noticeEmbeddable)
 			.map(embeddable -> Notice.builder()
 				.withPeriodOfNotice(embeddable.getPeriodOfNotice())
-				.withParty(ofNullable(embeddable.getParty()).map(Party::name).orElse(null))
-				.withUnit(ofNullable(embeddable.getUnit()).map(TimeUnit::name).orElse(TimeUnit.DAYS.toString()))
+				.withParty(embeddable.getParty())
+				.withUnit(ofNullable(embeddable.getUnit()).orElse(TimeUnit.DAYS))
 				.build())
 			.orElse(null);
 	}
@@ -128,8 +117,8 @@ public class DtoMapper {
 	Invoicing toInvoicingDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getInvoicing())
 			.map(invoicing -> Invoicing.builder()
-				.withInvoiceInterval(ofNullable(invoicing.getInvoiceInterval()).map(IntervalType::name).orElse(null))
-				.withInvoicedIn(ofNullable(invoicing.getInvoicedIn()).map(InvoicedIn::name).orElse(null))
+				.withInvoiceInterval(invoicing.getInvoiceInterval())
+				.withInvoicedIn(invoicing.getInvoicedIn())
 				.build())
 			.orElse(null);
 	}
@@ -145,7 +134,7 @@ public class DtoMapper {
 	public AttachmentMetaData toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> AttachmentMetaData.builder()
-				.withCategory(ofNullable(attachment.getCategory()).map(AttachmentCategory::name).orElse(null))
+				.withCategory(attachment.getCategory())
 				.withFilename(attachment.getFilename())
 				.withId(attachment.getId())
 				.withMimeType(attachment.getMimeType())
@@ -157,9 +146,7 @@ public class DtoMapper {
 	Leasehold toLeaseholdDto(final LeaseholdEmbeddable leaseholdEntity) {
 		return ofNullable(leaseholdEntity)
 			.map(leasehold -> Leasehold.builder()
-				.withPurpose(ofNullable(leasehold.getPurpose())
-					.map(LeaseholdType::name)
-					.orElse(null))
+				.withPurpose(leasehold.getPurpose())
 				.withAdditionalInformation(leasehold.getAdditionalInformation())
 				.withDescription(leasehold.getDescription())
 				.build())
@@ -185,8 +172,8 @@ public class DtoMapper {
 				.withOrganizationNumber(stakeholder.getOrganizationNumber())
 				.withPartyId(stakeholder.getPartyId())
 				.withPhoneNumber(stakeholder.getPhoneNumber())
-				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).map(StakeholderRole::name).toList())
-				.withType(ofNullable(stakeholder.getType()).map(StakeholderType::name).orElse(null))
+				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).toList())
+				.withType(stakeholder.getType())
 				.withParameters(toParameterList(stakeholderEntity.getParameters()))
 				.build())
 			.orElse(null);
@@ -201,7 +188,7 @@ public class DtoMapper {
 				.withStreetAddress(address.getStreetAddress())
 				.withCareOf(address.getCareOf())
 				.withTown(address.getTown())
-				.withType(ofNullable(address.getType()).map(AddressType::name).orElse(null))
+				.withType(address.getType())
 				.build())
 			.orElse(null);
 	}
@@ -213,7 +200,7 @@ public class DtoMapper {
 					.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
 					.build())
 				.withMetaData(AttachmentMetaData.builder()
-					.withCategory(attachment.getCategory().toString())
+					.withCategory(attachment.getCategory())
 					.withFilename(attachment.getFilename())
 					.withId(attachment.getId())
 					.withMimeType(attachment.getMimeType())

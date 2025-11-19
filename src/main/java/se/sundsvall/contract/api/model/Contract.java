@@ -6,6 +6,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIR
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -17,7 +18,9 @@ import org.geojson.FeatureCollection;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.Status;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -38,14 +41,7 @@ public class Contract {
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseType}
-	 */
-	@Schema(description = "Type of lease", example = "LEASEHOLD")
-	@OneOf(value = {
-		"LAND_LEASE_PUBLIC", "SITE_LEASE_COMMERCIAL", "LAND_LEASE_RESIDENTIAL", "OBJECT_LEASE", "LAND_LEASE_MISC", "USUFRUCT_MOORING", "USUFRUCT_HUNTING", "USUFRUCT_FARMING", "USUFRUCT_MISC", "LEASEHOLD", "OTHER_FEE"
-	}, nullable = true)
-	private String leaseType;
+	private LeaseType leaseType;
 
 	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = READ_ONLY)
 	private String municipalityId;
@@ -53,23 +49,11 @@ public class Contract {
 	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = NOT_REQUIRED)
 	private String objectIdentity;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
-	 */
-	@Schema(description = "Status for contract", example = "ACTIVE")
-	@OneOf({
-		"ACTIVE", "DRAFT", "TERMINATED"
-	})
-	private String status;
+	@NotNull
+	private Status status;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.ContractType}
-	 */
-	@Schema(description = "Contract type.", example = "LEASE_AGREEMENT")
-	@OneOf(value = {
-		"LEASE_AGREEMENT", "PURCHASE_AGREEMENT"
-	})
-	private String type;
+	@NotNull
+	private ContractType type;
 
 	@Schema(description = "Type of leasehold")
 	private Leasehold leasehold;

@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.IntervalType;
+import se.sundsvall.contract.model.enums.InvoicedIn;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -15,21 +16,8 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Schema(description = "Invoicing details")
 public class Invoicing {
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.IntervalType}
-	 */
 	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
-	@OneOf(value = {
-		"YEARLY", "HALF_YEARLY", "QUARTERLY", "MONTHLY"
-	}, nullable = true)
-	private String invoiceInterval;
+	private IntervalType invoiceInterval;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.InvoicedIn}
-	 */
-	@Schema(description = "How the lease is invoiced", example = "ADVANCE")
-	@OneOf(value = {
-		"ADVANCE", "ARREARS"
-	}, nullable = true)
-	private String invoicedIn;
+	private InvoicedIn invoicedIn;
 }

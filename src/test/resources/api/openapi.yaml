@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "3.0"
 servers:
-- url: http://localhost:51699
+- url: http://localhost:56932
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -419,9 +419,7 @@ paths:
         description: Lease type
         required: false
         schema:
-          type: string
-          description: Lease type
-          example: LEASEHOLD
+          $ref: "#/components/schemas/LeaseType"
         example: LEASEHOLD
       - name: term
         in: query
@@ -690,9 +688,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
     StatusType:
       type: object
@@ -706,9 +704,7 @@ components:
       type: object
       properties:
         type:
-          type: string
-          description: Address type
-          example: POSTAL_ADDRESS
+          $ref: "#/components/schemas/AddressType"
         streetAddress:
           type: string
           example: Testvägen 18
@@ -728,6 +724,20 @@ components:
           type: string
           example: Test Testorsson
       description: Address for stakeholder
+    AddressType:
+      type: string
+      description: AddressType
+      example: POSTAL_ADDRESS
+      enum:
+      - POSTAL_ADDRESS
+      - BILLING_ADDRESS
+      - VISITING_ADDRESS
+    AttachmentCategory:
+      type: string
+      description: AttachmentCategory
+      enum:
+      - CONTRACT
+      - OTHER
     AttachmentMetaData:
       type: object
       properties:
@@ -738,9 +748,7 @@ components:
           readOnly: true
           example: 1234
         category:
-          type: string
-          description: "The attachment category. Possible values: CONTRACT | OTHER"
-          example: CONTRACT
+          $ref: "#/components/schemas/AttachmentCategory"
         filename:
           type: string
           description: The attachment filename
@@ -755,6 +763,9 @@ components:
           example: The contract was a little wrinkled when scanned
       description: Attachment metadata
     Contract:
+      required:
+      - status
+      - type
       type: object
       properties:
         version:
@@ -777,9 +788,7 @@ components:
           description: External referenceId
           example: "123"
         leaseType:
-          type: string
-          description: Type of lease
-          example: LEASEHOLD
+          $ref: "#/components/schemas/LeaseType"
         municipalityId:
           type: string
           description: Municipality id for the contract
@@ -790,13 +799,9 @@ components:
           description: Object identity (from Lantmäteriet)
           example: 909a6a80-d1a4-90ec-e040-ed8f66444c3f
         status:
-          type: string
-          description: Status for contract
-          example: ACTIVE
+          $ref: "#/components/schemas/Status"
         type:
-          type: string
-          description: Contract type.
-          example: LEASE_AGREEMENT
+          $ref: "#/components/schemas/ContractType"
         leasehold:
           $ref: "#/components/schemas/Leasehold"
         attachmentMetaData:
@@ -860,6 +865,12 @@ components:
         areaData:
           $ref: "#/components/schemas/FeatureCollection"
       description: Contract
+    ContractType:
+      type: string
+      description: ContractType
+      enum:
+      - LEASE_AGREEMENT
+      - PURCHASE_AGREEMENT
     Crs:
       type: object
       properties:
@@ -873,6 +884,9 @@ components:
           additionalProperties:
             type: object
     Duration:
+      required:
+      - leaseDuration
+      - unit
       type: object
       properties:
         leaseDuration:
@@ -881,11 +895,12 @@ components:
           format: int32
           example: 9
         unit:
-          type: string
-          description: The unit of the duration value
-          example: MONTHS
+          $ref: "#/components/schemas/TimeUnit"
       description: Duration
     Extension:
+      required:
+      - leaseExtension
+      - unit
       type: object
       properties:
         autoExtend:
@@ -900,9 +915,7 @@ components:
           format: int32
           example: 2
         unit:
-          type: string
-          description: The unit of the extension value
-          example: MONTHS
+          $ref: "#/components/schemas/TimeUnit"
       description: Extension
     ExtraParameterGroup:
       type: object
@@ -1071,25 +1084,49 @@ components:
               - $ref: "#/components/schemas/MultiPolygon"
               - $ref: "#/components/schemas/Point"
               - $ref: "#/components/schemas/Polygon"
+    IntervalType:
+      type: string
+      description: IntervalType
+      example: QUARTERLY
+      enum:
+      - YEARLY
+      - HALF_YEARLY
+      - QUARTERLY
+      - MONTHLY
+    InvoicedIn:
+      type: string
+      description: InvoicedIn
+      enum:
+      - ADVANCE
+      - ARREARS
     Invoicing:
       type: object
       properties:
         invoiceInterval:
-          type: string
-          description: How often the lease is invoiced
-          example: QUARTERLY
+          $ref: "#/components/schemas/IntervalType"
         invoicedIn:
-          type: string
-          description: How the lease is invoiced
-          example: ADVANCE
+          $ref: "#/components/schemas/InvoicedIn"
       description: Invoicing details
+    LeaseType:
+      type: string
+      description: LeaseType
+      enum:
+      - LAND_LEASE_PUBLIC
+      - LAND_LEASE_RESIDENTIAL
+      - SITE_LEASE_COMMERCIAL
+      - USUFRUCT_MOORING
+      - USUFRUCT_HUNTING
+      - USUFRUCT_FARMING
+      - USUFRUCT_MISC
+      - OBJECT_LEASE
+      - LAND_LEASE_MISC
+      - LEASEHOLD
+      - OTHER_FEE
     Leasehold:
       type: object
       properties:
         purpose:
-          type: string
-          description: Type of leasehold
-          example: OTHER
+          $ref: "#/components/schemas/LeaseholdType"
         description:
           type: string
           description: 'description '
@@ -1101,6 +1138,27 @@ components:
             description: Additional information
             example: Some additional information
       description: Leasehold
+    LeaseholdType:
+      type: string
+      description: LeaseholdType
+      enum:
+      - AGRICULTURE
+      - APARTMENT
+      - BOATING_PLACE
+      - BUILDING
+      - DEPOT
+      - DWELLING
+      - LAND_COMPLEMENT
+      - LINEUP
+      - OTHER
+      - PARKING
+      - RECYCLING_STATION
+      - ROAD
+      - SIGNBOARD
+      - SNOW_DUMP
+      - SPORTS_PURPOSE
+      - SURFACE_HEAT
+      - TRAIL
     LineString:
       type: object
       allOf:
@@ -1167,21 +1225,18 @@ components:
     Notice:
       required:
       - periodOfNotice
+      - unit
       type: object
       properties:
         party:
-          type: string
-          description: The party type
-          example: LESSOR
+          $ref: "#/components/schemas/Party"
         periodOfNotice:
           type: integer
           description: The period of notice
           format: int32
           example: 3
         unit:
-          type: string
-          description: The unit of the periodOfNotice value
-          example: MONTHS
+          $ref: "#/components/schemas/TimeUnit"
       description: Notice
     Parameter:
       required:
@@ -1205,6 +1260,13 @@ components:
             type: string
             description: Parameter values
       description: Parameter model
+    Party:
+      type: string
+      description: Party
+      example: LESSOR
+      enum:
+      - LESSOR
+      - LESSEE
     Point:
       type: object
       allOf:
@@ -1229,19 +1291,11 @@ components:
       type: object
       properties:
         type:
-          type: string
-          description: "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION\
-            \ | MUNICIPALITY | REGION | OTHER"
-          example: ASSOCIATION
+          $ref: "#/components/schemas/StakeholderType"
         roles:
           type: array
           items:
-            type: string
-            description: "List of roles, possible values: BUYER | CONTACT_PERSON |\
-              \ GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK\
-              \ | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY | PRIMARY_BILLING_PARTY\
-              \ | LESSOR | LESSEE"
-            example: BUYER
+            $ref: "#/components/schemas/StakeholderRole"
         organizationName:
           type: string
           description: Name of the organization
@@ -1278,6 +1332,42 @@ components:
           items:
             $ref: "#/components/schemas/Parameter"
       description: List of stakeholders
+    StakeholderRole:
+      type: string
+      description: StakeholderRole
+      example: BUYER
+      enum:
+      - BUYER
+      - CONTACT_PERSON
+      - GRANTOR
+      - LAND_RIGHT_OWNER
+      - LEASEHOLDER
+      - PROPERTY_OWNER
+      - POWER_OF_ATTORNEY_CHECK
+      - POWER_OF_ATTORNEY_ROLE
+      - SELLER
+      - SIGNATORY
+      - PRIMARY_BILLING_PARTY
+      - LESSOR
+      - LESSEE
+    StakeholderType:
+      type: string
+      description: StakeholderType
+      example: ASSOCIATION
+      enum:
+      - PERSON
+      - COMPANY
+      - ASSOCIATION
+      - MUNICIPALITY
+      - REGION
+      - OTHER
+    Status:
+      type: string
+      description: Status
+      enum:
+      - ACTIVE
+      - DRAFT
+      - TERMINATED
     Term:
       type: object
       properties:
@@ -1302,6 +1392,14 @@ components:
           items:
             $ref: "#/components/schemas/Term"
       description: Term group
+    TimeUnit:
+      type: string
+      description: TimeUnit
+      example: MONTHS
+      enum:
+      - DAYS
+      - MONTHS
+      - YEARS
     ConstraintViolationProblem:
       type: object
       properties:
@@ -1425,9 +1523,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         suppressed:
           type: array

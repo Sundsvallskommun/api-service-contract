@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -20,14 +20,7 @@ public class AttachmentMetaData {
 	@Schema(description = "The attachment id", example = "1234", accessMode = READ_ONLY)
 	private Long id;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AttachmentCategory}
-	 */
-	@Schema(description = "The attachment category. Possible values: CONTRACT | OTHER", example = "CONTRACT")
-	@OneOf({
-		"CONTRACT", "OTHER"
-	})
-	private String category;
+	private AttachmentCategory category;
 
 	@Schema(description = "The attachment filename", example = "LeaseContract12.pdf")
 	private String filename;

@@ -9,15 +9,8 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
-import se.sundsvall.contract.model.enums.AddressType;
-import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.contract.model.enums.InvoicedIn;
-import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.model.enums.LeaseholdType;
 import se.sundsvall.contract.model.enums.Party;
-import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
@@ -48,11 +41,11 @@ class EntityMapperTest {
 		assertThat(entity.getFees()).isEqualTo(dto.getFees());
 		assertThat(entity.getIndexTerms()).isEqualTo(dto.getIndexTerms());
 		assertThat(entity.getInvoicing()).isNotNull();  // Is tested in its own method
-		assertThat(entity.getLeaseType()).isEqualTo(LeaseType.valueOf(dto.getLeaseType()));
+		assertThat(entity.getLeaseType()).isEqualTo(dto.getLeaseType());
 		assertThat(entity.getLeaseDuration()).isEqualTo(dto.getDuration().getLeaseDuration());
-		assertThat(entity.getLeaseDurationUnit()).isEqualTo(TimeUnit.valueOf(dto.getDuration().getUnit()));
+		assertThat(entity.getLeaseDurationUnit()).isEqualTo(dto.getDuration().getUnit());
 		assertThat(entity.getLeaseExtension()).isEqualTo(dto.getExtension().getLeaseExtension());
-		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(TimeUnit.valueOf(dto.getExtension().getUnit()));
+		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(dto.getExtension().getUnit());
 		assertThat(entity.getAutoExtend()).isEqualTo(dto.getExtension().getAutoExtend());
 		assertThat(entity.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
@@ -62,8 +55,8 @@ class EntityMapperTest {
 		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
 		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getStart()).isEqualTo(dto.getStart());
-		assertThat(entity.getStatus()).isEqualTo(Status.valueOf(dto.getStatus()));
-		assertThat(entity.getType()).isEqualTo(ContractType.valueOf(dto.getType()));
+		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
+		assertThat(entity.getType()).isEqualTo(dto.getType());
 		assertThat(entity.getVersion()).isEqualTo(dto.getVersion());
 	}
 
@@ -77,8 +70,8 @@ class EntityMapperTest {
 		final var entity = mapper.toInvoicingEntity(dto.getInvoicing());
 
 		// Assert
-		assertThat(entity.getInvoicedIn()).isEqualTo(InvoicedIn.valueOf(dto.getInvoicing().getInvoicedIn()));
-		assertThat(entity.getInvoiceInterval()).isEqualTo(IntervalType.valueOf(dto.getInvoicing().getInvoiceInterval()));
+		assertThat(entity.getInvoicedIn()).isEqualTo(dto.getInvoicing().getInvoicedIn());
+		assertThat(entity.getInvoiceInterval()).isEqualTo(dto.getInvoicing().getInvoiceInterval());
 	}
 
 	@Test
@@ -113,7 +106,7 @@ class EntityMapperTest {
 		assertThat(entity.getPartyId()).isEqualTo(dto.getPartyId());
 		assertThat(entity.getPhoneNumber()).isEqualTo(dto.getPhoneNumber());
 		// Assert that all roles are mapped
-		var array = dto.getRoles().stream().map(StakeholderRole::valueOf).toList();
+		var array = dto.getRoles().stream().toList();
 		assertThat(entity.getRoles()).containsAll(array);
 	}
 
@@ -129,7 +122,7 @@ class EntityMapperTest {
 		// Assert
 		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
 		assertThat(entity.getAdditionalInformation()).isEqualTo(dto.getAdditionalInformation());
-		assertThat(entity.getPurpose()).isEqualTo(LeaseholdType.valueOf(dto.getPurpose()));
+		assertThat(entity.getPurpose()).isEqualTo(dto.getPurpose());
 	}
 
 	@Test
@@ -147,7 +140,7 @@ class EntityMapperTest {
 		assertThat(entity.getPostalCode()).isEqualTo(dto.getPostalCode());
 		assertThat(entity.getStreetAddress()).isEqualTo(dto.getStreetAddress());
 		assertThat(entity.getTown()).isEqualTo(dto.getTown());
-		assertThat(entity.getType()).isEqualTo(AddressType.valueOf(dto.getType()));
+		assertThat(entity.getType()).isEqualTo(dto.getType());
 	}
 
 	@Test
@@ -160,7 +153,7 @@ class EntityMapperTest {
 		final var entity = mapper.toAttachmentEntity(MUNICIPALITY_ID, "2024-12345", dto);
 
 		// Assert
-		assertThat(entity.getCategory()).isEqualTo(AttachmentCategory.valueOf(dto.getMetaData().getCategory()));
+		assertThat(entity.getCategory()).isEqualTo(dto.getMetaData().getCategory());
 		assertThat(entity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
 		assertThat(entity.getContractId()).isEqualTo("2024-12345");
 		assertThat(entity.getFilename()).isEqualTo(dto.getMetaData().getFilename());
@@ -180,7 +173,7 @@ class EntityMapperTest {
 		final var updatedEntity = mapper.updateAttachmentEntity(entity, dto);
 
 		// Assert
-		assertThat(updatedEntity.getCategory()).isEqualTo(AttachmentCategory.valueOf(dto.getMetaData().getCategory()));
+		assertThat(updatedEntity.getCategory()).isEqualTo(dto.getMetaData().getCategory());
 		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getMetaData().getFilename());
 		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMetaData().getMimeType());
 		assertThat(updatedEntity.getNote()).isEqualTo(dto.getMetaData().getNote());
@@ -206,16 +199,16 @@ class EntityMapperTest {
 
 		// Arrange
 		final var dto = Contract.builder()
-			.withStatus(Status.DRAFT.name())
-			.withType(ContractType.LEASE_AGREEMENT.name())
+			.withStatus(Status.DRAFT)
+			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 
 		// Act
 		final var entity = mapper.toContractEntity(MUNICIPALITY_ID, dto);
 
 		// Assert
-		assertThat(entity.getStatus()).isEqualTo(Status.valueOf(dto.getStatus()));
-		assertThat(entity.getType()).isEqualTo(ContractType.valueOf(dto.getType()));
+		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
+		assertThat(entity.getType()).isEqualTo(dto.getType());
 	}
 
 	@Test

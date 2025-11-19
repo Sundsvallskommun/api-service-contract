@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.LeaseholdType;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -17,21 +17,11 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Schema(description = "Leasehold")
 public class Leasehold {
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LeaseholdType}
-	 */
-	@Schema(example = "OTHER", description = "Type of leasehold")
-	@OneOf(value = {
-		"AGRICULTURE", "APARTMENT", "BOATING_PLACE", "BUILDING", "DEPOT", "DWELLING",
-		"LAND_COMPLEMENT", "LINEUP", "OTHER", "PARKING", "RECYCLING_STATION", "ROAD", "SIGNBOARD",
-		"SNOW_DUMP", "SPORTS_PURPOSE", "SURFACE_HEAT", "TRAIL"
-	}, nullable = true)
-	private String purpose;
+	private LeaseholdType purpose;
 
 	@Schema(description = "description ", example = "A simple description of the leasehold")
 	private String description;
 
 	@ArraySchema(schema = @Schema(description = "Additional information", example = "Some additional information"))
 	private List<String> additionalInformation;
-
 }

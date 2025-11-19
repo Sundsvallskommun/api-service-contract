@@ -9,7 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -17,22 +18,11 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Builder(setterPrefix = "with")
 public class Stakeholder {
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderType}
-	 */
-	@Schema(example = "ASSOCIATION", description = "Type of stakeholder, possible values: PERSON | COMPANY | ASSOCIATION | MUNICIPALITY | REGION | OTHER")
-	@OneOf(value = {
-		"PERSON", "COMPANY", "ASSOCIATION", "MUNICIPALITY", "REGION", "OTHER"
-	}, nullable = true)
-	private String type;
+	@Schema(example = "ASSOCIATION", description = "Type of stakeholder")
+	private StakeholderType type;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.StakeholderRole}
-	 */
-	@ArraySchema(schema = @Schema(
-		description = "List of roles, possible values: BUYER | CONTACT_PERSON | GRANTOR | LAND_RIGHT_OWNER | LEASEHOLDER | PROPERTY_OWNER | POWER_OF_ATTORNEY_CHECK | POWER_OF_ATTORNEY_ROLE | SELLER | SIGNATORY | PRIMARY_BILLING_PARTY | LESSOR | LESSEE",
-		example = "BUYER"))
-	private List<String> roles;
+	@ArraySchema(schema = @Schema(example = "BUYER"))
+	private List<StakeholderRole> roles;
 
 	@Schema(description = "Name of the organization", example = "Sundsvalls kommun")
 	private String organizationName;

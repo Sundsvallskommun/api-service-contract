@@ -13,7 +13,6 @@ import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
-import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
@@ -42,7 +41,7 @@ class DtoMapperTest {
 		assertThat(dto.getFees()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getIndexTerms()).isEqualTo(contractEntity.getIndexTerms());
 		assertThat(dto.getInvoicing()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType().name());
+		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
 		assertThat(dto.getDuration()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getExtension()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getLeasehold()).isNotNull(); // Is tested in its own method
@@ -53,8 +52,8 @@ class DtoMapperTest {
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getStart()).isEqualTo(contractEntity.getStart());
-		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus().name());
-		assertThat(dto.getType()).isEqualTo(contractEntity.getType().name());
+		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
+		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
 		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
 	}
 
@@ -88,8 +87,8 @@ class DtoMapperTest {
 		var invoicing = mapper.toInvoicingDto(entity);
 
 		// Assert
-		assertThat(invoicing.getInvoicedIn()).isEqualTo(entity.getInvoicing().getInvoicedIn().name());
-		assertThat(invoicing.getInvoiceInterval()).isEqualTo(entity.getInvoicing().getInvoiceInterval().name());
+		assertThat(invoicing.getInvoicedIn()).isEqualTo(entity.getInvoicing().getInvoicedIn());
+		assertThat(invoicing.getInvoiceInterval()).isEqualTo(entity.getInvoicing().getInvoiceInterval());
 	}
 
 	@Test
@@ -103,7 +102,7 @@ class DtoMapperTest {
 		// Assert
 		var attachmentMetaData = AttachmentMetaData.builder()
 			.withId(attachmentEntity.getId())
-			.withCategory(attachmentEntity.getCategory().name())
+			.withCategory(attachmentEntity.getCategory())
 			.withFilename(attachmentEntity.getFilename())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
@@ -134,7 +133,7 @@ class DtoMapperTest {
 		var leasehold = mapper.toLeaseholdDto(entity.getLeasehold());
 
 		// Assert
-		assertThat(leasehold.getPurpose()).isEqualTo(entity.getLeasehold().getPurpose().name());
+		assertThat(leasehold.getPurpose()).isEqualTo(entity.getLeasehold().getPurpose());
 		assertThat(leasehold.getDescription()).isEqualTo(entity.getLeasehold().getDescription());
 		assertThat(leasehold.getAdditionalInformation()).isEqualTo(entity.getLeasehold().getAdditionalInformation());
 	}
@@ -151,7 +150,7 @@ class DtoMapperTest {
 		// Assert
 		assertThat(duration).isNotNull();
 		assertThat(duration.getLeaseDuration()).isEqualTo(20);
-		assertThat(duration.getUnit()).isEqualTo(TimeUnit.MONTHS.toString());
+		assertThat(duration.getUnit()).isEqualTo(TimeUnit.MONTHS);
 	}
 
 	@Test
@@ -167,7 +166,7 @@ class DtoMapperTest {
 		assertThat(extension).isNotNull();
 		assertThat(extension.getAutoExtend()).isTrue();
 		assertThat(extension.getLeaseExtension()).isEqualTo(2);
-		assertThat(extension.getUnit()).isEqualTo(TimeUnit.MONTHS.toString());
+		assertThat(extension.getUnit()).isEqualTo(TimeUnit.MONTHS);
 	}
 
 	@Test
@@ -199,8 +198,8 @@ class DtoMapperTest {
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(entity.getOrganizationNumber());
 		assertThat(stakeholder.getPartyId()).isEqualTo(entity.getPartyId());
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(entity.getPhoneNumber());
-		assertThat(stakeholder.getRoles()).containsAll(entity.getRoles().stream().map(StakeholderRole::name).toList());
-		assertThat(stakeholder.getType()).isEqualTo(entity.getType().name());
+		assertThat(stakeholder.getRoles()).containsAll(entity.getRoles().stream().toList());
+		assertThat(stakeholder.getType()).isEqualTo(entity.getType());
 	}
 
 	@Test
@@ -215,7 +214,7 @@ class DtoMapperTest {
 		assertThat(address.getStreetAddress()).isEqualTo(entity.getStreetAddress());
 		assertThat(address.getPostalCode()).isEqualTo(entity.getPostalCode());
 		assertThat(address.getCountry()).isEqualTo(entity.getCountry());
-		assertThat(address.getType()).isEqualTo(entity.getType().name());
+		assertThat(address.getType()).isEqualTo(entity.getType());
 		assertThat(address.getAttention()).isEqualTo(entity.getAttention());
 		assertThat(address.getTown()).isEqualTo(entity.getTown());
 	}
@@ -230,7 +229,7 @@ class DtoMapperTest {
 
 		// Assert
 		assertThat(attachment.getAttachmentData().getContent()).isEqualTo(new String(entity.getContent(), StandardCharsets.UTF_8));
-		assertThat(attachment.getMetaData().getCategory()).isEqualTo(entity.getCategory().name());
+		assertThat(attachment.getMetaData().getCategory()).isEqualTo(entity.getCategory());
 		assertThat(attachment.getMetaData().getFilename()).isEqualTo(entity.getFilename());
 		assertThat(attachment.getMetaData().getId()).isEqualTo(entity.getId());
 		assertThat(attachment.getMetaData().getMimeType()).isEqualTo(entity.getMimeType());
@@ -250,8 +249,8 @@ class DtoMapperTest {
 		var dto = mapper.toContractDto(contract, List.of());
 
 		// Assert
-		assertThat(dto.getStatus()).isEqualTo(contract.getStatus().name());
-		assertThat(dto.getType()).isEqualTo(contract.getType().name());
+		assertThat(dto.getStatus()).isEqualTo(contract.getStatus());
+		assertThat(dto.getType()).isEqualTo(contract.getType());
 	}
 
 	@Test
@@ -268,14 +267,14 @@ class DtoMapperTest {
 			.hasSize(2)
 			.containsExactlyInAnyOrder(
 				Notice.builder()
-					.withParty(Party.LESSEE.toString())
+					.withParty(Party.LESSEE)
 					.withPeriodOfNotice(3)
-					.withUnit(TimeUnit.MONTHS.toString())
+					.withUnit(TimeUnit.MONTHS)
 					.build(),
 				Notice.builder()
-					.withParty(Party.LESSOR.toString())
+					.withParty(Party.LESSOR)
 					.withPeriodOfNotice(1)
-					.withUnit(TimeUnit.MONTHS.toString())
+					.withUnit(TimeUnit.MONTHS)
 					.build());
 	}
 }

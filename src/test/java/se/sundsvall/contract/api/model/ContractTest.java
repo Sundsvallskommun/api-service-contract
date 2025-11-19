@@ -12,7 +12,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
@@ -25,7 +24,6 @@ import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class ContractTest {
 
@@ -50,11 +48,11 @@ class ContractTest {
 		var contractId = "2024-12345";
 		var description = "A simple description of the contract";
 		var externalReferenceId = "123";
-		var leaseType = "USUFRUCT_MISC";
+		var leaseType = LeaseType.LAND_LEASE_PUBLIC;
 		var municipalityId = "1984";
 		var objectIdentity = "909a6a80-d1a4-90ec-e040-ed8f66444c3f";
-		var status = "ACTIVE";
-		var type = "LAND_LEASE";
+		var status = Status.ACTIVE;
+		var type = ContractType.PURCHASE_AGREEMENT;
 		var leasehold = new Leasehold();
 		var attachmentMetaData = List.of(new AttachmentMetaData());
 		var additionalTerms = List.of(new TermGroup());
@@ -136,35 +134,5 @@ class ContractTest {
 	void testNoDirtOnCreatedBean() {
 		Assertions.assertThat(Contract.builder().build())
 			.hasAllNullFieldsOrPropertiesExcept("version", "signedByWitness");
-	}
-
-	@Test
-	void test_leaseType_hasCorrectOneOf() throws NoSuchFieldException {
-		var oneOf = Contract.class.getDeclaredField("leaseType")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(LeaseType.values())
-			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
-	}
-
-	@Test
-	void test_status_hasCorrectOneOf() throws NoSuchFieldException {
-		var oneOf = Contract.class.getDeclaredField("status")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(Status.values())
-			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
-	}
-
-	@Test
-	void test_type_HasCorrectOneOf() throws NoSuchFieldException {
-		var oneOf = Contract.class.getDeclaredField("type")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(ContractType.values())
-			.forEach(value -> Assertions.assertThat(oneOf).contains(value.name()));
 	}
 }

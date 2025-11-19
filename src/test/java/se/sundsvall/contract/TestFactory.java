@@ -40,8 +40,10 @@ import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.AddressType;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 public final class TestFactory {
 
@@ -158,24 +160,24 @@ public final class TestFactory {
 
 	public static Contract createContract() {
 		return Contract.builder()
-			.withType(LEASE_AGREEMENT.name())
+			.withType(LEASE_AGREEMENT)
 			.withVersion(1)
-			.withStatus(ACTIVE.name())
+			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
 			.withContractId("2024-12345")
-			.withLeaseType(LEASEHOLD.name())
-			.withLeasehold(Leasehold.builder().withPurpose(APARTMENT.name()).withDescription("someDescription").build())
+			.withLeaseType(LEASEHOLD)
+			.withLeasehold(Leasehold.builder().withPurpose(APARTMENT).withDescription("someDescription").build())
 			.withExternalReferenceId("someExternalReferenceId")
 			.withPropertyDesignations(List.of("somePropertyDesignation", "someOtherPropertyDesignation"))
 			.withObjectIdentity("someObjectIdentity")
 			.withDuration(Duration.builder()
 				.withLeaseDuration(30)
-				.withUnit("DAYS")
+				.withUnit(TimeUnit.DAYS)
 				.build())
 			.withExtension(Extension.builder()
 				.withAutoExtend(true)
 				.withLeaseExtension(2)
-				.withUnit("DAYS")
+				.withUnit(TimeUnit.DAYS)
 				.build())
 			.withFees(Fees.builder()
 				.withCurrency("SEK")
@@ -188,21 +190,21 @@ public final class TestFactory {
 				.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
 				.build())
 			.withInvoicing(Invoicing.builder()
-				.withInvoiceInterval(YEARLY.name())
-				.withInvoicedIn(ADVANCE.name())
+				.withInvoiceInterval(YEARLY)
+				.withInvoicedIn(ADVANCE)
 				.build())
 			.withStart(LocalDate.now().minusMonths(2))
 			.withEnd(LocalDate.now().plusMonths(3))
 			.withNotices(List.of(
 				Notice.builder()
-					.withParty(LESSEE.toString())
+					.withParty(LESSEE)
 					.withPeriodOfNotice(3)
-					.withUnit(MONTHS.toString())
+					.withUnit(MONTHS)
 					.build(),
 				Notice.builder()
-					.withParty(LESSOR.toString())
+					.withParty(LESSOR)
 					.withPeriodOfNotice(1)
-					.withUnit(MONTHS.toString())
+					.withUnit(MONTHS)
 					.build()))
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
@@ -238,12 +240,12 @@ public final class TestFactory {
 						.withPostalCode("somePostalCode")
 						.withCountry("someCountry")
 						.withAttention("someAttention")
-						.withType(AddressType.VISITING_ADDRESS.name())
+						.withType(AddressType.VISITING_ADDRESS)
 						.build())
-					.withRoles(List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE.name()))
+					.withRoles(List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE))
 					.withEmailAddress("someEmailAddress")
 					.withPhoneNumber("somePhoneNumber")
-					.withType(StakeholderType.ASSOCIATION.name())
+					.withType(StakeholderType.ASSOCIATION)
 					.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(List.of(
@@ -261,7 +263,7 @@ public final class TestFactory {
 				.build())
 			.withMetaData(AttachmentMetaData.builder()
 				.withNote("aNote")
-				.withCategory("CONTRACT")
+				.withCategory(AttachmentCategory.CONTRACT)
 				.withMimeType("mimeType")
 				.withFilename("file.pdf")
 				.build())

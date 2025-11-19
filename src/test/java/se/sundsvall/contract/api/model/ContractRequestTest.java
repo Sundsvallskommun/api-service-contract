@@ -10,14 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class ContractRequestTest {
 
@@ -54,7 +52,7 @@ class ContractRequestTest {
 			.withPropertyDesignations(propertyDesignations)
 			.withExternalReferenceId(externalReferenceId)
 			.withEnd(endDate)
-			.withLeaseType(leaseType.name())
+			.withLeaseType(leaseType)
 			.withTerm(term)
 			.build();
 
@@ -65,17 +63,7 @@ class ContractRequestTest {
 		assertThat(request.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(request.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(request.getEnd()).isEqualTo(endDate);
-		assertThat(request.getLeaseType()).isEqualTo(leaseType.name());
+		assertThat(request.getLeaseType()).isEqualTo(leaseType);
 		assertThat(request.getTerm()).isEqualTo(term);
-	}
-
-	@Test
-	void testContractRequest_landLeaseType_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = ContractRequest.class.getDeclaredField("leaseType")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(LeaseType.values())
-			.forEach(value -> assertThat(oneOf).contains(value.name()));
 	}
 }

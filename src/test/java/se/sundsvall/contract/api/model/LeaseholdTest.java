@@ -12,7 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.LeaseholdType;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class LeaseholdTest {
 
@@ -27,15 +26,6 @@ class LeaseholdTest {
 	}
 
 	@Test
-	void testLeaseHold_type_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = Leasehold.class.getDeclaredField("purpose")
-			.getAnnotation(OneOf.class);
-
-		Arrays.stream(oneOf.value())
-			.forEach(value -> assertThat(oneOf.value()).contains(value));
-	}
-
-	@Test
 	void testBuilderMethods() {
 
 		var type = LeaseholdType.APARTMENT;
@@ -44,12 +34,12 @@ class LeaseholdTest {
 
 		var leasehold = Leasehold.builder()
 			.withAdditionalInformation(Arrays.asList("info", "info2"))
-			.withPurpose(type.name())
+			.withPurpose(type)
 			.withDescription(description)
 			.build();
 
 		assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(leasehold.getPurpose()).isEqualTo(type.name());
+		assertThat(leasehold.getPurpose()).isEqualTo(type);
 		assertThat(leasehold.getDescription()).isEqualTo(description);
 	}
 
@@ -57,5 +47,4 @@ class LeaseholdTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(Leasehold.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

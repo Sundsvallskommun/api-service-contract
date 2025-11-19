@@ -80,13 +80,13 @@ class ContractServiceTest {
 	void createContract() {
 		// Arrange
 		final var contract = Contract.builder()
-			.withLeaseType(LeaseType.LEASEHOLD.name())
+			.withLeaseType(LeaseType.LEASEHOLD)
 			.withInvoicing(Invoicing.builder()
-				.withInvoiceInterval(QUARTERLY.name())
-				.withInvoicedIn(ARREARS.name())
+				.withInvoiceInterval(QUARTERLY)
+				.withInvoicedIn(ARREARS)
 				.build())
-			.withStatus(ACTIVE.name())
-			.withType(ContractType.LEASE_AGREEMENT.name())
+			.withStatus(ACTIVE)
+			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 
 		when(contractRepositoryMock.save(any(ContractEntity.class)))

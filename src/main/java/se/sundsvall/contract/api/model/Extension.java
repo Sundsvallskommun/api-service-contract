@@ -1,12 +1,13 @@
 package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -19,14 +20,10 @@ public class Extension {
 	private Boolean autoExtend;
 
 	@Schema(description = "The lease extension value", example = "2")
+	@NotNull
 	private Integer leaseExtension;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.TimeUnit}
-	 */
 	@Schema(description = "The unit of the extension value", example = "MONTHS")
-	@OneOf(value = {
-		"DAYS", "MONTHS", "YEARS"
-	})
-	private String unit;
+	@NotNull
+	private TimeUnit unit;
 }
