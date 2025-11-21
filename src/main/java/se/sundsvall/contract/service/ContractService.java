@@ -115,7 +115,7 @@ public class ContractService {
 			.toList();
 
 		if (availableVersions.size() < 2) {
-			throw Problem.valueOf(BAD_REQUEST, "Unable to diff since a single version of the contract with contractId %s within municipality %s".formatted(municipalityId, contractId));
+			throw Problem.valueOf(BAD_REQUEST, "Unable to diff since a single version of the contract with contractId %s within municipality %s".formatted(contractId, municipalityId));
 		}
 
 		final var actualNewVersion = ofNullable(newVersion).orElse(availableVersions.getLast());
