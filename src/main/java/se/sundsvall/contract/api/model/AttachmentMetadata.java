@@ -1,31 +1,26 @@
 package se.sundsvall.contract.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
 @Schema(description = "Attachment metadata", accessMode = Schema.AccessMode.READ_WRITE)
-public class AttachmentMetaData {
+public class AttachmentMetadata {
 
-	@Schema(description = "The attachment id", example = "1234", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The attachment id", example = "1234", accessMode = READ_ONLY)
 	private Long id;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AttachmentCategory}
-	 */
-	@Schema(description = "The attachment category. Possible values: CONTRACT | OTHER", example = "CONTRACT")
-	@OneOf({
-		"CONTRACT", "OTHER"
-	})
-	private String category;
+	private AttachmentCategory category;
 
 	@Schema(description = "The attachment filename", example = "LeaseContract12.pdf")
 	private String filename;

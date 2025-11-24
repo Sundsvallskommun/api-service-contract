@@ -10,14 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.LandLeaseType;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.LeaseType;
 
 class ContractRequestTest {
 
@@ -38,23 +36,23 @@ class ContractRequestTest {
 
 	@Test
 	void testBuilderMethods() {
-		var contractId = "2024-12345";
-		var partyId = "partyId";
-		var organizationNumber = "organizationNumber";
-		var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
-		var externalReferenceId = "externalReferenceId";
-		var endDate = LocalDate.of(2023, 10, 10);
-		var landLeaseType = LandLeaseType.SITELEASEHOLD;
-		var term = "term";
+		final var contractId = "2024-12345";
+		final var partyId = "partyId";
+		final var organizationNumber = "organizationNumber";
+		final var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
+		final var externalReferenceId = "externalReferenceId";
+		final var endDate = LocalDate.of(2023, 10, 10);
+		final var leaseType = LeaseType.SITE_LEASE_COMMERCIAL;
+		final var term = "term";
 
-		var request = ContractRequest.builder()
+		final var request = ContractRequest.builder()
 			.withContractId(contractId)
 			.withPartyId(partyId)
 			.withOrganizationNumber(organizationNumber)
 			.withPropertyDesignations(propertyDesignations)
 			.withExternalReferenceId(externalReferenceId)
 			.withEnd(endDate)
-			.withLandLeaseType(landLeaseType.name())
+			.withLeaseType(leaseType)
 			.withTerm(term)
 			.build();
 
@@ -65,17 +63,7 @@ class ContractRequestTest {
 		assertThat(request.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(request.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(request.getEnd()).isEqualTo(endDate);
-		assertThat(request.getLandLeaseType()).isEqualTo(landLeaseType.name());
+		assertThat(request.getLeaseType()).isEqualTo(leaseType);
 		assertThat(request.getTerm()).isEqualTo(term);
-	}
-
-	@Test
-	void testContractRequest_landLeaseType_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = ContractRequest.class.getDeclaredField("landLeaseType")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(LandLeaseType.values())
-			.forEach(value -> assertThat(oneOf).contains(value.name()));
 	}
 }

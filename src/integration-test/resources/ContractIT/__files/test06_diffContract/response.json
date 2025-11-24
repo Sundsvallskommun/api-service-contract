@@ -49,8 +49,26 @@
 		{
 			"type": "MODIFICATION",
 			"path": "$.type",
-			"oldValue": "APARTMENT_LEASE",
+			"oldValue": "LEASE_AGREEMENT",
 			"newValue": "PURCHASE_AGREEMENT"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.notices.0.unit",
+			"oldValue": "MONTHS",
+			"newValue": "YEARS"
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.notices.0.periodOfNotice",
+			"oldValue": 3,
+			"newValue": 1
+		},
+		{
+			"type": "MODIFICATION",
+			"path": "$.notices.1.unit",
+			"oldValue": "MONTHS",
+			"newValue": "YEARS"
 		},
 		{
 			"type": "MODIFICATION",

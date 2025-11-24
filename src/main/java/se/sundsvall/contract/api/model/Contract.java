@@ -1,7 +1,12 @@
 package se.sundsvall.contract.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -13,7 +18,9 @@ import org.geojson.FeatureCollection;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.Status;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -22,10 +29,10 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Schema(description = "Contract")
 public class Contract {
 
-	@Schema(description = "Version for contract", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Version for contract", example = "1", accessMode = READ_ONLY)
 	private int version;
 
-	@Schema(description = "Contract id", example = "2024-12345", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Contract id", example = "2024-12345", accessMode = READ_ONLY)
 	private String contractId;
 
 	@Schema(description = "A description ", example = "A simple description of the contract")
@@ -34,53 +41,25 @@ public class Contract {
 	@Schema(description = "External referenceId", example = "123")
 	private String externalReferenceId;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.LandLeaseType}
-	 */
-	@Schema(description = "Type of lease", example = "LEASEHOLD")
-	@OneOf(value = {
-		"LEASEHOLD", "USUFRUCT", "SITELEASEHOLD"
-	}, nullable = true)
-	private String landLeaseType;
+	private LeaseType leaseType;
 
-	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = NOT_REQUIRED)
 	private String objectIdentity;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.Status}
-	 */
-	@Schema(description = "Status for contract", example = "ACTIVE")
-	@OneOf({
-		"ACTIVE", "DRAFT", "TERMINATED"
-	})
-	private String status;
+	@NotNull
+	private Status status;
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.ContractType}
-	 */
-	@Schema(description = "Contract type.", example = "LAND_LEASE")
-	@OneOf(value = {
-		"APARTMENT_LEASE", "LAND_LEASE", "PURCHASE_AGREEMENT"
-	})
-	private String type;
-
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.UsufructType}
-	 */
-	@Schema(description = "Type of right of use", example = "HUNTING")
-	@OneOf(value = {
-		"HUNTING", "FISHING", "MAINTENANCE", "OTHER"
-	}, nullable = true)
-	private String usufructType;
+	@NotNull
+	private ContractType type;
 
 	@Schema(description = "Type of leasehold")
 	private Leasehold leasehold;
 
-	@ArraySchema(schema = @Schema(description = "Metadata for all attachments", accessMode = Schema.AccessMode.READ_ONLY))
-	private List<AttachmentMetaData> attachmentMetaData;
+	@ArraySchema(schema = @Schema(description = "Metadata for all attachments", accessMode = READ_ONLY))
+	private List<AttachmentMetadata> attachmentMetaData;
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
 	private List<TermGroup> additionalTerms;
@@ -97,10 +76,13 @@ public class Contract {
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;
 
-	@Schema(description = "The duration of the lease in years", example = "9")
-	private Integer leaseDuration;
+	@Valid
+	private Duration duration;
 
-	@Schema(description = "Fees")
+	@Valid
+	private Extension extension;
+
+	@Valid
 	private Fees fees;
 
 	@Schema(description = "Invoicing details")
@@ -112,14 +94,8 @@ public class Contract {
 	@Schema(description = "Lease period end date", example = "2022-12-31", format = "date")
 	private LocalDate end;
 
-	@Schema(description = "Marker for whether an agreement should be extended automatically or not", example = "true", defaultValue = "true")
-	private Boolean autoExtend;
-
-	@Schema(description = "Extension period in days", example = "30")
-	private Integer leaseExtension;
-
-	@Schema(description = "Termination period in days", example = "30")
-	private Integer periodOfNotice;
+	@ArraySchema(schema = @Schema(description = "Termination periods"))
+	private List<@Valid Notice> notices;
 
 	@Schema(description = "Leased area (m2)", example = "150")
 	private Integer area;
@@ -174,5 +150,4 @@ public class Contract {
 		}
 		""")
 	private FeatureCollection areaData;
-
 }

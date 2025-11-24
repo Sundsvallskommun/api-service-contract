@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
+import se.sundsvall.contract.model.enums.AddressType;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -14,14 +14,8 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @NoArgsConstructor
 public class Address {
 
-	/*
-	 * Backed by enum {@link se.sundsvall.contract.api.model.enums.AddressType}
-	 */
 	@Schema(example = "POSTAL_ADDRESS", description = "Address type")
-	@OneOf(value = {
-		"POSTAL_ADDRESS", "BILLING_ADDRESS", "VISITING_ADDRESS"
-	}, nullable = true)
-	private String type;
+	private AddressType type;
 
 	@Schema(example = "Testvägen 18")
 	private String streetAddress;

@@ -1,7 +1,6 @@
 package se.sundsvall.contract.integration.db.model;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.contract.integration.db.model.converter.enums.AddressTypeConverter;
 import se.sundsvall.contract.model.enums.AddressType;
 
 @Embeddable
@@ -21,7 +19,6 @@ import se.sundsvall.contract.model.enums.AddressType;
 public class AddressEntity {
 
 	@Column(name = "address_type")
-	@Convert(converter = AddressTypeConverter.class)
 	private AddressType type;
 
 	@Column(name = "street_address")

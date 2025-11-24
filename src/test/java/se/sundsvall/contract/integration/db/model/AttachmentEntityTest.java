@@ -13,7 +13,7 @@ import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 
 import org.junit.jupiter.api.Test;
 
-class AttachmentMetaDataEntityTest {
+class AttachmentEntityTest {
 
 	@Test
 	void testBean() {
@@ -27,16 +27,16 @@ class AttachmentMetaDataEntityTest {
 
 	@Test
 	void testBuilderMethods() {
-		var id = 1L;
-		var contractId = "contractId";
-		var municipalityId = "1984";
-		var filename = "filename";
-		var category = CONTRACT;
-		var mimeType = "mimeType";
-		var fileContent = "fileContent".getBytes(UTF_8);
-		var note = "note";
+		final var id = 1L;
+		final var contractId = "contractId";
+		final var municipalityId = "1984";
+		final var filename = "filename";
+		final var category = CONTRACT;
+		final var mimeType = "mimeType";
+		final var fileContent = "fileContent".getBytes(UTF_8);
+		final var note = "note";
 
-		var attachment = AttachmentEntity.builder()
+		final var attachment = AttachmentEntity.builder()
 			.withId(id)
 			.withContractId(contractId)
 			.withMunicipalityId(municipalityId)

@@ -1,5 +1,7 @@
 package se.sundsvall.contract.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -16,10 +18,10 @@ import lombok.NoArgsConstructor;
 public class Attachment {
 
 	@Valid
-	@Schema(description = "Attachment data, i.e. the file", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Attachment data, i.e. the file", requiredMode = REQUIRED)
 	private AttachmentData attachmentData;
 
 	@Valid
-	@Schema(description = "Attachment metadata", requiredMode = Schema.RequiredMode.REQUIRED)
-	private AttachmentMetaData metaData;
+	@Schema(description = "Attachment metadata", requiredMode = REQUIRED)
+	private AttachmentMetadata metadata;
 }

@@ -29,7 +29,7 @@ class ContractHolderTest {
 
 		List<Contract> landLeaseContracts = List.of(Contract.builder().build());
 
-		var contractHolder = ContractHolder.builder()
+		final var contractHolder = ContractHolder.builder()
 			.withLandLeaseContracts(landLeaseContracts)
 			.build();
 

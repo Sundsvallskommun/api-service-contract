@@ -8,11 +8,13 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.api.model.AttachmentMetaData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 class DtoMapperTest {
 
@@ -31,7 +33,6 @@ class DtoMapperTest {
 		assertThat(dto.getArea()).isEqualTo(contractEntity.getArea());
 		assertThat(dto.getAreaData()).isEqualTo(contractEntity.getAreaData());
 		assertThat(dto.getAttachmentMetaData()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getAutoExtend()).isEqualTo(contractEntity.getAutoExtend());
 		assertThat(dto.getContractId()).isEqualTo(contractEntity.getContractId());
 		assertThat(dto.getDescription()).isEqualTo(contractEntity.getDescription());
 		assertThat(dto.getEnd()).isEqualTo(contractEntity.getEnd());
@@ -40,20 +41,19 @@ class DtoMapperTest {
 		assertThat(dto.getFees()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getIndexTerms()).isEqualTo(contractEntity.getIndexTerms());
 		assertThat(dto.getInvoicing()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getLandLeaseType()).isEqualTo(contractEntity.getLandLeaseType().name());
-		assertThat(dto.getLeaseDuration()).isEqualTo(contractEntity.getLeaseDuration());
-		assertThat(dto.getLeaseExtension()).isEqualTo(contractEntity.getLeaseExtension());
+		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
+		assertThat(dto.getDuration()).isNotNull(); // Is tested in its own method
+		assertThat(dto.getExtension()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getMunicipalityId()).isEqualTo(contractEntity.getMunicipalityId());
 		assertThat(dto.getObjectIdentity()).isEqualTo(contractEntity.getObjectIdentity());
-		assertThat(dto.getPeriodOfNotice()).isEqualTo(contractEntity.getPeriodOfNotice());
+		assertThat(dto.getNotices()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getPropertyDesignations()).isEqualTo(contractEntity.getPropertyDesignations());
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getStart()).isEqualTo(contractEntity.getStart());
-		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus().name());
-		assertThat(dto.getType()).isEqualTo(contractEntity.getType().name());
-		assertThat(dto.getUsufructType()).isEqualTo(contractEntity.getUsufructType().name());
+		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
+		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
 		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
 	}
 
@@ -72,6 +72,7 @@ class DtoMapperTest {
 		assertThat(fees.getTotal()).isEqualTo(entity.getFees().getTotal());
 		assertThat(fees.getTotalAsText()).isEqualTo(entity.getFees().getTotalAsText());
 		assertThat(fees.getCurrency()).isEqualTo(entity.getFees().getCurrency());
+		assertThat(fees.getIndexationRate()).isEqualTo(entity.getFees().getIndexationRate());
 		assertThat(fees.getIndexYear()).isEqualTo(entity.getFees().getIndexYear());
 		assertThat(fees.getIndexNumber()).isEqualTo(entity.getFees().getIndexNumber());
 		assertThat(fees.getAdditionalInformation()).isEqualTo(entity.getFees().getAdditionalInformation());
@@ -86,8 +87,8 @@ class DtoMapperTest {
 		var invoicing = mapper.toInvoicingDto(entity);
 
 		// Assert
-		assertThat(invoicing.getInvoicedIn()).isEqualTo(entity.getInvoicing().getInvoicedIn().name());
-		assertThat(invoicing.getInvoiceInterval()).isEqualTo(entity.getInvoicing().getInvoiceInterval().name());
+		assertThat(invoicing.getInvoicedIn()).isEqualTo(entity.getInvoicing().getInvoicedIn());
+		assertThat(invoicing.getInvoiceInterval()).isEqualTo(entity.getInvoicing().getInvoiceInterval());
 	}
 
 	@Test
@@ -99,9 +100,9 @@ class DtoMapperTest {
 		var metadata = mapper.toAttachmentMetaDataDto(attachmentEntity);
 
 		// Assert
-		var attachmentMetaData = AttachmentMetaData.builder()
+		var attachmentMetaData = AttachmentMetadata.builder()
 			.withId(attachmentEntity.getId())
-			.withCategory(attachmentEntity.getCategory().name())
+			.withCategory(attachmentEntity.getCategory())
 			.withFilename(attachmentEntity.getFilename())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
@@ -132,9 +133,40 @@ class DtoMapperTest {
 		var leasehold = mapper.toLeaseholdDto(entity.getLeasehold());
 
 		// Assert
-		assertThat(leasehold.getPurpose()).isEqualTo(entity.getLeasehold().getPurpose().name());
+		assertThat(leasehold.getPurpose()).isEqualTo(entity.getLeasehold().getPurpose());
 		assertThat(leasehold.getDescription()).isEqualTo(entity.getLeasehold().getDescription());
 		assertThat(leasehold.getAdditionalInformation()).isEqualTo(entity.getLeasehold().getAdditionalInformation());
+	}
+
+	@Test
+	void testToDurationDto() {
+
+		// Arrange
+		var entity = createContractEntity();
+
+		// Act
+		var duration = mapper.toDurationDto(entity);
+
+		// Assert
+		assertThat(duration).isNotNull();
+		assertThat(duration.getLeaseDuration()).isEqualTo(20);
+		assertThat(duration.getUnit()).isEqualTo(TimeUnit.MONTHS);
+	}
+
+	@Test
+	void testToExtensionDto() {
+
+		// Arrange
+		var entity = createContractEntity();
+
+		// Act
+		var extension = mapper.toExtensionDto(entity);
+
+		// Assert
+		assertThat(extension).isNotNull();
+		assertThat(extension.getAutoExtend()).isTrue();
+		assertThat(extension.getLeaseExtension()).isEqualTo(2);
+		assertThat(extension.getUnit()).isEqualTo(TimeUnit.MONTHS);
 	}
 
 	@Test
@@ -166,8 +198,8 @@ class DtoMapperTest {
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(entity.getOrganizationNumber());
 		assertThat(stakeholder.getPartyId()).isEqualTo(entity.getPartyId());
 		assertThat(stakeholder.getPhoneNumber()).isEqualTo(entity.getPhoneNumber());
-		assertThat(stakeholder.getRoles()).containsAll(entity.getRoles().stream().map(StakeholderRole::name).toList());
-		assertThat(stakeholder.getType()).isEqualTo(entity.getType().name());
+		assertThat(stakeholder.getRoles()).containsAll(entity.getRoles().stream().toList());
+		assertThat(stakeholder.getType()).isEqualTo(entity.getType());
 	}
 
 	@Test
@@ -182,7 +214,7 @@ class DtoMapperTest {
 		assertThat(address.getStreetAddress()).isEqualTo(entity.getStreetAddress());
 		assertThat(address.getPostalCode()).isEqualTo(entity.getPostalCode());
 		assertThat(address.getCountry()).isEqualTo(entity.getCountry());
-		assertThat(address.getType()).isEqualTo(entity.getType().name());
+		assertThat(address.getType()).isEqualTo(entity.getType());
 		assertThat(address.getAttention()).isEqualTo(entity.getAttention());
 		assertThat(address.getTown()).isEqualTo(entity.getTown());
 	}
@@ -197,26 +229,52 @@ class DtoMapperTest {
 
 		// Assert
 		assertThat(attachment.getAttachmentData().getContent()).isEqualTo(new String(entity.getContent(), StandardCharsets.UTF_8));
-		assertThat(attachment.getMetaData().getCategory()).isEqualTo(entity.getCategory().name());
-		assertThat(attachment.getMetaData().getFilename()).isEqualTo(entity.getFilename());
-		assertThat(attachment.getMetaData().getId()).isEqualTo(entity.getId());
-		assertThat(attachment.getMetaData().getMimeType()).isEqualTo(entity.getMimeType());
-		assertThat(attachment.getMetaData().getNote()).isEqualTo(entity.getNote());
+		assertThat(attachment.getMetadata().getCategory()).isEqualTo(entity.getCategory());
+		assertThat(attachment.getMetadata().getFilename()).isEqualTo(entity.getFilename());
+		assertThat(attachment.getMetadata().getId()).isEqualTo(entity.getId());
+		assertThat(attachment.getMetadata().getMimeType()).isEqualTo(entity.getMimeType());
+		assertThat(attachment.getMetadata().getNote()).isEqualTo(entity.getNote());
 	}
 
 	@Test
 	void testMinimalToContractDto() {
+
 		// Arrange
 		var contract = ContractEntity.builder()
 			.withStatus(Status.DRAFT)
-			.withType(ContractType.LAND_LEASE)
+			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 
 		// Act
 		var dto = mapper.toContractDto(contract, List.of());
 
 		// Assert
-		assertThat(dto.getStatus()).isEqualTo(contract.getStatus().name());
-		assertThat(dto.getType()).isEqualTo(contract.getType().name());
+		assertThat(dto.getStatus()).isEqualTo(contract.getStatus());
+		assertThat(dto.getType()).isEqualTo(contract.getType());
+	}
+
+	@Test
+	void testToNoticeDtos() {
+
+		// Arrange
+		var entity = createContractEntity().getNotices();
+
+		// Act
+		var notices = mapper.toNoticeDtos(entity);
+
+		// Assert
+		assertThat(notices)
+			.hasSize(2)
+			.containsExactlyInAnyOrder(
+				Notice.builder()
+					.withParty(Party.LESSEE)
+					.withPeriodOfNotice(3)
+					.withUnit(TimeUnit.MONTHS)
+					.build(),
+				Notice.builder()
+					.withParty(Party.LESSOR)
+					.withPeriodOfNotice(1)
+					.withUnit(TimeUnit.MONTHS)
+					.build());
 	}
 }

@@ -26,13 +26,14 @@ import se.sundsvall.contract.api.model.ContractRequest;
 @ActiveProfiles("junit")
 @Sql(scripts = {
 	"/db/scripts/truncate.sql",
-	"/db/scripts/testdata-it.sql"
+	"/db/scripts/testdata-junit.sql"
 })
 @Import(ObjectMapper.class) // Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractRepositoryTest {
 
 	@Autowired
 	private ContractRepository contractRepository;
+
 	@Autowired
 	private AttachmentRepository attachmentRepository;
 

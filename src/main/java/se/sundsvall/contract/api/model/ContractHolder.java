@@ -19,5 +19,4 @@ public class ContractHolder {
 	@Valid
 	@ArraySchema(schema = @Schema(description = "List of land lease contracts"))
 	private List<Contract> landLeaseContracts;
-
 }

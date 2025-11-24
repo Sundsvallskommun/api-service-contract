@@ -10,12 +10,11 @@
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
-	<version>2.3</version>
+	<version>3.0</version>
 	<name>api-service-contract</name>
 	<properties>
 		<geojson-jackson.version>1.14</geojson-jackson.version>
 		<json-diff.version>1.1.0</json-diff.version>
-		<assertj-core.version>3.27.6</assertj-core.version>
 	</properties>
 	<dependencies>
 		<!-- Test -->
@@ -82,7 +81,6 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>${assertj-core.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

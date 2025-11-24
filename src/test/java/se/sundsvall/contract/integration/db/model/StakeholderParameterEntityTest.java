@@ -9,12 +9,14 @@ class StakeholderParameterEntityTest {
 
 	@Test
 	void builder() {
+
 		// Arrange
 		final var id = 1L;
 		final var key = "someKey";
 		final var displayName = "someDisplayName";
 		final var values = List.of("value1", "value2");
 		final var stakeholderEntity = StakeholderEntity.builder().build();
+
 		// Act
 		final var result = StakeholderParameterEntity.builder()
 			.withId(id)
@@ -23,6 +25,7 @@ class StakeholderParameterEntityTest {
 			.withValues(values)
 			.withStakeholderEntity(stakeholderEntity)
 			.build();
+
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getId()).isEqualTo(id);

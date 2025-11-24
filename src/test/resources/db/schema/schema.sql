@@ -23,12 +23,13 @@
         lease_duration integer,
         lease_extension integer,
         municipality_id varchar(4),
-        period_of_notice integer,
         signed_by_witness bit,
         start date,
         version integer,
         id bigint not null auto_increment,
         contract_id varchar(10) not null,
+        lease_duration_unit varchar(32),
+        lease_extension_unit varchar(32),
         fees varchar(2048),
         description varchar(4096),
         additional_terms varchar(255),
@@ -37,15 +38,21 @@
         index_terms varchar(255),
         invoice_interval varchar(255),
         invoiced_in varchar(255),
-        land_lease_type varchar(255),
+        lease_type varchar(255),
         leasehold_description varchar(255),
         leasehold_type varchar(255),
         object_identity varchar(255),
         status varchar(255),
         type varchar(255),
-        usufruct_type varchar(255),
         area_data longblob,
         primary key (id)
+    ) engine=InnoDB;
+
+    create table contract_notice (
+        period_of_notice integer not null,
+        contract_id bigint not null,
+        unit varchar(32) not null,
+        party varchar(255) not null
     ) engine=InnoDB;
 
     create table contract_stakeholder (
@@ -104,6 +111,11 @@
 
     alter table if exists additional_information 
        add constraint fk_additional_information_contract_id 
+       foreign key (contract_id) 
+       references contract (id);
+
+    alter table if exists contract_notice 
+       add constraint fk_contract_notice_contract_id 
        foreign key (contract_id) 
        references contract (id);
 

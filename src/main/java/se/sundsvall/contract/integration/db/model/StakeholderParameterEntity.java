@@ -20,11 +20,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@Entity
 @Table(name = "stakeholder_parameter")
 public class StakeholderParameterEntity {
 
@@ -46,8 +46,7 @@ public class StakeholderParameterEntity {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "stakeholder_parameter_values",
-		joinColumns = @JoinColumn(name = "stakeholder_parameter_id",
-			foreignKey = @ForeignKey(name = "fk_stakeholder_parameter_values_stakeholder_parameter_id")))
+		joinColumns = @JoinColumn(name = "stakeholder_parameter_id", foreignKey = @ForeignKey(name = "fk_stakeholder_parameter_values_stakeholder_parameter_id")))
 	@Column(name = "value")
 	private List<String> values;
 }

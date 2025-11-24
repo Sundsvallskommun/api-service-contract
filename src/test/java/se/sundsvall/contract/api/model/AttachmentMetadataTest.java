@@ -9,16 +9,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
-class AttachmentMetaDataTest {
+class AttachmentMetadataTest {
 
 	@Test
 	void testBean() {
-		assertThat(AttachmentMetaData.class, allOf(
+		assertThat(AttachmentMetadata.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -27,32 +25,23 @@ class AttachmentMetaDataTest {
 	}
 
 	@Test
-	void testAddress_category_hasValidOneOfValues() throws NoSuchFieldException {
-		var oneOf = AttachmentMetaData.class.getDeclaredField("category")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(AttachmentCategory.values())
-			.forEach(value -> assertThat(oneOf).contains(value.name()));
-	}
-
-	@Test
 	void testBuilderMethods() {
-		var filename = "filename";
-		var category = AttachmentCategory.CONTRACT;
-		var mimeType = "mimeType";
-		var note = "note";
 
-		var attachment = AttachmentMetaData.builder()
+		final var filename = "filename";
+		final var category = AttachmentCategory.CONTRACT;
+		final var mimeType = "mimeType";
+		final var note = "note";
+
+		final var attachment = AttachmentMetadata.builder()
 			.withFilename(filename)
-			.withCategory(category.name())
+			.withCategory(category)
 			.withMimeType(mimeType)
 			.withNote(note)
 			.build();
 
 		assertThat(attachment).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(attachment.getFilename()).isEqualTo(filename);
-		assertThat(attachment.getCategory()).isEqualTo(category.name());
+		assertThat(attachment.getCategory()).isEqualTo(category);
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
 		assertThat(attachment.getNote()).isEqualTo(note);
 
@@ -60,7 +49,6 @@ class AttachmentMetaDataTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(AttachmentMetaData.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(AttachmentMetadata.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

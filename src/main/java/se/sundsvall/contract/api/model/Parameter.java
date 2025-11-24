@@ -28,5 +28,4 @@ public class Parameter {
 
 	@Schema(description = "Parameter values")
 	private List<String> values;
-
 }

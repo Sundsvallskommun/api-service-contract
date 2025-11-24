@@ -1,5 +1,8 @@
 package se.sundsvall.contract.model.enums;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Stakeholder role", enumAsRef = true)
 public enum StakeholderRole {
 	BUYER,
 	CONTACT_PERSON,
@@ -10,5 +13,8 @@ public enum StakeholderRole {
 	POWER_OF_ATTORNEY_CHECK,
 	POWER_OF_ATTORNEY_ROLE,
 	SELLER,
-	SIGNATORY
+	SIGNATORY,
+	PRIMARY_BILLING_PARTY,
+	LESSOR,
+	LESSEE
 }

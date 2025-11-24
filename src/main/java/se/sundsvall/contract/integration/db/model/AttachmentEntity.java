@@ -3,7 +3,6 @@ package se.sundsvall.contract.integration.db.model;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,17 +13,12 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import se.sundsvall.contract.integration.db.model.converter.enums.AttachmentCategoryConverter;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
@@ -42,7 +36,6 @@ public class AttachmentEntity {
 	private String municipalityId;
 
 	@Column(name = "category")
-	@Convert(converter = AttachmentCategoryConverter.class)
 	private AttachmentCategory category;
 
 	@Column(name = "filename")

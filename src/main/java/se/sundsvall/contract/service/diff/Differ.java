@@ -34,8 +34,8 @@ public class Differ implements JsonDiffViewer {
 
 	public List<Change> diff(final Object oldObject, final Object newObject, final List<String> excludedPaths) {
 		try {
-			var json1 = objectMapper.writeValueAsString(oldObject);
-			var json2 = objectMapper.writeValueAsString(newObject);
+			final var json1 = objectMapper.writeValueAsString(oldObject);
+			final var json2 = objectMapper.writeValueAsString(newObject);
 
 			return diffJson(json1, json2, excludedPaths);
 		} catch (JsonProcessingException e) {
@@ -50,7 +50,7 @@ public class Differ implements JsonDiffViewer {
 	public List<Change> diffJson(final String oldJson, final String newJson, final List<String> excludedPaths) {
 		changes.clear();
 
-		var diff = DiffGenerator.diff(oldJson, newJson, JSON_MATCHER);
+		final var diff = DiffGenerator.diff(oldJson, newJson, JSON_MATCHER);
 		diff.display(this);
 		return changes.stream()
 			.filter(change -> !excludedPaths.contains(change.path()))

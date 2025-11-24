@@ -19,7 +19,6 @@ class AddressTypeConverterTest {
 		assertThat(converter.convertToDatabaseColumn(enumValue))
 			.isNotNull()
 			.isEqualTo(enumValue.name());
-
 	}
 
 	@Test

@@ -30,6 +30,10 @@ import se.sundsvall.contract.service.mapper.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
 
+	private static final String MUNICIPALITY_ID = "1984";
+	private static final String CONTRACT_ID = "2024-12345";
+	private static final Long ENTITY_ID = 1L;
+
 	@Mock
 	private ContractRepository mockContractRepository;
 
@@ -44,10 +48,6 @@ class AttachmentServiceTest {
 
 	@InjectMocks
 	private AttachmentService attachmentService;
-
-	private static final String MUNICIPALITY_ID = "1984";
-	private static final String CONTRACT_ID = "2024-12345";
-	private static final Long ENTITY_ID = 1L;
 
 	@Test
 	void testCreateAttachment() {
@@ -74,7 +74,7 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void testCreateAttachment_shouldThrow404_whenNotFound() {
+	void testCreateAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
 		final var attachment = Attachment.builder().build();
 		when(mockContractRepository.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
@@ -109,7 +109,7 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void testGetAttachment_shouldThrow404_whenNotFound() {
+	void testGetAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
 		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
@@ -163,7 +163,7 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void testUpdateAttachment_shouldThrow404_whenNotFound() {
+	void testUpdateAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
 		final var attachment = Attachment.builder().build();
 		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.empty());
@@ -197,7 +197,7 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void testDeleteAttachment_shouldThrow404_whenNotFound() {
+	void testDeleteAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
 		when(mockAttachmentRepository.existsByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(false);
 

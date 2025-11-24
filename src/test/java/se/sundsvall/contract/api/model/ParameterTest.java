@@ -26,6 +26,7 @@ class ParameterTest {
 
 	@Test
 	void builder() {
+
 		// Arrange
 		final var key = "someKey";
 		final var displayName = "someDisplayName";

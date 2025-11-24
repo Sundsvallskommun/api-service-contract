@@ -4,6 +4,7 @@ truncate table additional_information;
 truncate table attachment;
 truncate table contract;
 truncate table contract_stakeholder;
+truncate table contract_notice;
 truncate table property_designation;
 truncate table stakeholder;
 truncate table stakeholder_parameter;

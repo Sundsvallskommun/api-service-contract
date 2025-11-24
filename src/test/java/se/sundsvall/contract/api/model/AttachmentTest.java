@@ -25,13 +25,13 @@ class AttachmentTest {
 
 	@Test
 	void testBuilderMethods() {
-		var attachment = Attachment.builder()
+		final var attachment = Attachment.builder()
 			.withAttachmentData(AttachmentData.builder().build())
-			.withMetaData(AttachmentMetaData.builder().build())
+			.withMetadata(AttachmentMetadata.builder().build())
 			.build();
 
 		assertThat(attachment.getAttachmentData()).isNotNull();
-		assertThat(attachment.getMetaData()).isNotNull();
+		assertThat(attachment.getMetadata()).isNotNull();
 	}
 
 	@Test

@@ -11,10 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
 
-import java.util.Arrays;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class InvoicingTest {
 
@@ -35,25 +32,15 @@ class InvoicingTest {
 
 	@Test
 	void testBuilderMethods() {
-		var invoiceInterval = MONTHLY.name();
-		var invoicedIn = ADVANCE.name();
+		final var invoiceInterval = MONTHLY;
+		final var invoicedIn = ADVANCE;
 
-		var invoicing = Invoicing.builder()
+		final var invoicing = Invoicing.builder()
 			.withInvoiceInterval(invoiceInterval)
 			.withInvoicedIn(invoicedIn)
 			.build();
 
 		assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
 		assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
-	}
-
-	@Test
-	void test_invoiceInterval_hasCorrectOneOfValues() throws NoSuchFieldException {
-		var oneOf = Invoicing.class.getDeclaredField("invoiceInterval")
-			.getAnnotation(OneOf.class)
-			.value();
-
-		Arrays.stream(IntervalType.values())
-			.forEach(value -> assertThat(oneOf).contains(value.name()));
 	}
 }

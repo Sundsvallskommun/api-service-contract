@@ -15,7 +15,6 @@ import se.sundsvall.contract.model.enums.StakeholderRole;
 class StakeholderRoleConverterTest {
 
 	private final StakeholderRoleConverter converter = new StakeholderRoleConverter();
-
 	private final List<StakeholderRole> stakeholderRoles = List.of(StakeholderRole.values());
 
 	@Test

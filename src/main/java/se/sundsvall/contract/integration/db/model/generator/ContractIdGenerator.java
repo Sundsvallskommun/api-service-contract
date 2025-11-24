@@ -1,5 +1,7 @@
 package se.sundsvall.contract.integration.db.model.generator;
 
+import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
+
 import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import java.util.EnumSet;
@@ -7,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
-import org.hibernate.generator.EventTypeSets;
 
 public class ContractIdGenerator implements BeforeExecutionGenerator {
 
@@ -21,10 +22,10 @@ public class ContractIdGenerator implements BeforeExecutionGenerator {
 			return currentValue;
 		}
 
-		var statementPreparer = session.getJdbcCoordinator().getStatementPreparer();
+		final var statementPreparer = session.getJdbcCoordinator().getStatementPreparer();
 
 		try (var ps = statementPreparer.prepareStatement(GENERATE_ID_QUERY)) {
-			var resultSet = ps.executeQuery();
+			final var resultSet = ps.executeQuery();
 
 			if (!resultSet.next()) {
 				throw new SQLException("Unable to generate contract id");
@@ -38,6 +39,6 @@ public class ContractIdGenerator implements BeforeExecutionGenerator {
 
 	@Override
 	public EnumSet<EventType> getEventTypes() {
-		return EventTypeSets.INSERT_ONLY;
+		return INSERT_ONLY;
 	}
 }

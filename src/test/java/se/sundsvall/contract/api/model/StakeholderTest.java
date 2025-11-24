@@ -9,13 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.contract.model.enums.StakeholderType;
-import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 class StakeholderTest {
 
@@ -27,24 +24,6 @@ class StakeholderTest {
 			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
-	}
-
-	@Test
-	void testStakeholder_type_hasCorrectOneOfValues() throws NoSuchFieldException {
-		final var oneOf = Stakeholder.class.getDeclaredField("type")
-			.getAnnotation(OneOf.class);
-
-		Arrays.stream(oneOf.value())
-			.forEach(value -> assertThat(oneOf.value()).contains(value));
-	}
-
-	@Test
-	void testStakeholder_roles_hasCorrectDescription() throws NoSuchFieldException {
-		final var schema = Stakeholder.class.getDeclaredField("roles")
-			.getAnnotation(ArraySchema.class).schema();
-
-		Arrays.stream(StakeholderRole.values())
-			.forEach(value -> assertThat(schema.description()).contains(value.name()));
 	}
 
 	@Test
@@ -63,8 +42,8 @@ class StakeholderTest {
 		final var parameters = List.of(Parameter.builder().build());
 
 		final var stakeholder = Stakeholder.builder()
-			.withType(type.name())
-			.withRoles(roles.stream().map(StakeholderRole::name).toList())
+			.withType(type)
+			.withRoles(roles.stream().toList())
 			.withOrganizationName(organizationName)
 			.withOrganizationNumber(organizationNumber)
 			.withFirstName(firstName)
@@ -77,8 +56,8 @@ class StakeholderTest {
 			.build();
 
 		assertThat(stakeholder).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(stakeholder.getType()).isEqualTo(type.name());
-		assertThat(stakeholder.getRoles()).isEqualTo(roles.stream().map(StakeholderRole::name).toList());
+		assertThat(stakeholder.getType()).isEqualTo(type);
+		assertThat(stakeholder.getRoles()).isEqualTo(roles.stream().toList());
 		assertThat(stakeholder.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(stakeholder.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);
@@ -88,12 +67,10 @@ class StakeholderTest {
 		assertThat(stakeholder.getEmailAddress()).isEqualTo(emailAddress);
 		assertThat(stakeholder.getAddress()).isEqualTo(address);
 		assertThat(stakeholder.getParameters()).isEqualTo(parameters);
-
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

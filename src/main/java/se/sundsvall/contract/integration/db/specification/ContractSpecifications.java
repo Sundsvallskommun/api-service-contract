@@ -1,6 +1,7 @@
 package se.sundsvall.contract.integration.db.specification;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.function.Predicate.not;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -9,7 +10,7 @@ import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRAC
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.END;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.EXTERNAL_REFERENCE_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.INDEX_TERMS;
-import static se.sundsvall.contract.integration.db.model.ContractEntity_.LAND_LEASE_TYPE;
+import static se.sundsvall.contract.integration.db.model.ContractEntity_.LEASE_TYPE;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
@@ -24,6 +25,7 @@ import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.model.enums.LeaseType;
 
 public final class ContractSpecifications {
 
@@ -44,7 +46,7 @@ public final class ContractSpecifications {
 			.and(withPartyId(request.getPartyId()))
 			.and(withOrganizationNumber(request.getOrganizationNumber()))
 			.and(withEndDate(request.getEnd()))
-			.and(withLandLeaseType(request.getLandLeaseType()))
+			.and(withLeaseType(request.getLeaseType()))
 			.and(withExternalReferenceId(request.getExternalReferenceId()))
 			.and(withPropertyDesignations(request.getPropertyDesignations()))
 			.and(withTerm(request.getTerm()));
@@ -54,10 +56,9 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> {
 			final var subQuery = query.subquery(Integer.class);
 			final var subRoot = subQuery.from(ContractEntity.class);
-			subQuery.select(cb.max(subRoot.get(VERSION)))
-				.where(cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)));
-			return cb.equal(root.get(VERSION), subQuery);
+			subQuery.select(cb.max(subRoot.get(VERSION))).where(cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)));
 
+			return cb.equal(root.get(VERSION), subQuery);
 		};
 	}
 
@@ -89,16 +90,16 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> cb.equal(root.join(STAKEHOLDERS).get(ORGANIZATION_NUMBER), organizationNumber);
 	}
 
-	private static Specification<ContractEntity> withLandLeaseType(final String landLeaseType) {
-		if (isBlank(landLeaseType)) {
+	private static Specification<ContractEntity> withLeaseType(final LeaseType leaseType) {
+		if (isNull(leaseType)) {
 			return EMPTY;
 		}
 
-		return (root, query, cb) -> cb.equal(root.get(LAND_LEASE_TYPE), landLeaseType);
+		return (root, query, cb) -> cb.equal(root.get(LEASE_TYPE), leaseType);
 	}
 
 	private static Specification<ContractEntity> withEndDate(final LocalDate endDate) {
-		if (endDate == null) {
+		if (isNull(endDate)) {
 			return EMPTY;
 		}
 
