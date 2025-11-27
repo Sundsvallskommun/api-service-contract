@@ -15,7 +15,7 @@ tags:
 - name: Contracts
   description: Contract resources
 paths:
-  /contracts/{municipalityId}/{contractId}:
+  /{municipalityId}/contracts/{contractId}:
     get:
       tags:
       - Contracts
@@ -176,7 +176,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /contracts/{municipalityId}/{contractId}/attachments/{attachmentId}:
+  /{municipalityId}/contracts/{contractId}/attachments/{attachmentId}:
     get:
       tags:
       - Contract attachments
@@ -347,7 +347,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /contracts/{municipalityId}:
+  /{municipalityId}/contracts:
     get:
       tags:
       - Contracts
@@ -531,7 +531,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /contracts/{municipalityId}/{contractId}/diff:
+  /{municipalityId}/contracts/{contractId}/diff:
     post:
       tags:
       - Contracts
@@ -595,7 +595,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /contracts/{municipalityId}/{contractId}/attachments:
+  /{municipalityId}/contracts/{contractId}/attachments:
     post:
       tags:
       - Contract attachments
