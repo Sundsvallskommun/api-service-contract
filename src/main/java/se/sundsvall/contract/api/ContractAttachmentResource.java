@@ -38,7 +38,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @RestController
 @Validated
 @Tag(name = "Contract attachments", description = "Contract attachment resources")
-@RequestMapping(path = "/contracts/{municipalityId}/{contractId}/attachments")
+@RequestMapping(path = "/{municipalityId}/contracts/{contractId}/attachments")
 @ApiResponse(
 	responseCode = "400",
 	description = "Bad Request",
@@ -104,7 +104,7 @@ class ContractAttachmentResource {
 		@RequestBody @Valid final Attachment attachment) {
 
 		final var id = attachmentService.createAttachment(municipalityId, contractId, attachment);
-		return created(fromPath("/contracts/{municipalityId}/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
+		return created(fromPath("/{municipalityId}/contracts/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}

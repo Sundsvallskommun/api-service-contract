@@ -61,7 +61,7 @@ class ContractResourceTest {
 		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(Contract.builder().build());
 
 		final var response = webTestClient.get()
-			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
+			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -80,7 +80,7 @@ class ContractResourceTest {
 		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(Contract.builder().build());
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}")
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}")
 				.queryParam("version", 2)
 				.build(MUNICIPALITY_ID, CONTRACT_ID))
 			.exchange()
@@ -101,7 +101,7 @@ class ContractResourceTest {
 		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
 				.queryParam("page", 1)
 				.queryParam("size", 10)
 				.queryParam("partyId", UUID.randomUUID().toString())
@@ -122,7 +122,7 @@ class ContractResourceTest {
 		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		var responseBody = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}")
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
 				.queryParam("page", 1)
 				.queryParam("size", 10)
 				.queryParam("term", "ey")
@@ -141,10 +141,10 @@ class ContractResourceTest {
 
 	@Test
 	void testLimitWhenFetchingContracts_shouldGenerateBadRequest() {
-		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
+			.uri(uriBuilder -> uriBuilder.path("/" + MUNICIPALITY_ID + "/contracts")
 				.queryParam("page", 1)
 				.queryParam("limit", 101)
 				.build())
@@ -179,12 +179,12 @@ class ContractResourceTest {
 		when(contractServiceMock.createContract(MUNICIPALITY_ID, contract)).thenReturn(CONTRACT_ID);
 
 		webTestClient.post()
-			.uri("/contracts/{municipalityId}", MUNICIPALITY_ID)
+			.uri("/{municipalityId}/contracts", MUNICIPALITY_ID)
 			.bodyValue(contract)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/contracts/" + MUNICIPALITY_ID + "/" + CONTRACT_ID)
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/contracts/" + CONTRACT_ID)
 			.expectBody().isEmpty();
 
 		verify(contractServiceMock).createContract(MUNICIPALITY_ID, contract);
@@ -198,7 +198,7 @@ class ContractResourceTest {
 		when(contractServiceMock.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3)).thenReturn(diff);
 
 		final var result = webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/{municipalityId}/{contractId}/diff")
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}/diff")
 				.queryParam("oldVersion", 2)
 				.queryParam("newVersion", 3)
 				.build(MUNICIPALITY_ID, CONTRACT_ID))
@@ -226,7 +226,7 @@ class ContractResourceTest {
 		doNothing().when(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
 
 		webTestClient.put()
-			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
+			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.bodyValue(landLeaseContract)
 			.exchange()
 			.expectStatus().isOk()
@@ -241,7 +241,7 @@ class ContractResourceTest {
 		doNothing().when(contractServiceMock).deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 
 		webTestClient.delete()
-			.uri("/contracts/{municipalityId}/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
+			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
@@ -253,10 +253,10 @@ class ContractResourceTest {
 	@ParameterizedTest
 	@MethodSource("invalidTermProvider")
 	void testGetAllContractsByMunicipalityAndTooShortTerm_shouldGenerateBadRequest(String term) {
-		when(contractServiceMock.getContracts(eq("1984"), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/contracts/1984")
+			.uri(uriBuilder -> uriBuilder.path("/" + MUNICIPALITY_ID + "/contracts")
 				.queryParam("page", 1)
 				.queryParam("term", term)
 				.build())
