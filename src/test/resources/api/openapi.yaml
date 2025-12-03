@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "3.0"
 servers:
-- url: http://localhost:59704
+- url: http://localhost:52648
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -688,9 +688,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
     StatusType:
       type: object
@@ -898,9 +898,6 @@ components:
           $ref: "#/components/schemas/TimeUnit"
       description: Duration
     Extension:
-      required:
-      - leaseExtension
-      - unit
       type: object
       properties:
         autoExtend:
@@ -1523,9 +1520,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
         suppressed:
           type: array
