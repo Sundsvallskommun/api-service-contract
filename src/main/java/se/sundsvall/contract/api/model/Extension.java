@@ -28,7 +28,7 @@ public class Extension {
 	private TimeUnit unit;
 
 	@AssertTrue(message = "If 'autoExtend' is true, both 'leaseExtension' and 'unit' must be provided!")
-	private boolean hasValidExtensionProperties() {
+	boolean hasValidExtensionProperties() {
 		if (TRUE.equals(autoExtend)) {
 			return leaseExtension != null && unit != null;
 		}
