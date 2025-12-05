@@ -36,6 +36,7 @@ class ContractAttachmentResourceTest {
 
 	@MockitoBean
 	private AttachmentService attachmentService;
+
 	@Autowired
 	private WebTestClient webTestClient;
 

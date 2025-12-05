@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,8 +23,6 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
-import se.sundsvall.contract.service.mapper.DtoMapper;
-import se.sundsvall.contract.service.mapper.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -39,12 +36,6 @@ class AttachmentServiceTest {
 
 	@Mock
 	private AttachmentRepository mockAttachmentRepository;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private EntityMapper mockEntityMapper;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private DtoMapper mockDtoMapper;
 
 	@InjectMocks
 	private AttachmentService attachmentService;
@@ -65,11 +56,9 @@ class AttachmentServiceTest {
 		// Assert
 		assertThat(createdAttachment).isEqualTo(ENTITY_ID);
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
-		verify(mockEntityMapper).toAttachmentEntity(MUNICIPALITY_ID, CONTRACT_ID, attachment);
 		verify(mockAttachmentRepository).save(any(AttachmentEntity.class));
 
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -87,7 +76,6 @@ class AttachmentServiceTest {
 
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -102,9 +90,7 @@ class AttachmentServiceTest {
 		// Assert
 		assertThat(attachment).isNotNull();
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
-		verify(mockDtoMapper).toAttachmentDto(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -121,7 +107,6 @@ class AttachmentServiceTest {
 
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 
 	}
@@ -144,9 +129,7 @@ class AttachmentServiceTest {
 
 		// Assert
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
-		verify(mockEntityMapper).updateAttachmentEntity(oldAttachmentEntity, incomingAttachment);
 		verify(mockAttachmentRepository).save(argumentCaptor.capture());
-		verify(mockDtoMapper).toAttachmentMetaDataDto(any(AttachmentEntity.class));
 
 		var savedEntity = argumentCaptor.getValue();
 		assertThat(savedEntity.getCategory()).isEqualTo(AttachmentCategory.CONTRACT);
@@ -158,7 +141,6 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getContractId()).isEqualTo("2024-12345");
 
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 
@@ -176,7 +158,6 @@ class AttachmentServiceTest {
 
 		verify(mockAttachmentRepository).findById(ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
-		verifyNoMoreInteractions(mockEntityMapper);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
 

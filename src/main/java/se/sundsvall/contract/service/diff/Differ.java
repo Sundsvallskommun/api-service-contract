@@ -1,5 +1,7 @@
 package se.sundsvall.contract.service.diff;
 
+import static java.util.Collections.emptyList;
+
 import com.deblock.jsondiff.DiffGenerator;
 import com.deblock.jsondiff.diff.JsonDiff;
 import com.deblock.jsondiff.matcher.CompositeJsonMatcher;
@@ -26,10 +28,11 @@ public class Differ implements JsonDiffViewer {
 		new StrictPrimitivePartialMatcher());
 
 	private final ObjectMapper objectMapper;
-	private final List<Change> changes = new ArrayList<>();
+	private final List<Change> changes;
 
 	public Differ(final ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
+		this.changes = new ArrayList<>();
 	}
 
 	public List<Change> diff(final Object oldObject, final Object newObject, final List<String> excludedPaths) {
@@ -44,7 +47,7 @@ public class Differ implements JsonDiffViewer {
 	}
 
 	public List<Change> diffJson(final String oldJson, final String newJson) {
-		return diffJson(oldJson, newJson, List.of());
+		return diffJson(oldJson, newJson, emptyList());
 	}
 
 	public List<Change> diffJson(final String oldJson, final String newJson, final List<String> excludedPaths) {

@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "3.0"
 servers:
-- url: http://localhost:52648
+- url: http://localhost:53239
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -739,6 +739,9 @@ components:
       - CONTRACT
       - OTHER
     AttachmentMetadata:
+      required:
+      - filename
+      - mimeType
       type: object
       properties:
         id:
@@ -750,10 +753,12 @@ components:
         category:
           $ref: "#/components/schemas/AttachmentCategory"
         filename:
+          minLength: 1
           type: string
           description: The attachment filename
           example: LeaseContract12.pdf
         mimeType:
+          minLength: 1
           type: string
           description: The attachment mime-type
           example: application/pdf

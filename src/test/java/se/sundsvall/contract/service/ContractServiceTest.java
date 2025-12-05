@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -46,8 +45,6 @@ import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.service.diff.Differ;
-import se.sundsvall.contract.service.mapper.DtoMapper;
-import se.sundsvall.contract.service.mapper.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {
@@ -63,12 +60,6 @@ class ContractServiceTest {
 
 	@Mock
 	private AttachmentRepository attachmentRepositoryMock;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private EntityMapper entityMapperMock;
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	private DtoMapper dtoMapperMock;
 
 	@Mock
 	private Differ differMock;

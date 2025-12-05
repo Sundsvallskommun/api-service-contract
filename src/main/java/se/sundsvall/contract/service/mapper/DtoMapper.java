@@ -1,12 +1,12 @@
 package se.sundsvall.contract.service.mapper;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
@@ -25,12 +25,12 @@ import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.enums.TimeUnit;
 
-@Component
-public class DtoMapper {
+public final class DtoMapper {
 
-	public Contract toContractDto(final ContractEntity contractEntity, final List<AttachmentEntity> attachmentEntities) {
+	private DtoMapper() {}
+
+	public static Contract toContractDto(final ContractEntity contractEntity, final List<AttachmentEntity> attachmentEntities) {
 		return Contract.builder()
 			.withAdditionalTerms(contractEntity.getAdditionalTerms())
 			.withArea(contractEntity.getArea())
@@ -61,44 +61,44 @@ public class DtoMapper {
 			.build();
 	}
 
-	Duration toDurationDto(final ContractEntity contractEntity) {
+	static Duration toDurationDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity)
 			.map(entity -> Duration.builder()
 				.withLeaseDuration(entity.getLeaseDuration())
-				.withUnit(ofNullable(entity.getLeaseDurationUnit()).orElse(TimeUnit.DAYS))
+				.withUnit(ofNullable(entity.getLeaseDurationUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}
 
-	Extension toExtensionDto(final ContractEntity contractEntity) {
+	static Extension toExtensionDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity)
 			.map(entity -> Extension.builder()
 				.withAutoExtend(contractEntity.getAutoExtend())
 				.withLeaseExtension(contractEntity.getLeaseExtension())
-				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).orElse(TimeUnit.DAYS))
+				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}
 
-	List<Notice> toNoticeDtos(final List<NoticeEmbeddable> noticeEmbeddableList) {
+	static List<Notice> toNoticeDtos(final List<NoticeEmbeddable> noticeEmbeddableList) {
 		return ofNullable(noticeEmbeddableList)
 			.map(noticeEmbeddables -> noticeEmbeddables.stream()
-				.map(this::toNoticeDto)
+				.map(DtoMapper::toNoticeDto)
 				.toList())
 			.orElse(null);
 	}
 
-	Notice toNoticeDto(final NoticeEmbeddable noticeEmbeddable) {
+	static Notice toNoticeDto(final NoticeEmbeddable noticeEmbeddable) {
 		return ofNullable(noticeEmbeddable)
 			.map(embeddable -> Notice.builder()
 				.withPeriodOfNotice(embeddable.getPeriodOfNotice())
 				.withParty(embeddable.getParty())
-				.withUnit(ofNullable(embeddable.getUnit()).orElse(TimeUnit.DAYS))
+				.withUnit(ofNullable(embeddable.getUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}
 
-	Fees toFeesDto(final ContractEntity contractEntity) {
+	static Fees toFeesDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getFees())
 			.map(feesEntity -> Fees.builder()
 				.withAdditionalInformation(feesEntity.getAdditionalInformation())
@@ -114,7 +114,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	Invoicing toInvoicingDto(final ContractEntity contractEntity) {
+	static Invoicing toInvoicingDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getInvoicing())
 			.map(invoicing -> Invoicing.builder()
 				.withInvoiceInterval(invoicing.getInvoiceInterval())
@@ -123,15 +123,15 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	List<AttachmentMetadata> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
+	static List<AttachmentMetadata> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
 		return ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
-				.map(this::toAttachmentMetaDataDto)
+				.map(DtoMapper::toAttachmentMetaDataDto)
 				.toList())
 			.orElse(null);
 	}
 
-	public AttachmentMetadata toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
+	public static AttachmentMetadata toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> AttachmentMetadata.builder()
 				.withCategory(attachment.getCategory())
@@ -143,7 +143,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	Leasehold toLeaseholdDto(final LeaseholdEmbeddable leaseholdEntity) {
+	static Leasehold toLeaseholdDto(final LeaseholdEmbeddable leaseholdEntity) {
 		return ofNullable(leaseholdEntity)
 			.map(leasehold -> Leasehold.builder()
 				.withPurpose(leasehold.getPurpose())
@@ -153,15 +153,15 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	List<Stakeholder> toStakeholderDtos(final List<StakeholderEntity> stakeholders) {
+	static List<Stakeholder> toStakeholderDtos(final List<StakeholderEntity> stakeholders) {
 		return ofNullable(stakeholders)
 			.map(stakeholderEntities -> stakeholderEntities.stream()
-				.map(this::toStakeholderDto)
+				.map(DtoMapper::toStakeholderDto)
 				.toList())
 			.orElse(null);
 	}
 
-	Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
+	static Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
 		return ofNullable(stakeholderEntity)
 			.map(stakeholder -> Stakeholder.builder()
 				.withAddress(toAddressDto(stakeholder.getAddress()))
@@ -179,7 +179,7 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	Address toAddressDto(final AddressEntity addressEntity) {
+	static Address toAddressDto(final AddressEntity addressEntity) {
 		return ofNullable(addressEntity)
 			.map(address -> Address.builder()
 				.withAttention(address.getAttention())
@@ -193,11 +193,11 @@ public class DtoMapper {
 			.orElse(null);
 	}
 
-	public Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
+	public static Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> Attachment.builder()
 				.withAttachmentData(AttachmentData.builder()
-					.withContent(new String(attachment.getContent(), StandardCharsets.UTF_8))
+					.withContent(new String(attachment.getContent(), UTF_8))
 					.build())
 				.withMetadata(AttachmentMetadata.builder()
 					.withCategory(attachment.getCategory())
