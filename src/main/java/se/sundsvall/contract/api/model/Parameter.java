@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Parameter model")
 public class Parameter {
 
-	@Schema(description = "Parameter key")
 	@NotBlank
+	@Schema(description = "Parameter key")
 	private String key;
 
 	@Schema(description = "Parameter display name")

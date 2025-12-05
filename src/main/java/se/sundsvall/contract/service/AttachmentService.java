@@ -1,6 +1,9 @@
 package se.sundsvall.contract.service;
 
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toAttachmentMetaDataDto;
+import static se.sundsvall.contract.service.mapper.EntityMapper.toAttachmentEntity;
+import static se.sundsvall.contract.service.mapper.EntityMapper.updateAttachmentEntity;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +13,6 @@ import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.service.mapper.DtoMapper;
-import se.sundsvall.contract.service.mapper.EntityMapper;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @Service
@@ -19,17 +21,16 @@ public class AttachmentService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
-	private final EntityMapper entityMapper;
-	private final DtoMapper dtoMapper;
 
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId %s is not present within municipality %s.";
 	private static final String CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId %s and attachmentId %s is not present within municipality %s.";
 
-	public AttachmentService(ContractRepository contractRepository, AttachmentRepository attachmentRepository, EntityMapper entityMapper, DtoMapper dtoMapper) {
+	public AttachmentService(
+		final ContractRepository contractRepository,
+		final AttachmentRepository attachmentRepository) {
+
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
-		this.entityMapper = entityMapper;
-		this.dtoMapper = dtoMapper;
 	}
 
 	public Long createAttachment(final String municipalityId, final String contractId, final Attachment attachment) {
@@ -39,13 +40,13 @@ public class AttachmentService {
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build();
 		}
-		return attachmentRepository.save(entityMapper.toAttachmentEntity(municipalityId, contractId, attachment)).getId();
+		return attachmentRepository.save(toAttachmentEntity(municipalityId, contractId, attachment)).getId();
 	}
 
 	@Transactional(readOnly = true)
 	public Attachment getAttachment(final String municipalityId, final String contractId, final Long attachmentId) {
 		return attachmentRepository.findByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId)
-			.map(dtoMapper::toAttachmentDto)
+			.map(DtoMapper::toAttachmentDto)
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
@@ -59,9 +60,9 @@ public class AttachmentService {
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
 				.build());
 
-		final var updatedEntity = entityMapper.updateAttachmentEntity(result, attachment);
+		final var updatedEntity = updateAttachmentEntity(result, attachment);
 
-		return dtoMapper.toAttachmentMetaDataDto(attachmentRepository.save(updatedEntity));
+		return toAttachmentMetaDataDto(attachmentRepository.save(updatedEntity));
 	}
 
 	public void deleteAttachment(final String municipalityId, final String contractId, final Long attachmentId) {
@@ -71,6 +72,7 @@ public class AttachmentService {
 				.withDetail(CONTRACT_ID_ATTACHMENT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, attachmentId, municipalityId))
 				.build();
 		}
+
 		attachmentRepository.deleteByMunicipalityIdAndContractIdAndId(municipalityId, contractId, attachmentId);
 	}
 }
