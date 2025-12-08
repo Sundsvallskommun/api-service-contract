@@ -4,6 +4,9 @@ import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
+import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
+import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,36 +25,33 @@ import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.service.diff.Differ;
-import se.sundsvall.contract.service.mapper.DtoMapper;
-import se.sundsvall.contract.service.mapper.EntityMapper;
 import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Service
 @Transactional
 public class ContractService {
 
-	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId %s is not present within municipality %s.";
-	private static final String CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND = "Contract with contractId %s, version %d is not present within municipality %s.";
+	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId '%s' is not present within municipality '%s'.";
+	private static final String CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND = "Contract with contractId '%s', version '%d' is not present within municipality '%s'.";
+	private static final String CONTRACT_ID_MUNICIPALITY_ID_DIFF_SINGLE_PROBLEM = "Diff operation cannot be performed: only one version of contract with contractId '%s' exists in municipality '%s'.";
 	private static final Sort VERSION_ASC = Sort.by("version").ascending();
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
-	private final DtoMapper dtoMapper;
-	private final EntityMapper entityMapper;
 	private final Differ differ;
 
-	public ContractService(final ContractRepository contractRepository,
-		final AttachmentRepository attachmentRepository, DtoMapper dtoMapper, final EntityMapper entityMapper,
+	public ContractService(
+		final ContractRepository contractRepository,
+		final AttachmentRepository attachmentRepository,
 		final Differ differ) {
+
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
-		this.dtoMapper = dtoMapper;
-		this.entityMapper = entityMapper;
 		this.differ = differ;
 	}
 
 	public String createContract(final String municipalityId, final Contract contract) {
-		return contractRepository.save(entityMapper.toContractEntity(municipalityId, contract)).getContractId();
+		return contractRepository.save(toContractEntity(municipalityId, contract)).getContractId();
 	}
 
 	@Transactional(readOnly = true)
@@ -65,7 +65,7 @@ public class ContractService {
 		}
 
 		return contractEntity
-			.map(entity -> dtoMapper.toContractDto(entity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
+			.map(entity -> toContractDto(entity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractId)))
 			.orElseThrow(() -> Problem.builder()
 				.withStatus(NOT_FOUND)
 				.withDetail(version != null ? CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND.formatted(contractId, version, municipalityId) : CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
@@ -81,7 +81,7 @@ public class ContractService {
 
 		// Map to response objects
 		final var contracts = contractEntities.stream()
-			.map(contractEntity -> dtoMapper.toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
+			.map(contractEntity -> toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
 			.toList();
 
 		// Add to response
@@ -89,10 +89,6 @@ public class ContractService {
 			.withMetaData(PagingAndSortingMetaData.create().withPageData(contractEntities))
 			.withContracts(contracts)
 			.build();
-	}
-
-	private Pageable getPagingParameters(final ContractRequest request) {
-		return PageRequest.of(request.getPage() - 1, request.getLimit());
 	}
 
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
@@ -103,7 +99,7 @@ public class ContractService {
 				.build());
 
 		// Create a new entity and save it
-		final var newContractEntity = entityMapper.createNewContractEntity(municipalityId, oldContractEntity, contract);
+		final var newContractEntity = createNewContractEntity(municipalityId, oldContractEntity, contract);
 		contractRepository.save(newContractEntity);
 	}
 
@@ -115,7 +111,7 @@ public class ContractService {
 			.toList();
 
 		if (availableVersions.size() < 2) {
-			throw Problem.valueOf(BAD_REQUEST, "Unable to diff since a single version of the contract with contractId %s within municipality %s".formatted(contractId, municipalityId));
+			throw Problem.valueOf(BAD_REQUEST, CONTRACT_ID_MUNICIPALITY_ID_DIFF_SINGLE_PROBLEM.formatted(contractId, municipalityId));
 		}
 
 		final var actualNewVersion = ofNullable(newVersion).orElse(availableVersions.getLast());
@@ -138,5 +134,9 @@ public class ContractService {
 
 		attachmentRepository.deleteAllByContractId(contractId);
 		contractRepository.deleteAllByMunicipalityIdAndContractId(municipalityId, contractId);
+	}
+
+	private Pageable getPagingParameters(final ContractRequest request) {
+		return PageRequest.of(request.getPage() - 1, request.getLimit());
 	}
 }
