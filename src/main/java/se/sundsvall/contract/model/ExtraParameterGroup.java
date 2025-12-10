@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Extra parameter group")
 public class ExtraParameterGroup {
 
-	@Schema(description = "The group name", example = "Fees")
+	@Schema(description = "The group name", examples = "Fees")
 	private String name;
 
-	@Schema(description = "Parameters", example = "{\"key1\": \"value1\",\"key2\": \"value2\"}")
+	@Schema(description = "Parameters", examples = "{\"key1\": \"value1\",\"key2\": \"value2\"}")
 	private Map<String, String> parameters;
 }

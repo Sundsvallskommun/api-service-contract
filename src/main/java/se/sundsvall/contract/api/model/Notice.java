@@ -17,14 +17,14 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @Schema(description = "Notice")
 public class Notice {
 
-	@Schema(description = "The party type", example = "LESSOR")
+	@Schema(description = "The party type", examples = "LESSOR")
 	private Party party;
 
-	@Schema(description = "The period of notice", example = "3")
+	@Schema(description = "The period of notice", examples = "3")
 	@NotNull
 	private Integer periodOfNotice;
 
-	@Schema(description = "The unit of the periodOfNotice value", example = "MONTHS")
+	@Schema(description = "The unit of the periodOfNotice value", examples = "MONTHS")
 	@NotNull
 	private TimeUnit unit;
 }

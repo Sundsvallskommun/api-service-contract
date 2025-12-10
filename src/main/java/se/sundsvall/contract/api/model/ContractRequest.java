@@ -27,31 +27,33 @@ import se.sundsvall.dept44.models.api.paging.AbstractParameterPagingBase;
 @Schema(description = "Contract request")
 public class ContractRequest extends AbstractParameterPagingBase {
 
-	@Schema(description = "Contract id", example = "2024-12345")
+	@Schema(description = "Contract id", examples = "2024-12345")
 	private String contractId;
 
-	@Schema(description = "PartyId", example = "40f14de9-815d-44a5-a34d-b1d38b628e07")
+	@Schema(description = "PartyId", examples = "40f14de9-815d-44a5-a34d-b1d38b628e07")
 	@ValidUuid(nullable = true)
 	private String partyId;
 
-	@Schema(description = "Organization number", example = "771122-1234")
+	@Schema(description = "Organization number", examples = "771122-1234")
 	@ValidOrganizationNumber(nullable = true)
 	private String organizationNumber;
 
 	@ArraySchema(schema = @Schema(description = "Property designations"))
 	private List<String> propertyDesignations;
 
-	@Schema(description = "External referenceId", example = "123")
+	@Schema(description = "External referenceId", examples = "123")
 	private String externalReferenceId;
 
 	@DateTimeFormat(iso = DATE)
-	@Schema(description = "End date (format: yyyy-MM-dd)", example = "2023-01-01")
+	@Schema(description = "End date (format: yyyy-MM-dd)", examples = "2023-01-01")
 	private LocalDate end;
 
-	@Schema(description = "Lease type", example = "LEASEHOLD")
+	@Schema(description = "Lease type", examples = "LEASEHOLD")
 	private LeaseType leaseType;
 
-	@Schema(description = "Specific term to search for", example = "term", nullable = true)
+	@Schema(description = "Specific term to search for", examples = "term", types = {
+		"string", "null"
+	})
 	@Size(min = 2, message = "Term must be at least 2 characters long if provided")
 	private String term;
 }

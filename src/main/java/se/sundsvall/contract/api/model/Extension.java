@@ -18,13 +18,13 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @Schema(description = "Extension")
 public class Extension {
 
-	@Schema(description = "Marker for whether an agreement should be extended automatically or not", example = "true", defaultValue = "true")
+	@Schema(description = "Marker for whether an agreement should be extended automatically or not", examples = "true", defaultValue = "true")
 	private Boolean autoExtend;
 
-	@Schema(description = "The lease extension value", example = "2")
+	@Schema(description = "The lease extension value", examples = "2")
 	private Integer leaseExtension;
 
-	@Schema(description = "The unit of the extension value", example = "MONTHS")
+	@Schema(description = "The unit of the extension value", examples = "MONTHS")
 	private TimeUnit unit;
 
 	@AssertTrue(message = "If 'autoExtend' is true, both 'leaseExtension' and 'unit' must be provided!")
