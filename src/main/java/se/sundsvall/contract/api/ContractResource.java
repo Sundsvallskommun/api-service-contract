@@ -44,7 +44,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @RestController
 @Validated
 @Tag(name = "Contracts", description = "Contract resources")
-@RequestMapping(path = "/contracts/{municipalityId}")
+@RequestMapping(path = "/{municipalityId}/contracts")
 @ApiResponse(
 	responseCode = "400",
 	description = "Bad Request",
@@ -85,7 +85,7 @@ class ContractResource {
 		@RequestBody @Valid final Contract contract) {
 
 		final var contractId = service.createContract(municipalityId, contract);
-		return created(fromPath("/contracts/{municipalityId}/{contractId}").buildAndExpand(municipalityId, contractId).toUri())
+		return created(fromPath("/{municipalityId}/contracts/{contractId}").buildAndExpand(municipalityId, contractId).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}

@@ -1,7 +1,9 @@
 package se.sundsvall.contract.api.model;
 
+import static java.lang.Boolean.TRUE;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.AssertTrue;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +22,17 @@ public class Extension {
 	private Boolean autoExtend;
 
 	@Schema(description = "The lease extension value", examples = "2")
-	@NotNull
 	private Integer leaseExtension;
 
 	@Schema(description = "The unit of the extension value", examples = "MONTHS")
-	@NotNull
 	private TimeUnit unit;
+
+	@AssertTrue(message = "If 'autoExtend' is true, both 'leaseExtension' and 'unit' must be provided!")
+	boolean hasValidExtensionProperties() {
+		if (TRUE.equals(autoExtend)) {
+			return leaseExtension != null && unit != null;
+		}
+
+		return true;
+	}
 }

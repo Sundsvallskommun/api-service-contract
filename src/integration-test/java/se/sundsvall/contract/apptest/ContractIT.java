@@ -36,6 +36,7 @@ class ContractIT extends AbstractAppTest {
 
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
+	private static final String PATH = "/{municipalityId}/contracts";
 
 	@Autowired
 	private ContractRepository contractRepository;
@@ -43,7 +44,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test01_readContract() {
 		setupCall()
-			.withServicePath(fromPath("/contracts/{municipalityId}/{contractId}")
+			.withServicePath(fromPath(PATH + "/{contractId}")
 				.build(MUNICIPALITY_ID, CONTRACT_ID)
 				.toString())
 			.withHttpMethod(GET)
@@ -56,7 +57,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test02_readContracts() {
 		setupCall()
-			.withServicePath(fromPath("/contracts/{municipalityId}")
+			.withServicePath(fromPath(PATH)
 				.queryParam("page", 1)
 				.queryParam("limit", 9)
 				.build(MUNICIPALITY_ID)
@@ -71,7 +72,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test03_createContract() {
 		var test = setupCall()
-			.withServicePath(fromPath("/contracts/{municipalityId}")
+			.withServicePath(fromPath(PATH)
 				.build(MUNICIPALITY_ID)
 				.toString())
 			.withHttpMethod(POST)
@@ -97,7 +98,7 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test04_updateContract() {
-		final var path = fromPath("/contracts/{municipalityId}/{contractId}")
+		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 
@@ -127,7 +128,7 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test05_deleteContract() {
-		final var contractPath = fromPath("/contracts/{municipalityId}/{contractId}")
+		final var contractPath = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 		final var attachmentPath = fromPath(contractPath)
@@ -170,7 +171,7 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test06_diffContract() {
-		final var path = fromPath("/contracts/{municipalityId}/{contractId}/diff")
+		final var path = fromPath(PATH + "/{contractId}/diff")
 			.queryParam("oldVersion", 1)
 			.queryParam("newVersion", 2)
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
@@ -188,7 +189,7 @@ class ContractIT extends AbstractAppTest {
 	@Test
 	void test07_getContractsWithTerm() {
 		setupCall()
-			.withServicePath("/contracts/" + MUNICIPALITY_ID + "?term=pöle vault&page=1&limit=15")  // To prevent double encoding
+			.withServicePath("/" + MUNICIPALITY_ID + "/contracts" + "?term=pöle vault&page=1&limit=15")  // To prevent double encoding
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))

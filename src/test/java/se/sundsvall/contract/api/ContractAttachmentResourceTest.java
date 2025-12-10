@@ -32,9 +32,11 @@ class ContractAttachmentResourceTest {
 
 	private static final String CONTRACT_ID = "2024-12345";
 	private static final String MUNICIPALITY_ID = "1984";
+	private static final String BASE_URL = "/" + MUNICIPALITY_ID + "/contracts/" + CONTRACT_ID + "/attachments";
 
 	@MockitoBean
 	private AttachmentService attachmentService;
+
 	@Autowired
 	private WebTestClient webTestClient;
 
@@ -46,7 +48,7 @@ class ContractAttachmentResourceTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri("/contracts/1984/2024-12345/attachments/1")
+			.uri(BASE_URL + "/1")
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -79,12 +81,12 @@ class ContractAttachmentResourceTest {
 
 		// Act
 		webTestClient.post()
-			.uri("/contracts/1984/2024-12345/attachments")
+			.uri(BASE_URL)
 			.bodyValue(attachment)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().valueEquals("Location", "/contracts/1984/2024-12345/attachments/1");
+			.expectHeader().valueEquals("Location", BASE_URL + "/1");
 
 		// Assert
 		verify(attachmentService).createAttachment("1984", CONTRACT_ID, attachment);
@@ -112,7 +114,7 @@ class ContractAttachmentResourceTest {
 
 		// Act
 		final var response = webTestClient.put()
-			.uri("/contracts/1984/2024-12345/attachments/1")
+			.uri(BASE_URL + "/1")
 			.bodyValue(attachment)
 			.exchange()
 			.expectStatus().isOk()
@@ -135,7 +137,7 @@ class ContractAttachmentResourceTest {
 
 		// Act
 		webTestClient.delete()
-			.uri("/contracts/1984/2024-12345/attachments/1")
+			.uri(BASE_URL + "/1")
 			.exchange()
 			.expectStatus().isNoContent();
 

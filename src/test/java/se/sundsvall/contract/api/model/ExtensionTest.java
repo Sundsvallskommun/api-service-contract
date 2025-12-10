@@ -46,4 +46,61 @@ class ExtensionTest {
 	void testNoDirtOnCreatedBean() {
 		assertThat(Extension.builder().build()).hasAllNullFieldsOrProperties();
 	}
+
+	@Test
+	void hasValidExtensionPropertiesReturnsFalse() {
+
+		assertThat(Extension.builder()
+			.withAutoExtend(true)
+			.withLeaseExtension(null)
+			.withUnit(TimeUnit.DAYS)
+			.build()
+			.hasValidExtensionProperties()).isFalse();
+
+		assertThat(Extension.builder()
+			.withAutoExtend(true)
+			.withLeaseExtension(3)
+			.withUnit(null)
+			.build()
+			.hasValidExtensionProperties()).isFalse();
+
+		assertThat(Extension.builder()
+			.withAutoExtend(true)
+			.withLeaseExtension(null)
+			.withUnit(null)
+			.build()
+			.hasValidExtensionProperties()).isFalse();
+	}
+
+	@Test
+	void hasValidExtensionPropertiesReturnsTrue() {
+
+		assertThat(Extension.builder()
+			.withAutoExtend(null)
+			.withLeaseExtension(null)
+			.withUnit(null)
+			.build()
+			.hasValidExtensionProperties()).isTrue();
+
+		assertThat(Extension.builder()
+			.withAutoExtend(false)
+			.withLeaseExtension(null)
+			.withUnit(null)
+			.build()
+			.hasValidExtensionProperties()).isTrue();
+
+		assertThat(Extension.builder()
+			.withAutoExtend(false)
+			.withLeaseExtension(3)
+			.withUnit(null)
+			.build()
+			.hasValidExtensionProperties()).isTrue();
+
+		assertThat(Extension.builder()
+			.withAutoExtend(false)
+			.withLeaseExtension(null)
+			.withUnit(TimeUnit.DAYS)
+			.build()
+			.hasValidExtensionProperties()).isTrue();
+	}
 }

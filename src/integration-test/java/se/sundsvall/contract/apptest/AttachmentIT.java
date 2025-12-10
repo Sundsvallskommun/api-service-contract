@@ -30,11 +30,12 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class AttachmentIT extends AbstractAppTest {
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
+	private static final String PATH = "/1984/contracts/2024-12345/attachments";
 
 	@Test
 	void test01_testGetAttachment() {
 		setupCall()
-			.withServicePath("/contracts/1984/2024-12345/attachments/1")
+			.withServicePath(PATH + "/1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -45,7 +46,7 @@ class AttachmentIT extends AbstractAppTest {
 	@Test
 	void test02_testPostAndGetNewAttachment() {
 		var test = setupCall()
-			.withServicePath("/contracts/1984/2024-12345/attachments")
+			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
@@ -66,7 +67,7 @@ class AttachmentIT extends AbstractAppTest {
 
 	@Test
 	void test03_testReplaceAttachment() {
-		var servicePath = "/contracts/1984/2024-12345/attachments/1";
+		var servicePath = PATH + "/1";
 		setupCall()
 			.withServicePath(servicePath)
 			.withHttpMethod(PUT)
@@ -87,7 +88,7 @@ class AttachmentIT extends AbstractAppTest {
 
 	@Test
 	void test04_deleteAttachment() {
-		var servicePath = "/contracts/1984/2024-12345/attachments/1";
+		var servicePath = PATH + "/1";
 		//Verify the attachment exists since the delete doesn't care if it actually deletes something
 		setupCall()
 			.withServicePath(servicePath)
