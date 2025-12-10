@@ -16,6 +16,6 @@ import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 public class AttachmentData {
 
 	@ValidBase64
-	@Schema(description = "BASE64-encoded attachment file content", example = "QkFTRTY0LWVuY29kZWQgZGF0YQ==", format = "base64")
+	@Schema(description = "BASE64-encoded attachment file content", examples = "QkFTRTY0LWVuY29kZWQgZGF0YQ==", format = "base64")
 	private String content;
 }

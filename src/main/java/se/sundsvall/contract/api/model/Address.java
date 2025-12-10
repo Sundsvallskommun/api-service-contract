@@ -14,24 +14,24 @@ import se.sundsvall.contract.model.enums.AddressType;
 @NoArgsConstructor
 public class Address {
 
-	@Schema(example = "POSTAL_ADDRESS", description = "Address type")
+	@Schema(examples = "POSTAL_ADDRESS", description = "Address type")
 	private AddressType type;
 
-	@Schema(example = "Testvägen 18")
+	@Schema(examples = "Testvägen 18")
 	private String streetAddress;
 
-	@Schema(example = "c/o Test Testorsson")
+	@Schema(examples = "c/o Test Testorsson")
 	private String careOf;
 
-	@Schema(example = "123 45")
+	@Schema(examples = "123 45")
 	private String postalCode;
 
-	@Schema(example = "Sundsvall")
+	@Schema(examples = "Sundsvall")
 	private String town;
 
-	@Schema(example = "Sverige")
+	@Schema(examples = "Sverige")
 	private String country;
 
-	@Schema(example = "Test Testorsson")
+	@Schema(examples = "Test Testorsson")
 	private String attention;
 }

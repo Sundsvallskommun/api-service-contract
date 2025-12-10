@@ -18,28 +18,28 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Fees")
 public class Fees {
 
-	@Schema(description = "The currency of the lease fees", example = "SEK")
+	@Schema(description = "The currency of the lease fees", examples = "SEK")
 	private String currency;
 
-	@Schema(description = "Yearly fee", example = "1000.5")
+	@Schema(description = "Yearly fee", examples = "1000.5")
 	private BigDecimal yearly;
 
-	@Schema(description = "Monthly fee", example = "100.5")
+	@Schema(description = "Monthly fee", examples = "100.5")
 	private BigDecimal monthly;
 
-	@Schema(description = "Total fee", example = "1200.5")
+	@Schema(description = "Total fee", examples = "1200.5")
 	private BigDecimal total;
 
-	@Schema(description = "Total fee as text", example = "One thousand two hundred")
+	@Schema(description = "Total fee as text", examples = "One thousand two hundred")
 	private String totalAsText;
 
-	@Schema(description = "Index year", example = "2021")
+	@Schema(description = "Index year", examples = "2021")
 	private Integer indexYear;
 
-	@Schema(description = "Index number", example = "1")
+	@Schema(description = "Index number", examples = "1")
 	private Integer indexNumber;
 
-	@Schema(description = "Specifies what proportion of the consumer price index should be used for invoicing.", example = "0.5")
+	@Schema(description = "Specifies what proportion of the consumer price index should be used for invoicing.", examples = "0.5")
 	@DecimalMin(value = "0.0")
 	@DecimalMax(value = "1.0")
 	private BigDecimal indexationRate;

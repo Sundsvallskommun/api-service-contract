@@ -29,24 +29,24 @@ import se.sundsvall.contract.model.enums.Status;
 @Schema(description = "Contract")
 public class Contract {
 
-	@Schema(description = "Version for contract", example = "1", accessMode = READ_ONLY)
+	@Schema(description = "Version for contract", examples = "1", accessMode = READ_ONLY)
 	private int version;
 
-	@Schema(description = "Contract id", example = "2024-12345", accessMode = READ_ONLY)
+	@Schema(description = "Contract id", examples = "2024-12345", accessMode = READ_ONLY)
 	private String contractId;
 
-	@Schema(description = "A description ", example = "A simple description of the contract")
+	@Schema(description = "A description ", examples = "A simple description of the contract")
 	private String description;
 
-	@Schema(description = "External referenceId", example = "123")
+	@Schema(description = "External referenceId", examples = "123")
 	private String externalReferenceId;
 
 	private LeaseType leaseType;
 
-	@Schema(description = "Municipality id for the contract", example = "1984", accessMode = READ_ONLY)
+	@Schema(description = "Municipality id for the contract", examples = "1984", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Object identity (from Lantmäteriet)", example = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = NOT_REQUIRED)
+	@Schema(description = "Object identity (from Lantmäteriet)", examples = "909a6a80-d1a4-90ec-e040-ed8f66444c3f", requiredMode = NOT_REQUIRED)
 	private String objectIdentity;
 
 	@NotNull
@@ -70,7 +70,7 @@ public class Contract {
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
 	private List<TermGroup> indexTerms;
 
-	@ArraySchema(schema = @Schema(description = "Property designations", example = "SUNDSVALL NORRMALM 1:1"))
+	@ArraySchema(schema = @Schema(description = "Property designations", examples = "SUNDSVALL NORRMALM 1:1"))
 	private List<String> propertyDesignations;
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
@@ -88,22 +88,22 @@ public class Contract {
 	@Schema(description = "Invoicing details")
 	private Invoicing invoicing;
 
-	@Schema(description = "Lease period start date", example = "2020-01-01", format = "date")
+	@Schema(description = "Lease period start date", examples = "2020-01-01", format = "date")
 	private LocalDate start;
 
-	@Schema(description = "Lease period end date", example = "2022-12-31", format = "date")
+	@Schema(description = "Lease period end date", examples = "2022-12-31", format = "date")
 	private LocalDate end;
 
 	@ArraySchema(schema = @Schema(description = "Termination periods"))
 	private List<@Valid Notice> notices;
 
-	@Schema(description = "Leased area (m2)", example = "150")
+	@Schema(description = "Leased area (m2)", examples = "150")
 	private Integer area;
 
 	@Schema(description = "Whether the contract is signed by a witness")
 	private boolean signedByWitness;
 
-	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", example = """
+	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)", examples = """
 		{
 			"features": [
 				{

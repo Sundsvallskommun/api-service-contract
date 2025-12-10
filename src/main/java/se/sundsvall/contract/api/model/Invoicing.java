@@ -16,7 +16,7 @@ import se.sundsvall.contract.model.enums.InvoicedIn;
 @Schema(description = "Invoicing details")
 public class Invoicing {
 
-	@Schema(description = "How often the lease is invoiced", example = "QUARTERLY")
+	@Schema(description = "How often the lease is invoiced", examples = "QUARTERLY")
 	private IntervalType invoiceInterval;
 
 	private InvoicedIn invoicedIn;

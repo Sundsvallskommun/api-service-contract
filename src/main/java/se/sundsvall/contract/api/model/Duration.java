@@ -16,11 +16,11 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @Schema(description = "Duration")
 public class Duration {
 
-	@Schema(description = "The lease duration value", example = "9")
+	@Schema(description = "The lease duration value", examples = "9")
 	@NotNull
 	private Integer leaseDuration;
 
-	@Schema(description = "The unit of the duration value", example = "MONTHS")
+	@Schema(description = "The unit of the duration value", examples = "MONTHS")
 	@NotNull
 	private TimeUnit unit;
 }
