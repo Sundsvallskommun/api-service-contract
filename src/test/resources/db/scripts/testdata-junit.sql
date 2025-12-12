@@ -9,7 +9,7 @@ VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
         '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, '2023-10-02', 'MK-TEST0001',
         'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 
-        '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexationRate": 0.5,"indexYear":2021,"additionalInformation":["someAdditionalInfo1","someAdditionalInfo2"]}',
+        '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexationRate": 0.5,"indexYear":2021,"indexType":"KPI 80","additionalInformation":["someAdditionalInfo1","someAdditionalInfo2"]}',
         '[{"name":"someParameters","parameters":{"key1":"value1","key2":"value2"}}]', 'LEASE_AGREEMENT'),
 
        (2, '2024-23456', 1, 'DRAFT', '1984',
@@ -18,7 +18,7 @@ VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
         '[{"header": "Additional Basic Terms","terms": [{"description": "Additional terms", "term": "Party"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, '2023-10-02', 'MK-TEST0002',
         'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 
-        '{"currency":"EUR","yearly":1000,"monthly":120,"total":5000,"totalAsText":"five thousand","indexNumber":3,"indexationRate": 0.3,"indexYear":2021,"additionalInformation":[]}',
+        '{"currency":"EUR","yearly":1000,"monthly":120,"total":5000,"totalAsText":"five thousand","indexNumber":3,"indexationRate": 0.3,"indexYear":2021,"indexType":"KPI 80","additionalInformation":[]}',
         '[{"name":"someParameters2","parameters":{"key3":"value3","key4":"value5"}}]', 'LEASE_AGREEMENT'),
 
        (3, '2024-12345', 2, 'ACTIVE', '1984',
@@ -38,10 +38,10 @@ VALUES (1, 'LESSOR', 3, 'MONTHS'),
        (3, 'LESSOR', 1, 'YEARS'),
        (3, 'LESSEE', 2, 'YEARS');
     
-INSERT INTO property_designation (contract_id, property_designation)
-VALUES (1, 'SUNDSVALL NORRMALM 1:1'),
-       (2, 'SUNDSVALL NORRMALM 2:1'),
-       (3, 'SUNDSVALL NORRMALM 1:1');
+INSERT INTO property_designation (contract_id, name, district)
+VALUES (1, 'SUNDSVALL NORRMALM 1:1', "District1"),
+       (2, 'SUNDSVALL NORRMALM 2:1', "District2"),
+       (3, 'SUNDSVALL NORRMALM 1:1', "District3");
 
 INSERT INTO additional_information (contract_id, additional_information)
 VALUES (1, 'Some additional information'),

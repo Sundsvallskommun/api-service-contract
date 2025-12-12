@@ -70,8 +70,8 @@ public class Contract {
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
 	private List<TermGroup> indexTerms;
 
-	@ArraySchema(schema = @Schema(description = "Property designations", examples = "SUNDSVALL NORRMALM 1:1"))
-	private List<String> propertyDesignations;
+	@ArraySchema(schema = @Schema(description = "Property designations"))
+	private List<PropertyDesignation> propertyDesignations;
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;

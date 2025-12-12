@@ -39,7 +39,8 @@ class ContractRequestTest {
 		final var contractId = "2024-12345";
 		final var partyId = "partyId";
 		final var organizationNumber = "organizationNumber";
-		final var propertyDesignations = List.of("propertyDesignation1", "propertyDesignation2");
+		final var propertyDesignationNames = List.of("propertyDesignationName1", "propertyDesignationName2");
+		final var propertyDesignationDistricts = List.of("propertyDesignationDistrict1", "propertyDesignationDistrict2");
 		final var externalReferenceId = "externalReferenceId";
 		final var endDate = LocalDate.of(2023, 10, 10);
 		final var leaseType = LeaseType.SITE_LEASE_COMMERCIAL;
@@ -49,7 +50,8 @@ class ContractRequestTest {
 			.withContractId(contractId)
 			.withPartyId(partyId)
 			.withOrganizationNumber(organizationNumber)
-			.withPropertyDesignations(propertyDesignations)
+			.withPropertyDesignationNames(propertyDesignationNames)
+			.withPropertyDesignationDistricts(propertyDesignationDistricts)
 			.withExternalReferenceId(externalReferenceId)
 			.withEnd(endDate)
 			.withLeaseType(leaseType)
@@ -60,7 +62,8 @@ class ContractRequestTest {
 		assertThat(request.getContractId()).isEqualTo(contractId);
 		assertThat(request.getPartyId()).isEqualTo(partyId);
 		assertThat(request.getOrganizationNumber()).isEqualTo(organizationNumber);
-		assertThat(request.getPropertyDesignations()).isEqualTo(propertyDesignations);
+		assertThat(request.getPropertyDesignationNames()).isEqualTo(propertyDesignationNames);
+		assertThat(request.getPropertyDesignationDistricts()).isEqualTo(propertyDesignationDistricts);
 		assertThat(request.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(request.getEnd()).isEqualTo(endDate);
 		assertThat(request.getLeaseType()).isEqualTo(leaseType);

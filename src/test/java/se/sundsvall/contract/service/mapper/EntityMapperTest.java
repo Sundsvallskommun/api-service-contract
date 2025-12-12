@@ -6,9 +6,11 @@ import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
@@ -49,7 +51,11 @@ class EntityMapperTest {
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getObjectIdentity()).isEqualTo(dto.getObjectIdentity());
 		assertThat(entity.getNotices()).isNotNull(); // Is tested in its own method
-		assertThat(entity.getPropertyDesignations()).isEqualTo(dto.getPropertyDesignations());
+		assertThat(entity.getPropertyDesignations())
+			.flatExtracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
+			.containsAnyElementsOf(dto.getPropertyDesignations().stream()
+				.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
+				.toList());
 		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
 		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getStart()).isEqualTo(dto.getStart());

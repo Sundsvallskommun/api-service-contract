@@ -104,8 +104,14 @@
 	"type": "LEASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0003",
 	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 123:1",
-		"SUNDSVALL NORRMALM 234:1"
+		{
+			"district": "District x",
+			"name": "SUNDSVALL NORRMALM 123:1"
+		},
+		{
+			"district": "District y",
+			"name": "SUNDSVALL NORRMALM 234:1"
+		}
 	],
 	"objectIdentity": "someObjectIdentity",
 	"end": "2023-10-10",

@@ -17,6 +17,7 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
@@ -24,6 +25,7 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
@@ -60,7 +62,7 @@ public final class EntityMapper {
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
 			.withNotices(toNoticeEmbeddables(contract.getNotices()))
-			.withPropertyDesignations(contract.getPropertyDesignations())
+			.withPropertyDesignations(toPropertyDesignationEmbeddables(contract.getPropertyDesignations()))
 			.withSignedByWitness(contract.isSignedByWitness())
 			.withStakeholders(toStakeholderEntities(contract.getStakeholders()))
 			.withStart(contract.getStart())
@@ -181,5 +183,22 @@ public final class EntityMapper {
 		contractEntity.setContractId(oldContract.getContractId());
 
 		return contractEntity;
+	}
+
+	static List<PropertyDesignationEmbeddable> toPropertyDesignationEmbeddables(List<PropertyDesignation> propertyDesignationList) {
+		return ofNullable(propertyDesignationList)
+			.map(propertyDesignations -> propertyDesignations.stream()
+				.map(EntityMapper::toPropertyDesignationEmbeddable)
+				.toList())
+			.orElse(null);
+	}
+
+	private static PropertyDesignationEmbeddable toPropertyDesignationEmbeddable(PropertyDesignation fromPropertyDesignation) {
+		return ofNullable(fromPropertyDesignation)
+			.map(propertyDesignation -> PropertyDesignationEmbeddable.builder()
+				.withName(propertyDesignation.getName())
+				.withDistrict(propertyDesignation.getDistrict())
+				.build())
+			.orElse(null);
 	}
 }
