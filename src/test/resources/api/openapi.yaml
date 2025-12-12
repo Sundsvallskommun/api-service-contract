@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "3.0"
+  version: "4.0"
 servers:
-  - url: http://localhost:51240
+  - url: http://localhost:44437
     description: Generated server url
 tags:
   - name: Contract attachments
@@ -386,14 +386,22 @@ paths:
             description: Organization number
             examples:
               - 771122-1234
-        - name: propertyDesignations
+        - name: propertyDesignationNames
           in: query
           required: false
           schema:
             type: array
             items:
               type: string
-              description: Property designations
+              description: Property designation names
+        - name: propertyDesignationDistricts
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              description: Property designation districts
         - name: externalReferenceId
           in: query
           description: External referenceId
@@ -673,12 +681,6 @@ components:
     Problem:
       type: object
       properties:
-        status:
-          $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
@@ -688,6 +690,12 @@ components:
         parameters:
           type: object
           additionalProperties: { }
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -834,10 +842,8 @@ components:
         propertyDesignations:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/PropertyDesignation"
             description: Property designations
-            examples:
-              - SUNDSVALL NORRMALM 1:1
         stakeholders:
           type: array
           items:
@@ -1042,6 +1048,10 @@ components:
           description: Total fee as text
           examples:
             - One thousand two hundred
+        indexType:
+          type: string
+          description: Index type
+          example: KPI 80
         indexYear:
           type: integer
           format: int32
@@ -1307,6 +1317,20 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/LngLatAlt"
+    PropertyDesignation:
+      type: object
+      description: PropertyDesignation
+      properties:
+        name:
+          type: string
+          description: Name of property designation
+          example: SUNDSVALL BALDER 5:1
+          maxLength: 255
+        district:
+          type: string
+          description: District of property designation
+          example: Sundsvall
+          maxLength: 255
     Stakeholder:
       type: object
       properties:
@@ -1384,7 +1408,7 @@ components:
       description: Stakeholder type
       enum:
         - PERSON
-        - COMPANY
+        - ORGANIZATION
         - ASSOCIATION
         - MUNICIPALITY
         - REGION
@@ -1471,14 +1495,14 @@ components:
           type: string
         message:
           type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
         parameters:
           type: object
           additionalProperties: { }
+        detail:
+          type: string
         suppressed:
           type: array
           items:
@@ -1540,12 +1564,6 @@ components:
                 type: boolean
         message:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
@@ -1555,6 +1573,12 @@ components:
         parameters:
           type: object
           additionalProperties: { }
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:

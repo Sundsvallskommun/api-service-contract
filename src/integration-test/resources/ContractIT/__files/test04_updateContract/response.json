@@ -57,12 +57,18 @@
 		}
 	],
 	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 678:1",
-		"SUNDSVALL NORRMALM 987:1"
+		{
+			"district": "District a",
+			"name": "SUNDSVALL NORRMALM 987:1"
+		},
+		{
+			"district": "District b",
+			"name": "SUNDSVALL NORRMALM 678:1"
+		}
 	],
 	"stakeholders": [
 		{
-			"type": "COMPANY",
+			"type": "ORGANIZATION",
 			"roles": [
 				"SELLER"
 			],

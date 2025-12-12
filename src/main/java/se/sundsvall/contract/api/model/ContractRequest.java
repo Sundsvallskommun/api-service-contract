@@ -38,8 +38,11 @@ public class ContractRequest extends AbstractParameterPagingBase {
 	@ValidOrganizationNumber(nullable = true)
 	private String organizationNumber;
 
-	@ArraySchema(schema = @Schema(description = "Property designations"))
-	private List<String> propertyDesignations;
+	@ArraySchema(schema = @Schema(description = "Property designation names"))
+	private List<String> propertyDesignationNames;
+
+	@ArraySchema(schema = @Schema(description = "Property designation districts"))
+	private List<String> propertyDesignationDistricts;
 
 	@Schema(description = "External referenceId", examples = "123")
 	private String externalReferenceId;

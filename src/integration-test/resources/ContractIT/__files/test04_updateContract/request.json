@@ -43,15 +43,21 @@
 			"roles": [
 				"SELLER"
 			],
-			"type": "COMPANY",
+			"type": "ORGANIZATION",
 			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
 		}
 	],
 	"type": "LEASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0009",
 	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 678:1",
-		"SUNDSVALL NORRMALM 987:1"
+		{
+			"district": "District a",
+			"name": "SUNDSVALL NORRMALM 987:1"
+		},
+		{
+			"district": "District b",
+			"name": "SUNDSVALL NORRMALM 678:1"
+		}
 	],
 	"objectIdentity": "anotherObjectIdentity",
 	"end": "2024-10-02",

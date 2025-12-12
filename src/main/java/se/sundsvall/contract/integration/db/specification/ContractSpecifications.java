@@ -15,9 +15,12 @@ import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIP
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.PROPERTY_DESIGNATIONS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.STAKEHOLDERS;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.VERSION;
+import static se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable_.DISTRICT;
+import static se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable_.NAME;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.ORGANIZATION_NUMBER;
 import static se.sundsvall.contract.integration.db.model.StakeholderEntity_.PARTY_ID;
 
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,7 +51,8 @@ public final class ContractSpecifications {
 			.and(withEndDate(request.getEnd()))
 			.and(withLeaseType(request.getLeaseType()))
 			.and(withExternalReferenceId(request.getExternalReferenceId()))
-			.and(withPropertyDesignations(request.getPropertyDesignations()))
+			.and(withPropertyDesignationNames(request.getPropertyDesignationNames()))
+			.and(withPropertyDesignationDistricts(request.getPropertyDesignationDistricts()))
 			.and(withTerm(request.getTerm()));
 	}
 
@@ -114,16 +118,34 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> cb.equal(root.get(EXTERNAL_REFERENCE_ID), externalReferenceId);
 	}
 
-	private static Specification<ContractEntity> withPropertyDesignations(final List<String> propertyDesignations) {
-		if (isEmpty(propertyDesignations)) {
+	private static Specification<ContractEntity> withPropertyDesignationNames(final List<String> propertyDesignationNames) {
+		if (isEmpty(propertyDesignationNames)) {
+			return EMPTY;
+		}
+		final List<String> nonBlankNames = propertyDesignationNames.stream()
+			.filter(not(String::isBlank))
+			.toList();
+
+		if (nonBlankNames.isEmpty()) {
 			return EMPTY;
 		}
 
-		return (root, query, cb) -> propertyDesignations.stream()
+		return (root, query, cb) -> root.join(PROPERTY_DESIGNATIONS, JoinType.INNER).get(NAME).in(nonBlankNames);
+	}
+
+	private static Specification<ContractEntity> withPropertyDesignationDistricts(final List<String> propertyDesignationDistricts) {
+		if (isEmpty(propertyDesignationDistricts)) {
+			return EMPTY;
+		}
+		final List<String> nonBlankDistricts = propertyDesignationDistricts.stream()
 			.filter(not(String::isBlank))
-			.map(propertyDesignation -> cb.isMember(propertyDesignation, root.get(PROPERTY_DESIGNATIONS)))
-			.reduce(cb::or)
-			.orElse(null);
+			.toList();
+
+		if (nonBlankDistricts.isEmpty()) {
+			return EMPTY;
+		}
+
+		return (root, query, cb) -> root.join(PROPERTY_DESIGNATIONS, JoinType.INNER).get(DISTRICT).in(nonBlankDistricts);
 	}
 
 	private static Specification<ContractEntity> withTerm(final String term) {
