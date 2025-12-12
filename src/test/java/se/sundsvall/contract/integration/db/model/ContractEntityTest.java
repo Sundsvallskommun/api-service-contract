@@ -91,7 +91,15 @@ class ContractEntityTest {
 		var leaseType = LeaseType.LEASEHOLD;
 		var leasehold = LeaseholdEmbeddable.builder().build();
 		var externalReferenceId = "externalReferenceId";
-		var propertyDesignations = List.of("propertyDesignations", "otherPropertyDesignation");
+		var propertyDesignations = List.of(
+			PropertyDesignationEmbeddable.builder()
+				.withName("propertyDesignationName")
+				.withDistrict("propertyDesignationDistrict")
+				.build(),
+			PropertyDesignationEmbeddable.builder()
+				.withName("otherPropertyDesignationName")
+				.withDistrict("otherPropertyDesignationDistrict")
+				.build());
 		var objectIdentity = "objectIdentity";
 		var leaseDuration = 3;
 		var leaseDurationUnit = TimeUnit.MONTHS;
@@ -101,6 +109,7 @@ class ContractEntityTest {
 			.withMonthly(BigDecimal.valueOf(375))
 			.withTotal(BigDecimal.valueOf(52200))
 			.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+			.withIndexType("KPI 80")
 			.withIndexYear(2023)
 			.withIndexationRate(BigDecimal.valueOf(0.5))
 			.withIndexNumber(2)

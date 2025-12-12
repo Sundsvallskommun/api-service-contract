@@ -19,6 +19,7 @@ class FeesConverterTest {
 			"monthly": 234.56,
 			"total": 345.67,
 			"totalAsText": "three hundred forty five point six seven",
+			"indexType": "KPI 80",
 			"indexYear": 1984,
 			"indexNumber": 7,
 			"indexationRate": 0.5,
@@ -41,6 +42,7 @@ class FeesConverterTest {
 			.withMonthly(BigDecimal.valueOf(234.56))
 			.withTotal(BigDecimal.valueOf(345.67))
 			.withTotalAsText("three hundred forty five point six seven")
+			.withIndexType("KPI 80")
 			.withIndexYear(1984)
 			.withIndexNumber(7)
 			.withIndexationRate(BigDecimal.valueOf(0.5))
@@ -79,6 +81,7 @@ class FeesConverterTest {
 			assertThat(fees.getMonthly()).isEqualTo(BigDecimal.valueOf(234.56));
 			assertThat(fees.getTotal()).isEqualTo(BigDecimal.valueOf(345.67));
 			assertThat(fees.getTotalAsText()).isEqualTo("three hundred forty five point six seven");
+			assertThat(fees.getIndexType()).isEqualTo("KPI 80");
 			assertThat(fees.getIndexYear()).isEqualTo(1984);
 			assertThat(fees.getIndexNumber()).isEqualTo(7);
 			assertThat(fees.getAdditionalInformation()).containsExactly("aaa", "bbb");

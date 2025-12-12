@@ -33,6 +33,9 @@ public class Fees {
 	@Schema(description = "Total fee as text", examples = "One thousand two hundred")
 	private String totalAsText;
 
+	@Schema(description = "Index type", example = "KPI 80")
+	private String indexType;
+
 	@Schema(description = "Index year", examples = "2021")
 	private Integer indexYear;
 

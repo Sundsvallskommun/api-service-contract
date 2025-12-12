@@ -58,7 +58,7 @@ class ContractTest {
 		final var additionalTerms = List.of(new TermGroup());
 		final var extraParameters = List.of(new ExtraParameterGroup());
 		final var indexTerms = List.of(new TermGroup());
-		final var propertyDesignations = List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2");
+		final var propertyDesignations = List.of(new PropertyDesignation("SUNDSVALL NORRMALM 1:1", "Sundsvall"), new PropertyDesignation("SUNDSVALL NORRMALM 1:2", "Sundsvall"));
 		final var stakeholders = List.of(new Stakeholder());
 		final var notices = List.of(new Notice());
 		final var duration = Duration.builder().build();

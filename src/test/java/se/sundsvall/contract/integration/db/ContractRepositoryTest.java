@@ -53,7 +53,8 @@ class ContractRepositoryTest {
 			.withContractId("2024-12345")
 			.withPartyId("40f14de6-815d-44b2-a34d-b1d38b628e07")
 			.withOrganizationNumber("771122-1234")
-			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"))
+			.withPropertyDesignationNames(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 2:1"))
+			.withPropertyDesignationDistricts(List.of("District3"))
 			.withExternalReferenceId("MK-TEST0001")
 			.withEnd(LocalDate.of(2023, 10, 10))
 			.withTerm("No pole vaulting indoors")
@@ -96,9 +97,9 @@ class ContractRepositoryTest {
 	}
 
 	/**
-	 * Tests that we can find values in the index_terms and additional_terms fields: "header", "description" and
-	 * "term". The values are unique for each test case (except for the first one) to make sure we find the correct values.
-	 * 
+	 * Tests that we can find values in the index_terms and additional_terms fields: "header", "description" and "term". The
+	 * values are unique for each test case (except for the first one) to make sure we find the correct values.
+	 *
 	 * @param term          what to search for
 	 * @param expectedCount expected number of contracts found
 	 */

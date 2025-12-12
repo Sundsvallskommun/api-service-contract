@@ -62,7 +62,8 @@
 
     create table property_designation (
         contract_id bigint not null,
-        property_designation varchar(255)
+        district varchar(255),
+        name varchar(255)
     ) engine=InnoDB;
 
     create table stakeholder (

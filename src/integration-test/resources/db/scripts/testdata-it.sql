@@ -38,10 +38,10 @@ VALUES (1, 'LESSOR', 3, 'MONTHS'),
        (3, 'LESSOR', 1, 'YEARS'),
        (3, 'LESSEE', 2, 'YEARS');
     
-INSERT INTO property_designation (contract_id, property_designation)
-VALUES (1, 'SUNDSVALL NORRMALM 1:1'),
-       (2, 'SUNDSVALL NORRMALM 2:1'),
-       (3, 'SUNDSVALL NORRMALM 1:1');
+INSERT INTO property_designation (contract_id, name, district)
+VALUES (1, 'SUNDSVALL NORRMALM 1:1', "District 1"),
+       (2, 'SUNDSVALL NORRMALM 2:1', "District 2"),
+       (3, 'SUNDSVALL NORRMALM 1:1', "District 3");
 
 INSERT INTO additional_information (contract_id, additional_information)
 VALUES (1, 'Some additional information'),

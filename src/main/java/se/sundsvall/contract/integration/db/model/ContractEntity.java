@@ -108,8 +108,7 @@ public class ContractEntity {
 			referencedColumnName = "id",
 			foreignKey = @ForeignKey(name = "fk_contract_property_designation_contract_id")),
 		indexes = @Index(name = "idx_contract_property_designation_contract_id", columnList = "contract_id"))
-	@Column(name = "property_designation")
-	private List<String> propertyDesignations;
+	private List<PropertyDesignationEmbeddable> propertyDesignations;
 
 	@ElementCollection
 	@CollectionTable(
