@@ -13,7 +13,7 @@
 	<version>3.0</version>
 	<name>api-service-contract</name>
 	<properties>
-		<geojson-jackson.version>1.14</geojson-jackson.version>
+		<geojson-jackson.version>3.0</geojson-jackson.version>
 		<json-diff.version>1.1.0</json-diff.version>
 	</properties>
 	<dependencies>
