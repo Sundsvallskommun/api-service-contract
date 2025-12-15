@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Stakeholder type", enumAsRef = true)
 public enum StakeholderType {
 	PERSON,
-	COMPANY,
+	ORGANIZATION,
 	ASSOCIATION,
 	MUNICIPALITY,
 	REGION,

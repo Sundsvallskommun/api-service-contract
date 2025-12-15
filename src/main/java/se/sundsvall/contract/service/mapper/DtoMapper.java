@@ -17,12 +17,14 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.Fees;
 
@@ -51,7 +53,7 @@ public final class DtoMapper {
 			.withMunicipalityId(contractEntity.getMunicipalityId())
 			.withObjectIdentity(contractEntity.getObjectIdentity())
 			.withNotices(toNoticeDtos(contractEntity.getNotices()))
-			.withPropertyDesignations(contractEntity.getPropertyDesignations())
+			.withPropertyDesignations(toPropertyDesignationsDtos(contractEntity.getPropertyDesignations()))
 			.withSignedByWitness(contractEntity.isSignedByWitness())
 			.withStakeholders(toStakeholderDtos(contractEntity.getStakeholders()))
 			.withStart(contractEntity.getStart())
@@ -103,6 +105,7 @@ public final class DtoMapper {
 			.map(feesEntity -> Fees.builder()
 				.withAdditionalInformation(feesEntity.getAdditionalInformation())
 				.withCurrency(feesEntity.getCurrency())
+				.withIndexType(feesEntity.getIndexType())
 				.withIndexationRate(feesEntity.getIndexationRate())
 				.withIndexNumber(feesEntity.getIndexNumber())
 				.withIndexYear(feesEntity.getIndexYear())
@@ -206,6 +209,23 @@ public final class DtoMapper {
 					.withMimeType(attachment.getMimeType())
 					.withNote(attachment.getNote())
 					.build())
+				.build())
+			.orElse(null);
+	}
+
+	static List<PropertyDesignation> toPropertyDesignationsDtos(final List<PropertyDesignationEmbeddable> propertyDesignationEmbeddableList) {
+		return ofNullable(propertyDesignationEmbeddableList)
+			.map(propertyDesignations -> propertyDesignations.stream()
+				.map(DtoMapper::toPropertyDesignationDto)
+				.toList())
+			.orElse(null);
+	}
+
+	static PropertyDesignation toPropertyDesignationDto(PropertyDesignationEmbeddable propertyDesignationEmbeddable) {
+		return ofNullable(propertyDesignationEmbeddable)
+			.map(propertyDesignation -> PropertyDesignation.builder()
+				.withName(propertyDesignation.getName())
+				.withDistrict(propertyDesignation.getDistrict())
 				.build())
 			.orElse(null);
 	}

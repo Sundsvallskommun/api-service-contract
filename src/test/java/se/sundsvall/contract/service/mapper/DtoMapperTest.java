@@ -7,9 +7,11 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
@@ -46,7 +48,12 @@ class DtoMapperTest {
 		assertThat(dto.getMunicipalityId()).isEqualTo(contractEntity.getMunicipalityId());
 		assertThat(dto.getObjectIdentity()).isEqualTo(contractEntity.getObjectIdentity());
 		assertThat(dto.getNotices()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getPropertyDesignations()).isEqualTo(contractEntity.getPropertyDesignations());
+		assertThat(dto.getPropertyDesignations())
+			.flatExtracting(PropertyDesignation::getName, PropertyDesignation::getDistrict)
+			.containsExactlyElementsOf(
+				contractEntity.getPropertyDesignations().stream()
+					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
+					.toList());
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getStart()).isEqualTo(contractEntity.getStart());
@@ -74,6 +81,7 @@ class DtoMapperTest {
 		assertThat(fees.getIndexYear()).isEqualTo(entity.getFees().getIndexYear());
 		assertThat(fees.getIndexNumber()).isEqualTo(entity.getFees().getIndexNumber());
 		assertThat(fees.getAdditionalInformation()).isEqualTo(entity.getFees().getAdditionalInformation());
+		assertThat(fees.getIndexType()).isEqualTo(entity.getFees().getIndexType());
 	}
 
 	@Test

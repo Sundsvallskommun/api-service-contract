@@ -39,6 +39,7 @@ import se.sundsvall.contract.api.model.ContractPaginatedResponse;
 import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
+import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.service.ContractService;
@@ -172,7 +173,15 @@ class ContractResourceTest {
 				.build())
 			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withStatus(ACTIVE)
-			.withPropertyDesignations(List.of("SUNDSVALL NORRMALM 1:1", "SUNDSVALL NORRMALM 1:2"))
+			.withPropertyDesignations(List.of(
+				PropertyDesignation.builder()
+					.withName("SUNDSVALL NORRMALM 1:1")
+					.withDistrict("Sundsvall")
+					.build(),
+				PropertyDesignation.builder()
+					.withName("SUNDSVALL NORRMALM 1:2")
+					.withDistrict("Sundsvall")
+					.build()))
 			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 

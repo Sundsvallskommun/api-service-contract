@@ -33,6 +33,7 @@ class FeesTest {
 		final var monthly = BigDecimal.valueOf(1.50);
 		final var total = BigDecimal.valueOf(25);
 		final var totalAsText = "twenty five";
+		final var indexType = "indexType";
 		final var indexationRate = BigDecimal.valueOf(0.5);
 		final var indexYear = 2022;
 		final var indexNumber = 5;
@@ -44,6 +45,7 @@ class FeesTest {
 			.withMonthly(monthly)
 			.withTotal(total)
 			.withTotalAsText(totalAsText)
+			.withIndexType(indexType)
 			.withIndexationRate(indexationRate)
 			.withIndexYear(indexYear)
 			.withIndexNumber(indexNumber)
@@ -56,6 +58,7 @@ class FeesTest {
 		assertThat(fees.getMonthly()).isEqualTo(monthly);
 		assertThat(fees.getTotal()).isEqualTo(total);
 		assertThat(fees.getTotalAsText()).isEqualTo(totalAsText);
+		assertThat(fees.getIndexType()).isEqualTo(indexType);
 		assertThat(fees.getIndexationRate()).isEqualTo(indexationRate);
 		assertThat(fees.getIndexYear()).isEqualTo(indexYear);
 		assertThat(fees.getIndexNumber()).isEqualTo(indexNumber);

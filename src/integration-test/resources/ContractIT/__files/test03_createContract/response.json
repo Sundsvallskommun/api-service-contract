@@ -49,8 +49,14 @@
 		}
 	],
 	"propertyDesignations": [
-		"SUNDSVALL NORRMALM 123:1",
-		"SUNDSVALL NORRMALM 234:1"
+		{
+			"district": "District x",
+			"name": "SUNDSVALL NORRMALM 123:1"
+		},
+		{
+			"district": "District y",
+			"name": "SUNDSVALL NORRMALM 234:1"
+		}
 	],
 	"stakeholders": [
 		{

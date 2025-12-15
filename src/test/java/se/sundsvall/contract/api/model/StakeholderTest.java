@@ -29,7 +29,7 @@ class StakeholderTest {
 	@Test
 	void testBuilderMethods() {
 
-		final var type = StakeholderType.COMPANY;
+		final var type = StakeholderType.ORGANIZATION;
 		final var roles = List.of(StakeholderRole.POWER_OF_ATTORNEY_ROLE);
 		final var organizationName = "Sundsvalls kommun";
 		final var organizationNumber = "212000-2411";

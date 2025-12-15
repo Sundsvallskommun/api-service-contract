@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
-	<version>3.0</version>
+	<version>4.0</version>
 	<name>api-service-contract</name>
 	<properties>
 		<geojson-jackson.version>3.0</geojson-jackson.version>

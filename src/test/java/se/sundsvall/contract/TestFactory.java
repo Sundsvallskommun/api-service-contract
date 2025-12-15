@@ -31,6 +31,7 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
@@ -38,12 +39,12 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.TimeUnit;
 
 public final class TestFactory {
 
@@ -69,7 +70,15 @@ public final class TestFactory {
 				.withAdditionalInformation(List.of("info1", "info2"))
 				.build())
 			.withExternalReferenceId("someExternalReferenceId")
-			.withPropertyDesignations(List.of("somePropertyDesignation", "someOtherPropertyDesignation"))
+			.withPropertyDesignations(List.of(
+				PropertyDesignationEmbeddable.builder()
+					.withName("somePropertyDesignationName")
+					.withDistrict("somePropertyDesignationDistrict")
+					.build(),
+				PropertyDesignationEmbeddable.builder()
+					.withName("someOtherPropertyDesignationName")
+					.withDistrict("someOtherPropertyDesignationDistrict")
+					.build()))
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(20)
 			.withLeaseDurationUnit(MONTHS)
@@ -79,6 +88,7 @@ public final class TestFactory {
 				.withMonthly(BigDecimal.valueOf(375))
 				.withTotal(BigDecimal.valueOf(52200))
 				.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+				.withIndexType("KPI 80")
 				.withIndexationRate(BigDecimal.valueOf(0.3))
 				.withIndexYear(2023)
 				.withIndexNumber(2)
@@ -168,7 +178,15 @@ public final class TestFactory {
 			.withLeaseType(LEASEHOLD)
 			.withLeasehold(Leasehold.builder().withPurpose(APARTMENT).withDescription("someDescription").build())
 			.withExternalReferenceId("someExternalReferenceId")
-			.withPropertyDesignations(List.of("somePropertyDesignation", "someOtherPropertyDesignation"))
+			.withPropertyDesignations(List.of(
+				PropertyDesignation.builder()
+					.withName("somePropertyDesignationName")
+					.withDistrict("somePropertyDesignationDistrict")
+					.build(),
+				PropertyDesignation.builder()
+					.withName("someOtherPropertyDesignationName")
+					.withDistrict("someOtherPropertyDesignationDistrict")
+					.build()))
 			.withObjectIdentity("someObjectIdentity")
 			.withDuration(Duration.builder()
 				.withLeaseDuration(30)
@@ -177,7 +195,7 @@ public final class TestFactory {
 			.withExtension(Extension.builder()
 				.withAutoExtend(true)
 				.withLeaseExtension(2)
-				.withUnit(TimeUnit.DAYS)
+				.withUnit(DAYS)
 				.build())
 			.withFees(Fees.builder()
 				.withCurrency("SEK")
@@ -185,6 +203,7 @@ public final class TestFactory {
 				.withMonthly(BigDecimal.valueOf(375))
 				.withTotal(BigDecimal.valueOf(52200))
 				.withTotalAsText("FEMTITVÅTUSENTVÅHUNDRAKRONOR")
+				.withIndexType("KPI 80")
 				.withIndexYear(2023)
 				.withIndexNumber(2)
 				.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))

@@ -60,6 +60,12 @@
 		},
 		{
 			"type": "MODIFICATION",
+			"path": "$.propertyDesignations.0.district",
+			"oldValue": "District 1",
+			"newValue": "District 3"
+		},
+		{
+			"type": "MODIFICATION",
 			"path": "$.notices.0.periodOfNotice",
 			"oldValue": 3,
 			"newValue": 1
