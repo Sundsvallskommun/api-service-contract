@@ -29,18 +29,18 @@ class PropertyDesignationTest {
 		final var name = "name";
 		final var district = "district";
 
-		final var leasehold = PropertyDesignation.builder()
+		final var propertyDesignation = PropertyDesignation.builder()
 			.withName(name)
 			.withDistrict(district)
 			.build();
 
-		Assertions.assertThat(leasehold).isNotNull().hasNoNullFieldsOrProperties();
-		Assertions.assertThat(leasehold.getName()).isEqualTo(name);
-		Assertions.assertThat(leasehold.getDistrict()).isEqualTo(district);
+		Assertions.assertThat(propertyDesignation).isNotNull().hasNoNullFieldsOrProperties();
+		Assertions.assertThat(propertyDesignation.getName()).isEqualTo(name);
+		Assertions.assertThat(propertyDesignation.getDistrict()).isEqualTo(district);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		Assertions.assertThat(Leasehold.builder().build()).hasAllNullFieldsOrProperties();
+		Assertions.assertThat(PropertyDesignation.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }
