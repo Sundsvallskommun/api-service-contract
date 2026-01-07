@@ -91,7 +91,7 @@ public class Differ implements JsonDiffViewer {
 		// Intentionally empty
 	}
 
-	// Necessary in orer to convert between tools.jackson.databind.JsonNode and com.fasterxml.jackson.databind.JsonNode
+	// Necessary in order to convert between tools.jackson.databind.JsonNode and com.fasterxml.jackson.databind.JsonNode
 	private JsonNode toFasterxmlJsonNode(tools.jackson.databind.JsonNode toolsNode) {
 		return Optional.ofNullable(toolsNode)
 			.map(node -> {
