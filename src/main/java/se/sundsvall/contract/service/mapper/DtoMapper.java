@@ -75,9 +75,9 @@ public final class DtoMapper {
 	static Extension toExtensionDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity)
 			.map(entity -> Extension.builder()
-				.withAutoExtend(contractEntity.getAutoExtend())
-				.withLeaseExtension(contractEntity.getLeaseExtension())
-				.withUnit(ofNullable(contractEntity.getLeaseExtensionUnit()).orElse(DAYS))
+				.withAutoExtend(entity.getAutoExtend())
+				.withLeaseExtension(entity.getLeaseExtension())
+				.withUnit(ofNullable(entity.getLeaseExtensionUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}

@@ -19,9 +19,9 @@ public class TermGroupConverter implements AttributeConverter<List<TermGroup>, S
 	@Override
 	public String convertToDatabaseColumn(final List<TermGroup> termGroup) {
 		return ofNullable(termGroup)
-			.map(termGroups -> {
+			.map(termGroupObj -> {
 				try {
-					return OBJECT_MAPPER.writeValueAsString(termGroup);
+					return OBJECT_MAPPER.writeValueAsString(termGroupObj);
 				} catch (Exception e) {
 					throw new PersistenceException("Unable to serialize term groups", e);
 				}
@@ -33,9 +33,9 @@ public class TermGroupConverter implements AttributeConverter<List<TermGroup>, S
 	public List<TermGroup> convertToEntityAttribute(final String json) {
 		return ofNullable(json)
 			.filter(StringUtils::isNotBlank)
-			.map(s -> {
+			.map(jsonString -> {
 				try {
-					return OBJECT_MAPPER.readValue(json, new TypeReference<List<TermGroup>>() {});
+					return OBJECT_MAPPER.readValue(jsonString, new TypeReference<List<TermGroup>>() {});
 				} catch (Exception e) {
 					throw new PersistenceException("Unable to deserialize term groups", e);
 				}
