@@ -17,9 +17,9 @@ public class FeesConverter implements AttributeConverter<Fees, String> {
 	@Override
 	public String convertToDatabaseColumn(final Fees fees) {
 		return ofNullable(fees)
-			.map(s -> {
+			.map(feesObj -> {
 				try {
-					return OBJECT_MAPPER.writeValueAsString(fees);
+					return OBJECT_MAPPER.writeValueAsString(feesObj);
 				} catch (Exception e) {
 					throw new PersistenceException("Unable to serialize fees", e);
 				}
@@ -31,9 +31,9 @@ public class FeesConverter implements AttributeConverter<Fees, String> {
 	public Fees convertToEntityAttribute(final String json) {
 		return ofNullable(json)
 			.filter(StringUtils::isNotBlank)
-			.map(s -> {
+			.map(jsonString -> {
 				try {
-					return OBJECT_MAPPER.readValue(json, Fees.class);
+					return OBJECT_MAPPER.readValue(jsonString, Fees.class);
 				} catch (Exception e) {
 					throw new PersistenceException("Unable to deserialize fees", e);
 				}

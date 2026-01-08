@@ -39,9 +39,9 @@ public class ExtraParameterGroupConverter implements AttributeConverter<List<Ext
 	public List<ExtraParameterGroup> convertToEntityAttribute(final String json) {
 		return ofNullable(json)
 			.filter(StringUtils::isNotBlank)
-			.map(s -> {
+			.map(jsonString -> {
 				try {
-					return objectMapper.readValue(json, new TypeReference<List<ExtraParameterGroup>>() {});
+					return objectMapper.readValue(jsonString, new TypeReference<List<ExtraParameterGroup>>() {});
 				} catch (Exception e) {
 					throw new PersistenceException("Unable to deserialize extra parameter groups", e);
 				}
