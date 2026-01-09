@@ -312,6 +312,8 @@ class ContractServiceTest {
 		}
 
 		@Override
-		public void apply(ContractEntity contractEntity) {}
+		public void apply(ContractEntity contractEntity) {
+			// Empty method as this class only is used as a mock in this test class
+		}
 	}
 }
