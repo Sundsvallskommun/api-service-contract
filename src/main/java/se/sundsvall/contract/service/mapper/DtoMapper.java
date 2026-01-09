@@ -2,6 +2,9 @@ package se.sundsvall.contract.service.mapper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
 
@@ -63,8 +66,13 @@ public final class DtoMapper {
 			.build();
 	}
 
+	static boolean isLeaseAgreement(ContractEntity contractEntity) {
+		return Objects.equals(LEASE_AGREEMENT, contractEntity.getType());
+	}
+
 	static Duration toDurationDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity)
+			.filter(DtoMapper::isLeaseAgreement)
 			.map(entity -> Duration.builder()
 				.withLeaseDuration(entity.getLeaseDuration())
 				.withUnit(ofNullable(entity.getLeaseDurationUnit()).orElse(DAYS))
@@ -74,6 +82,7 @@ public final class DtoMapper {
 
 	static Extension toExtensionDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity)
+			.filter(DtoMapper::isLeaseAgreement)
 			.map(entity -> Extension.builder()
 				.withAutoExtend(entity.getAutoExtend())
 				.withLeaseExtension(entity.getLeaseExtension())
@@ -153,6 +162,7 @@ public final class DtoMapper {
 				.withAdditionalInformation(leasehold.getAdditionalInformation())
 				.withDescription(leasehold.getDescription())
 				.build())
+			.filter(leasehold -> anyNotNull(leasehold.getDescription(), leasehold.getPurpose()) || isNotEmpty(leasehold.getAdditionalInformation()))
 			.orElse(null);
 	}
 

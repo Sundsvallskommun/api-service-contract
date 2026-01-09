@@ -91,12 +91,12 @@
 			],
 			"duration": {
 				"leaseDuration": 2,
-				"unit": "DAYS"
+				"unit": "YEARS"
 			},
 			"extension": {
 				"autoExtend": true,
 				"leaseExtension": 1,
-				"unit": "DAYS"
+				"unit": "YEARS"
 			},
 			"fees": {
 				"currency": "EUR",
@@ -217,15 +217,6 @@
 					"parameters": []
 				}
 			],
-			"duration": {
-				"leaseDuration": 2,
-				"unit": "DAYS"
-			},
-			"extension": {
-				"autoExtend": true,
-				"leaseExtension": 1,
-				"unit": "DAYS"
-			},
 			"fees": {
 				"currency": "SEK",
 				"yearly": 234.56,
