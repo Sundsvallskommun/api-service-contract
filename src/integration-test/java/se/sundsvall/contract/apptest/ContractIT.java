@@ -16,9 +16,11 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
@@ -70,8 +72,8 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test03_createContract() {
-		var test = setupCall()
+	void test03_createContractForLeaseAgreement() {
+		final var createCall = setupCall()
 			.withServicePath(fromPath(PATH)
 				.build(MUNICIPALITY_ID)
 				.toString())
@@ -81,7 +83,7 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.sendRequestAndVerifyResponse();
 
-		var location = test.getResponseHeaders().getLocation();
+		final var location = createCall.getResponseHeaders().getLocation();
 
 		assertThat(location).isNotNull();
 		assertThat(location.getPath()).isNotNull();
@@ -97,7 +99,7 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_updateContract() {
+	void test04_updateContractKeepingTypeIntact() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
@@ -121,7 +123,7 @@ class ContractIT extends AbstractAppTest {
 
 		// We can't fetch older versions via the API, so check that we have an older version of the contract
 		// The old version should have id 1.
-		var contractEntity = contractRepository.findById(1L).get();
+		final var contractEntity = contractRepository.findById(1L).get();
 		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
@@ -195,5 +197,62 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test08_createContractForPurchaseAgreement() {
+		final var createCall = setupCall()
+			.withServicePath(fromPath(PATH)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(POST)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(CREATED)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
+			.sendRequestAndVerifyResponse();
+
+		final var location = createCall.getResponseHeaders().getLocation();
+
+		assertThat(location).isNotNull();
+		assertThat(location.getPath()).isNotNull();
+
+		// Verify it's there
+		setupCall()
+			.withServicePath(location.getPath())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test09_updateContractWithTypeChange() throws Exception {
+		final var path = fromPath(PATH + "/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		// Update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PUT)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequestAndVerifyResponse();
+
+		// Verify update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+
+		// We can't fetch older versions via the API, so check that we have an older version of the contract
+		// The old version should have id 1.
+		final var contractEntity = contractRepository.findById(1L).get();
+		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
+		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 }
