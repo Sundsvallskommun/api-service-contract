@@ -9,8 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.I_AM_A_TEAPOT;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +17,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.service.businessrule.BusinessruleException;
 
 @ExtendWith(MockitoExtension.class)
 class PurchaseAgreementRuleTest {
@@ -67,9 +64,8 @@ class PurchaseAgreementRuleTest {
 
 		when(contractEntityMock.getContractId()).thenReturn(contractId);
 
-		final var result = rule.apply(contractEntityMock);
+		rule.apply(contractEntityMock);
 
-		assertThat(result).isTrue();
 		verify(contractEntityMock).getContractId();
 		verify(contractEntityMock).setLeaseDuration(null);
 		verify(contractEntityMock).setLeaseDurationUnit(null);
@@ -82,15 +78,15 @@ class PurchaseAgreementRuleTest {
 	@Test
 	void applyBusinessrulesFail() {
 		final var contractId = "contractId";
-
+		final var thrownException = new NullPointerException("I am a teapot");
 		when(contractEntityMock.getContractId()).thenReturn(contractId);
-		doThrow(Problem.valueOf(I_AM_A_TEAPOT)).when(contractEntityMock).setLeaseDuration(null);
+		doThrow(thrownException).when(contractEntityMock).setLeaseDuration(null);
 
-		final var e = assertThrows(ThrowableProblem.class, () -> rule.apply(contractEntityMock));
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(contractEntityMock));
 
-		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
-		assertThat(e.getDetail()).isEqualTo("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractId));
-		verify(contractEntityMock, times(3)).getContractId();
+		assertThat(e.getCause()).isSameAs(thrownException);
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractId));
+		verify(contractEntityMock, times(2)).getContractId();
 		verify(contractEntityMock).setLeaseDuration(null);
 		verifyNoMoreInteractions(contractEntityMock);
 	}

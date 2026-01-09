@@ -161,13 +161,11 @@ public class ContractService {
 	/**
 	 * Method applies all matching business rules for the sent in contract entity
 	 *
-	 * @param  contractEntity the contract to process
-	 * @return                true if any business rule has been applied to the contract, false otherwise.
+	 * @param contractEntity the contract to process
 	 */
-	private boolean applyBusinessrules(ContractEntity contractEntity) {
-		return ofNullable(contractTypeRules).orElse(emptyList()).stream()
+	private void applyBusinessrules(ContractEntity contractEntity) {
+		ofNullable(contractTypeRules).orElse(emptyList()).stream()
 			.filter(rule -> rule.appliesTo(contractEntity))
-			.map(rule -> rule.apply(contractEntity))
-			.anyMatch(result -> result);
+			.forEach(rule -> rule.apply(contractEntity));
 	}
 }

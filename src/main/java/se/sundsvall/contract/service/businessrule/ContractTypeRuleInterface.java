@@ -15,8 +15,8 @@ public interface ContractTypeRuleInterface {
 	/**
 	 * Method for applying business rule to the provided contract entity
 	 *
-	 * @param  contractEntity the entity to process
-	 * @return                true if business rule has been successfully applied
+	 * @param  contractEntity        the entity to process
+	 * @throws BusinessruleException will be thrown on error when applying rule to contract
 	 */
-	boolean apply(ContractEntity contractEntity);
+	void apply(ContractEntity contractEntity) throws BusinessruleException;
 }

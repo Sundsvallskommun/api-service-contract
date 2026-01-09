@@ -1,14 +1,13 @@
 package se.sundsvall.contract.service.businessrule.impl;
 
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.service.businessrule.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.ContractTypeRuleInterface;
 
 @Service
@@ -25,7 +24,7 @@ public class PurchaseAgreementRule implements ContractTypeRuleInterface {
 	}
 
 	@Override
-	public boolean apply(ContractEntity contractEntity) {
+	public void apply(ContractEntity contractEntity) throws BusinessruleException {
 		try {
 			logger.info("Applying purchase agreement business rules for contract number {}", contractEntity.getContractId());
 
@@ -36,12 +35,9 @@ public class PurchaseAgreementRule implements ContractTypeRuleInterface {
 			contractEntity.setLeaseExtensionUnit(null);
 			contractEntity.setAutoExtend(null);
 
-			return true; // Indicates that the business rule have been applied
-
 		} catch (final Exception e) {
-			// Log and throw runnable problem
-			logger.error("An exception occurred when applying purchase agreement business rules for contract number {}", contractEntity.getContractId(), e);
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractEntity.getContractId()));
+			// Wrap exception and rethrow as a BusinessruleException
+			throw new BusinessruleException("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractEntity.getContractId()), e);
 		}
 	}
 

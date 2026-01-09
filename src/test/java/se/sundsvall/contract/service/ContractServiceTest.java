@@ -312,8 +312,6 @@ class ContractServiceTest {
 		}
 
 		@Override
-		public boolean apply(ContractEntity contractEntity) {
-			return true;
-		}
+		public void apply(ContractEntity contractEntity) {}
 	}
 }
