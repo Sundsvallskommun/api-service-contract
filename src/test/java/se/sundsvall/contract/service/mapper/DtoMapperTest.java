@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -64,34 +65,34 @@ class DtoMapperTest {
 		assertThat(dto.getAdditionalTerms()).isEqualTo(contractEntity.getAdditionalTerms());
 		assertThat(dto.getArea()).isEqualTo(contractEntity.getArea());
 		assertThat(dto.getAreaData()).isEqualTo(contractEntity.getAreaData());
-		assertThat(dto.getAttachmentMetaData()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getContractId()).isEqualTo(contractEntity.getContractId());
 		assertThat(dto.getDescription()).isEqualTo(contractEntity.getDescription());
 		assertThat(dto.getEnd()).isEqualTo(contractEntity.getEnd());
 		assertThat(dto.getExternalReferenceId()).isEqualTo(contractEntity.getExternalReferenceId());
 		assertThat(dto.getExtraParameters()).isEqualTo(contractEntity.getExtraParameters());
-		assertThat(dto.getFees()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getIndexTerms()).isEqualTo(contractEntity.getIndexTerms());
-		assertThat(dto.getInvoicing()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
-		assertThat(dto.getDuration()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getExtension()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getMunicipalityId()).isEqualTo(contractEntity.getMunicipalityId());
 		assertThat(dto.getObjectIdentity()).isEqualTo(contractEntity.getObjectIdentity());
-		assertThat(dto.getNotices()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getPropertyDesignations())
-			.flatExtracting(PropertyDesignation::getName, PropertyDesignation::getDistrict)
-			.containsExactlyElementsOf(
-				contractEntity.getPropertyDesignations().stream()
-					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
-					.toList());
+		assertThat(dto.getIndexTerms()).isEqualTo(contractEntity.getIndexTerms());
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getStart()).isEqualTo(contractEntity.getStart());
 		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
 		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
 		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
+		assertThat(dto.getPropertyDesignations())
+			.flatExtracting(PropertyDesignation::getName, PropertyDesignation::getDistrict)
+			.containsExactlyElementsOf(
+				contractEntity.getPropertyDesignations().stream()
+					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
+					.toList());
+		assertThat(dto).extracting(Contract::getAttachmentMetaData,
+			Contract::getFees,
+			Contract::getInvoicing,
+			Contract::getDuration,
+			Contract::getExtension,
+			Contract::getLeasehold,
+			Contract::getNotices).isNotNull(); // These attributes are tested in their own test methods
 	}
 
 	@Test
