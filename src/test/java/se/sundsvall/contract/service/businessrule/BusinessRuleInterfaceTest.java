@@ -13,10 +13,10 @@ import se.sundsvall.contract.service.businessrule.impl.PurchaseAgreementRule;
 
 @ActiveProfiles("junit")
 @SpringBootTest(classes = Application.class, webEnvironment = MOCK)
-class ContractTypeRuleInterfaceTest {
+class BusinessRuleInterfaceTest {
 
 	@Autowired
-	private List<ContractTypeRuleInterface> contactTypeRules;
+	private List<BusinessRuleInterface> contactTypeRules;
 
 	@Test
 	void verifyAllRulesLoaded() {

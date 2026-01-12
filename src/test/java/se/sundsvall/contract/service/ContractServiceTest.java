@@ -47,7 +47,7 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.service.businessrule.ContractTypeRuleInterface;
+import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
 import se.sundsvall.contract.service.diff.Differ;
 
 @ExtendWith(MockitoExtension.class)
@@ -305,7 +305,7 @@ class ContractServiceTest {
 	/**
 	 * Test class used to mock the ContractTypeRuleInterface
 	 */
-	private static class Businessrule implements ContractTypeRuleInterface {
+	private static class Businessrule implements BusinessRuleInterface {
 		@Override
 		public boolean appliesTo(ContractEntity contractEntity) {
 			return false;

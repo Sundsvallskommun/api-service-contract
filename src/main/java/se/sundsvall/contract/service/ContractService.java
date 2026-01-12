@@ -25,7 +25,7 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
-import se.sundsvall.contract.service.businessrule.ContractTypeRuleInterface;
+import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
 import se.sundsvall.contract.service.diff.Differ;
 import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
@@ -40,19 +40,19 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
-	private final List<ContractTypeRuleInterface> contractTypeRules;
+	private final List<BusinessRuleInterface> businessRules;
 
 	private final Differ differ;
 
 	public ContractService(
 		final ContractRepository contractRepository,
 		final AttachmentRepository attachmentRepository,
-		final List<ContractTypeRuleInterface> contractTypeRules,
+		final List<BusinessRuleInterface> businessRules,
 		final Differ differ) {
 
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
-		this.contractTypeRules = contractTypeRules;
+		this.businessRules = businessRules;
 		this.differ = differ;
 	}
 
@@ -164,7 +164,7 @@ public class ContractService {
 	 * @param contractEntity the contract to process
 	 */
 	private void applyBusinessrules(ContractEntity contractEntity) {
-		ofNullable(contractTypeRules).orElse(emptyList()).stream()
+		ofNullable(businessRules).orElse(emptyList()).stream()
 			.filter(rule -> rule.appliesTo(contractEntity))
 			.forEach(rule -> rule.apply(contractEntity));
 	}

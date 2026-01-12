@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
 import se.sundsvall.contract.service.businessrule.BusinessruleException;
-import se.sundsvall.contract.service.businessrule.ContractTypeRuleInterface;
 
 @Service
-public class PurchaseAgreementRule implements ContractTypeRuleInterface {
+public class PurchaseAgreementRule implements BusinessRuleInterface {
 	private final Logger logger;
 
 	public PurchaseAgreementRule() {

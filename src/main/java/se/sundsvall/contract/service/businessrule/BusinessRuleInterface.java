@@ -2,7 +2,7 @@ package se.sundsvall.contract.service.businessrule;
 
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 
-public interface ContractTypeRuleInterface {
+public interface BusinessRuleInterface {
 
 	/**
 	 * Method for evaluating if the provided contract entity should apply the business rule or not
