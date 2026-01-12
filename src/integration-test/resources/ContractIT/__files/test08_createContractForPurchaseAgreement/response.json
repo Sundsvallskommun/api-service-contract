@@ -1,21 +1,12 @@
 {
 	"version": 1,
-	"contractId": "${json-unit.regex}^\\d{4}-00001$",
+	"contractId": "${json-unit.regex}^\\d{4}-000\\d{2}$",
 	"description": "someDescription",
-	"externalReferenceId": "MK-TEST0003",
-	"leaseType": "LEASEHOLD",
+	"externalReferenceId": "MK-TEST0008",
 	"municipalityId": "1984",
 	"objectIdentity": "someObjectIdentity",
 	"status": "DRAFT",
-	"type": "LEASE_AGREEMENT",
-	"leasehold": {
-		"purpose": "AGRICULTURE",
-		"description": "SomeLeaseholdDescription",
-		"additionalInformation": [
-			"Some additional information when posting",
-			"More additional information when posting"
-		]
-	},
+	"type": "PURCHASE_AGREEMENT",
 	"attachmentMetaData": [],
 	"additionalTerms": [
 		{
@@ -48,16 +39,7 @@
 			]
 		}
 	],
-	"propertyDesignations": [
-		{
-			"district": "District x",
-			"name": "SUNDSVALL NORRMALM 123:1"
-		},
-		{
-			"district": "District y",
-			"name": "SUNDSVALL NORRMALM 234:1"
-		}
-	],
+	"propertyDesignations": [],
 	"stakeholders": [
 		{
 			"type": "PERSON",
@@ -121,15 +103,6 @@
 			"parameters": []
 		}
 	],
-	"duration": {
-		"leaseDuration": 2,
-		"unit": "MONTHS"
-	},
-	"extension": {
-		"autoExtend": true,
-		"leaseExtension": 1,
-		"unit": "MONTHS"
-	},
 	"fees": {
 		"currency": "SEK",
 		"yearly": 234.56,
@@ -150,18 +123,7 @@
 	},
 	"start": "2023-10-02",
 	"end": "2023-10-10",
-	"notices": [
-		{
-			"party": "LESSOR",
-			"periodOfNotice": 1,
-			"unit": "MONTHS"
-		},
-		{
-			"party": "LESSEE",
-			"periodOfNotice": 2,
-			"unit": "MONTHS"
-		}
-	],
+	"notices": [],
 	"area": 12,
 	"signedByWitness": true
 }

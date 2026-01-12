@@ -61,6 +61,10 @@ public final class TestFactory {
 	}
 
 	public static ContractEntity createContractEntity() {
+		return createContractEntityBuilder().build();
+	}
+
+	public static ContractEntity.ContractEntityBuilder createContractEntityBuilder() {
 		return ContractEntity.builder()
 			.withContractId("2024-98765")
 			.withLeaseType(LEASEHOLD)
@@ -164,8 +168,7 @@ public final class TestFactory {
 					.withName("someExtraParameterGroup")
 					.withParameters(Map.of("someParameter", "someValue"))
 					.build()))
-			.withType(LEASE_AGREEMENT)
-			.build();
+			.withType(LEASE_AGREEMENT);
 	}
 
 	public static Contract createContract() {

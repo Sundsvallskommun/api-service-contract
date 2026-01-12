@@ -1,5 +1,6 @@
 package se.sundsvall.contract.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -24,6 +25,7 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
+import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
 import se.sundsvall.contract.service.diff.Differ;
 import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
@@ -38,20 +40,31 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
+	private final List<BusinessRuleInterface> businessRules;
+
 	private final Differ differ;
 
 	public ContractService(
 		final ContractRepository contractRepository,
 		final AttachmentRepository attachmentRepository,
+		final List<BusinessRuleInterface> businessRules,
 		final Differ differ) {
 
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
+		this.businessRules = businessRules;
 		this.differ = differ;
 	}
 
 	public String createContract(final String municipalityId, final Contract contract) {
-		return contractRepository.save(toContractEntity(municipalityId, contract)).getContractId();
+		// Map to entity
+		final var contractEntity = toContractEntity(municipalityId, contract);
+
+		// Apply all matching businessrules
+		applyBusinessrules(contractEntity);
+
+		// Save entity and return id
+		return contractRepository.save(contractEntity).getContractId();
 	}
 
 	@Transactional(readOnly = true)
@@ -98,8 +111,13 @@ public class ContractService {
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build());
 
-		// Create a new entity and save it
+		// Create a new entity
 		final var newContractEntity = createNewContractEntity(municipalityId, oldContractEntity, contract);
+
+		// Apply all matching businessrules
+		applyBusinessrules(newContractEntity);
+
+		// Save changes
 		contractRepository.save(newContractEntity);
 	}
 
@@ -138,5 +156,16 @@ public class ContractService {
 
 	private Pageable getPagingParameters(final ContractRequest request) {
 		return PageRequest.of(request.getPage() - 1, request.getLimit());
+	}
+
+	/**
+	 * Method applies all matching business rules for the sent in contract entity
+	 *
+	 * @param contractEntity the contract to process
+	 */
+	private void applyBusinessrules(ContractEntity contractEntity) {
+		ofNullable(businessRules).orElse(emptyList()).stream()
+			.filter(rule -> rule.appliesTo(contractEntity))
+			.forEach(rule -> rule.apply(contractEntity));
 	}
 }

@@ -1,0 +1,147 @@
+{
+	"municipalityId": "1984",
+	"fees": {
+		"additionalInformation": [
+			"someAdditionalInfo1",
+			"someAdditionalInfo2"
+		],
+		"total": 500,
+		"totalAsText": "five hundred",
+		"monthly": 123.45,
+		"currency": "SEK",
+		"indexationRate": 0.4,
+		"indexNumber": 2,
+		"yearly": 234.56,
+		"indexYear": 2021
+	},
+	"attachments": [
+		{
+			"note": "1",
+			"extension": ".pdf",
+			"file": "someFile",
+			"name": "someName",
+			"mimeType": "application/pdf",
+			"category": "CONTRACT"
+		}
+	],
+	"description": "someDescription",
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
+	"stakeholders": [
+		{
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "POSTAL_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": [
+				"SIGNATORY"
+			],
+			"type": "PERSON",
+			"parameters": [
+				{
+					"values": [
+						"value1",
+						"value2"
+					],
+					"key": "stakeholderparam-key-1"
+				},
+				{
+					"displayName": "The second stakeholderparam key",
+					"values": [
+						"the second value"
+					],
+					"key": "stakeholderparam-key-2"
+				},
+				{
+					"values": [
+						"value3",
+						"value4"
+					],
+					"key": "stakeholderparam-key-1"
+				}
+			],
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+		},
+		{
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "VISITING_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": [
+				"POWER_OF_ATTORNEY_ROLE"
+			],
+			"type": "PERSON",
+			"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07"
+		}
+	],
+	"type": "PURCHASE_AGREEMENT",
+	"externalReferenceId": "MK-TEST0008",
+	"objectIdentity": "someObjectIdentity",
+	"end": "2023-10-10",
+	"area": 12,
+	"start": "2023-10-02",
+	"indexTerms": [
+		{
+			"terms": [
+				{
+					"description": "In general the conditions are...",
+					"term": "General Conditions"
+				}
+			],
+			"header": "General Terms"
+		}
+	],
+	"signedByWitness": true,
+	"additionalTerms": [
+		{
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			],
+			"header": "Extraordinary Terms"
+		}
+	],
+	"invoicing": {
+		"invoiceInterval": "QUARTERLY",
+		"invoicedIn": "ADVANCE"
+	},
+	"status": "DRAFT",
+	"duration": {
+		"leaseDuration": 555,
+		"unit": "MONTHS"
+	},
+	"extension": {
+		"leaseExtension": 666,
+		"unit": "MONTHS",
+		"autoExtend": true
+	}
+}

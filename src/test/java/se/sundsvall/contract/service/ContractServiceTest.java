@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
@@ -20,9 +21,11 @@ import com.deblock.jsondiff.matcher.Path;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,6 +47,7 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
 import se.sundsvall.contract.service.diff.Differ;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,11 +68,22 @@ class ContractServiceTest {
 	@Mock
 	private Differ differMock;
 
-	@InjectMocks
+	@Mock
+	private Businessrule businessruleMock;
+
 	private ContractService contractService;
 
-	@Test
-	void createContract() {
+	@BeforeEach
+	void initialize() {
+		contractService = new ContractService(contractRepositoryMock, attachmentRepositoryMock, List.of(businessruleMock), differMock);
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void createContract(boolean match) {
+
 		// Arrange
 		final var contract = Contract.builder()
 			.withLeaseType(LeaseType.LEASEHOLD)
@@ -80,6 +95,7 @@ class ContractServiceTest {
 			.withType(ContractType.LEASE_AGREEMENT)
 			.build();
 
+		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
 		when(contractRepositoryMock.save(any(ContractEntity.class)))
 			.thenReturn(ContractEntity.builder().withContractId(CONTRACT_ID).build());
 
@@ -88,8 +104,12 @@ class ContractServiceTest {
 
 		// Assert
 		assertThat(result).isEqualTo(CONTRACT_ID);
+		verify(businessruleMock).appliesTo(any(ContractEntity.class));
+		if (match) {
+			verify(businessruleMock).apply(any(ContractEntity.class));
+		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
-		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
 	}
 
 	@Test
@@ -107,6 +127,7 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -123,6 +144,7 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 2);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -136,6 +158,7 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -170,24 +193,31 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class));
 		verify(attachmentRepositoryMock, times(2)).findAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, "2024-98765");
-		verifyNoMoreInteractions(contractRepositoryMock);
-		verifyNoMoreInteractions(attachmentRepositoryMock);
+		verifyNoMoreInteractions(contractRepositoryMock, attachmentRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
-	@Test
-	void updateContract() {
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void updateContract(boolean match) {
 		// Arrange
 		final var landLeaseContractEntity = createContractEntity();
 		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(landLeaseContractEntity));
-		final var landLeaseContract = TestFactory.createContract();
+		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
 
 		// Act
-		contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
+		contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract());
 
 		// Assert
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(businessruleMock).appliesTo(any(ContractEntity.class));
+		if (match) {
+			verify(businessruleMock).apply(any(ContractEntity.class));
+		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
-		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
 	}
 
 	@Test
@@ -202,6 +232,7 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -238,9 +269,9 @@ class ContractServiceTest {
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, oldVersion);
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, newVersion);
-		verifyNoMoreInteractions(contractRepositoryMock);
 		verify(differMock).diff(any(Contract.class), any(Contract.class), anyList());
-		verifyNoMoreInteractions(differMock);
+		verifyNoMoreInteractions(contractRepositoryMock, differMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -254,6 +285,7 @@ class ContractServiceTest {
 		// Assert
 		verify(contractRepositoryMock).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test
@@ -267,5 +299,21 @@ class ContractServiceTest {
 
 		verify(contractRepositoryMock).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
+	}
+
+	/**
+	 * Test class used to mock the ContractTypeRuleInterface
+	 */
+	private static class Businessrule implements BusinessRuleInterface {
+		@Override
+		public boolean appliesTo(ContractEntity contractEntity) {
+			return false;
+		}
+
+		@Override
+		public void apply(ContractEntity contractEntity) {
+			// Empty method as this class only is used as a mock in this test class
+		}
 	}
 }
