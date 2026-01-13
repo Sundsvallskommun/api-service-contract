@@ -1,11 +1,11 @@
 {
-	"version": 1,
+	"version": 2,
 	"contractId": "${json-unit.regex}^\\d{4}-000\\d{2}$",
 	"description": "someDescription",
 	"externalReferenceId": "MK-TEST0008",
 	"municipalityId": "1984",
 	"objectIdentity": "someObjectIdentity",
-	"status": "DRAFT",
+	"status": "ACTIVE",
 	"type": "PURCHASE_AGREEMENT",
 	"attachmentMetaData": [],
 	"additionalTerms": [

@@ -5,6 +5,10 @@ import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
+import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
+import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
+import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toBusinessruleParameters;
 import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
 import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
 import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
@@ -25,7 +29,8 @@ import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
-import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
+import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
+import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.diff.Differ;
 import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
@@ -40,14 +45,14 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
-	private final List<BusinessRuleInterface> businessRules;
+	private final List<BusinessruleInterface> businessRules;
 
 	private final Differ differ;
 
 	public ContractService(
 		final ContractRepository contractRepository,
 		final AttachmentRepository attachmentRepository,
-		final List<BusinessRuleInterface> businessRules,
+		final List<BusinessruleInterface> businessRules,
 		final Differ differ) {
 
 		this.contractRepository = contractRepository;
@@ -60,10 +65,13 @@ public class ContractService {
 		// Map to entity
 		final var contractEntity = toContractEntity(municipalityId, contract);
 
-		// Apply all matching businessrules
-		applyBusinessrules(contractEntity);
+		// Save entity to create an initial version based on incoming request
+		contractRepository.save(contractEntity);
 
-		// Save entity and return id
+		// Apply matching businessrules
+		applyBusinessrules(contractEntity, CREATE);
+
+		// If entity attributes has been altered by business rules, save them as a new version and finally return id
 		return contractRepository.save(contractEntity).getContractId();
 	}
 
@@ -114,8 +122,8 @@ public class ContractService {
 		// Create a new entity
 		final var newContractEntity = createNewContractEntity(municipalityId, oldContractEntity, contract);
 
-		// Apply all matching businessrules
-		applyBusinessrules(newContractEntity);
+		// Apply matching businessrules
+		applyBusinessrules(newContractEntity, UPDATE);
 
 		// Save changes
 		contractRepository.save(newContractEntity);
@@ -143,15 +151,18 @@ public class ContractService {
 	}
 
 	public void deleteContract(final String municipalityId, final String contractId) {
-		if (!contractRepository.existsByMunicipalityIdAndContractId(municipalityId, contractId)) {
-			throw Problem.builder()
+		// Fetch contract
+		final var contractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
+			.orElseThrow(() -> Problem.builder()
 				.withStatus(NOT_FOUND)
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
-				.build();
-		}
+				.build());
 
-		attachmentRepository.deleteAllByContractId(contractId);
-		contractRepository.deleteAllByMunicipalityIdAndContractId(municipalityId, contractId);
+		// Apply matching businessrules
+		applyBusinessrules(contractEntity, DELETE);
+
+		attachmentRepository.deleteAllByContractId(contractEntity.getContractId());
+		contractRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 	}
 
 	private Pageable getPagingParameters(final ContractRequest request) {
@@ -162,10 +173,11 @@ public class ContractService {
 	 * Method applies all matching business rules for the sent in contract entity
 	 *
 	 * @param contractEntity the contract to process
+	 * @param action         the performed action on the contract
 	 */
-	private void applyBusinessrules(ContractEntity contractEntity) {
+	private void applyBusinessrules(ContractEntity contractEntity, Action action) {
 		ofNullable(businessRules).orElse(emptyList()).stream()
 			.filter(rule -> rule.appliesTo(contractEntity))
-			.forEach(rule -> rule.apply(contractEntity));
+			.forEach(rule -> rule.apply(toBusinessruleParameters(contractEntity, action)));
 	}
 }

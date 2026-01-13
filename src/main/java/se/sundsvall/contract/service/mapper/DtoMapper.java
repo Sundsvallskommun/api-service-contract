@@ -30,6 +30,8 @@ import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.service.businessrule.model.Action;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
 public final class DtoMapper {
 
@@ -238,5 +240,9 @@ public final class DtoMapper {
 				.withDistrict(propertyDesignation.getDistrict())
 				.build())
 			.orElse(null);
+	}
+
+	public static BusinessruleParameters toBusinessruleParameters(ContractEntity contractEntity, Action action) {
+		return new BusinessruleParameters(contractEntity, action);
 	}
 }

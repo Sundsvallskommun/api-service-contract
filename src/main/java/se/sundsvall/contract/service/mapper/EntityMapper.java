@@ -1,11 +1,12 @@
 package se.sundsvall.contract.service.mapper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -76,7 +77,7 @@ public final class EntityMapper {
 		return ofNullable(noticeList)
 			.map(notices -> notices.stream()
 				.map(EntityMapper::toNoticeEmbeddable)
-				.toList())
+				.collect(toCollection(ArrayList::new)))
 			.orElse(null);
 	}
 
@@ -107,8 +108,8 @@ public final class EntityMapper {
 					stakeholderEntity.setParameters(toStakeholderParameterEntityList(fromStakeholder.getParameters(), stakeholderEntity));
 					return stakeholderEntity;
 				})
-				.toList())
-			.orElse(emptyList());
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static StakeholderEntity toStakeholderEntity(final Stakeholder fromStakeholder) {
@@ -122,7 +123,7 @@ public final class EntityMapper {
 				.withOrganizationNumber(stakeholder.getOrganizationNumber())
 				.withPartyId(stakeholder.getPartyId())
 				.withPhoneNumber(stakeholder.getPhoneNumber())
-				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).toList())
+				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).collect(toCollection(ArrayList::new)))
 				.withType(stakeholder.getType())
 				.build())
 			.orElse(null);
@@ -189,7 +190,7 @@ public final class EntityMapper {
 		return ofNullable(propertyDesignationList)
 			.map(propertyDesignations -> propertyDesignations.stream()
 				.map(EntityMapper::toPropertyDesignationEmbeddable)
-				.toList())
+				.collect(toCollection(ArrayList::new)))
 			.orElse(null);
 	}
 

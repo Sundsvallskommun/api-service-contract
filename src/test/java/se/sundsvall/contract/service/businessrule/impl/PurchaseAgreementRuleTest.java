@@ -19,7 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.service.businessrule.BusinessruleException;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
 @ExtendWith(MockitoExtension.class)
 class PurchaseAgreementRuleTest {
@@ -64,7 +65,7 @@ class PurchaseAgreementRuleTest {
 
 		when(contractEntityMock.getContractId()).thenReturn(contractId);
 
-		rule.apply(contractEntityMock);
+		rule.apply(new BusinessruleParameters(contractEntityMock, null));
 
 		verify(contractEntityMock).getContractId();
 		verify(contractEntityMock).setLeaseDuration(null);
@@ -79,10 +80,11 @@ class PurchaseAgreementRuleTest {
 	void applyBusinessrulesFail() {
 		final var contractId = "contractId";
 		final var thrownException = new NullPointerException("I am a teapot");
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, null);
 		when(contractEntityMock.getContractId()).thenReturn(contractId);
 		doThrow(thrownException).when(contractEntityMock).setLeaseDuration(null);
 
-		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(contractEntityMock));
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
 
 		assertThat(e.getCause()).isSameAs(thrownException);
 		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractId));

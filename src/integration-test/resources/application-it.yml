@@ -21,3 +21,8 @@ spring:
             script:
               append: false
         format_sql: true
+
+business-rules:
+  billable-agreement-rule:
+    managed-municipality-ids:
+      - 1984
