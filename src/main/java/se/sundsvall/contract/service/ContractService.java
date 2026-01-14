@@ -61,7 +61,6 @@ public class ContractService {
 		this.differ = differ;
 	}
 
-	@Transactional
 	public String createContract(final String municipalityId, final Contract contract) {
 		// Map to entity
 		final var contractEntity = toContractEntity(municipalityId, contract);

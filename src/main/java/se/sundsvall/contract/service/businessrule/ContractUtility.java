@@ -8,7 +8,7 @@ import java.util.Objects;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 
-public class ContractUtility {
+public final class ContractUtility {
 	private ContractUtility() {
 		// Prevent instantiation
 	}

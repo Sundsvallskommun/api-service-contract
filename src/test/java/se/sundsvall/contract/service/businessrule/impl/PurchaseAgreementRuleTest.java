@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -28,7 +29,8 @@ class PurchaseAgreementRuleTest {
 	@Mock
 	private ContractEntity contractEntityMock;
 
-	private final PurchaseAgreementRule rule = new PurchaseAgreementRule();
+	@InjectMocks
+	private PurchaseAgreementRule rule;
 
 	@ParameterizedTest
 	@EnumSource(value = ContractType.class, names = {

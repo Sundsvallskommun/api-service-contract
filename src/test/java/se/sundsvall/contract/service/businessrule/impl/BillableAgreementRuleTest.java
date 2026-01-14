@@ -16,13 +16,13 @@ import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
 
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -43,12 +43,8 @@ class BillableAgreementRuleTest {
 	@Mock
 	private BillableAgreementRuleConfiguration billableAgreementRuleConfigurationMock;
 
+	@InjectMocks
 	private BillableAgreementRule rule;
-
-	@BeforeEach
-	void setup() {
-		rule = new BillableAgreementRule(billableAgreementRuleConfigurationMock);
-	}
 
 	@Test
 	void appliesToMatch() {
