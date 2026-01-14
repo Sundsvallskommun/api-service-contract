@@ -7,7 +7,7 @@ import java.util.Set;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.IntervalType;
 
-public class BillingDataCollectorMapper {
+public final class BillingDataCollectorMapper {
 	private BillingDataCollectorMapper() {
 		// Prevent instantiation
 	}
