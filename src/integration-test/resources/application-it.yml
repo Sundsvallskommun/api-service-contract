@@ -21,6 +21,20 @@ spring:
             script:
               append: false
         format_sql: true
+  security:
+    oauth2:
+      client:
+        provider:
+          billing-data-collector:
+            token-uri: http://localhost:${wiremock.server.port:}/api-gateway/token
+        registration:
+          billing-data-collector:
+            client-id: the-client-id
+            client-secret: the-client-secret
+
+integration:
+  billing-data-collector:
+    base-url: http://localhost:${wiremock.server.port:}/api-billing-data-collector
 
 business-rules:
   billable-agreement-rule:

@@ -13,6 +13,8 @@
 	<version>4.0</version>
 	<name>api-service-contract</name>
 	<properties>
+		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
+		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<geojson-jackson.version>3.0</geojson-jackson.version>
 		<json-diff.version>2.1.0</json-diff.version>
 	</properties>
@@ -32,6 +34,10 @@
 		<dependency>
 			<groupId>se.sundsvall.dept44</groupId>
 			<artifactId>dept44-common-validators</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>se.sundsvall.dept44</groupId>
+			<artifactId>dept44-starter-feign</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>se.sundsvall.dept44</groupId>
@@ -85,9 +91,8 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<exclude>**/se/sundsvall/contract/Application*</exclude>
 						<exclude>**/se/sundsvall/contract/integration/db/model/*_**</exclude>
-						<!-- JPAModelGen classes -->
+						<exclude>**/generated/se/sundsvall/**/*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -107,6 +112,37 @@
 								<source>${project.build.directory}/generated-sources/annotations</source>
 								<!-- JPAModelGen classes -->
 							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>billing-data-collector-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>src/main/resources/integrations/billing-data-collector-api.yml</inputSpec>
+							<output>${generated-sources-path}</output>
+							<generatorName>spring</generatorName>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<useSpringBoot3>true</useSpringBoot3>
+								<sourceFolder>models</sourceFolder>
+								<dateLibrary>java8</dateLibrary>
+								<apiPackage>generated</apiPackage>
+								<modelPackage>generated.se.sundsvall.billingdatacollector</modelPackage>
+								<openApiNullable>false</openApiNullable>
+								<generatePom>false</generatePom>
+								<useBeanValidation>true</useBeanValidation>
+								<useSwaggerAnnotations>true</useSwaggerAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+							</configOptions>
 						</configuration>
 					</execution>
 				</executions>

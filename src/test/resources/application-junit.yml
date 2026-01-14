@@ -19,6 +19,22 @@ spring:
             script:
               append: false
         format_sql: true
+  security:
+    oauth2:
+      client:
+        provider:
+          billing-data-collector:
+            token-uri: http://token.url
+        registration:
+          billing-data-collector:
+            client-id: the-client-id
+            client-secret: the-client-secret
+
+integration:
+  billing-data-collector:
+    connect-timeout: 123
+    read-timeout: 456
+    base-url: http://billing-data-collector.url
 
 business-rules:
   billable-agreement-rule:
