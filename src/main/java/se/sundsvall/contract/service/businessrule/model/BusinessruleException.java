@@ -1,4 +1,4 @@
-package se.sundsvall.contract.service.businessrule;
+package se.sundsvall.contract.service.businessrule.model;
 
 public class BusinessruleException extends RuntimeException {
 	private static final long serialVersionUID = -4487795425119652802L;

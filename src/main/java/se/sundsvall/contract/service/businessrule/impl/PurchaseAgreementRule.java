@@ -1,5 +1,6 @@
 package se.sundsvall.contract.service.businessrule.impl;
 
+import static java.util.Optional.ofNullable;
 import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 
 import java.util.Objects;
@@ -7,11 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
-import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
-import se.sundsvall.contract.service.businessrule.BusinessruleException;
+import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
 @Service
-public class PurchaseAgreementRule implements BusinessRuleInterface {
+public class PurchaseAgreementRule implements BusinessruleInterface {
 	private final Logger logger;
 
 	public PurchaseAgreementRule() {
@@ -24,8 +26,9 @@ public class PurchaseAgreementRule implements BusinessRuleInterface {
 	}
 
 	@Override
-	public void apply(ContractEntity contractEntity) throws BusinessruleException {
+	public void apply(BusinessruleParameters parameters) throws BusinessruleException {
 		try {
+			final var contractEntity = parameters.contractEntity();
 			logger.info("Applying purchase agreement business rules for contract number {}", contractEntity.getContractId());
 
 			// Reset duration and extension to null as these attributes are not applicable for purchase agreements
@@ -37,7 +40,8 @@ public class PurchaseAgreementRule implements BusinessRuleInterface {
 
 		} catch (final Exception e) {
 			// Wrap exception and rethrow as a BusinessruleException
-			throw new BusinessruleException("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractEntity.getContractId()), e);
+			throw new BusinessruleException("An exception occurred when applying purchase agreement business rules for contract number %s"
+				.formatted(ofNullable(parameters).map(BusinessruleParameters::contractEntity).map(ContractEntity::getContractId).orElse("[n/a]")), e);
 		}
 	}
 

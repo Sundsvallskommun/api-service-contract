@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.service.businessrule.impl.BillableAgreementRule;
 import se.sundsvall.contract.service.businessrule.impl.PurchaseAgreementRule;
 
 @ActiveProfiles("junit")
@@ -16,13 +17,14 @@ import se.sundsvall.contract.service.businessrule.impl.PurchaseAgreementRule;
 class BusinessRuleInterfaceTest {
 
 	@Autowired
-	private List<BusinessRuleInterface> contactTypeRules;
+	private List<BusinessruleInterface> contactTypeRules;
 
 	@Test
 	void verifyAllRulesLoaded() {
 		assertThat(contactTypeRules)
-			.hasSize(1)
-			.hasAtLeastOneElementOfType(PurchaseAgreementRule.class);
+			.hasSize(2)
+			.hasAtLeastOneElementOfType(PurchaseAgreementRule.class)
+			.hasAtLeastOneElementOfType(BillableAgreementRule.class);
 	}
 
 }

@@ -1,8 +1,10 @@
 package se.sundsvall.contract.service.businessrule;
 
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
-public interface BusinessRuleInterface {
+public interface BusinessruleInterface {
 
 	/**
 	 * Method for evaluating if the provided contract entity should apply the business rule or not
@@ -13,10 +15,11 @@ public interface BusinessRuleInterface {
 	boolean appliesTo(ContractEntity contractEntity);
 
 	/**
+	 * /**
 	 * Method for applying business rule to the provided contract entity
 	 *
-	 * @param  contractEntity        the entity to process
-	 * @throws BusinessruleException will be thrown on error when applying rule to contract
+	 * @param  businessruleParameters parameter object with data needed to applying the business rule
+	 * @throws BusinessruleException  will be thrown on error when applying rule to contract
 	 */
-	void apply(ContractEntity contractEntity) throws BusinessruleException;
+	void apply(BusinessruleParameters businessruleParameters) throws BusinessruleException;
 }

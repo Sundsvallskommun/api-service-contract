@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,7 +49,9 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.service.businessrule.BusinessRuleInterface;
+import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
+import se.sundsvall.contract.service.businessrule.model.Action;
+import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 import se.sundsvall.contract.service.diff.Differ;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +74,9 @@ class ContractServiceTest {
 
 	@Mock
 	private Businessrule businessruleMock;
+
+	@Captor
+	private ArgumentCaptor<BusinessruleParameters> businessruleParametersCaptor;
 
 	private ContractService contractService;
 
@@ -106,9 +113,13 @@ class ContractServiceTest {
 		assertThat(result).isEqualTo(CONTRACT_ID);
 		verify(businessruleMock).appliesTo(any(ContractEntity.class));
 		if (match) {
-			verify(businessruleMock).apply(any(ContractEntity.class));
+			verify(businessruleMock).apply(businessruleParametersCaptor.capture());
+			assertThat(businessruleParametersCaptor.getValue()).satisfies(businessruleParameters -> {
+				assertThat(businessruleParameters.contractEntity()).isNotNull();
+				assertThat(businessruleParameters.action()).isEqualTo(Action.CREATE);
+			});
 		}
-		verify(contractRepositoryMock).save(any(ContractEntity.class));
+		verify(contractRepositoryMock, times(2)).save(any(ContractEntity.class));
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
 	}
 
@@ -214,7 +225,11 @@ class ContractServiceTest {
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verify(businessruleMock).appliesTo(any(ContractEntity.class));
 		if (match) {
-			verify(businessruleMock).apply(any(ContractEntity.class));
+			verify(businessruleMock).apply(businessruleParametersCaptor.capture());
+			assertThat(businessruleParametersCaptor.getValue()).satisfies(businessruleParameters -> {
+				assertThat(businessruleParameters.contractEntity()).isNotNull();
+				assertThat(businessruleParameters.action()).isEqualTo(Action.UPDATE);
+			});
 		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
@@ -274,30 +289,44 @@ class ContractServiceTest {
 		verifyNoInteractions(businessruleMock);
 	}
 
-	@Test
-	void deleteContract() {
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void deleteContract(boolean match) {
 		// Arrange
-		when(contractRepositoryMock.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(true);
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.of(ContractEntity.builder()
+			.withContractId(CONTRACT_ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.build()));
+		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
 
 		// Act
 		contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID);
 
-		// Assert
+		// Assert and verify
+		verify(businessruleMock).appliesTo(any(ContractEntity.class));
+		if (match) {
+			verify(businessruleMock).apply(businessruleParametersCaptor.capture());
+			assertThat(businessruleParametersCaptor.getValue()).satisfies(businessruleParameters -> {
+				assertThat(businessruleParameters.contractEntity()).isNotNull();
+				assertThat(businessruleParameters.action()).isEqualTo(Action.DELETE);
+			});
+		}
 		verify(contractRepositoryMock).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
-		verifyNoMoreInteractions(contractRepositoryMock);
-		verifyNoInteractions(businessruleMock);
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
 	}
 
 	@Test
 	void deleteContractShouldThrow404WhenNoMatch() {
 		// Arrange
-		when(contractRepositoryMock.existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(false);
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.deleteContract(MUNICIPALITY_ID, CONTRACT_ID));
 
-		verify(contractRepositoryMock).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
 		verifyNoInteractions(businessruleMock);
 	}
@@ -305,14 +334,14 @@ class ContractServiceTest {
 	/**
 	 * Test class used to mock the ContractTypeRuleInterface
 	 */
-	private static class Businessrule implements BusinessRuleInterface {
+	private static class Businessrule implements BusinessruleInterface {
 		@Override
 		public boolean appliesTo(ContractEntity contractEntity) {
 			return false;
 		}
 
 		@Override
-		public void apply(ContractEntity contractEntity) {
+		public void apply(BusinessruleParameters parameters) {
 			// Empty method as this class only is used as a mock in this test class
 		}
 	}

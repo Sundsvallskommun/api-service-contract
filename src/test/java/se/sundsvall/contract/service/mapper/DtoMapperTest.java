@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.INCLUDE;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static se.sundsvall.contract.TestFactory.createAddressEntity;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
@@ -19,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
@@ -29,6 +31,7 @@ import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
+import se.sundsvall.contract.service.businessrule.model.Action;
 
 class DtoMapperTest {
 
@@ -228,7 +231,6 @@ class DtoMapperTest {
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("toDurationAndExtensionDtoArgumentProvider")
 	void testToDurationDto(String description, ContractEntity entity, boolean shouldHaveDuration) {
-
 		// Act
 		final var duration = DtoMapper.toDurationDto(entity);
 
@@ -245,7 +247,6 @@ class DtoMapperTest {
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("toDurationAndExtensionDtoArgumentProvider")
 	void testToExtensionDto(String description, ContractEntity entity, boolean shouldHaveDuration) {
-
 		// Act
 		final var extension = DtoMapper.toExtensionDto(entity);
 
@@ -336,7 +337,6 @@ class DtoMapperTest {
 
 	@Test
 	void testMinimalToContractDto() {
-
 		// Arrange
 		final var contract = ContractEntity.builder()
 			.withStatus(Status.DRAFT)
@@ -353,7 +353,6 @@ class DtoMapperTest {
 
 	@Test
 	void testToNoticeDtos() {
-
 		// Arrange
 		final var entity = createContractEntity().getNotices();
 
@@ -374,5 +373,21 @@ class DtoMapperTest {
 					.withPeriodOfNotice(1)
 					.withUnit(TimeUnit.MONTHS)
 					.build());
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = Action.class)
+	void toBusinessruleParameters(Action action) {
+		// Arrange
+		final var entityMock = Mockito.mock(ContractEntity.class);
+
+		// Act
+		final var bean = DtoMapper.toBusinessruleParameters(entityMock, action);
+
+		// Assert and verify
+		assertThat(bean).isNotNull();
+		assertThat(bean.action()).isEqualTo(action);
+		assertThat(bean.contractEntity()).isSameAs(entityMock);
+		verifyNoInteractions(entityMock);
 	}
 }

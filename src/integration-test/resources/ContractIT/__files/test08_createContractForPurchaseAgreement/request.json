@@ -134,7 +134,7 @@
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"status": "DRAFT",
+	"status": "ACTIVE",
 	"duration": {
 		"leaseDuration": 555,
 		"unit": "MONTHS"
