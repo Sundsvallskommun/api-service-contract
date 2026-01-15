@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
+import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -44,14 +45,14 @@ class BillingDataCollectorIntegrationTest {
 		// Arrange
 		final var id = UUID.randomUUID().toString();
 		when(scheduledBillingAnswerMock.getId()).thenReturn(id);
-		when(clientMock.getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.of(scheduledBillingAnswerMock));
+		when(clientMock.getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID)).thenReturn(Optional.of(scheduledBillingAnswerMock));
 
 		// Act
 		integration.addBillingCycle(MUNICIPALITY_ID, CONTRACT_ID, scheduledBillingRequestMock);
 
 		// Assert and verify
 		verify(scheduledBillingAnswerMock).getId();
-		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID);
 		verify(clientMock).updateScheduledBilling(MUNICIPALITY_ID, id, scheduledBillingRequestMock);
 	}
 
@@ -61,7 +62,7 @@ class BillingDataCollectorIntegrationTest {
 		integration.addBillingCycle(MUNICIPALITY_ID, CONTRACT_ID, scheduledBillingRequestMock);
 
 		// Assert and verify
-		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID);
 		verify(clientMock).createScheduledBilling(MUNICIPALITY_ID, scheduledBillingRequestMock);
 	}
 
@@ -70,14 +71,14 @@ class BillingDataCollectorIntegrationTest {
 		// Arrange
 		final var id = UUID.randomUUID().toString();
 		when(scheduledBillingAnswerMock.getId()).thenReturn(id);
-		when(clientMock.getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Optional.of(scheduledBillingAnswerMock));
+		when(clientMock.getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID)).thenReturn(Optional.of(scheduledBillingAnswerMock));
 
 		// Act
 		integration.removeBillingCycle(MUNICIPALITY_ID, CONTRACT_ID);
 
 		// Assert and verify
 		verify(scheduledBillingAnswerMock).getId();
-		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID);
 		verify(clientMock).deleteScheduledBilling(MUNICIPALITY_ID, id);
 	}
 
@@ -87,6 +88,6 @@ class BillingDataCollectorIntegrationTest {
 		integration.removeBillingCycle(MUNICIPALITY_ID, CONTRACT_ID);
 
 		// Assert and verify
-		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(clientMock).getScheduledBillingByExternalId(MUNICIPALITY_ID, CONTRACT, CONTRACT_ID);
 	}
 }

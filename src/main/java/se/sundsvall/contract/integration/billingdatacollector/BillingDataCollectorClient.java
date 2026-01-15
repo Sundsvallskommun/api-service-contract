@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
+import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.Optional;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -38,13 +39,15 @@ public interface BillingDataCollectorClient {
 	 * Read a scheduled billing cycle by external id
 	 *
 	 * @param  municipalityId the municipality id of the municipality that owns the contract
+	 * @param  source         the source of the contract (always CONTRACT in this case)
 	 * @param  externalId     the id of the contract
 	 * @return                an optional with object of ScheduledBilling class if billing cycle is found, otherwise an
 	 *                        empty optional
 	 */
-	@GetMapping(path = "/{municipalityId}/scheduled-billing/external/{externalId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{municipalityId}/scheduled-billing/external/{source}/{externalId}", produces = APPLICATION_JSON_VALUE)
 	Optional<ScheduledBilling> getScheduledBillingByExternalId(
 		@PathVariable final String municipalityId,
+		@PathVariable final SourceEnum source,
 		@PathVariable final String externalId);
 
 	/**

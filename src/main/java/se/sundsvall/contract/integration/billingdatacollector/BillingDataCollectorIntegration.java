@@ -1,5 +1,7 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
+import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,7 @@ public class BillingDataCollectorIntegration {
 	 * @param scheduleSettings billing cycle settings to send to BillingDataCollector service
 	 */
 	public void addBillingCycle(String municipalityId, String contractId, ScheduledBilling scheduleSettings) {
-		client.getScheduledBillingByExternalId(municipalityId, contractId)
+		client.getScheduledBillingByExternalId(municipalityId, CONTRACT, contractId)
 			.ifPresentOrElse(
 				presentSettings -> // An existing schedule exists, perform update of it
 				client.updateScheduledBilling(municipalityId, presentSettings.getId(), scheduleSettings),
@@ -37,7 +39,7 @@ public class BillingDataCollectorIntegration {
 	 * @param contractId     id of contract (in Contract service) to add or update billing cycle for
 	 */
 	public void removeBillingCycle(String municipalityId, String contractId) {
-		client.getScheduledBillingByExternalId(municipalityId, contractId)
+		client.getScheduledBillingByExternalId(municipalityId, CONTRACT, contractId)
 			.ifPresent(
 				presentSettings -> // An existing schedule exists, remove it
 				client.deleteScheduledBilling(municipalityId, presentSettings.getId()));
