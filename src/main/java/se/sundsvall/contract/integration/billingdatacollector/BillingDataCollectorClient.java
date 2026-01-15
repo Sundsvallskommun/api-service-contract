@@ -8,6 +8,7 @@ import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.Optional;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,7 +71,7 @@ public interface BillingDataCollectorClient {
 	 * @param municipalityId the municipality id of the municipality that owns the contract
 	 * @param Id             the id of the billing cycle
 	 */
-	@PutMapping(path = "/{municipalityId}/scheduled-billing/{id}")
+	@DeleteMapping(path = "/{municipalityId}/scheduled-billing/{id}")
 	void deleteScheduledBilling(
 		@PathVariable final String municipalityId,
 		@PathVariable final String id);
