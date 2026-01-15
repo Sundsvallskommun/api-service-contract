@@ -6,6 +6,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  security:
+    oauth2:
+      client:
+        registration:
+          billing-data-collector:
+            authorization-grant-type: client_credentials
+            provider: billing-data-collector
+
+integration:
+  billing-data-collector:
+    connect-timeout: 5
+    read-timeout: 15
 
 dept44:
   models:
