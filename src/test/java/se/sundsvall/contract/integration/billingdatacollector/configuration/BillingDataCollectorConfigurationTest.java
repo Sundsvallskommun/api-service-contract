@@ -64,6 +64,7 @@ class BillingDataCollectorConfigurationTest {
 			verify(feignMultiCustomizerSpy).composeCustomizersToOne();
 
 			assertThat(errorDecoderCaptor.getValue()).hasFieldOrPropertyWithValue("integrationName", CLIENT_ID);
+			assertThat(errorDecoderCaptor.getValue()).hasFieldOrPropertyWithValue("bypassResponseCodes", null);
 			assertThat(customizer).isSameAs(feignBuilderCustomizerMock);
 		}
 	}

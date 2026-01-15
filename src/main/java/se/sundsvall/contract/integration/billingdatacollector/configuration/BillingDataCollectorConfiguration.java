@@ -1,8 +1,5 @@
 package se.sundsvall.contract.integration.billingdatacollector.configuration;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -19,7 +16,7 @@ public class BillingDataCollectorConfiguration {
 	@Bean
 	FeignBuilderCustomizer feignBuilderCustomizer(final BillingDataCollectorProperties properties, final ClientRegistrationRepository clientRegistrationRepository) {
 		return FeignMultiCustomizer.create()
-			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID, List.of(NOT_FOUND.value())))
+			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID))
 			.withRetryableOAuth2InterceptorForClientRegistration(clientRegistrationRepository.findByRegistrationId(CLIENT_ID))
 			.withRequestTimeoutsInSeconds(properties.connectTimeout(), properties.readTimeout())
 			.composeCustomizersToOne();

@@ -1,34 +1,46 @@
 package se.sundsvall.contract.integration.billingdatacollector.mapper;
 
 import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+import static java.util.Optional.ofNullable;
 
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import java.util.Set;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.model.enums.IntervalType;
 
 public final class BillingDataCollectorMapper {
+	private static final Set<Integer> SET_OF_MONTH = Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+	private static final Set<Integer> SET_OF_QUARTER = Set.of(3, 6, 9, 12);
+	private static final Set<Integer> SET_OF_HALF_YEAR = Set.of(6, 12);
+	private static final Set<Integer> SET_OF_YEAR = Set.of(12);
+
 	private BillingDataCollectorMapper() {
 		// Prevent instantiation
 	}
 
 	public static ScheduledBilling toScheduledBilling(ContractEntity contractEntity) {
+		final var billingMonths = ofNullable(contractEntity.getInvoicing())
+			.map(InvoicingEmbeddable::getInvoiceInterval)
+			.map(BillingDataCollectorMapper::calculateBillingMonths)
+			.orElseThrow(() -> new NullPointerException("Interval type is not defined for errand with id %s".formatted(contractEntity.getContractId()))); // This should not happen as contracts without it shouldn't get this far, but just to be safe)
+
 		final var scheduledBilling = new ScheduledBilling();
 
 		scheduledBilling.setExternalId(contractEntity.getContractId());
 		scheduledBilling.setSource(CONTRACT);
 		scheduledBilling.setBillingDaysOfMonth(Set.of(1)); // Right now, always execute billing at day one of the month
-		scheduledBilling.setBillingMonths(calculateBillingMonths(contractEntity.getInvoicing().getInvoiceInterval()));
+		scheduledBilling.setBillingMonths(billingMonths);
 
 		return scheduledBilling;
 	}
 
 	private static Set<Integer> calculateBillingMonths(IntervalType intervalType) {
 		return switch (intervalType) {
-			case MONTHLY -> Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-			case QUARTERLY -> Set.of(3, 6, 9, 12);
-			case HALF_YEARLY -> Set.of(6, 12);
-			case YEARLY -> Set.of(12);
+			case MONTHLY -> SET_OF_MONTH;
+			case QUARTERLY -> SET_OF_QUARTER;
+			case HALF_YEARLY -> SET_OF_HALF_YEAR;
+			case YEARLY -> SET_OF_YEAR;
 		};
 	}
 }

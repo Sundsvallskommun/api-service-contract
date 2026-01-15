@@ -55,7 +55,7 @@ public interface BillingDataCollectorClient {
 	 * Update an existing scheduled billing cycle
 	 *
 	 * @param  municipalityId   the municipality id of the municipality that owns the contract
-	 * @param  Id               the id of the billing cycle
+	 * @param  id               the id of the billing cycle
 	 * @param  scheduledBilling request containing billing cycle information
 	 * @return                  an object of type ScheduledBilling representing the updated billing cycle information
 	 */
@@ -69,7 +69,7 @@ public interface BillingDataCollectorClient {
 	 * Delete an existing scheduled billing cycle
 	 *
 	 * @param municipalityId the municipality id of the municipality that owns the contract
-	 * @param Id             the id of the billing cycle
+	 * @param id             the id of the billing cycle
 	 */
 	@DeleteMapping(path = "/{municipalityId}/scheduled-billing/{id}")
 	void deleteScheduledBilling(
