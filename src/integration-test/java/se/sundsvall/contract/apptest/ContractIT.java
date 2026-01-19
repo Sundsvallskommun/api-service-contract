@@ -7,6 +7,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -98,6 +99,12 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Test verifies the following:
+	 * - Update is performed
+	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
+	 * - Rule for inovicing is executed but as this contract has no cycle propagated in BDC no deletion of it is performed
+	 */
 	@Test
 	void test04_updateContractKeepingTypeIntact() {
 		final var path = fromPath(PATH + "/{contractId}")
@@ -110,7 +117,7 @@ class ContractIT extends AbstractAppTest {
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		// Verify update
 		setupCall()
@@ -128,6 +135,11 @@ class ContractIT extends AbstractAppTest {
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 
+	/**
+	 * Test verifies the following:
+	 * - Delete is performed
+	 * - Rule for inovicing is executed and as this contract has a cycle propagated in BDC a deletion of it is performed
+	 */
 	@Test
 	void test05_deleteContract() {
 		final var contractPath = fromPath(PATH + "/{contractId}")
@@ -145,14 +157,14 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		// Delete
 		setupCall()
 			.withServicePath(contractPath)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		// Verify it's gone
 		setupCall()
@@ -160,7 +172,7 @@ class ContractIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		// Verify the attachments are gone as well
 		setupCall()
@@ -199,6 +211,12 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Test verifies the following:
+	 * - Create is performed
+	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
+	 * - Rule for inovicing is executed and as this contract has no cycle propagated in BDC a new cycle is propagated in BDC
+	 */
 	@Test
 	void test08_createContractForPurchaseAgreement() {
 		final var createCall = setupCall()
@@ -209,7 +227,7 @@ class ContractIT extends AbstractAppTest {
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		final var location = createCall.getResponseHeaders().getLocation();
 
@@ -226,8 +244,13 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Test verifies the following:
+	 * - Update is performed
+	 * - Rule for inovicing is executed but contract has no cycle propagated in BDC a no delete call is performed
+	 */
 	@Test
-	void test09_updateContractWithTypeChange() throws Exception {
+	void test09_updateContractWithTypeChange() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
@@ -238,7 +261,7 @@ class ContractIT extends AbstractAppTest {
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		// Verify update
 		setupCall()
@@ -254,5 +277,52 @@ class ContractIT extends AbstractAppTest {
 		final var contractEntity = contractRepository.findById(1L).get();
 		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
+	}
+
+	/**
+	 * Test verifies the following:
+	 * - Update is performed
+	 * - Rule for inovicing is executed and as contract has a cycle propagated in BDC a call for updating it is performed
+	 */
+	@Test
+	void test10_updateContractWithPresentBillingCycle() {
+		final var path = fromPath(PATH + "/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		// Update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PUT)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequest();
+
+		// Verify update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test11_errorThrownByBCDWhenCreateContract() {
+		assertThat(contractRepository.count()).isEqualTo(3); // There should be 3 entities added by script at start
+
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(POST)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(INTERNAL_SERVER_ERROR)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+
+		assertThat(contractRepository.count()).isEqualTo(3); // Verify no entity has been created in database, i.e. there should still only the entities added by script
+
 	}
 }

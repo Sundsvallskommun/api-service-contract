@@ -1,0 +1,125 @@
+{
+	"municipalityId": "1984",
+	"fees": {
+		"additionalInformation": [
+			"anotherAdditionalInfo1",
+			"anotherAdditionalInfo2"
+		],
+		"total": 1172.8,
+		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
+		"monthly": 234.56,
+		"currency": "SEK",
+		"indexationRate": 0.5,
+		"indexNumber": 3,
+		"yearly": 2814.72,
+		"indexYear": 2022
+	},
+	"description": "some other description",
+	"extraParameters": [
+		{
+			"name": "Fees",
+			"parameters": {
+				"key1": "value1",
+				"key2": "value2"
+			}
+		}
+	],
+	"stakeholders": [
+		{
+			"firstName": "Donald",
+			"lastName": "Duck",
+			"emailAddress": "donald.duck@sundsvall.se",
+			"phoneNumber": "1234567890",
+			"address": {
+				"country": "SE",
+				"town": "Ducktown",
+				"streetAddress": "another street",
+				"postalCode": "54321",
+				"attention": "No Attention",
+				"type": "BILLING_ADDRESS"
+			},
+			"organizationName": "another org",
+			"organizationNumber": "771122-2345",
+			"roles": [
+				"SELLER"
+			],
+			"type": "ORGANIZATION",
+			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
+		}
+	],
+	"type": "LEASE_AGREEMENT",
+	"externalReferenceId": "MK-TEST0009",
+	"propertyDesignations": [
+		{
+			"district": "District a",
+			"name": "SUNDSVALL NORRMALM 987:1"
+		},
+		{
+			"district": "District b",
+			"name": "SUNDSVALL NORRMALM 678:1"
+		}
+	],
+	"objectIdentity": "anotherObjectIdentity",
+	"end": "2024-10-02",
+	"area": 12,
+	"start": "2024-05-02",
+	"leaseType": "LAND_LEASE_RESIDENTIAL",
+	"duration": {
+		"leaseDuration": 5,
+		"unit": "MONTHS"
+	},
+	"extension": {
+		"leaseExtension": 1,
+		"unit": "MONTHS",
+		"autoExtend": true
+	},
+	"notices": [
+		{
+			"party": "LESSOR",
+			"periodOfNotice": 1,
+			"unit": "MONTHS"
+		},
+		{
+			"party": "LESSEE",
+			"periodOfNotice": 2,
+			"unit": "MONTHS"
+		}
+	],
+	"indexTerms": [
+		{
+			"terms": [
+				{
+					"description": "In general the conditions 2 are now...",
+					"term": "General Conditions 2"
+				}
+			],
+			"header": "More General Terms"
+		}
+	],
+	"signedByWitness": true,
+	"additionalTerms": [
+		{
+			"terms": [
+				{
+					"description": "Unless something extraordinary has happened...",
+					"term": "Exceptions"
+				}
+			],
+			"header": "Extraordinary Terms 2"
+		}
+	],
+	"leasehold": {
+		"additionalInformation": [
+			"another additional information when posting",
+			"More other information when posting"
+		],
+		"purpose": "APARTMENT",
+		"description": "anotherLeaseholdDescription"
+	},
+	"contractId": "2024-12345",
+	"invoicing": {
+		"invoiceInterval": "MONTHLY",
+		"invoicedIn": "ARREARS"
+	},
+	"status": "ACTIVE"
+}
