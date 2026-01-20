@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -202,7 +203,44 @@ class BillableAgreementRuleTest {
 	}
 
 	@Test
+	void applyBusinessrulesFailWithNoAction() {
+		// Arrange
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, null);
+		final var contractId = "contractId";
+		when(contractEntityMock.getContractId()).thenReturn(contractId);
+
+		// Act
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
+
+		// Assert
+		assertThat(e.getCause().getClass()).isEqualTo(NullPointerException.class);
+		assertThat(e.getCause().getMessage()).isEqualTo("Action can not be null");
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
+	}
+
+	@Test
 	void applyBusinessrulesFail() {
-		// TODO: Implement in story DRAKEN-3066 when BDC-integration is in place
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var contractId = "contractId";
+		final var thrownException = new NullPointerException("I am a teapot");
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, CREATE);
+		when(contractEntityMock.getMunicipalityId()).thenReturn(municipalityId);
+		when(contractEntityMock.getContractId()).thenReturn(contractId);
+		when(contractEntityMock.getStatus()).thenReturn(ACTIVE);
+		when(contractEntityMock.getInvoicing()).thenReturn(invoicingEmbeddableMock);
+		when(invoicingEmbeddableMock.getInvoiceInterval()).thenReturn(MONTHLY);
+		doThrow(thrownException).when(bdlIntegrationMock).addBillingCycle(eq(municipalityId), eq(contractId), any(ScheduledBilling.class));
+
+		// Act
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
+
+		assertThat(e.getCause()).isSameAs(thrownException);
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
+		verify(contractEntityMock, times(4)).getContractId();
+		verify(contractEntityMock, times(2)).getInvoicing();
+		verify(invoicingEmbeddableMock, times(2)).getInvoiceInterval();
+		verify(contractEntityMock).getMunicipalityId();
+		verify(bdlIntegrationMock).addBillingCycle(eq(municipalityId), eq(contractId), any(ScheduledBilling.class));
 	}
 }
