@@ -1,0 +1,38 @@
+{
+	"request": {
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			}
+		},
+		"method": "POST",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"externalId": "${json-unit.regex}^[0-9]{4}-[0-9]{5}$",
+					"source": "CONTRACT",
+					"billingDaysOfMonth": [
+						1
+					],
+					"billingMonths": [
+						3,
+						6,
+						9,
+						12
+					],
+					"paused": false
+				},
+				"ignoreArrayOrder": true
+			}
+		],
+		"urlPath": "/api-billing-data-collector/1984/scheduled-billing"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"bodyFileName": "test11_errorThrownByBCDWhenCreateContract/responses/api-billing-data-collector-post-scheduled-billing-response.json",
+		"status": 500
+	},
+	"name": "api-billing-data-collector-post-scheduled-billing"
+}

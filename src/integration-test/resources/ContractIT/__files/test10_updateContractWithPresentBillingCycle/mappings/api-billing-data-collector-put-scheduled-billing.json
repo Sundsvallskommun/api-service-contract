@@ -1,0 +1,45 @@
+{
+	"request": {
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			}
+		},
+		"method": "PUT",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"externalId": "${json-unit.regex}^[0-9]{4}-[0-9]{5}$",
+					"source": "CONTRACT",
+					"billingDaysOfMonth": [
+						1
+					],
+					"billingMonths": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					],
+					"paused": false
+				},
+				"ignoreArrayOrder": true
+			}
+		],
+		"urlPath": "/api-billing-data-collector/1984/scheduled-billing/40f14de9-815d-44a5-a34d-b1d38b628e07"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 201
+	},
+	"name": "api-billing-data-collector-put-scheduled-billing"
+}

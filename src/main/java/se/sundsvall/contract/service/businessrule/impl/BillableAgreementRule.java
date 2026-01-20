@@ -2,11 +2,13 @@ package se.sundsvall.contract.service.businessrule.impl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.integration.billingdatacollector.mapper.BillingDataCollectorMapper.toScheduledBilling;
 import static se.sundsvall.contract.service.businessrule.ContractUtility.isBillable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import se.sundsvall.contract.integration.billingdatacollector.BillingDataCollectorIntegration;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.configuration.BillableAgreementRuleConfiguration;
@@ -17,10 +19,12 @@ import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 public class BillableAgreementRule implements BusinessruleInterface {
 	private final Logger logger;
 	private final BillableAgreementRuleConfiguration configuration;
+	private final BillingDataCollectorIntegration bdcIntegration;
 
-	public BillableAgreementRule(BillableAgreementRuleConfiguration configuration) {
+	public BillableAgreementRule(BillableAgreementRuleConfiguration configuration, BillingDataCollectorIntegration bdcIntegration) {
 		this.logger = LoggerFactory.getLogger(this.getClass());
 		this.configuration = configuration;
+		this.bdcIntegration = bdcIntegration;
 	}
 
 	@Override
@@ -52,24 +56,22 @@ public class BillableAgreementRule implements BusinessruleInterface {
 	private void processCreate(ContractEntity contractEntity) {
 		if (isBillable(contractEntity)) { // If agreement is billable at the moment of creation, add billing info in BDC
 			logger.info("Adding billing information in BillingDataCollector for contract number {}", contractEntity.getContractId());
-			// TODO: Implementation of integration towards BDL for providing billing information is done in task DRAKEN-3066
+			bdcIntegration.addBillingCycle(contractEntity.getMunicipalityId(), contractEntity.getContractId(), toScheduledBilling(contractEntity));
 		}
 	}
 
 	private void processUpdate(ContractEntity contractEntity) {
 		if (isBillable(contractEntity)) { // If agreement is billable at the moment of update, add billing info in BDC
 			logger.info("Updating BillingDataCollector by adding billing information for existing contract number {}", contractEntity.getContractId());
-			// TODO: Implementation of integration towards BDL for providing billing information is done in task DRAKEN-3066
+			bdcIntegration.addBillingCycle(contractEntity.getMunicipalityId(), contractEntity.getContractId(), toScheduledBilling(contractEntity));
 		} else { // else remove billing info in BDC
 			logger.info("Updating BillingDataCollector by removing billing information for existing contract number {}", contractEntity.getContractId());
-			// TODO: Implementation of integration towards BDL for removing billing information is done in task DRAKEN-3066
+			bdcIntegration.removeBillingCycle(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 		}
 	}
 
 	private void processDelete(ContractEntity contractEntity) {
-		if (isBillable(contractEntity)) { // If agreement is billable at the moment of deletion, remove billing info in BDC
-			logger.info("Removing billing information in BillingDataCollector for contract number {}", contractEntity.getContractId());
-			// TODO: Implementation of integration towards BDL for removing billing information is done in task DRAKEN-3066
-		}
+		logger.info("Removing possible billing information in BillingDataCollector for contract number {}", contractEntity.getContractId());
+		bdcIntegration.removeBillingCycle(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 	}
 }
