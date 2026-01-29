@@ -10,6 +10,9 @@ import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
+import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MISC;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +23,6 @@ import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.model.enums.Status;
 
 class ContractTest {
 
@@ -48,11 +48,11 @@ class ContractTest {
 		final var contractId = "2024-12345";
 		final var description = "A simple description of the contract";
 		final var externalReferenceId = "123";
-		final var leaseType = LeaseType.LAND_LEASE_PUBLIC;
+		final var leaseType = LAND_LEASE_MISC;
 		final var municipalityId = "1984";
 		final var objectIdentity = "909a6a80-d1a4-90ec-e040-ed8f66444c3f";
-		final var status = Status.ACTIVE;
-		final var type = ContractType.PURCHASE_AGREEMENT;
+		final var status = ACTIVE;
+		final var type = PURCHASE_AGREEMENT;
 		final var leasehold = new Leasehold();
 		final var attachmentMetaData = List.of(new AttachmentMetadata());
 		final var additionalTerms = List.of(new TermGroup());

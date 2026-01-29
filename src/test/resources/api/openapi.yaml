@@ -912,6 +912,8 @@ components:
       enum:
         - LEASE_AGREEMENT
         - PURCHASE_AGREEMENT
+        - LAND_LEASE_PUBLIC
+        - SHORT_TERM_LEASE_AGREEMENT
     Crs:
       type: object
       properties:
@@ -1140,7 +1142,6 @@ components:
       type: string
       description: Lease type
       enum:
-        - LAND_LEASE_PUBLIC
         - LAND_LEASE_RESIDENTIAL
         - SITE_LEASE_COMMERCIAL
         - USUFRUCT_MOORING
@@ -1269,6 +1270,12 @@ components:
           description: The unit of the periodOfNotice value
           examples:
             - MONTHS
+        noticeDate:
+          type: string
+          format: date
+          description: The date of notice
+          examples:
+            - 2024-06-15
       required:
         - periodOfNotice
         - unit
@@ -1299,6 +1306,7 @@ components:
       enum:
         - LESSOR
         - LESSEE
+        - ALL
     Point:
       allOf:
         - $ref: "#/components/schemas/GeoJsonObject"

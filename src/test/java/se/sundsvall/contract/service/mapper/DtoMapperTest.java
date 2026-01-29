@@ -13,6 +13,7 @@ import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -367,11 +368,13 @@ class DtoMapperTest {
 					.withParty(Party.LESSEE)
 					.withPeriodOfNotice(3)
 					.withUnit(TimeUnit.MONTHS)
+					.withNoticeDate(LocalDate.now().plusMonths(3))
 					.build(),
 				Notice.builder()
 					.withParty(Party.LESSOR)
 					.withPeriodOfNotice(1)
 					.withUnit(TimeUnit.MONTHS)
+					.withNoticeDate(LocalDate.now().plusMonths(1))
 					.build());
 	}
 

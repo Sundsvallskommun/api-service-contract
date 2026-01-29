@@ -1,4 +1,4 @@
-package se.sundsvall.contract.api.model.enums;
+package se.sundsvall.contract.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.AddressType.BILLING_ADDRESS;
@@ -6,7 +6,6 @@ import static se.sundsvall.contract.model.enums.AddressType.POSTAL_ADDRESS;
 import static se.sundsvall.contract.model.enums.AddressType.VISITING_ADDRESS;
 
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.AddressType;
 
 class AddressTypeTest {
 
