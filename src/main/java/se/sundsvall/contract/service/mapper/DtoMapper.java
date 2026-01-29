@@ -107,6 +107,7 @@ public final class DtoMapper {
 				.withPeriodOfNotice(embeddable.getPeriodOfNotice())
 				.withParty(embeddable.getParty())
 				.withUnit(ofNullable(embeddable.getUnit()).orElse(DAYS))
+				.withNoticeDate(embeddable.getNoticeDate())
 				.build())
 			.orElse(null);
 	}

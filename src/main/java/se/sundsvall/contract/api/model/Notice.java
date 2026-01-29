@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,7 @@ public class Notice {
 	@Schema(description = "The unit of the periodOfNotice value", examples = "MONTHS")
 	@NotNull
 	private TimeUnit unit;
+
+	@Schema(description = "The date of notice", examples = "2024-06-15")
+	private LocalDate noticeDate;
 }

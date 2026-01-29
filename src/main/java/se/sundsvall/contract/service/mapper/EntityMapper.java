@@ -87,6 +87,7 @@ public final class EntityMapper {
 				.withPeriodOfNotice(object.getPeriodOfNotice())
 				.withParty(notice.getParty())
 				.withUnit(notice.getUnit())
+				.withNoticeDate(notice.getNoticeDate())
 				.build())
 			.orElse(null);
 	}
