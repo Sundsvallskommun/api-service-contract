@@ -1,4 +1,4 @@
-package se.sundsvall.contract.api.model.enums;
+package se.sundsvall.contract.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.StakeholderRole.BUYER;

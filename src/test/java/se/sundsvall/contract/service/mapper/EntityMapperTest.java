@@ -6,6 +6,7 @@ import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
@@ -232,11 +233,13 @@ class EntityMapperTest {
 					.withParty(Party.LESSEE)
 					.withPeriodOfNotice(3)
 					.withUnit(TimeUnit.MONTHS)
+					.withNoticeDate(LocalDate.now().plusMonths(3))
 					.build(),
 				NoticeEmbeddable.builder()
 					.withParty(Party.LESSOR)
 					.withPeriodOfNotice(1)
 					.withUnit(TimeUnit.MONTHS)
+					.withNoticeDate(LocalDate.now().plusMonths(1))
 					.build());
 	}
 }

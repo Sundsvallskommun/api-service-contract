@@ -1,4 +1,4 @@
-package se.sundsvall.contract.api.model.enums;
+package se.sundsvall.contract.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.IntervalType.HALF_YEARLY;
@@ -7,7 +7,6 @@ import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.IntervalType;
 
 class IntervalTypeTest {
 

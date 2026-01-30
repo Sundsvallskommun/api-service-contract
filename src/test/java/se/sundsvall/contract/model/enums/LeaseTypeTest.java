@@ -1,8 +1,7 @@
-package se.sundsvall.contract.api.model.enums;
+package se.sundsvall.contract.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MISC;
-import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_PUBLIC;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_RESIDENTIAL;
 import static se.sundsvall.contract.model.enums.LeaseType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.LeaseType.OBJECT_LEASE;
@@ -14,14 +13,12 @@ import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_MISC;
 import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_MOORING;
 
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.LeaseType;
 
 class LeaseTypeTest {
 
 	@Test
 	void enums() {
 		assertThat(LeaseType.values()).containsExactlyInAnyOrder(
-			LAND_LEASE_PUBLIC,
 			LAND_LEASE_RESIDENTIAL,
 			SITE_LEASE_COMMERCIAL,
 			USUFRUCT_MOORING,
@@ -36,7 +33,6 @@ class LeaseTypeTest {
 
 	@Test
 	void enumValues() {
-		assertThat(LAND_LEASE_PUBLIC).hasToString("LAND_LEASE_PUBLIC");
 		assertThat(LAND_LEASE_RESIDENTIAL).hasToString("LAND_LEASE_RESIDENTIAL");
 		assertThat(SITE_LEASE_COMMERCIAL).hasToString("SITE_LEASE_COMMERCIAL");
 		assertThat(USUFRUCT_MOORING).hasToString("USUFRUCT_MOORING");

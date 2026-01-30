@@ -49,6 +49,7 @@
     ) engine=InnoDB;
 
     create table contract_notice (
+        notice_date date,
         period_of_notice integer not null,
         contract_id bigint not null,
         unit varchar(32) not null,
