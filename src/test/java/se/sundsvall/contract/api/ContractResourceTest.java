@@ -1,42 +1,34 @@
 package se.sundsvall.contract.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.ContractPaginatedResponse;
-import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.PropertyDesignation;
@@ -98,69 +90,79 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void getAllContractsOnAMunicipalityId() {
-		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
+	@SuppressWarnings("unchecked")
+	void getContractsWithoutFilter() {
+		final var page = new PageImpl<>(
+			List.of(Contract.builder().build()),
+			PageRequest.of(0, 10),
+			1);
+
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(), any(Pageable.class))).thenReturn(page);
+
+		webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
+				.build(MUNICIPALITY_ID))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(Page.class)
+			.returnResult()
+			.getResponseBody();
+
+		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(), any(Pageable.class));
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	void getContractsWithFilter() {
+		final var page = new PageImpl<>(
+			List.of(Contract.builder().build()),
+			PageRequest.of(0, 10),
+			1);
+
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(Specification.class), any(Pageable.class))).thenReturn(page);
+
+		webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
+				.queryParam("filter", "status:'ACTIVE'")
+				.build(MUNICIPALITY_ID))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(Page.class)
+			.returnResult()
+			.getResponseBody();
+
+		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(Specification.class), any(Pageable.class));
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	void getContractsWithPaginationAndSorting() {
+		final var page = new PageImpl<>(
+			List.of(Contract.builder().build()),
+			PageRequest.of(1, 20),
+			25);
+
+		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(), any(Pageable.class))).thenReturn(page);
 
 		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
 				.queryParam("page", 1)
-				.queryParam("size", 10)
-				.queryParam("partyId", UUID.randomUUID().toString())
+				.queryParam("size", 20)
+				.queryParam("sort", "start,desc")
 				.build(MUNICIPALITY_ID))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(ContractPaginatedResponse.class)
+			.expectBody(Page.class)
 			.returnResult()
 			.getResponseBody();
 
-		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class));
+		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(), any(Pageable.class));
 		verifyNoMoreInteractions(contractServiceMock);
-	}
-
-	@Test
-	void getAllContractsByMunicipalityAndTerm() {
-		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
-
-		var responseBody = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
-				.queryParam("page", 1)
-				.queryParam("size", 10)
-				.queryParam("term", "ey")
-				.build(MUNICIPALITY_ID))
-			.exchange()
-			.expectStatus().isOk()
-			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(ContractPaginatedResponse.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(responseBody).isNotNull();
-		verify(contractServiceMock).getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class));
-		verifyNoMoreInteractions(contractServiceMock);
-	}
-
-	@Test
-	void testLimitWhenFetchingContracts_shouldGenerateBadRequest() {
-		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
-
-		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/" + MUNICIPALITY_ID + "/contracts")
-				.queryParam("page", 1)
-				.queryParam("limit", 101)
-				.build())
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-			.expectBody(ThrowableProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull();
-		assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST);
-		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
-
-		verifyNoInteractions(contractServiceMock);
 	}
 
 	@Test
@@ -259,34 +261,4 @@ class ContractResourceTest {
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
-	@ParameterizedTest
-	@MethodSource("invalidTermProvider")
-	void testGetAllContractsByMunicipalityAndTooShortTerm_shouldGenerateBadRequest(String term) {
-		when(contractServiceMock.getContracts(eq(MUNICIPALITY_ID), any(ContractRequest.class))).thenReturn(ContractPaginatedResponse.builder().build());
-
-		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/" + MUNICIPALITY_ID + "/contracts")
-				.queryParam("page", 1)
-				.queryParam("term", term)
-				.build())
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull();
-		assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST);
-		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
-		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("term", "Term must be at least 2 characters long if provided"));
-
-		verifyNoInteractions(contractServiceMock);
-	}
-
-	private static Stream<String> invalidTermProvider() {
-		return Stream.of("a", "", " ", null);
-	}
 }

@@ -17,6 +17,7 @@
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<geojson-jackson.version>3.0</geojson-jackson.version>
 		<json-diff.version>2.1.0</json-diff.version>
+		<spring-filter.version>3.2.5</spring-filter.version>
 	</properties>
 	<dependencies>
 		<!-- Test -->
@@ -82,6 +83,11 @@
 			<groupId>io.github.deblockt</groupId>
 			<artifactId>json-diff</artifactId>
 			<version>${json-diff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.turkraft.springfilter</groupId>
+			<artifactId>jpa</artifactId>
+			<version>${spring-filter.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

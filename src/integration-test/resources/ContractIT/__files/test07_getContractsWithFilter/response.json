@@ -1,5 +1,5 @@
 {
-	"contracts": [
+	"content": [
 		{
 			"version": 2,
 			"contractId": "2024-12345",
@@ -123,11 +123,21 @@
 			"signedByWitness": true
 		}
 	],
-	"_meta": {
-		"page": 1,
-		"limit": 15,
-		"count": 1,
-		"totalRecords": 1,
-		"totalPages": 1
-	}
+	"pageable": {
+		"pageNumber": 0,
+		"pageSize": 20,
+		"sort": [],
+		"offset": 0,
+		"paged": true,
+		"unpaged": false
+	},
+	"last": true,
+	"totalElements": 1,
+	"totalPages": 1,
+	"size": 20,
+	"number": 0,
+	"sort": [],
+	"first": true,
+	"numberOfElements": 1,
+	"empty": false
 }

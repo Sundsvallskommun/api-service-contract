@@ -30,14 +30,12 @@ class ParameterTest {
 		// Arrange
 		final var key = "someKey";
 		final var displayName = "someDisplayName";
-		final var group = "someGroup";
 		final var values = List.of("someValue");
 
 		// Act
 		final var result = Parameter.builder()
 			.withKey(key)
 			.withDisplayName(displayName)
-			.withGroup(group)
 			.withValues(values)
 			.build();
 
@@ -45,7 +43,6 @@ class ParameterTest {
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getKey()).isEqualTo(key);
 		assertThat(result.getDisplayName()).isEqualTo(displayName);
-		assertThat(result.getGroup()).isEqualTo(group);
 		assertThat(result.getValues()).isEqualTo(values);
 
 	}
