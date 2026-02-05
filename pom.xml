@@ -6,7 +6,6 @@
 		<artifactId>dept44-service-parent</artifactId>
 		<version>7.0.0</version>
 		<relativePath />
-		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
