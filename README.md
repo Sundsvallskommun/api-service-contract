@@ -127,3 +127,4 @@ This project is licensed under the [MIT License](LICENSE).
 ## 
 
 &copy; 2026 Sundsvalls kommun
+
