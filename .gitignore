@@ -56,3 +56,6 @@ application-default.*
 # OSX
 .DS_Store
 
+# Claude
+/.claude/
+/CLAUDE.md

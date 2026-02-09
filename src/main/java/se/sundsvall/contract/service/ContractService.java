@@ -4,7 +4,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.createContractSpecification;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
 import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
 import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
 import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
@@ -15,15 +16,14 @@ import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.ContractPaginatedResponse;
-import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
@@ -32,7 +32,6 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.diff.Differ;
-import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Service
 @Transactional
@@ -94,22 +93,15 @@ public class ContractService {
 	}
 
 	@Transactional(readOnly = true)
-	public ContractPaginatedResponse getContracts(final String municipalityId, final ContractRequest request) {
-		final var pagingParameters = getPagingParameters(request);
+	public Page<Contract> getContracts(final String municipalityId, final Specification<ContractEntity> filter, final Pageable pageable) {
+		// Combine mandatory specifications with the optional filter
+		final var specification = withOnlyLatestVersion()
+			.and(withMunicipalityId(municipalityId))
+			.and(filter);
 
-		// Get all contracts
-		final var contractEntities = contractRepository.findAll(createContractSpecification(municipalityId, request), pagingParameters);
-
-		// Map to response objects
-		final var contracts = contractEntities.stream()
-			.map(contractEntity -> toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())))
-			.toList();
-
-		// Add to response
-		return ContractPaginatedResponse.builder()
-			.withMetaData(PagingAndSortingMetaData.create().withPageData(contractEntities))
-			.withContracts(contracts)
-			.build();
+		// Get all contracts and map to DTOs
+		return contractRepository.findAll(specification, pageable)
+			.map(contractEntity -> toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())));
 	}
 
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
@@ -163,10 +155,6 @@ public class ContractService {
 
 		attachmentRepository.deleteAllByContractId(contractEntity.getContractId());
 		contractRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
-	}
-
-	private Pageable getPagingParameters(final ContractRequest request) {
-		return PageRequest.of(request.getPage() - 1, request.getLimit());
 	}
 
 	/**

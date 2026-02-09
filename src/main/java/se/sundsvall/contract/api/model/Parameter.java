@@ -23,9 +23,6 @@ public class Parameter {
 	@Schema(description = "Parameter display name")
 	private String displayName;
 
-	@Schema(description = "Parameter group name")
-	private String group;
-
 	@Schema(description = "Parameter values")
 	private List<String> values;
 }

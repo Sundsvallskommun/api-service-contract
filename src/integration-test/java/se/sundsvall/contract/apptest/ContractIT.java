@@ -61,8 +61,8 @@ class ContractIT extends AbstractAppTest {
 	void test02_readContracts() {
 		setupCall()
 			.withServicePath(fromPath(PATH)
-				.queryParam("page", 1)
-				.queryParam("limit", 9)
+				.queryParam("page", 0)
+				.queryParam("size", 10)
 				.build(MUNICIPALITY_ID)
 				.toString())
 			.withHttpMethod(GET)
@@ -201,9 +201,12 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test07_getContractsWithTerm() {
+	void test07_getContractsWithFilter() {
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/contracts" + "?term=pöle vault&page=1&limit=15")  // To prevent double encoding
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "status:'ACTIVE'")
+				.build(MUNICIPALITY_ID)
+				.toString())
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))

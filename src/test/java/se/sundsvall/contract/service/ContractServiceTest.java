@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,7 +41,6 @@ import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
@@ -176,31 +176,24 @@ class ContractServiceTest {
 	void getPaginatedContracts() {
 		// Arrange
 		final var landLeaseContractEntity = createContractEntity();
+		final var pageable = PageRequest.of(0, 5);
 
-		final Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity));
+		final Page<ContractEntity> page = new PageImpl<>(List.of(landLeaseContractEntity, landLeaseContractEntity), pageable, 2);
 
 		when(contractRepositoryMock.findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class))).thenReturn(page);
 		when(attachmentRepositoryMock.findAllByMunicipalityIdAndContractId(eq(MUNICIPALITY_ID), any(String.class)))
 			.thenReturn(List.of(createAttachmentEntity()));
 
-		final var request = ContractRequest.builder().build();
-		request.setPage(1);
-		request.setLimit(5);
-
 		// Act
-		final var result = contractService.getContracts(MUNICIPALITY_ID, request);
+		final var result = contractService.getContracts(MUNICIPALITY_ID, null, pageable);
 
 		// Assert
 		assertThat(result).isNotNull();
-		assertThat(result.getContracts().getFirst()).isNotNull();
-
-		final var metaData = result.getMetaData();
-		assertThat(metaData).isNotNull();
-		assertThat(metaData.getPage()).isOne();
-		assertThat(metaData.getLimit()).isEqualTo(2);
-		assertThat(metaData.getCount()).isEqualTo(2);
-		assertThat(metaData.getTotalRecords()).isEqualTo(2);
-		assertThat(metaData.getTotalPages()).isOne();
+		assertThat(result.getContent()).hasSize(2);
+		assertThat(result.getNumber()).isZero();
+		assertThat(result.getSize()).isEqualTo(5);
+		assertThat(result.getTotalElements()).isEqualTo(2);
+		assertThat(result.getTotalPages()).isOne();
 
 		verify(contractRepositoryMock).findAll(Mockito.<Specification<ContractEntity>>any(), any(Pageable.class));
 		verify(attachmentRepositoryMock, times(2)).findAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, "2024-98765");

@@ -29,20 +29,12 @@ cd api-service-contract
 
 3. **Ensure dependent services are running:**
 
-   This microservice does not depend on any other services.
+   If billing integration is enabled, ensure **BillingDataCollector** is available.
 
 4. **Build and run the application:**
 
-- Using Maven:
-
 ```bash
 mvn spring-boot:run
-```
-
-- Using Gradle:
-
-```bash
-gradle bootRun
 ```
 
 ## API Documentation
@@ -60,8 +52,7 @@ See the [API Documentation](#api-documentation) for detailed information on avai
 ### Example Request
 
 ```bash
-curl -X 'GET' 'https://localhost:8080/contracts/2281?partyId=40f14de9-815d-44a5-a34d-b1d38b628e07'
-
+curl -X 'GET' 'http://localhost:8080/2281/contracts?partyId=40f14de9-815d-44a5-a34d-b1d38b628e07'
 ```
 
 ## Configuration
@@ -135,4 +126,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 
 
-&copy; 2023 Sundsvalls kommun
+&copy; 2026 Sundsvalls kommun
+

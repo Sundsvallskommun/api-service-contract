@@ -6,17 +6,17 @@
 		<artifactId>dept44-service-parent</artifactId>
 		<version>7.0.0</version>
 		<relativePath />
-		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
-	<version>5.0</version>
+	<version>6.0</version>
 	<name>api-service-contract</name>
 	<properties>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<geojson-jackson.version>3.0</geojson-jackson.version>
 		<json-diff.version>2.1.0</json-diff.version>
+		<spring-filter.version>3.2.5</spring-filter.version>
 	</properties>
 	<dependencies>
 		<!-- Test -->
@@ -82,6 +82,11 @@
 			<groupId>io.github.deblockt</groupId>
 			<artifactId>json-diff</artifactId>
 			<version>${json-diff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.turkraft.springfilter</groupId>
+			<artifactId>jpa</artifactId>
+			<version>${spring-filter.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

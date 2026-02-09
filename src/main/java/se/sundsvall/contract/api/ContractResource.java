@@ -11,6 +11,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 import static org.zalando.problem.Status.BAD_REQUEST;
 
+import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -21,7 +22,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.ContractPaginatedResponse;
-import se.sundsvall.contract.api.model.ContractRequest;
 import se.sundsvall.contract.api.model.Diff;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -99,11 +103,13 @@ class ContractResource {
 				useReturnTypeSchema = true)
 		})
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	ResponseEntity<ContractPaginatedResponse> getContracts(
+	ResponseEntity<Page<Contract>> getContracts(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
-		@Valid @ParameterObject final ContractRequest request) {
+		@Parameter(description = "Syntax: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)",
+			example = "type:'LEASE_AGREEMENT' and status:'ACTIVE'") @Filter @Nullable final Specification<ContractEntity> filter,
+		@ParameterObject final Pageable pageable) {
 
-		return ok(service.getContracts(municipalityId, request));
+		return ok(service.getContracts(municipalityId, filter, pageable));
 	}
 
 	@Operation(
