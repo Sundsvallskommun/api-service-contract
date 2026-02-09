@@ -90,7 +90,6 @@ class ContractResourceTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	void getContractsWithoutFilter() {
 		final var page = new PageImpl<>(
 			List.of(Contract.builder().build()),
@@ -139,7 +138,6 @@ class ContractResourceTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	void getContractsWithPaginationAndSorting() {
 		final var page = new PageImpl<>(
 			List.of(Contract.builder().build()),
