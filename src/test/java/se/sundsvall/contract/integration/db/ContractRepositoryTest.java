@@ -6,12 +6,10 @@ import static se.sundsvall.contract.TestFactory.createContractEntity;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -22,7 +20,6 @@ import org.springframework.test.context.jdbc.Sql;
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-junit.sql"
 })
-@Import(ObjectMapper.class) // Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractRepositoryTest {
 
 	@Autowired

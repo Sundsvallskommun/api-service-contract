@@ -29,9 +29,6 @@ import lombok.NoArgsConstructor;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
@@ -69,14 +66,14 @@ public class ContractEntity {
 	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
-	@Column(name = "index_terms")
-	private List<TermGroup> indexTerms;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "contract_id",
+		referencedColumnName = "id",
+		foreignKey = @ForeignKey(name = "fk_term_group_contract_id"))
+	private List<TermGroupEntity> termGroups;
 
 	@Column(name = "description", length = 4096)
 	private String description;
-
-	@Column(name = "additional_terms")
-	private List<TermGroup> additionalTerms;
 
 	@JoinTable(
 		name = "contract_stakeholder",
@@ -88,8 +85,11 @@ public class ContractEntity {
 	@Column(name = "signed_by_witness")
 	private boolean signedByWitness;
 
-	@Column(name = "extra_parameters")
-	private List<ExtraParameterGroup> extraParameters;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "contract_id",
+		referencedColumnName = "id",
+		foreignKey = @ForeignKey(name = "fk_extra_parameter_group_contract_id"))
+	private List<ExtraParameterGroupEntity> extraParameters;
 
 	@Column(name = "lease_type")
 	private LeaseType leaseType;
@@ -125,8 +125,8 @@ public class ContractEntity {
 	@Column(name = "lease_duration_unit", length = 32)
 	private TimeUnit leaseDurationUnit;
 
-	@Column(name = "fees", length = 2048)
-	private Fees fees;
+	@Embedded
+	private FeesEmbeddable fees;
 
 	@Embedded
 	private InvoicingEmbeddable invoicing;

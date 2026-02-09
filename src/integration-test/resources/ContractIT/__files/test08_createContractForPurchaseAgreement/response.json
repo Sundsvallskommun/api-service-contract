@@ -107,11 +107,11 @@
 		"currency": "SEK",
 		"yearly": 234.56,
 		"monthly": 123.45,
-		"total": 500,
+		"total": 500.00,
 		"totalAsText": "five hundred",
 		"indexYear": 2021,
 		"indexNumber": 2,
-		"indexationRate": 0.4,
+		"indexationRate": 0.40,
 		"additionalInformation": [
 			"someAdditionalInfo1",
 			"someAdditionalInfo2"

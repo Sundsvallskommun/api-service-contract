@@ -1,43 +1,73 @@
-INSERT INTO contract (id, contract_id, version, status, municipality_id, index_terms, description, additional_terms,
+INSERT INTO contract (id, contract_id, version, status, municipality_id, description,
                       signed_by_witness, area, auto_extend, end, lease_type, lease_duration,
                       lease_extension, lease_duration_unit, lease_extension_unit, start, external_reference_id, invoice_interval, invoiced_in,
-                      leasehold_description, leasehold_type, object_identity, fees, extra_parameters,
+                      leasehold_description, leasehold_type, object_identity,
+                      fee_currency, fee_yearly, fee_monthly, fee_total, fee_total_as_text, fee_index_type, fee_index_year, fee_index_number, fee_indexation_rate,
                       type)
 VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
-        '[{"header": "Basic Terms","terms": [{"description": "The parties involved in the lease agreement", "term": "Parties"}]}]',
         'someOldDescription',
-        '[{"header": "Additional Basic Terms","terms": [{"description": "The parties involved in the additional lease agreement", "term": "Parties"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 'YEARS', 'YEARS', '2023-10-02', 'MK-TEST0001',
-        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 
-        '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexationRate": 0.5,"indexYear":2021,"additionalInformation":["someAdditionalInfo1","someAdditionalInfo2"]}',
-        '[{"name":"someParameters","parameters":{"key1":"value1","key2":"value2"}}]', 'LEASE_AGREEMENT'),
+        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
+        'SEK', 234.56, 123.45, 500, 'five hundred', 'KPI 80', 2021, 2, 0.5,
+        'LEASE_AGREEMENT'),
 
        (2, '2024-23456', 1, 'DRAFT', '1984',
-        '[{"header": "Basic Terms","terms": [{"description": "Description for basic terms", "term": "Some Parties"}]}]',
         'someDescription',
-        '[{"header": "Additional Basic Terms","terms": [{"description": "Additional terms", "term": "Party"}]}]',
         false, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 'YEARS', 'YEARS', '2023-10-02', 'MK-TEST0002',
-        'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 
-        '{"currency":"EUR","yearly":1000,"monthly":120,"total":5000,"totalAsText":"five thousand","indexNumber":3,"indexationRate": 0.3,"indexYear":2021,"additionalInformation":[]}',
-        '[{"name":"someParameters2","parameters":{"key3":"value3","key4":"value5"}}]', 'LEASE_AGREEMENT'),
+        'QUARTERLY', 'ARREARS', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
+        'EUR', 1000, 120, 5000, 'five thousand', 'KPI 80', 2021, 3, 0.3,
+        'LEASE_AGREEMENT'),
 
        (3, '2024-12345', 2, 'ACTIVE', '1984',
-        '[{"header": "Basic Terms Here","terms": [{"description": "Something something", "term": "Donald must be happy"}]}]',
         'someDescription',
-        '[{"header": "More information","terms": [{"description": "No pöle vaulting indoors", "term": "Respected by all parties"}]}]',
         true, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 'YEARS', 'YEARS', '2023-10-02', 'MK-TEST0001',
-        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity', 
-        '{"currency":"SEK","yearly":234.56,"monthly":123.45,"total":500,"totalAsText":"five hundred","indexNumber":2,"indexationRate": 0.5,"indexYear":2021,"additionalInformation":["someAdditionalInfo3","someAdditionalInfo4"]}',
-        '[{"name":"someParameters3","parameters":{"key5":"value5","key6":"value6"}}]', 'PURCHASE_AGREEMENT');
+        'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
+        'SEK', 234.56, 123.45, 500, 'five hundred', null, 2021, 2, 0.5,
+        'PURCHASE_AGREEMENT');
 
-INSERT INTO contract_notice (contract_id, party, period_of_notice, unit) 
+INSERT INTO fee_additional_information (contract_id, additional_information)
+VALUES (1, 'someAdditionalInfo1'),
+       (1, 'someAdditionalInfo2'),
+       (3, 'someAdditionalInfo3'),
+       (3, 'someAdditionalInfo4');
+
+INSERT INTO term_group (id, header, term_type, contract_id)
+VALUES (1, 'Basic Terms', 'INDEX', 1),
+       (2, 'Additional Basic Terms', 'ADDITIONAL', 1),
+       (3, 'Basic Terms', 'INDEX', 2),
+       (4, 'Additional Basic Terms', 'ADDITIONAL', 2),
+       (5, 'Basic Terms Here', 'INDEX', 3),
+       (6, 'More information', 'ADDITIONAL', 3);
+
+INSERT INTO term_group_term (term_group_id, term_name, description)
+VALUES (1, 'Parties', 'The parties involved in the lease agreement'),
+       (2, 'Parties', 'The parties involved in the additional lease agreement'),
+       (3, 'Some Parties', 'Description for basic terms'),
+       (4, 'Party', 'Additional terms'),
+       (5, 'Donald must be happy', 'Something something'),
+       (6, 'Respected by all parties', 'No pöle vaulting indoors');
+
+INSERT INTO extra_parameter_group (id, name, contract_id)
+VALUES (1, 'someParameters', 1),
+       (2, 'someParameters2', 2),
+       (3, 'someParameters3', 3);
+
+INSERT INTO extra_parameter (extra_parameter_group_id, parameter_key, parameter_value)
+VALUES (1, 'key1', 'value1'),
+       (1, 'key2', 'value2'),
+       (2, 'key3', 'value3'),
+       (2, 'key4', 'value5'),
+       (3, 'key5', 'value5'),
+       (3, 'key6', 'value6');
+
+INSERT INTO contract_notice (contract_id, party, period_of_notice, unit)
 VALUES (1, 'LESSOR', 3, 'MONTHS'),
        (1, 'LESSEE', 2, 'MONTHS'),
        (2, 'LESSOR', 30, 'DAYS'),
        (2, 'LESSEE', 60, 'DAYS'),
        (3, 'LESSOR', 1, 'YEARS'),
        (3, 'LESSEE', 2, 'YEARS');
-    
+
 INSERT INTO property_designation (contract_id, name, district)
 VALUES (1, 'SUNDSVALL NORRMALM 1:1', "District 1"),
        (2, 'SUNDSVALL NORRMALM 2:1', "District 2"),

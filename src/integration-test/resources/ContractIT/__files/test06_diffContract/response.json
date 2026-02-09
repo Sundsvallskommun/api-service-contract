@@ -20,6 +20,11 @@
 			}
 		},
 		{
+			"type": "REMOVAL",
+			"path": "$.fees.indexType",
+			"oldValue": "KPI 80"
+		},
+		{
 			"type": "MODIFICATION",
 			"path": "$.fees.additionalInformation.0",
 			"oldValue": "someAdditionalInfo1",

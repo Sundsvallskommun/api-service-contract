@@ -100,13 +100,14 @@
 			},
 			"fees": {
 				"currency": "EUR",
-				"yearly": 1000,
-				"monthly": 120,
-				"total": 5000,
+				"yearly": 1000.00,
+				"monthly": 120.00,
+				"total": 5000.00,
 				"totalAsText": "five thousand",
+				"indexType": "KPI 80",
 				"indexYear": 2021,
 				"indexNumber": 3,
-				"indexationRate": 0.3,
+				"indexationRate": 0.30,
 				"additionalInformation": []
 			},
 			"invoicing": {
@@ -221,11 +222,11 @@
 				"currency": "SEK",
 				"yearly": 234.56,
 				"monthly": 123.45,
-				"total": 500,
+				"total": 500.00,
 				"totalAsText": "five hundred",
 				"indexYear": 2021,
 				"indexNumber": 2,
-				"indexationRate": 0.5,
+				"indexationRate": 0.50,
 				"additionalInformation": [
 					"someAdditionalInfo3",
 					"someAdditionalInfo4"

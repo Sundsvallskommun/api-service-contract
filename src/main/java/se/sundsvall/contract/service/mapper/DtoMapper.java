@@ -4,6 +4,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
@@ -25,11 +27,17 @@ import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.integration.db.model.TermEmbeddable;
+import se.sundsvall.contract.integration.db.model.TermGroupEntity;
+import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
@@ -39,7 +47,7 @@ public final class DtoMapper {
 
 	public static Contract toContractDto(final ContractEntity contractEntity, final List<AttachmentEntity> attachmentEntities) {
 		return Contract.builder()
-			.withAdditionalTerms(contractEntity.getAdditionalTerms())
+			.withAdditionalTerms(toTermGroupDtos(filterByType(contractEntity.getTermGroups(), TYPE_ADDITIONAL)))
 			.withArea(contractEntity.getArea())
 			.withAreaData(contractEntity.getAreaData())
 			.withAttachmentMetaData(toAttachmentMetadataDtos(attachmentEntities))
@@ -47,9 +55,9 @@ public final class DtoMapper {
 			.withDescription(contractEntity.getDescription())
 			.withEnd(contractEntity.getEnd())
 			.withExternalReferenceId(contractEntity.getExternalReferenceId())
-			.withExtraParameters(contractEntity.getExtraParameters())
+			.withExtraParameters(toExtraParameterGroupDtos(contractEntity.getExtraParameters()))
 			.withFees(toFeesDto(contractEntity))
-			.withIndexTerms(contractEntity.getIndexTerms())
+			.withIndexTerms(toTermGroupDtos(filterByType(contractEntity.getTermGroups(), TYPE_INDEX)))
 			.withInvoicing(toInvoicingDto(contractEntity))
 			.withLeaseType(contractEntity.getLeaseType())
 			.withDuration(toDurationDto(contractEntity))
@@ -114,17 +122,17 @@ public final class DtoMapper {
 
 	static Fees toFeesDto(final ContractEntity contractEntity) {
 		return ofNullable(contractEntity.getFees())
-			.map(feesEntity -> Fees.builder()
-				.withAdditionalInformation(feesEntity.getAdditionalInformation())
-				.withCurrency(feesEntity.getCurrency())
-				.withIndexType(feesEntity.getIndexType())
-				.withIndexationRate(feesEntity.getIndexationRate())
-				.withIndexNumber(feesEntity.getIndexNumber())
-				.withIndexYear(feesEntity.getIndexYear())
-				.withMonthly(feesEntity.getMonthly())
-				.withTotal(feesEntity.getTotal())
-				.withTotalAsText(feesEntity.getTotalAsText())
-				.withYearly(feesEntity.getYearly())
+			.map(feesEmbeddable -> Fees.builder()
+				.withAdditionalInformation(feesEmbeddable.getAdditionalInformation())
+				.withCurrency(feesEmbeddable.getCurrency())
+				.withIndexType(feesEmbeddable.getIndexType())
+				.withIndexationRate(feesEmbeddable.getIndexationRate())
+				.withIndexNumber(feesEmbeddable.getIndexNumber())
+				.withIndexYear(feesEmbeddable.getIndexYear())
+				.withMonthly(feesEmbeddable.getMonthly())
+				.withTotal(feesEmbeddable.getTotal())
+				.withTotalAsText(feesEmbeddable.getTotalAsText())
+				.withYearly(feesEmbeddable.getYearly())
 				.build())
 			.orElse(null);
 	}
@@ -239,6 +247,65 @@ public final class DtoMapper {
 			.map(propertyDesignation -> PropertyDesignation.builder()
 				.withName(propertyDesignation.getName())
 				.withDistrict(propertyDesignation.getDistrict())
+				.build())
+			.orElse(null);
+	}
+
+	static List<TermGroupEntity> filterByType(final List<TermGroupEntity> termGroups, final String type) {
+		return ofNullable(termGroups)
+			.map(groups -> groups.stream()
+				.filter(group -> type.equals(group.getType()))
+				.toList())
+			.orElse(null);
+	}
+
+	static List<TermGroup> toTermGroupDtos(final List<TermGroupEntity> termGroupEntities) {
+		return ofNullable(termGroupEntities)
+			.map(groups -> groups.stream()
+				.map(DtoMapper::toTermGroupDto)
+				.toList())
+			.orElse(null);
+	}
+
+	static TermGroup toTermGroupDto(final TermGroupEntity termGroupEntity) {
+		return ofNullable(termGroupEntity)
+			.map(entity -> TermGroup.builder()
+				.withHeader(entity.getHeader())
+				.withTerms(toTermDtos(entity.getTerms()))
+				.build())
+			.orElse(null);
+	}
+
+	static List<Term> toTermDtos(final List<TermEmbeddable> termEmbeddables) {
+		return ofNullable(termEmbeddables)
+			.map(terms -> terms.stream()
+				.map(DtoMapper::toTermDto)
+				.toList())
+			.orElse(null);
+	}
+
+	static Term toTermDto(final TermEmbeddable termEmbeddable) {
+		return ofNullable(termEmbeddable)
+			.map(embeddable -> Term.builder()
+				.withName(embeddable.getName())
+				.withDescription(embeddable.getDescription())
+				.build())
+			.orElse(null);
+	}
+
+	static List<ExtraParameterGroup> toExtraParameterGroupDtos(final List<ExtraParameterGroupEntity> extraParameterGroupEntities) {
+		return ofNullable(extraParameterGroupEntities)
+			.map(groups -> groups.stream()
+				.map(DtoMapper::toExtraParameterGroupDto)
+				.toList())
+			.orElse(null);
+	}
+
+	static ExtraParameterGroup toExtraParameterGroupDto(final ExtraParameterGroupEntity extraParameterGroupEntity) {
+		return ofNullable(extraParameterGroupEntity)
+			.map(entity -> ExtraParameterGroup.builder()
+				.withName(entity.getName())
+				.withParameters(entity.getParameters())
 				.build())
 			.orElse(null);
 	}

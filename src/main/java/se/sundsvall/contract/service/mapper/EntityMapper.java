@@ -4,12 +4,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.Contract;
@@ -23,11 +26,19 @@ import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
+import se.sundsvall.contract.integration.db.model.FeesEmbeddable;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.integration.db.model.TermEmbeddable;
+import se.sundsvall.contract.integration.db.model.TermGroupEntity;
+import se.sundsvall.contract.model.ExtraParameterGroup;
+import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 public final class EntityMapper {
@@ -42,7 +53,7 @@ public final class EntityMapper {
 
 	public static ContractEntity toContractEntity(final String municipalityId, final Contract contract) {
 		return ContractEntity.builder()
-			.withAdditionalTerms(contract.getAdditionalTerms())
+			.withTermGroups(toTermGroupEntities(contract.getIndexTerms(), contract.getAdditionalTerms()))
 			.withArea(contract.getArea())
 			.withAreaData(contract.getAreaData())
 			.withAutoExtend(ofNullable(contract.getExtension()).map(Extension::getAutoExtend).orElse(null))
@@ -50,9 +61,8 @@ public final class EntityMapper {
 			.withDescription(contract.getDescription())
 			.withEnd(contract.getEnd())
 			.withExternalReferenceId(contract.getExternalReferenceId())
-			.withExtraParameters(contract.getExtraParameters())
-			.withFees(contract.getFees())
-			.withIndexTerms(contract.getIndexTerms())
+			.withExtraParameters(toExtraParameterGroupEntities(contract.getExtraParameters()))
+			.withFees(toFeesEmbeddable(contract.getFees()))
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
 			.withLeaseType(contract.getLeaseType())
 			.withLeaseDuration(ofNullable(contract.getDuration()).map(Duration::getLeaseDuration).orElse(null))
@@ -200,6 +210,80 @@ public final class EntityMapper {
 			.map(propertyDesignation -> PropertyDesignationEmbeddable.builder()
 				.withName(propertyDesignation.getName())
 				.withDistrict(propertyDesignation.getDistrict())
+				.build())
+			.orElse(null);
+	}
+
+	static FeesEmbeddable toFeesEmbeddable(final Fees fees) {
+		return ofNullable(fees)
+			.map(f -> FeesEmbeddable.builder()
+				.withCurrency(f.getCurrency())
+				.withYearly(f.getYearly())
+				.withMonthly(f.getMonthly())
+				.withTotal(f.getTotal())
+				.withTotalAsText(f.getTotalAsText())
+				.withIndexType(f.getIndexType())
+				.withIndexYear(f.getIndexYear())
+				.withIndexNumber(f.getIndexNumber())
+				.withIndexationRate(f.getIndexationRate())
+				.withAdditionalInformation(f.getAdditionalInformation())
+				.build())
+			.orElse(null);
+	}
+
+	static List<TermGroupEntity> toTermGroupEntities(final List<TermGroup> indexTerms, final List<TermGroup> additionalTerms) {
+		final var indexEntities = ofNullable(indexTerms)
+			.map(terms -> terms.stream().map(t -> toTermGroupEntity(t, TYPE_INDEX)))
+			.orElse(Stream.empty());
+		final var additionalEntities = ofNullable(additionalTerms)
+			.map(terms -> terms.stream().map(t -> toTermGroupEntity(t, TYPE_ADDITIONAL)))
+			.orElse(Stream.empty());
+
+		final var result = Stream.concat(indexEntities, additionalEntities)
+			.collect(toCollection(ArrayList::new));
+		return result.isEmpty() ? null : result;
+	}
+
+	static TermGroupEntity toTermGroupEntity(final TermGroup termGroup, final String type) {
+		return ofNullable(termGroup)
+			.map(tg -> TermGroupEntity.builder()
+				.withHeader(tg.getHeader())
+				.withType(type)
+				.withTerms(toTermEmbeddables(tg.getTerms()))
+				.build())
+			.orElse(null);
+	}
+
+	static List<TermEmbeddable> toTermEmbeddables(final List<Term> terms) {
+		return ofNullable(terms)
+			.map(t -> t.stream()
+				.map(EntityMapper::toTermEmbeddable)
+				.collect(toCollection(ArrayList::new)))
+			.orElse(null);
+	}
+
+	static TermEmbeddable toTermEmbeddable(final Term term) {
+		return ofNullable(term)
+			.map(t -> TermEmbeddable.builder()
+				.withName(t.getName())
+				.withDescription(t.getDescription())
+				.build())
+			.orElse(null);
+	}
+
+	static List<ExtraParameterGroupEntity> toExtraParameterGroupEntities(final List<ExtraParameterGroup> extraParameterGroups) {
+		return ofNullable(extraParameterGroups)
+			.map(groups -> groups.stream()
+				.map(EntityMapper::toExtraParameterGroupEntity)
+				.collect(toCollection(ArrayList::new)))
+			.orElse(null);
+	}
+
+	static ExtraParameterGroupEntity toExtraParameterGroupEntity(final ExtraParameterGroup extraParameterGroup) {
+		return ofNullable(extraParameterGroup)
+			.map(epg -> ExtraParameterGroupEntity.builder()
+				.withName(epg.getName())
+				.withParameters(epg.getParameters())
 				.build())
 			.orElse(null);
 	}

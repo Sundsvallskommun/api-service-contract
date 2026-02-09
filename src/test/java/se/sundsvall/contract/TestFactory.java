@@ -1,6 +1,8 @@
 package se.sundsvall.contract;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
 import static se.sundsvall.contract.model.enums.AddressType.VISITING_ADDRESS;
 import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
@@ -36,11 +38,15 @@ import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
+import se.sundsvall.contract.integration.db.model.FeesEmbeddable;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
+import se.sundsvall.contract.integration.db.model.TermEmbeddable;
+import se.sundsvall.contract.integration.db.model.TermGroupEntity;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
@@ -86,7 +92,7 @@ public final class TestFactory {
 			.withObjectIdentity("someObjectIdentity")
 			.withLeaseDuration(20)
 			.withLeaseDurationUnit(MONTHS)
-			.withFees(Fees.builder()
+			.withFees(FeesEmbeddable.builder()
 				.withCurrency("SEK")
 				.withYearly(BigDecimal.valueOf(4350))
 				.withMonthly(BigDecimal.valueOf(375))
@@ -125,25 +131,26 @@ public final class TestFactory {
 			.withVersion(1)
 			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
-			.withIndexTerms(List.of(
-				TermGroup.builder()
+			.withTermGroups(List.of(
+				TermGroupEntity.builder()
 					.withHeader("Some index terms")
+					.withType(TYPE_INDEX)
 					.withTerms(List.of(
-						Term.builder()
+						TermEmbeddable.builder()
 							.withName("Some index term")
 							.withDescription("Some description")
 							.build()))
-					.build()))
-			.withDescription("someDescription")
-			.withAdditionalTerms(List.of(
-				TermGroup.builder()
+					.build(),
+				TermGroupEntity.builder()
 					.withHeader("Some additional terms")
+					.withType(TYPE_ADDITIONAL)
 					.withTerms(List.of(
-						Term.builder()
+						TermEmbeddable.builder()
 							.withName("Some additional term")
 							.withDescription("Some description")
 							.build()))
 					.build()))
+			.withDescription("someDescription")
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withId(1L)
 				.withFirstName("someFirstName")
@@ -166,7 +173,7 @@ public final class TestFactory {
 				.build()))
 			.withSignedByWitness(true)
 			.withExtraParameters(List.of(
-				ExtraParameterGroup.builder()
+				ExtraParameterGroupEntity.builder()
 					.withName("someExtraParameterGroup")
 					.withParameters(Map.of("someParameter", "someValue"))
 					.build()))

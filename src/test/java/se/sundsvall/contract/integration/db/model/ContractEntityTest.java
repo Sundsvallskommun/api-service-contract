@@ -10,6 +10,8 @@ import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
 import static se.sundsvall.contract.model.enums.Status.TERMINATED;
@@ -22,10 +24,6 @@ import java.util.Random;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.Term;
-import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.TimeUnit;
@@ -63,27 +61,28 @@ class ContractEntityTest {
 		var municipalityId = "1984";
 		var contractId = "2024-12345";
 		var id = 1L;
-		var indexTerms = List.of(
-			TermGroup.builder()
+		var termGroups = List.of(
+			TermGroupEntity.builder()
 				.withHeader("Some index terms")
+				.withType(TYPE_INDEX)
 				.withTerms(List.of(
-					Term.builder()
+					TermEmbeddable.builder()
 						.withName("Some index term")
 						.withDescription("Some description")
 						.build()))
-				.build());
-		var description = "description";
-		var additionalTerms = List.of(
-			TermGroup.builder()
+				.build(),
+			TermGroupEntity.builder()
 				.withHeader("Some additional terms")
+				.withType(TYPE_ADDITIONAL)
 				.withTerms(List.of(
-					Term.builder()
+					TermEmbeddable.builder()
 						.withName("Some additional term")
 						.withDescription("Some description")
 						.build()))
 				.build());
+		var description = "description";
 		var extraParameters = List.of(
-			ExtraParameterGroup.builder()
+			ExtraParameterGroupEntity.builder()
 				.withName("someExtraParameterGroup")
 				.withParameters(Map.of("someParameter", "someValue"))
 				.build());
@@ -103,7 +102,7 @@ class ContractEntityTest {
 		var objectIdentity = "objectIdentity";
 		var leaseDuration = 3;
 		var leaseDurationUnit = TimeUnit.MONTHS;
-		var fees = Fees.builder()
+		var fees = FeesEmbeddable.builder()
 			.withCurrency("SEK")
 			.withYearly(BigDecimal.valueOf(4350))
 			.withMonthly(BigDecimal.valueOf(375))
@@ -133,9 +132,8 @@ class ContractEntityTest {
 			.withVersion(version)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
-			.withIndexTerms(indexTerms)
+			.withTermGroups(termGroups)
 			.withDescription(description)
-			.withAdditionalTerms(additionalTerms)
 			.withExtraParameters(extraParameters)
 			.withStakeholders(stakeholders)
 			.withLeaseType(leaseType)
@@ -167,9 +165,8 @@ class ContractEntityTest {
 		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
+		assertThat(contract.getTermGroups()).isEqualTo(termGroups);
 		assertThat(contract.getDescription()).isEqualTo(description);
-		assertThat(contract.getAdditionalTerms()).isEqualTo(additionalTerms);
 		assertThat(contract.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(contract.getLeaseType()).isEqualTo(leaseType);
