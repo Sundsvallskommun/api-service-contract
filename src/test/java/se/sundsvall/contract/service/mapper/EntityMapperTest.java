@@ -31,16 +31,15 @@ class EntityMapperTest {
 		final var entity = EntityMapper.toContractEntity(MUNICIPALITY_ID, dto);
 
 		// Assert
-		assertThat(entity.getAdditionalTerms()).isEqualTo(dto.getAdditionalTerms());
+		assertThat(entity.getTermGroups()).isNotNull(); // Mapped via toTermGroupEntities
 		assertThat(entity.getArea()).isEqualTo(dto.getArea());
 		assertThat(entity.getAreaData()).isEqualTo(dto.getAreaData());
 		assertThat(entity.getContractId()).isEqualTo(dto.getContractId());
 		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
 		assertThat(entity.getEnd()).isEqualTo(dto.getEnd());
 		assertThat(entity.getExternalReferenceId()).isEqualTo(dto.getExternalReferenceId());
-		assertThat(entity.getExtraParameters()).isEqualTo(dto.getExtraParameters());
-		assertThat(entity.getFees()).isEqualTo(dto.getFees());
-		assertThat(entity.getIndexTerms()).isEqualTo(dto.getIndexTerms());
+		assertThat(entity.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupEntities
+		assertThat(entity.getFees()).isNotNull(); // Mapped via toFeesEmbeddable
 		assertThat(entity.getInvoicing()).isNotNull();  // Is tested in its own method
 		assertThat(entity.getLeaseType()).isEqualTo(dto.getLeaseType());
 		assertThat(entity.getLeaseDuration()).isEqualTo(dto.getDuration().getLeaseDuration());

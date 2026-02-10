@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.PersistenceException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,13 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
-@Import(ObjectMapper.class) // Needed since we inject an ObjectMapper in the ExtraParameterGroupConverter
 class ContractIdGeneratorTest {
 
 	@Mock

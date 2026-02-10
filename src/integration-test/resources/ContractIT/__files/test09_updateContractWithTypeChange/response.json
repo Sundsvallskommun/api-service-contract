@@ -76,11 +76,11 @@
 		"currency": "SEK",
 		"yearly": 2814.72,
 		"monthly": 234.56,
-		"total": 1172.8,
+		"total": 1172.80,
 		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
 		"indexYear": 2022,
 		"indexNumber": 3,
-		"indexationRate": 0.5,
+		"indexationRate": 0.50,
 		"additionalInformation": [
 			"anotherAdditionalInfo1",
 			"anotherAdditionalInfo2"

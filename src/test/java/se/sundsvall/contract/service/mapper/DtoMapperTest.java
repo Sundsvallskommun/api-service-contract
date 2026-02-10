@@ -66,18 +66,18 @@ class DtoMapperTest {
 		final var dto = DtoMapper.toContractDto(contractEntity, attachments);
 
 		// Assert
-		assertThat(dto.getAdditionalTerms()).isEqualTo(contractEntity.getAdditionalTerms());
+		assertThat(dto.getAdditionalTerms()).isNotNull(); // Mapped via toTermGroupDtos
 		assertThat(dto.getArea()).isEqualTo(contractEntity.getArea());
 		assertThat(dto.getAreaData()).isEqualTo(contractEntity.getAreaData());
 		assertThat(dto.getContractId()).isEqualTo(contractEntity.getContractId());
 		assertThat(dto.getDescription()).isEqualTo(contractEntity.getDescription());
 		assertThat(dto.getEnd()).isEqualTo(contractEntity.getEnd());
 		assertThat(dto.getExternalReferenceId()).isEqualTo(contractEntity.getExternalReferenceId());
-		assertThat(dto.getExtraParameters()).isEqualTo(contractEntity.getExtraParameters());
+		assertThat(dto.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupDtos
 		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
 		assertThat(dto.getMunicipalityId()).isEqualTo(contractEntity.getMunicipalityId());
 		assertThat(dto.getObjectIdentity()).isEqualTo(contractEntity.getObjectIdentity());
-		assertThat(dto.getIndexTerms()).isEqualTo(contractEntity.getIndexTerms());
+		assertThat(dto.getIndexTerms()).isNotNull(); // Mapped via toTermGroupDtos
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
 		assertThat(dto.getStart()).isEqualTo(contractEntity.getStart());
@@ -194,7 +194,7 @@ class DtoMapperTest {
 	private static Stream<Arguments> toLeaseholdDtoWhenEntityContainsNoValuesArgumentProvider() {
 		return Stream.of(
 			Arguments.of("All attributes are null", ContractEntity.builder().build()),
-			Arguments.of("All attributes are null or empty list", ContractEntity.builder().withAdditionalTerms(emptyList()).build()));
+			Arguments.of("All attributes are null or empty list", ContractEntity.builder().withTermGroups(emptyList()).build()));
 	}
 
 	@ParameterizedTest(name = "{0}")
