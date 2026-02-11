@@ -122,18 +122,18 @@ public class Differ {
 		public void primaryMatching(final Path path, final tools.jackson.databind.JsonNode value) {
 			// Intentionally empty
 		}
-	}
 
-	// Necessary in order to convert between tools.jackson.databind.JsonNode and com.fasterxml.jackson.databind.JsonNode
-	private JsonNode toFasterxmlJsonNode(tools.jackson.databind.JsonNode toolsNode) {
-		return Optional.ofNullable(toolsNode)
-			.map(node -> {
-				try {
-					return objectMapper.readTree(node.toString());
-				} catch (Exception e) {
-					throw new IllegalArgumentException("Failed to convert tools.jackson JsonNode", e);
-				}
-			})
-			.orElse(null);
+		// Necessary in order to convert between tools.jackson.databind.JsonNode and com.fasterxml.jackson.databind.JsonNode
+		private JsonNode toFasterxmlJsonNode(tools.jackson.databind.JsonNode toolsNode) {
+			return Optional.ofNullable(toolsNode)
+				.map(node -> {
+					try {
+						return objectMapper.readTree(node.toString());
+					} catch (Exception e) {
+						throw new IllegalArgumentException("Failed to convert tools.jackson JsonNode", e);
+					}
+				})
+				.orElse(null);
+		}
 	}
 }

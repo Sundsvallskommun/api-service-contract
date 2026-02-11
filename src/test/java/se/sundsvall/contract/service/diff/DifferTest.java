@@ -82,7 +82,11 @@ class DifferTest {
 	void testDiff_throwsException() throws Exception {
 		when(objectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("test") {});
 
-		assertThatThrownBy(() -> differ.diff(Term.builder().build(), Term.builder().build(), List.of()))
+		final var oldTerm = Term.builder().build();
+		final var newTerm = Term.builder().build();
+		final var excludedPaths = List.<String>of();
+
+		assertThatThrownBy(() -> differ.diff(oldTerm, newTerm, excludedPaths))
 			.isInstanceOf(IllegalStateException.class)
 			.hasMessage("Unable to diff");
 	}
