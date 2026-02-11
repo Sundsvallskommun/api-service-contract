@@ -7,9 +7,11 @@ import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
+import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.model.enums.ContractType;
@@ -213,6 +215,29 @@ class EntityMapperTest {
 		// Assert
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
+		assertThat(entity.getLeaseDurationUnit()).isEqualTo(TimeUnit.DAYS);
+		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(TimeUnit.DAYS);
+	}
+
+	@Test
+	void testToNoticeEmbeddableWithNullUnitDefaultsToDays() {
+
+		// Arrange
+		final var notices = List.of(
+			Notice.builder()
+				.withParty(Party.LESSEE)
+				.withPeriodOfNotice(3)
+				.withNoticeDate(LocalDate.now().plusMonths(3))
+				.build());
+
+		// Act
+		final var noticeEmbeddables = EntityMapper.toNoticeEmbeddables(notices);
+
+		// Assert
+		assertThat(noticeEmbeddables)
+			.hasSize(1)
+			.extracting(NoticeEmbeddable::getUnit)
+			.containsExactly(TimeUnit.DAYS);
 	}
 
 	@Test
