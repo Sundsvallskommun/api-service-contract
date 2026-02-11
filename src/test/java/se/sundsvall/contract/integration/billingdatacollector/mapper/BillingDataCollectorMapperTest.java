@@ -83,11 +83,11 @@ class BillingDataCollectorMapperTest {
 		when(contractEntityMock.getContractId()).thenReturn(randomId);
 
 		// Act
-		final var e = assertThrows(NullPointerException.class, () -> BillingDataCollectorMapper.toScheduledBilling(contractEntityMock));
+		final var e = assertThrows(IllegalStateException.class, () -> BillingDataCollectorMapper.toScheduledBilling(contractEntityMock));
 
 		// Assert and verify
-		assertThat(e.getClass()).isEqualTo(NullPointerException.class);
-		assertThat(e.getMessage()).isEqualTo("Interval type is not defined for errand with id %s".formatted(randomId));
+		assertThat(e.getClass()).isEqualTo(IllegalStateException.class);
+		assertThat(e.getMessage()).isEqualTo("Interval type is not defined for contract with id %s".formatted(randomId));
 		verify(contractEntityMock).getInvoicing();
 	}
 
@@ -100,11 +100,11 @@ class BillingDataCollectorMapperTest {
 		when(contractEntityMock.getInvoicing()).thenReturn(invoicingEmbeddableMock);
 
 		// Act
-		final var e = assertThrows(NullPointerException.class, () -> BillingDataCollectorMapper.toScheduledBilling(contractEntityMock));
+		final var e = assertThrows(IllegalStateException.class, () -> BillingDataCollectorMapper.toScheduledBilling(contractEntityMock));
 
 		// Assert and verify
-		assertThat(e.getClass()).isEqualTo(NullPointerException.class);
-		assertThat(e.getMessage()).isEqualTo("Interval type is not defined for errand with id %s".formatted(randomId));
+		assertThat(e.getClass()).isEqualTo(IllegalStateException.class);
+		assertThat(e.getMessage()).isEqualTo("Interval type is not defined for contract with id %s".formatted(randomId));
 		verify(contractEntityMock).getInvoicing();
 		verify(invoicingEmbeddableMock).getInvoiceInterval();
 	}

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.zalando.problem.Problem;
 
+/**
+ * Global exception handler providing custom error responses for specific exception types.
+ */
 @RestControllerAdvice
 public class ExceptionHandlerConfig {
 

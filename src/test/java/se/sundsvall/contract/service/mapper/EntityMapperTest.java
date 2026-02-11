@@ -130,13 +130,13 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void testToAddressEntity() {
+	void testToAddressEmbeddable() {
 
 		// Arrange
 		final var dto = createContract().getStakeholders().getFirst().getAddress();
 
 		// Act
-		final var entity = EntityMapper.toAddressEntity(dto);
+		final var entity = EntityMapper.toAddressEmbeddable(dto);
 
 		// Assert
 		assertThat(entity.getAttention()).isEqualTo(dto.getAttention());

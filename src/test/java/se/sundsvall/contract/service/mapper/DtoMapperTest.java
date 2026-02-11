@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.INCLUDE;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static se.sundsvall.contract.TestFactory.createAddressEntity;
+import static se.sundsvall.contract.TestFactory.createAddressEmbeddable;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 import static se.sundsvall.contract.TestFactory.createContractEntityBuilder;
@@ -305,7 +305,7 @@ class DtoMapperTest {
 	@Test
 	void testToAddressDto() {
 		// Arrange
-		final var entity = createAddressEntity();
+		final var entity = createAddressEmbeddable();
 
 		// Act
 		final var address = DtoMapper.toAddressDto(entity);

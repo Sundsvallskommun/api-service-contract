@@ -1,5 +1,5 @@
 {
-	"version": 2,
+	"version": 1,
 	"contractId": "${json-unit.regex}^\\d{4}-000\\d{2}$",
 	"description": "someDescription",
 	"externalReferenceId": "MK-TEST0008",

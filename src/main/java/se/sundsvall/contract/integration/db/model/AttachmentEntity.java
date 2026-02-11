@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.util.Arrays;
@@ -22,7 +23,8 @@ import se.sundsvall.contract.model.enums.AttachmentCategory;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-@Table(name = "attachment")
+@Table(name = "attachment",
+	indexes = @Index(name = "idx_attachment_municipality_id_contract_id", columnList = "municipality_id, contract_id"))
 public class AttachmentEntity {
 
 	@Id
@@ -35,7 +37,7 @@ public class AttachmentEntity {
 	@Column(name = "municipality_id", length = 4)
 	private String municipalityId;
 
-	@Column(name = "category")
+	@Column(name = "category", length = 64)
 	private AttachmentCategory category;
 
 	@Column(name = "filename")

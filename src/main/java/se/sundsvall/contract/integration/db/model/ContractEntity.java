@@ -16,7 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
@@ -40,9 +39,10 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Table(name = "contract",
-	uniqueConstraints = @UniqueConstraint(columnNames = {
+	uniqueConstraints = @UniqueConstraint(name = "uq_contract_contract_id_version", columnNames = {
 		"contract_id", "version"
-	}))
+	}),
+	indexes = @Index(name = "idx_contract_municipality_id_contract_id", columnList = "municipality_id, contract_id"))
 public class ContractEntity {
 
 	@Id
@@ -57,10 +57,10 @@ public class ContractEntity {
 	@Column(name = "version")
 	private int version = 1;
 
-	@Column(name = "type", updatable = false)
+	@Column(name = "type", length = 64, updatable = false)
 	private ContractType type;
 
-	@Column(name = "status")
+	@Column(name = "status", length = 64)
 	private Status status;
 
 	@Column(name = "municipality_id", length = 4)
@@ -77,9 +77,16 @@ public class ContractEntity {
 
 	@JoinTable(
 		name = "contract_stakeholder",
-		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id"))
-	@OneToMany(cascade = CascadeType.ALL)
+		uniqueConstraints = @UniqueConstraint(name = "uq_contract_stakeholder_stakeholder_id", columnNames = "stakeholder_id"),
+		joinColumns = @JoinColumn(
+			name = "contract_id",
+			referencedColumnName = "id",
+			foreignKey = @ForeignKey(name = "fk_contract_stakeholder_contract_id")),
+		inverseJoinColumns = @JoinColumn(
+			name = "stakeholder_id",
+			referencedColumnName = "id",
+			foreignKey = @ForeignKey(name = "fk_contract_stakeholder_stakeholder_id")))
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<StakeholderEntity> stakeholders;
 
 	@Column(name = "signed_by_witness")
@@ -91,7 +98,7 @@ public class ContractEntity {
 		foreignKey = @ForeignKey(name = "fk_extra_parameter_group_contract_id"))
 	private List<ExtraParameterGroupEntity> extraParameters;
 
-	@Column(name = "lease_type")
+	@Column(name = "lease_type", length = 64)
 	private LeaseType leaseType;
 
 	@Embedded
@@ -131,10 +138,10 @@ public class ContractEntity {
 	@Embedded
 	private InvoicingEmbeddable invoicing;
 
-	@Column(name = "start")
+	@Column(name = "start_date")
 	private LocalDate start;
 
-	@Column(name = "end")
+	@Column(name = "end_date")
 	private LocalDate end;
 
 	@Column(name = "auto_extend")
@@ -153,7 +160,6 @@ public class ContractEntity {
 	private FeatureCollection areaData;
 
 	@PrePersist
-	@PreUpdate
 	public void prePersist() {
 		this.version++;
 	}

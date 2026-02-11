@@ -169,9 +169,7 @@ class ContractResource {
 		@Parameter(description = "Old version") @Positive @RequestParam(required = false) final Integer oldVersion,
 		@Parameter(description = "New version") @Positive @RequestParam(required = false) final Integer newVersion) {
 
-		final var oldVersionNull = oldVersion == null;
-		final var newVersionNull = newVersion == null;
-		if (oldVersionNull ^ newVersionNull) {
+		if ((oldVersion == null) != (newVersion == null)) {
 			throw Problem.valueOf(BAD_REQUEST, "Either both or none of 'oldVersion' and 'newVersion' must be set");
 		}
 

@@ -31,7 +31,7 @@ public class StakeholderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 64)
 	private StakeholderType type;
 
 	@Column(name = "roles")
@@ -59,7 +59,7 @@ public class StakeholderEntity {
 	private String emailAddress;
 
 	@Embedded
-	private AddressEntity address;
+	private AddressEmbeddable address;
 
 	@OneToMany(mappedBy = "stakeholderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderColumn(name = "parameter_order", nullable = false, columnDefinition = "integer default 0")

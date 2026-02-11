@@ -4,6 +4,9 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
+/**
+ * Interface for pluggable business rules that are applied to contracts after persistence.
+ */
 public interface BusinessruleInterface {
 
 	/**
@@ -15,7 +18,6 @@ public interface BusinessruleInterface {
 	boolean appliesTo(ContractEntity contractEntity);
 
 	/**
-	 * /**
 	 * Method for applying business rule to the provided contract entity
 	 *
 	 * @param  businessruleParameters parameter object with data needed to applying the business rule

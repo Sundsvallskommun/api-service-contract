@@ -17,11 +17,9 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
@@ -222,7 +220,7 @@ class ContractIT extends AbstractAppTest {
 	 */
 	@Test
 	void test08_createContractForPurchaseAgreement() {
-		final var createCall = setupCall()
+		final var location = setupCall()
 			.withServicePath(fromPath(PATH)
 				.build(MUNICIPALITY_ID)
 				.toString())
@@ -230,9 +228,8 @@ class ContractIT extends AbstractAppTest {
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
-			.sendRequest();
-
-		final var location = createCall.getResponseHeaders().getLocation();
+			.sendRequest()
+			.getResponseHeaders().getLocation();
 
 		assertThat(location).isNotNull();
 		assertThat(location.getPath()).isNotNull();

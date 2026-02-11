@@ -8,6 +8,9 @@ import se.sundsvall.dept44.configuration.feign.FeignConfiguration;
 import se.sundsvall.dept44.configuration.feign.FeignMultiCustomizer;
 import se.sundsvall.dept44.configuration.feign.decoder.ProblemErrorDecoder;
 
+/**
+ * Feign client configuration for the BillingDataCollector integration.
+ */
 @Import(FeignConfiguration.class)
 public class BillingDataCollectorConfiguration {
 

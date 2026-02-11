@@ -9,6 +9,9 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.model.enums.IntervalType;
 
+/**
+ * Mapper for converting {@link ContractEntity} objects to BillingDataCollector API objects.
+ */
 public final class BillingDataCollectorMapper {
 	private static final Set<Integer> SET_OF_MONTH = Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 	private static final Set<Integer> SET_OF_QUARTER = Set.of(3, 6, 9, 12);
@@ -19,11 +22,17 @@ public final class BillingDataCollectorMapper {
 		// Prevent instantiation
 	}
 
+	/**
+	 * Converts a {@link ContractEntity} to a {@link ScheduledBilling} for the BillingDataCollector API.
+	 *
+	 * @param  contractEntity the contract entity to convert
+	 * @return                the scheduled billing object with billing months derived from the contract's invoice interval
+	 */
 	public static ScheduledBilling toScheduledBilling(ContractEntity contractEntity) {
 		final var billingMonths = ofNullable(contractEntity.getInvoicing())
 			.map(InvoicingEmbeddable::getInvoiceInterval)
 			.map(BillingDataCollectorMapper::calculateBillingMonths)
-			.orElseThrow(() -> new NullPointerException("Interval type is not defined for errand with id %s".formatted(contractEntity.getContractId()))); // This should not happen as contracts without it shouldn't get this far, but just to be safe)
+			.orElseThrow(() -> new IllegalStateException("Interval type is not defined for contract with id %s".formatted(contractEntity.getContractId())));
 
 		final var scheduledBilling = new ScheduledBilling();
 

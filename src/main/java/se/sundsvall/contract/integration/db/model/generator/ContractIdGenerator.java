@@ -10,11 +10,24 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
 
+/**
+ * Hibernate id generator that produces contract ids in the format {@code YYYY-NNNNN}
+ * using a database sequence.
+ */
 public class ContractIdGenerator implements BeforeExecutionGenerator {
 
 	private static final long serialVersionUID = -1562799557423722146L;
 	private static final String GENERATE_ID_QUERY = "SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))";
 
+	/**
+	 * Generates a contract id from the database sequence, or returns the current value if already set.
+	 *
+	 * @param  session      the Hibernate session
+	 * @param  owner        the entity instance
+	 * @param  currentValue the current id value, if any
+	 * @param  eventType    the event type triggering generation
+	 * @return              the generated or existing contract id
+	 */
 	@Override
 	public Object generate(final SharedSessionContractImplementor session, final Object owner, final Object currentValue, final EventType eventType) {
 		// Don't update if already set and non-blank
@@ -24,8 +37,8 @@ public class ContractIdGenerator implements BeforeExecutionGenerator {
 
 		final var statementPreparer = session.getJdbcCoordinator().getStatementPreparer();
 
-		try (var ps = statementPreparer.prepareStatement(GENERATE_ID_QUERY)) {
-			final var resultSet = ps.executeQuery();
+		try (var ps = statementPreparer.prepareStatement(GENERATE_ID_QUERY);
+			var resultSet = ps.executeQuery()) {
 
 			if (!resultSet.next()) {
 				throw new SQLException("Unable to generate contract id");
@@ -37,6 +50,11 @@ public class ContractIdGenerator implements BeforeExecutionGenerator {
 		}
 	}
 
+	/**
+	 * Returns the event types that trigger id generation.
+	 *
+	 * @return an enum set containing only the {@code INSERT} event type
+	 */
 	@Override
 	public EnumSet<EventType> getEventTypes() {
 		return INSERT_ONLY;

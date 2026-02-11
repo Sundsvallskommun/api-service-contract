@@ -116,7 +116,7 @@ class BillableAgreementRuleTest {
 
 		// Assert and verify
 		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
-		assertThat(e.getCause().getClass()).isEqualTo(NullPointerException.class);
+		assertThat(e.getCause().getClass()).isEqualTo(IllegalArgumentException.class);
 		assertThat(e.getCause().getMessage()).isEqualTo("Action can not be null");
 		verify(contractEntityMock).getContractId();
 	}
@@ -213,7 +213,7 @@ class BillableAgreementRuleTest {
 		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
 
 		// Assert
-		assertThat(e.getCause().getClass()).isEqualTo(NullPointerException.class);
+		assertThat(e.getCause().getClass()).isEqualTo(IllegalArgumentException.class);
 		assertThat(e.getCause().getMessage()).isEqualTo("Action can not be null");
 		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
 	}

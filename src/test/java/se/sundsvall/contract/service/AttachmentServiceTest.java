@@ -72,7 +72,7 @@ class AttachmentServiceTest {
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, attachment))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Contract with contractId 2024-12345 is not present within municipality 1984.");
+			.withMessage("Contract with contractId '2024-12345' is not present within municipality '1984'.");
 
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(mockContractRepository);
@@ -103,7 +103,7 @@ class AttachmentServiceTest {
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
+			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
@@ -119,7 +119,7 @@ class AttachmentServiceTest {
 
 		var incomingAttachment = TestFactory.createAttachment();
 		var oldAttachmentEntity = TestFactory.createAttachmentEntity();
-		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.of(oldAttachmentEntity));
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(oldAttachmentEntity));
 		when(mockAttachmentRepository.save(any(AttachmentEntity.class))).thenReturn(AttachmentEntity.builder()
 			.withContractId("2024-12345")
 			.build());
@@ -128,7 +128,7 @@ class AttachmentServiceTest {
 		attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, incomingAttachment);
 
 		// Assert
-		verify(mockAttachmentRepository).findById(ENTITY_ID);
+		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verify(mockAttachmentRepository).save(argumentCaptor.capture());
 
 		var savedEntity = argumentCaptor.getValue();
@@ -148,15 +148,15 @@ class AttachmentServiceTest {
 	void testUpdateAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
 		final var attachment = Attachment.builder().build();
-		when(mockAttachmentRepository.findById(ENTITY_ID)).thenReturn(Optional.empty());
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, attachment))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
+			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
-		verify(mockAttachmentRepository).findById(ENTITY_ID);
+		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}
@@ -187,7 +187,7 @@ class AttachmentServiceTest {
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
 			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
-			.withMessage("Contract with contractId 2024-12345 and attachmentId 1 is not present within municipality 1984.");
+			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
 		verifyNoMoreInteractions(mockAttachmentRepository);
 	}

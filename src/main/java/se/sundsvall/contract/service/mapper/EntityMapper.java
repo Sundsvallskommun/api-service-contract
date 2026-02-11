@@ -1,6 +1,7 @@
 package se.sundsvall.contract.service.mapper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
+import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
@@ -23,7 +25,7 @@ import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
-import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
@@ -39,8 +41,10 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
-import se.sundsvall.contract.model.enums.TimeUnit;
 
+/**
+ * Mapper for converting API model objects to JPA entity objects.
+ */
 public final class EntityMapper {
 
 	private EntityMapper() {}
@@ -51,6 +55,13 @@ public final class EntityMapper {
 		}
 	}
 
+	/**
+	 * Converts a {@link Contract} to a {@link ContractEntity}.
+	 *
+	 * @param  municipalityId the municipality ID to set on the entity
+	 * @param  contract       the contract to convert
+	 * @return                the converted entity
+	 */
 	public static ContractEntity toContractEntity(final String municipalityId, final Contract contract) {
 		return ContractEntity.builder()
 			.withTermGroups(toTermGroupEntities(contract.getIndexTerms(), contract.getAdditionalTerms()))
@@ -66,9 +77,9 @@ public final class EntityMapper {
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
 			.withLeaseType(contract.getLeaseType())
 			.withLeaseDuration(ofNullable(contract.getDuration()).map(Duration::getLeaseDuration).orElse(null))
-			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).orElse(TimeUnit.DAYS))
+			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).orElse(null))
 			.withLeaseExtension(ofNullable(contract.getExtension()).map(Extension::getLeaseExtension).orElse(null))
-			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).orElse(TimeUnit.DAYS))
+			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).orElse(null))
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
@@ -88,7 +99,7 @@ public final class EntityMapper {
 			.map(notices -> notices.stream()
 				.map(EntityMapper::toNoticeEmbeddable)
 				.collect(toCollection(ArrayList::new)))
-			.orElse(null);
+			.orElse(new ArrayList<>());
 	}
 
 	static NoticeEmbeddable toNoticeEmbeddable(final Notice notice) {
@@ -126,7 +137,7 @@ public final class EntityMapper {
 	static StakeholderEntity toStakeholderEntity(final Stakeholder fromStakeholder) {
 		return ofNullable(fromStakeholder)
 			.map(stakeholder -> StakeholderEntity.builder()
-				.withAddress(toAddressEntity(stakeholder.getAddress()))
+				.withAddress(toAddressEmbeddable(stakeholder.getAddress()))
 				.withEmailAddress(stakeholder.getEmailAddress())
 				.withFirstName(stakeholder.getFirstName())
 				.withLastName(stakeholder.getLastName())
@@ -134,7 +145,7 @@ public final class EntityMapper {
 				.withOrganizationNumber(stakeholder.getOrganizationNumber())
 				.withPartyId(stakeholder.getPartyId())
 				.withPhoneNumber(stakeholder.getPhoneNumber())
-				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).collect(toCollection(ArrayList::new)))
+				.withRoles(ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream().filter(Objects::nonNull).collect(toCollection(ArrayList::new)))
 				.withType(stakeholder.getType())
 				.build())
 			.orElse(null);
@@ -150,9 +161,9 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	static AddressEntity toAddressEntity(final Address fromAddress) {
+	static AddressEmbeddable toAddressEmbeddable(final Address fromAddress) {
 		return ofNullable(fromAddress)
-			.map(address -> AddressEntity.builder()
+			.map(address -> AddressEmbeddable.builder()
 				.withAttention(address.getAttention())
 				.withCountry(address.getCountry())
 				.withPostalCode(address.getPostalCode())
@@ -164,6 +175,14 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
+	/**
+	 * Converts an {@link Attachment} to an {@link AttachmentEntity}.
+	 *
+	 * @param  municipalityId the municipality ID to set on the entity
+	 * @param  contractId     the contract ID to set on the entity
+	 * @param  attachment     the attachment to convert
+	 * @return                the converted entity
+	 */
 	public static AttachmentEntity toAttachmentEntity(final String municipalityId, final String contractId, final Attachment attachment) {
 		return AttachmentEntity.builder()
 			.withCategory(attachment.getMetadata().getCategory())
@@ -176,20 +195,40 @@ public final class EntityMapper {
 			.build();
 	}
 
+	/**
+	 * Updates an existing {@link AttachmentEntity} with non-null values from the given {@link Attachment}.
+	 *
+	 * @param  entity     the entity to update
+	 * @param  attachment the attachment containing updated values
+	 * @return            the updated entity
+	 */
 	public static AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final Attachment attachment) {
-		setPropertyUnlessNull(attachment.getMetadata().getCategory(), entity::setCategory);
-		setPropertyUnlessNull(attachment.getMetadata().getFilename(), entity::setFilename);
-		setPropertyUnlessNull(attachment.getMetadata().getMimeType(), entity::setMimeType);
-		setPropertyUnlessNull(attachment.getMetadata().getNote(), entity::setNote);
-		setPropertyUnlessNull(attachment.getAttachmentData().getContent().getBytes(UTF_8), entity::setContent);
+		ofNullable(attachment.getMetadata()).ifPresent(metadata -> {
+			setPropertyUnlessNull(metadata.getCategory(), entity::setCategory);
+			setPropertyUnlessNull(metadata.getFilename(), entity::setFilename);
+			setPropertyUnlessNull(metadata.getMimeType(), entity::setMimeType);
+			setPropertyUnlessNull(metadata.getNote(), entity::setNote);
+		});
+		ofNullable(attachment.getAttachmentData())
+			.map(AttachmentData::getContent)
+			.map(content -> content.getBytes(UTF_8))
+			.ifPresent(entity::setContent);
 
 		return entity;
 	}
 
+	/**
+	 * Creates a new {@link ContractEntity} as a new version of an existing contract.
+	 *
+	 * @param  municipalityId the municipality ID to set on the entity
+	 * @param  oldContract    the existing contract entity to carry over version and contract ID from
+	 * @param  contract       the contract data for the new version
+	 * @return                the new contract entity with preserved version and contract ID
+	 */
 	public static ContractEntity createNewContractEntity(final String municipalityId, final ContractEntity oldContract, final Contract contract) {
 		final var contractEntity = toContractEntity(municipalityId, contract);
 
-		// Set the version, the PrePersist / PreUpdate will take care of upping the version by one.
+		// Set the version, the PrePersist will take care of upping the version by one.
 		contractEntity.setVersion(oldContract.getVersion());
 		// Set the contractId since it will be generated otherwise.
 		contractEntity.setContractId(oldContract.getContractId());
@@ -202,7 +241,7 @@ public final class EntityMapper {
 			.map(propertyDesignations -> propertyDesignations.stream()
 				.map(EntityMapper::toPropertyDesignationEmbeddable)
 				.collect(toCollection(ArrayList::new)))
-			.orElse(null);
+			.orElse(new ArrayList<>());
 	}
 
 	private static PropertyDesignationEmbeddable toPropertyDesignationEmbeddable(PropertyDesignation fromPropertyDesignation) {
@@ -239,9 +278,8 @@ public final class EntityMapper {
 			.map(terms -> terms.stream().map(t -> toTermGroupEntity(t, TYPE_ADDITIONAL)))
 			.orElse(Stream.empty());
 
-		final var result = Stream.concat(indexEntities, additionalEntities)
+		return Stream.concat(indexEntities, additionalEntities)
 			.collect(toCollection(ArrayList::new));
-		return result.isEmpty() ? null : result;
 	}
 
 	static TermGroupEntity toTermGroupEntity(final TermGroup termGroup, final String type) {
@@ -259,7 +297,7 @@ public final class EntityMapper {
 			.map(t -> t.stream()
 				.map(EntityMapper::toTermEmbeddable)
 				.collect(toCollection(ArrayList::new)))
-			.orElse(null);
+			.orElse(new ArrayList<>());
 	}
 
 	static TermEmbeddable toTermEmbeddable(final Term term) {
@@ -276,7 +314,7 @@ public final class EntityMapper {
 			.map(groups -> groups.stream()
 				.map(EntityMapper::toExtraParameterGroupEntity)
 				.collect(toCollection(ArrayList::new)))
-			.orElse(null);
+			.orElse(new ArrayList<>());
 	}
 
 	static ExtraParameterGroupEntity toExtraParameterGroupEntity(final ExtraParameterGroup extraParameterGroup) {

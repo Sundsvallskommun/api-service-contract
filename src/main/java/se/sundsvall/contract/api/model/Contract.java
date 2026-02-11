@@ -55,6 +55,7 @@ public class Contract {
 	@NotNull
 	private ContractType type;
 
+	@Valid
 	@Schema(description = "Type of leasehold")
 	private Leasehold leasehold;
 
@@ -62,19 +63,20 @@ public class Contract {
 	private List<AttachmentMetadata> attachmentMetaData;
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
-	private List<TermGroup> additionalTerms;
+	private List<@Valid TermGroup> additionalTerms;
 
+	@Valid
 	@Schema(description = "Extra parameters")
-	private List<ExtraParameterGroup> extraParameters;
+	private List<@Valid ExtraParameterGroup> extraParameters;
 
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
-	private List<TermGroup> indexTerms;
+	private List<@Valid TermGroup> indexTerms;
 
 	@ArraySchema(schema = @Schema(description = "Property designations"))
-	private List<PropertyDesignation> propertyDesignations;
+	private List<@Valid PropertyDesignation> propertyDesignations;
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
-	private List<Stakeholder> stakeholders;
+	private List<@Valid Stakeholder> stakeholders;
 
 	@Valid
 	private Duration duration;

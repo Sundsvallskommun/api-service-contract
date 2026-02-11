@@ -1,6 +1,6 @@
 INSERT INTO contract (id, contract_id, version, status, municipality_id, description,
-                      signed_by_witness, area, auto_extend, end, lease_type, lease_duration,
-                      lease_extension, lease_duration_unit, lease_extension_unit, start, external_reference_id, invoice_interval, invoiced_in,
+                      signed_by_witness, area, auto_extend, end_date, lease_type, lease_duration,
+                      lease_extension, lease_duration_unit, lease_extension_unit, start_date, external_reference_id, invoice_interval, invoiced_in,
                       leasehold_description, leasehold_type, object_identity,
                       fee_currency, fee_yearly, fee_monthly, fee_total, fee_total_as_text, fee_index_type, fee_index_year, fee_index_number, fee_indexation_rate,
                       type)

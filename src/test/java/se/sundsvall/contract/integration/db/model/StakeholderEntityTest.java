@@ -38,7 +38,7 @@ class StakeholderEntityTest {
 		final var partyId = "40f14de9-815d-44a5-a34d-b1d38b628e07";
 		final var phoneNumber = "0701231212";
 		final var emailAddress = "test.testorsson@test.se";
-		final var address = AddressEntity.builder().build();
+		final var address = AddressEmbeddable.builder().build();
 		final var parameters = List.of(StakeholderParameterEntity.builder().build());
 
 		final var stakeholder = StakeholderEntity.builder()

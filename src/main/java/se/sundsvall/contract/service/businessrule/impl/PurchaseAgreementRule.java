@@ -12,6 +12,10 @@ import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
+/**
+ * Business rule for purchase agreements that clears lease-specific attributes
+ * not applicable to this contract type.
+ */
 @Service
 public class PurchaseAgreementRule implements BusinessruleInterface {
 	private final Logger logger;
@@ -20,11 +24,21 @@ public class PurchaseAgreementRule implements BusinessruleInterface {
 		logger = LoggerFactory.getLogger(this.getClass());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Returns true if the contract is of type {@code PURCHASE_AGREEMENT}.
+	 */
 	@Override
 	public boolean appliesTo(ContractEntity contractEntity) {
 		return Objects.equals(PURCHASE_AGREEMENT, contractEntity.getType());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Resets lease duration and extension attributes to null since they are not applicable for purchase agreements.
+	 */
 	@Override
 	public void apply(BusinessruleParameters parameters) throws BusinessruleException {
 		try {

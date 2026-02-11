@@ -8,9 +8,18 @@ import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.LeaseType;
 
+/**
+ * JPA converter for {@link LeaseType}.
+ */
 @Converter(autoApply = true)
 public class LeaseTypeConverter implements AttributeConverter<LeaseType, String> {
 
+	/**
+	 * Converts a {@link LeaseType} to its database string representation.
+	 *
+	 * @param  attribute the enum value to convert
+	 * @return           the string representation, or null if the attribute is null
+	 */
 	@Override
 	public String convertToDatabaseColumn(LeaseType attribute) {
 		return ofNullable(attribute)
@@ -18,6 +27,12 @@ public class LeaseTypeConverter implements AttributeConverter<LeaseType, String>
 			.orElse(null);
 	}
 
+	/**
+	 * Converts a database string to a {@link LeaseType} enum value.
+	 *
+	 * @param  dbData the database string to convert
+	 * @return        the corresponding enum value, or null if the string is blank
+	 */
 	@Override
 	public LeaseType convertToEntityAttribute(String dbData) {
 		try {
@@ -25,8 +40,8 @@ public class LeaseTypeConverter implements AttributeConverter<LeaseType, String>
 				.filter(StringUtils::isNotBlank)
 				.map(LeaseType::valueOf)
 				.orElse(null);
-		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + LeaseType.class, e);
+		} catch (IllegalArgumentException e) {
+			throw new PersistenceException("Unable to deserialize %s to %s".formatted(dbData, LeaseType.class), e);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.db.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,9 @@ import se.sundsvall.contract.model.enums.InvoicedIn;
 @Builder(setterPrefix = "with")
 public class InvoicingEmbeddable {
 
+	@Column(name = "invoice_interval", length = 64)
 	private IntervalType invoiceInterval;
 
+	@Column(name = "invoiced_in", length = 64)
 	private InvoicedIn invoicedIn;
 }
