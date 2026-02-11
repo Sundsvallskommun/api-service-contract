@@ -7,6 +7,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
 import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
 
 import java.util.ArrayList;
@@ -77,9 +78,9 @@ public final class EntityMapper {
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
 			.withLeaseType(contract.getLeaseType())
 			.withLeaseDuration(ofNullable(contract.getDuration()).map(Duration::getLeaseDuration).orElse(null))
-			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).orElse(null))
+			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).orElse(DAYS))
 			.withLeaseExtension(ofNullable(contract.getExtension()).map(Extension::getLeaseExtension).orElse(null))
-			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).orElse(null))
+			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).orElse(DAYS))
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
@@ -107,7 +108,7 @@ public final class EntityMapper {
 			.map(object -> NoticeEmbeddable.builder()
 				.withPeriodOfNotice(object.getPeriodOfNotice())
 				.withParty(notice.getParty())
-				.withUnit(notice.getUnit())
+				.withUnit(ofNullable(notice.getUnit()).orElse(DAYS))
 				.withNoticeDate(notice.getNoticeDate())
 				.build())
 			.orElse(null);
