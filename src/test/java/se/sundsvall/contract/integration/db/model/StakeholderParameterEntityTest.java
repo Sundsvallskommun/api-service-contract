@@ -37,10 +37,7 @@ class StakeholderParameterEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(StakeholderParameterEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("id")
-			.satisfies(entity -> assertThat(entity.getId()).isZero());
-
-		assertThat(new StakeholderParameterEntity()).hasAllNullFieldsOrPropertiesExcept("id")
-			.satisfies(entity -> assertThat(entity.getId()).isZero());
+		assertThat(StakeholderParameterEntity.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new StakeholderParameterEntity()).hasAllNullFieldsOrProperties();
 	}
 }

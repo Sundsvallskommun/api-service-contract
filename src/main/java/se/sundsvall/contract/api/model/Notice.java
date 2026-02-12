@@ -19,6 +19,7 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 public class Notice {
 
 	@Schema(description = "The party type", examples = "LESSOR")
+	@NotNull
 	private Party party;
 
 	@Schema(description = "The period of notice", examples = "3")

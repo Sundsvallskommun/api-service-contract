@@ -59,7 +59,7 @@ class ContractRepositoryTest {
 
 	@Test
 	void testDeleteAllByMunicipalityIdAndContractId() {
-		attachmentRepository.deleteAllByContractId("2024-12345");
+		attachmentRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
 
 		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isPresent();
 		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 2)).isPresent();

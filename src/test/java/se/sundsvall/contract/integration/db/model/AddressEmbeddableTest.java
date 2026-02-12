@@ -12,11 +12,11 @@ import static se.sundsvall.contract.model.enums.AddressType.POSTAL_ADDRESS;
 
 import org.junit.jupiter.api.Test;
 
-class AddressEntityTest {
+class AddressEmbeddableTest {
 
 	@Test
 	void testBean() {
-		assertThat(AddressEntity.class, allOf(
+		assertThat(AddressEmbeddable.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -34,7 +34,7 @@ class AddressEntityTest {
 		final var attention = "Test Testorsson";
 		final var careOf = "c/o Test Testorsson";
 
-		final var address = AddressEntity.builder()
+		final var address = AddressEmbeddable.builder()
 			.withType(type)
 			.withStreetAddress(streetAddress)
 			.withPostalCode(postalCode)
@@ -56,6 +56,6 @@ class AddressEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(AddressEntity.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(AddressEmbeddable.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }

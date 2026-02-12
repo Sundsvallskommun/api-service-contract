@@ -2,7 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +14,9 @@ import se.sundsvall.contract.model.enums.AddressType;
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@Table(name = "address")
-public class AddressEntity {
+public class AddressEmbeddable {
 
-	@Column(name = "address_type")
+	@Column(name = "address_type", length = 64)
 	private AddressType type;
 
 	@Column(name = "street_address")

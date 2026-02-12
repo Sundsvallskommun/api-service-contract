@@ -1,9 +1,11 @@
 package se.sundsvall.contract.service.diff;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static se.sundsvall.contract.model.Change.Type.ADDITION;
 import static se.sundsvall.contract.model.Change.Type.MODIFICATION;
 import static se.sundsvall.contract.model.Change.Type.REMOVAL;
@@ -74,6 +76,19 @@ class DifferTest {
 			assertThat(change.oldValue()).isEqualTo(testCase.oldValue);
 			assertThat(change.newValue()).isEqualTo(testCase.newValue);
 		});
+	}
+
+	@Test
+	void testDiff_throwsException() throws Exception {
+		when(objectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("test") {});
+
+		final var oldTerm = Term.builder().build();
+		final var newTerm = Term.builder().build();
+		final var excludedPaths = List.<String>of();
+
+		assertThatThrownBy(() -> differ.diff(oldTerm, newTerm, excludedPaths))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessage("Unable to diff");
 	}
 
 	@Test

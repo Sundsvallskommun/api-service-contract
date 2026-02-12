@@ -1,7 +1,9 @@
 package se.sundsvall.contract.service.mapper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
 import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
@@ -10,6 +12,7 @@ import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
 import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import se.sundsvall.contract.api.model.Address;
@@ -24,7 +27,7 @@ import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
-import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
@@ -41,10 +44,20 @@ import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
+/**
+ * Mapper for converting JPA entity objects to API model (DTO) objects.
+ */
 public final class DtoMapper {
 
 	private DtoMapper() {}
 
+	/**
+	 * Converts a {@link ContractEntity} and its associated attachments to a {@link Contract} DTO.
+	 *
+	 * @param  contractEntity     the contract entity to convert
+	 * @param  attachmentEntities the attachment entities associated with the contract
+	 * @return                    the converted contract DTO
+	 */
 	public static Contract toContractDto(final ContractEntity contractEntity, final List<AttachmentEntity> attachmentEntities) {
 		return Contract.builder()
 			.withAdditionalTerms(toTermGroupDtos(filterByType(contractEntity.getTermGroups(), TYPE_ADDITIONAL)))
@@ -105,8 +118,8 @@ public final class DtoMapper {
 		return ofNullable(noticeEmbeddableList)
 			.map(noticeEmbeddables -> noticeEmbeddables.stream()
 				.map(DtoMapper::toNoticeDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static Notice toNoticeDto(final NoticeEmbeddable noticeEmbeddable) {
@@ -150,10 +163,16 @@ public final class DtoMapper {
 		return ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
 				.map(DtoMapper::toAttachmentMetaDataDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
+	/**
+	 * Converts an {@link AttachmentEntity} to an {@link AttachmentMetadata} DTO.
+	 *
+	 * @param  attachmentEntity the entity to convert
+	 * @return                  the converted metadata DTO, or null if input is null
+	 */
 	public static AttachmentMetadata toAttachmentMetaDataDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> AttachmentMetadata.builder()
@@ -181,8 +200,8 @@ public final class DtoMapper {
 		return ofNullable(stakeholders)
 			.map(stakeholderEntities -> stakeholderEntities.stream()
 				.map(DtoMapper::toStakeholderDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static Stakeholder toStakeholderDto(final StakeholderEntity stakeholderEntity) {
@@ -196,14 +215,14 @@ public final class DtoMapper {
 				.withOrganizationNumber(stakeholder.getOrganizationNumber())
 				.withPartyId(stakeholder.getPartyId())
 				.withPhoneNumber(stakeholder.getPhoneNumber())
-				.withRoles(stakeholder.getRoles().stream().filter(Objects::nonNull).toList())
+				.withRoles(ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream().filter(Objects::nonNull).collect(toCollection(ArrayList::new)))
 				.withType(stakeholder.getType())
 				.withParameters(toParameterList(stakeholderEntity.getParameters()))
 				.build())
 			.orElse(null);
 	}
 
-	static Address toAddressDto(final AddressEntity addressEntity) {
+	static Address toAddressDto(final AddressEmbeddable addressEntity) {
 		return ofNullable(addressEntity)
 			.map(address -> Address.builder()
 				.withAttention(address.getAttention())
@@ -217,6 +236,12 @@ public final class DtoMapper {
 			.orElse(null);
 	}
 
+	/**
+	 * Converts an {@link AttachmentEntity} to an {@link Attachment} DTO, including content data.
+	 *
+	 * @param  attachmentEntity the entity to convert
+	 * @return                  the converted DTO with attachment data and metadata, or null if input is null
+	 */
 	public static Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> Attachment.builder()
@@ -238,8 +263,8 @@ public final class DtoMapper {
 		return ofNullable(propertyDesignationEmbeddableList)
 			.map(propertyDesignations -> propertyDesignations.stream()
 				.map(DtoMapper::toPropertyDesignationDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static PropertyDesignation toPropertyDesignationDto(PropertyDesignationEmbeddable propertyDesignationEmbeddable) {
@@ -255,16 +280,16 @@ public final class DtoMapper {
 		return ofNullable(termGroups)
 			.map(groups -> groups.stream()
 				.filter(group -> type.equals(group.getType()))
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static List<TermGroup> toTermGroupDtos(final List<TermGroupEntity> termGroupEntities) {
 		return ofNullable(termGroupEntities)
 			.map(groups -> groups.stream()
 				.map(DtoMapper::toTermGroupDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static TermGroup toTermGroupDto(final TermGroupEntity termGroupEntity) {
@@ -280,8 +305,8 @@ public final class DtoMapper {
 		return ofNullable(termEmbeddables)
 			.map(terms -> terms.stream()
 				.map(DtoMapper::toTermDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static Term toTermDto(final TermEmbeddable termEmbeddable) {
@@ -297,8 +322,8 @@ public final class DtoMapper {
 		return ofNullable(extraParameterGroupEntities)
 			.map(groups -> groups.stream()
 				.map(DtoMapper::toExtraParameterGroupDto)
-				.toList())
-			.orElse(null);
+				.collect(toCollection(ArrayList::new)))
+			.orElse(new ArrayList<>());
 	}
 
 	static ExtraParameterGroup toExtraParameterGroupDto(final ExtraParameterGroupEntity extraParameterGroupEntity) {
@@ -310,6 +335,13 @@ public final class DtoMapper {
 			.orElse(null);
 	}
 
+	/**
+	 * Creates a {@link BusinessruleParameters} from a {@link ContractEntity} and an {@link Action}.
+	 *
+	 * @param  contractEntity the contract entity
+	 * @param  action         the action to associate with the parameters
+	 * @return                the business rule parameters
+	 */
 	public static BusinessruleParameters toBusinessruleParameters(ContractEntity contractEntity, Action action) {
 		return new BusinessruleParameters(contractEntity, action);
 	}

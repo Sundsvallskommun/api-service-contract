@@ -8,9 +8,18 @@ import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.AddressType;
 
+/**
+ * JPA converter for {@link AddressType}.
+ */
 @Converter(autoApply = true)
 public class AddressTypeConverter implements AttributeConverter<AddressType, String> {
 
+	/**
+	 * Converts a {@link AddressType} to its database string representation.
+	 *
+	 * @param  attribute the enum value to convert
+	 * @return           the string representation, or null if the attribute is null
+	 */
 	@Override
 	public String convertToDatabaseColumn(AddressType attribute) {
 		return ofNullable(attribute)
@@ -18,6 +27,12 @@ public class AddressTypeConverter implements AttributeConverter<AddressType, Str
 			.orElse(null);
 	}
 
+	/**
+	 * Converts a database string to a {@link AddressType} enum value.
+	 *
+	 * @param  dbData the database string to convert
+	 * @return        the corresponding enum value, or null if the string is blank
+	 */
 	@Override
 	public AddressType convertToEntityAttribute(String dbData) {
 		try {
@@ -25,8 +40,8 @@ public class AddressTypeConverter implements AttributeConverter<AddressType, Str
 				.filter(StringUtils::isNotBlank)
 				.map(AddressType::valueOf)
 				.orElse(null);
-		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + AddressType.class, e);
+		} catch (IllegalArgumentException e) {
+			throw new PersistenceException("Unable to deserialize %s to %s".formatted(dbData, AddressType.class), e);
 		}
 	}
 }

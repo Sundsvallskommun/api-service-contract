@@ -15,6 +15,10 @@ import se.sundsvall.contract.service.businessrule.configuration.BillableAgreemen
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
+/**
+ * Business rule for managing billing cycles in the BillingDataCollector service
+ * when contracts are created, updated or deleted.
+ */
 @Service
 public class BillableAgreementRule implements BusinessruleInterface {
 	private final Logger logger;
@@ -27,12 +31,22 @@ public class BillableAgreementRule implements BusinessruleInterface {
 		this.bdcIntegration = bdcIntegration;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Returns true if the contract belongs to a municipality configured for billing integration.
+	 */
 	@Override
 	public boolean appliesTo(ContractEntity contractEntity) {
 		// All contracts within the municipality are considered applicable to the rule if it is activated for the municipality
 		return ofNullable(configuration.managedMunicipalityIds()).orElse(emptyList()).contains(contractEntity.getMunicipalityId());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Adds, updates or removes billing cycles depending on the action and whether the contract is billable.
+	 */
 	@Override
 	public void apply(BusinessruleParameters parameters) throws BusinessruleException {
 		try {
@@ -40,7 +54,7 @@ public class BillableAgreementRule implements BusinessruleInterface {
 			final var action = parameters.action();
 
 			switch (action) {
-				case null -> throw new NullPointerException("Action can not be null");
+				case null -> throw new IllegalArgumentException("Action can not be null");
 				case CREATE -> processCreate(contractEntity);
 				case UPDATE -> processUpdate(contractEntity);
 				case DELETE -> processDelete(contractEntity);

@@ -8,9 +8,18 @@ import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.ContractType;
 
+/**
+ * JPA converter for {@link ContractType}.
+ */
 @Converter(autoApply = true)
 public class ContractTypeConverter implements AttributeConverter<ContractType, String> {
 
+	/**
+	 * Converts a {@link ContractType} to its database string representation.
+	 *
+	 * @param  attribute the enum value to convert
+	 * @return           the string representation, or null if the attribute is null
+	 */
 	@Override
 	public String convertToDatabaseColumn(ContractType attribute) {
 		return ofNullable(attribute)
@@ -18,6 +27,12 @@ public class ContractTypeConverter implements AttributeConverter<ContractType, S
 			.orElse(null);
 	}
 
+	/**
+	 * Converts a database string to a {@link ContractType} enum value.
+	 *
+	 * @param  dbData the database string to convert
+	 * @return        the corresponding enum value, or null if the string is blank
+	 */
 	@Override
 	public ContractType convertToEntityAttribute(String dbData) {
 		try {
@@ -25,8 +40,8 @@ public class ContractTypeConverter implements AttributeConverter<ContractType, S
 				.filter(StringUtils::isNotBlank)
 				.map(ContractType::valueOf)
 				.orElse(null);
-		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + ContractType.class, e);
+		} catch (IllegalArgumentException e) {
+			throw new PersistenceException("Unable to deserialize %s to %s".formatted(dbData, ContractType.class), e);
 		}
 	}
 }

@@ -21,7 +21,7 @@ import se.sundsvall.contract.model.enums.LeaseholdType;
 @Builder(setterPrefix = "with")
 public class LeaseholdEmbeddable {
 
-	@Column(name = "leasehold_type")
+	@Column(name = "leasehold_type", length = 64)
 	private LeaseholdType purpose;
 
 	@Column(name = "leasehold_description")

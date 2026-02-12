@@ -18,7 +18,7 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @Builder(setterPrefix = "with")
 public class NoticeEmbeddable {
 
-	@Column(name = "party", nullable = false)
+	@Column(name = "party", length = 64, nullable = false)
 	private Party party;
 
 	@Column(name = "period_of_notice", nullable = false)

@@ -1,6 +1,5 @@
 package se.sundsvall.contract.service.businessrule;
 
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
@@ -8,6 +7,9 @@ import java.util.Objects;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 
+/**
+ * Utility class with helper methods for evaluating {@link ContractEntity} properties.
+ */
 public final class ContractUtility {
 	private ContractUtility() {
 		// Prevent instantiation
@@ -22,8 +24,8 @@ public final class ContractUtility {
 	 */
 	public static boolean isBillable(ContractEntity contractEntity) {
 		return Objects.equals(ACTIVE, contractEntity.getStatus()) &&
-			nonNull(ofNullable(contractEntity.getInvoicing())
+			ofNullable(contractEntity.getInvoicing())
 				.map(InvoicingEmbeddable::getInvoiceInterval)
-				.orElse(null));
+				.isPresent();
 	}
 }

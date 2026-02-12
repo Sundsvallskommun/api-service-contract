@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration;
 
+/**
+ * Feign client for the BillingDataCollector service API.
+ */
 @FeignClient(
 	name = CLIENT_ID,
 	url = "${integration.billing-data-collector.base-url}",

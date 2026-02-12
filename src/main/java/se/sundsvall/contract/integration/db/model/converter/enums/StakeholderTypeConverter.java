@@ -8,9 +8,18 @@ import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.StakeholderType;
 
+/**
+ * JPA converter for {@link StakeholderType}.
+ */
 @Converter(autoApply = true)
 public class StakeholderTypeConverter implements AttributeConverter<StakeholderType, String> {
 
+	/**
+	 * Converts a {@link StakeholderType} to its database string representation.
+	 *
+	 * @param  attribute the enum value to convert
+	 * @return           the string representation, or null if the attribute is null
+	 */
 	@Override
 	public String convertToDatabaseColumn(StakeholderType attribute) {
 		return ofNullable(attribute)
@@ -18,6 +27,12 @@ public class StakeholderTypeConverter implements AttributeConverter<StakeholderT
 			.orElse(null);
 	}
 
+	/**
+	 * Converts a database string to a {@link StakeholderType} enum value.
+	 *
+	 * @param  dbData the database string to convert
+	 * @return        the corresponding enum value, or null if the string is blank
+	 */
 	@Override
 	public StakeholderType convertToEntityAttribute(String dbData) {
 		try {
@@ -25,8 +40,8 @@ public class StakeholderTypeConverter implements AttributeConverter<StakeholderT
 				.filter(StringUtils::isNotBlank)
 				.map(StakeholderType::valueOf)
 				.orElse(null);
-		} catch (Exception e) {
-			throw new PersistenceException("Unable to deserialize " + dbData + " to " + StakeholderType.class, e);
+		} catch (IllegalArgumentException e) {
+			throw new PersistenceException("Unable to deserialize %s to %s".formatted(dbData, StakeholderType.class), e);
 		}
 	}
 }

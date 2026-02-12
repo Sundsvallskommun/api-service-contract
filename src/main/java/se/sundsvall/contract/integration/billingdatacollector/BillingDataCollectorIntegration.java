@@ -7,6 +7,9 @@ import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import org.apache.commons.collections4.SetUtils;
 import org.springframework.stereotype.Component;
 
+/**
+ * Integration component for managing scheduled billing cycles via the BillingDataCollector service.
+ */
 @Component
 public class BillingDataCollectorIntegration {
 
@@ -36,7 +39,7 @@ public class BillingDataCollectorIntegration {
 	}
 
 	/**
-	 * Method for deterimining if billing cycle has been changed
+	 * Method for determining if billing cycle has been changed
 	 *
 	 * @param  presentSettings        present cycle settings for the contract
 	 * @param  nullableFutureSettings proposed cycle settings for the contract

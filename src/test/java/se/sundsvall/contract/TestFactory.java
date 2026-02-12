@@ -35,7 +35,7 @@ import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
-import se.sundsvall.contract.integration.db.model.AddressEntity;
+import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
@@ -158,7 +158,7 @@ public final class TestFactory {
 				.withOrganizationNumber("someOrganizationNumber")
 				.withOrganizationName("someOrganizationName")
 				.withPartyId("somePartyId")
-				.withAddress(AddressEntity.builder()
+				.withAddress(AddressEmbeddable.builder()
 					.withTown("someTown")
 					.withStreetAddress("someStreetAddress")
 					.withPostalCode("somePostalCode")
@@ -303,8 +303,8 @@ public final class TestFactory {
 			.build();
 	}
 
-	public static AddressEntity createAddressEntity() {
-		return AddressEntity.builder()
+	public static AddressEmbeddable createAddressEmbeddable() {
+		return AddressEmbeddable.builder()
 			.withTown("someTown")
 			.withStreetAddress("someStreetAddress")
 			.withPostalCode("somePostalCode")

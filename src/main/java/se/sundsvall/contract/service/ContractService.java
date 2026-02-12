@@ -1,6 +1,5 @@
 package se.sundsvall.contract.service;
 
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -33,6 +32,9 @@ import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.diff.Differ;
 
+/**
+ * Service for managing contracts.
+ */
 @Service
 @Transactional
 public class ContractService {
@@ -60,6 +62,13 @@ public class ContractService {
 		this.differ = differ;
 	}
 
+	/**
+	 * Creates a new contract and applies matching business rules.
+	 *
+	 * @param  municipalityId the municipality id
+	 * @param  contract       the contract data
+	 * @return                the generated contract id
+	 */
 	public String createContract(final String municipalityId, final Contract contract) {
 		// Map to entity
 		final var contractEntity = toContractEntity(municipalityId, contract);
@@ -74,6 +83,14 @@ public class ContractService {
 		return contractRepository.save(contractEntity).getContractId();
 	}
 
+	/**
+	 * Retrieves a contract by its id, optionally at a specific version.
+	 *
+	 * @param  municipalityId the municipality id
+	 * @param  contractId     the contract id
+	 * @param  version        optional version number, or null for the latest version
+	 * @return                the contract
+	 */
 	@Transactional(readOnly = true)
 	public Contract getContract(final String municipalityId, final String contractId, final Integer version) {
 		final Optional<ContractEntity> contractEntity;
@@ -92,6 +109,14 @@ public class ContractService {
 				.build());
 	}
 
+	/**
+	 * Retrieves a paginated list of contracts, optionally filtered.
+	 *
+	 * @param  municipalityId the municipality id
+	 * @param  filter         optional specification filter
+	 * @param  pageable       pagination parameters
+	 * @return                a page of contracts
+	 */
 	@Transactional(readOnly = true)
 	public Page<Contract> getContracts(final String municipalityId, final Specification<ContractEntity> filter, final Pageable pageable) {
 		// Combine mandatory specifications with the optional filter
@@ -104,6 +129,13 @@ public class ContractService {
 			.map(contractEntity -> toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())));
 	}
 
+	/**
+	 * Updates a contract by creating a new version and applying matching business rules.
+	 *
+	 * @param municipalityId the municipality id
+	 * @param contractId     the contract id
+	 * @param contract       the updated contract data
+	 */
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
 		final var oldContractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
 			.orElseThrow(() -> Problem.builder()
@@ -121,6 +153,15 @@ public class ContractService {
 		contractRepository.save(newContractEntity);
 	}
 
+	/**
+	 * Compares two versions of a contract and returns their differences.
+	 *
+	 * @param  municipalityId the municipality id
+	 * @param  contractId     the contract id
+	 * @param  oldVersion     optional old version number, or null for the version before the new version
+	 * @param  newVersion     optional new version number, or null for the latest version
+	 * @return                the diff result containing changes between the two versions
+	 */
 	@Transactional(readOnly = true)
 	public Diff diffContract(final String municipalityId, final String contractId, final Integer oldVersion, final Integer newVersion) {
 		final var availableVersions = contractRepository.findByMunicipalityIdAndContractId(municipalityId, contractId, VERSION_ASC)
@@ -142,6 +183,12 @@ public class ContractService {
 		return new Diff(actualOldVersion, actualNewVersion, changes, availableVersions);
 	}
 
+	/**
+	 * Deletes a contract and all its attachments, applying matching business rules before deletion.
+	 *
+	 * @param municipalityId the municipality id
+	 * @param contractId     the contract id
+	 */
 	public void deleteContract(final String municipalityId, final String contractId) {
 		// Fetch contract
 		final var contractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
@@ -153,18 +200,12 @@ public class ContractService {
 		// Apply matching businessrules
 		applyBusinessrules(contractEntity, DELETE);
 
-		attachmentRepository.deleteAllByContractId(contractEntity.getContractId());
+		attachmentRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 		contractRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 	}
 
-	/**
-	 * Method applies all matching business rules for the sent in contract entity
-	 *
-	 * @param contractEntity the contract to process
-	 * @param action         the performed action on the contract
-	 */
 	private void applyBusinessrules(ContractEntity contractEntity, Action action) {
-		ofNullable(businessRules).orElse(emptyList()).stream()
+		businessRules.stream()
 			.filter(rule -> rule.appliesTo(contractEntity))
 			.forEach(rule -> rule.apply(toBusinessruleParameters(contractEntity, action)));
 	}
