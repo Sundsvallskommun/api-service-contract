@@ -1,0 +1,132 @@
+{
+	"content": [
+		{
+			"version": 1,
+			"contractId": "2024-34567",
+			"description": "Land lease residential",
+			"externalReferenceId": "MK-TEST0004",
+			"leaseType": "LAND_LEASE_RESIDENTIAL",
+			"municipalityId": "1984",
+			"objectIdentity": "objectIdentity4",
+			"status": "ACTIVE",
+			"type": "LEASE_AGREEMENT",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"duration": {
+				"leaseDuration": 5,
+				"unit": "YEARS"
+			},
+			"extension": {
+				"autoExtend": false,
+				"leaseExtension": 2,
+				"unit": "YEARS"
+			},
+			"fees": {
+				"currency": "SEK",
+				"yearly": 12000.00,
+				"monthly": 1000.00,
+				"total": 60000.00,
+				"totalAsText": "sixty thousand",
+				"indexType": "KPI",
+				"indexYear": 2023,
+				"indexNumber": 1,
+				"indexationRate": 0.25,
+				"additionalInformation": []
+			},
+			"invoicing": {
+				"invoiceInterval": "MONTHLY",
+				"invoicedIn": "ADVANCE"
+			},
+			"start": "2024-01-01",
+			"end": "2025-12-31",
+			"notices": [],
+			"area": 500,
+			"signedByWitness": false
+		},
+		{
+			"version": 1,
+			"contractId": "2024-45678",
+			"description": "Object lease agreement",
+			"externalReferenceId": "MK-TEST0005",
+			"leaseType": "OBJECT_LEASE",
+			"municipalityId": "1984",
+			"objectIdentity": "objectIdentity5",
+			"status": "TERMINATED",
+			"type": "LEASE_AGREEMENT",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"duration": {
+				"leaseDuration": 3,
+				"unit": "YEARS"
+			},
+			"extension": {
+				"autoExtend": true,
+				"leaseExtension": 1,
+				"unit": "MONTHS"
+			},
+			"fees": {
+				"currency": "SEK",
+				"yearly": 6000.00,
+				"monthly": 500.00,
+				"total": 30000.00,
+				"totalAsText": "thirty thousand",
+				"indexYear": 2022,
+				"indexNumber": 3,
+				"indexationRate": 0.10,
+				"additionalInformation": []
+			},
+			"invoicing": {
+				"invoiceInterval": "YEARLY",
+				"invoicedIn": "ARREARS"
+			},
+			"start": "2023-07-01",
+			"end": "2024-06-30",
+			"notices": [],
+			"area": 200,
+			"signedByWitness": true
+		}
+	],
+	"pageable": {
+		"pageNumber": 1,
+		"pageSize": 2,
+		"sort": [
+			{
+				"direction": "ASC",
+				"property": "contractId",
+				"ignoreCase": false,
+				"nullHandling": "NATIVE",
+				"ascending": true,
+				"descending": false
+			}
+		],
+		"offset": 2,
+		"paged": true,
+		"unpaged": false
+	},
+	"last": false,
+	"totalElements": 5,
+	"totalPages": 3,
+	"size": 2,
+	"number": 1,
+	"sort": [
+		{
+			"direction": "ASC",
+			"property": "contractId",
+			"ignoreCase": false,
+			"nullHandling": "NATIVE",
+			"ascending": true,
+			"descending": false
+		}
+	],
+	"first": false,
+	"numberOfElements": 2,
+	"empty": false
+}
