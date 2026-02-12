@@ -124,66 +124,168 @@
 		},
 		{
 			"version": 1,
-			"contractId": "2024-34567",
-			"description": "Land lease residential",
-			"externalReferenceId": "MK-TEST0004",
-			"leaseType": "LAND_LEASE_RESIDENTIAL",
+			"contractId": "2024-23456",
+			"description": "someDescription",
+			"externalReferenceId": "MK-TEST0002",
+			"leaseType": "LEASEHOLD",
 			"municipalityId": "1984",
-			"objectIdentity": "objectIdentity4",
-			"status": "ACTIVE",
+			"objectIdentity": "someObjectIdentity",
+			"status": "DRAFT",
 			"type": "LEASE_AGREEMENT",
+			"leasehold": {
+				"purpose": "AGRICULTURE",
+				"description": "SomeLeaseholdDescription",
+				"additionalInformation": [
+					"More additional information"
+				]
+			},
 			"attachmentMetaData": [],
-			"additionalTerms": [],
-			"extraParameters": [],
-			"indexTerms": [],
-			"propertyDesignations": [],
-			"stakeholders": [],
+			"additionalTerms": [
+				{
+					"header": "Additional Basic Terms",
+					"terms": [
+						{
+							"description": "Additional terms",
+							"term": "Party"
+						}
+					]
+				}
+			],
+			"extraParameters": [
+				{
+					"name": "someParameters2",
+					"parameters": {
+						"key3": "value3",
+						"key4": "value5"
+					}
+				}
+			],
+			"indexTerms": [
+				{
+					"header": "Basic Terms",
+					"terms": [
+						{
+							"description": "Description for basic terms",
+							"term": "Some Parties"
+						}
+					]
+				}
+			],
+			"propertyDesignations": [
+				{
+					"district": "District 2",
+					"name": "SUNDSVALL NORRMALM 2:1"
+				}
+			],
+			"stakeholders": [
+				{
+					"type": "PERSON",
+					"roles": [
+						"POWER_OF_ATTORNEY_ROLE",
+						"SIGNATORY"
+					],
+					"organizationName": "someOrganizationName",
+					"organizationNumber": "771122-1234",
+					"firstName": "someFirstName",
+					"lastName": "someLastName",
+					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+					"phoneNumber": "somePhoneNumber",
+					"emailAddress": "someEmail",
+					"address": {
+						"type": "VISITING_ADDRESS",
+						"streetAddress": "someStreetAddress",
+						"postalCode": "12345",
+						"town": "someTown",
+						"country": "SE",
+						"attention": "someAttention"
+					},
+					"parameters": [
+						{
+							"key": "parameterX",
+							"displayName": "Parameter X",
+							"values": [
+								"value-x1",
+								"value-x2"
+							]
+						}
+					]
+				}
+			],
 			"duration": {
-				"leaseDuration": 5,
+				"leaseDuration": 2,
 				"unit": "YEARS"
 			},
 			"extension": {
-				"autoExtend": false,
-				"leaseExtension": 2,
+				"autoExtend": true,
+				"leaseExtension": 1,
 				"unit": "YEARS"
 			},
 			"fees": {
-				"currency": "SEK",
-				"yearly": 12000.00,
-				"monthly": 1000.00,
-				"total": 60000.00,
-				"totalAsText": "sixty thousand",
-				"indexType": "KPI",
-				"indexYear": 2023,
-				"indexNumber": 1,
-				"indexationRate": 0.25,
+				"currency": "EUR",
+				"yearly": 1000.00,
+				"monthly": 120.00,
+				"total": 5000.00,
+				"totalAsText": "five thousand",
+				"indexType": "KPI 80",
+				"indexYear": 2021,
+				"indexNumber": 3,
+				"indexationRate": 0.30,
 				"additionalInformation": []
 			},
 			"invoicing": {
-				"invoiceInterval": "MONTHLY",
-				"invoicedIn": "ADVANCE"
+				"invoiceInterval": "QUARTERLY",
+				"invoicedIn": "ARREARS"
 			},
-			"start": "2024-01-01",
-			"end": "2025-12-31",
-			"notices": [],
-			"area": 500,
+			"start": "2023-10-02",
+			"end": "2023-10-10",
+			"notices": [
+				{
+					"party": "LESSOR",
+					"periodOfNotice": 30,
+					"unit": "DAYS"
+				},
+				{
+					"party": "LESSEE",
+					"periodOfNotice": 60,
+					"unit": "DAYS"
+				}
+			],
+			"area": 12,
 			"signedByWitness": false
 		}
 	],
 	"pageable": {
 		"pageNumber": 0,
-		"pageSize": 20,
-		"sort": [],
+		"pageSize": 2,
+		"sort": [
+			{
+				"direction": "ASC",
+				"property": "contractId",
+				"ignoreCase": false,
+				"nullHandling": "NATIVE",
+				"ascending": true,
+				"descending": false
+			}
+		],
 		"offset": 0,
 		"paged": true,
 		"unpaged": false
 	},
-	"last": true,
-	"totalElements": 2,
-	"totalPages": 1,
-	"size": 20,
+	"last": false,
+	"totalElements": 5,
+	"totalPages": 3,
+	"size": 2,
 	"number": 0,
-	"sort": [],
+	"sort": [
+		{
+			"direction": "ASC",
+			"property": "contractId",
+			"ignoreCase": false,
+			"nullHandling": "NATIVE",
+			"ascending": true,
+			"descending": false
+		}
+	],
 	"first": true,
 	"numberOfElements": 2,
 	"empty": false

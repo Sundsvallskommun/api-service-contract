@@ -310,7 +310,7 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test11_errorThrownByBCDWhenCreateContract() {
-		assertThat(contractRepository.count()).isEqualTo(3); // There should be 3 entities added by script at start
+		assertThat(contractRepository.count()).isEqualTo(6); // There should be 6 entities added by script at start
 
 		setupCall()
 			.withServicePath(fromPath(PATH)
@@ -322,7 +322,187 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		assertThat(contractRepository.count()).isEqualTo(3); // Verify no entity has been created in database, i.e. there should still only the entities added by script
+		assertThat(contractRepository.count()).isEqualTo(6); // Verify no entity has been created in database, i.e. there should still only the entities added by script
 
+	}
+
+	@Test
+	void test12_filterByStatus() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "status:'ACTIVE'")
+				.queryParam("sort", "contractId,asc")
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test13_filterByType() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "type:'LEASE_AGREEMENT'")
+				.queryParam("sort", "contractId,asc")
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test14_filterByStatusAndType() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "status:'ACTIVE' and type:'LEASE_AGREEMENT'")
+				.buildAndExpand(MUNICIPALITY_ID)
+				.toUriString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test15_filterByStatusOr() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "status:'ACTIVE' or status:'DRAFT'")
+				.queryParam("sort", "contractId,asc")
+				.buildAndExpand(MUNICIPALITY_ID)
+				.toUriString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test16_filterNoResults() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "status:'TERMINATED' and type:'PURCHASE_AGREEMENT'")
+				.buildAndExpand(MUNICIPALITY_ID)
+				.toUriString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test17_filterByContractId() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "contractId:'2024-34567'")
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test18_sortByContractIdAsc() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("sort", "contractId,asc")
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test19_sortByContractIdDesc() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("sort", "contractId,desc")
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test20_paginationFirstPage() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("sort", "contractId,asc")
+				.queryParam("page", 0)
+				.queryParam("size", 2)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test21_paginationSecondPage() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("sort", "contractId,asc")
+				.queryParam("page", 1)
+				.queryParam("size", 2)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test22_paginationLastPage() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("sort", "contractId,asc")
+				.queryParam("page", 2)
+				.queryParam("size", 2)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test23_filterWithSortAndPagination() {
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("filter", "type:'LEASE_AGREEMENT'")
+				.queryParam("sort", "contractId,desc")
+				.queryParam("page", 0)
+				.queryParam("size", 2)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 }

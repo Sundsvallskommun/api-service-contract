@@ -1,0 +1,58 @@
+{
+	"content": [
+		{
+			"version": 1,
+			"contractId": "2024-56789",
+			"description": "Minimal purchase agreement",
+			"municipalityId": "1984",
+			"status": "DRAFT",
+			"type": "PURCHASE_AGREEMENT",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"fees": {
+				"additionalInformation": []
+			},
+			"notices": [],
+			"signedByWitness": false
+		}
+	],
+	"pageable": {
+		"pageNumber": 2,
+		"pageSize": 2,
+		"sort": [
+			{
+				"direction": "ASC",
+				"property": "contractId",
+				"ignoreCase": false,
+				"nullHandling": "NATIVE",
+				"ascending": true,
+				"descending": false
+			}
+		],
+		"offset": 4,
+		"paged": true,
+		"unpaged": false
+	},
+	"last": true,
+	"totalElements": 5,
+	"totalPages": 3,
+	"size": 2,
+	"number": 2,
+	"sort": [
+		{
+			"direction": "ASC",
+			"property": "contractId",
+			"ignoreCase": false,
+			"nullHandling": "NATIVE",
+			"ascending": true,
+			"descending": false
+		}
+	],
+	"first": false,
+	"numberOfElements": 1,
+	"empty": false
+}

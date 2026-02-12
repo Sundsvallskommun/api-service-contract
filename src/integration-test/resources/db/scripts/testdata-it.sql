@@ -23,6 +23,27 @@ VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
         true, 12, true, '2023-10-10', 'LEASEHOLD', 2, 1, 'YEARS', 'YEARS', '2023-10-02', 'MK-TEST0001',
         'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
         'SEK', 234.56, 123.45, 500, 'five hundred', null, 2021, 2, 0.5,
+        'PURCHASE_AGREEMENT'),
+
+       (4, '2024-34567', 1, 'ACTIVE', '1984',
+        'Land lease residential',
+        false, 500, false, '2025-12-31', 'LAND_LEASE_RESIDENTIAL', 5, 2, 'YEARS', 'YEARS', '2024-01-01', 'MK-TEST0004',
+        'MONTHLY', 'ADVANCE', null, null, 'objectIdentity4',
+        'SEK', 12000, 1000, 60000, 'sixty thousand', 'KPI', 2023, 1, 0.25,
+        'LEASE_AGREEMENT'),
+
+       (5, '2024-45678', 1, 'TERMINATED', '1984',
+        'Object lease agreement',
+        true, 200, true, '2024-06-30', 'OBJECT_LEASE', 3, 1, 'YEARS', 'MONTHS', '2023-07-01', 'MK-TEST0005',
+        'YEARLY', 'ARREARS', null, null, 'objectIdentity5',
+        'SEK', 6000, 500, 30000, 'thirty thousand', null, 2022, 3, 0.10,
+        'LEASE_AGREEMENT'),
+
+       (6, '2024-56789', 1, 'DRAFT', '1984',
+        'Minimal purchase agreement',
+        false, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
         'PURCHASE_AGREEMENT');
 
 INSERT INTO fee_additional_information (contract_id, additional_information)
