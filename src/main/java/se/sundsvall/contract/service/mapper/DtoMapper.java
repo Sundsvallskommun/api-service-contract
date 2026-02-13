@@ -26,6 +26,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
@@ -67,7 +68,8 @@ public final class DtoMapper {
 			.withAttachmentMetaData(toAttachmentMetadataDtos(attachmentEntities))
 			.withContractId(contractEntity.getContractId())
 			.withDescription(contractEntity.getDescription())
-			.withEndDate(contractEntity.getEnd())
+			.withCurrentPeriod(toPeriodDto(contractEntity))
+			.withEndDate(contractEntity.getEndDate())
 			.withExternalReferenceId(contractEntity.getExternalReferenceId())
 			.withExtraParameters(toExtraParameterGroupDtos(contractEntity.getExtraParameters()))
 			.withFees(toFeesDto(contractEntity))
@@ -83,7 +85,7 @@ public final class DtoMapper {
 			.withPropertyDesignations(toPropertyDesignationsDtos(contractEntity.getPropertyDesignations()))
 			.withSignedByWitness(contractEntity.isSignedByWitness())
 			.withStakeholders(toStakeholderDtos(contractEntity.getStakeholders()))
-			.withStartDate(contractEntity.getStart())
+			.withStartDate(contractEntity.getStartDate())
 			.withStatus(contractEntity.getStatus())
 			.withType(contractEntity.getType())
 			.withVersion(contractEntity.getVersion())
@@ -117,8 +119,20 @@ public final class DtoMapper {
 
 	static Notice toNoticeDto(final ContractEntity contractEntity) {
 		return Notice.builder()
+			.withNoticeDate(contractEntity.getNoticeDate())
+			.withNoticeGivenBy(contractEntity.getNoticeGivenBy())
 			.withTerms(toNoticeTermDtos(contractEntity.getNoticeTerms()))
 			.build();
+	}
+
+	static Period toPeriodDto(final ContractEntity contractEntity) {
+		return ofNullable(contractEntity)
+			.filter(entity -> anyNotNull(entity.getCurrentPeriodStartDate(), entity.getCurrentPeriodEndDate()))
+			.map(entity -> Period.builder()
+				.withStartDate(entity.getCurrentPeriodStartDate())
+				.withEndDate(entity.getCurrentPeriodEndDate())
+				.build())
+			.orElse(null);
 	}
 
 	static List<NoticeTerm> toNoticeTermDtos(final List<NoticeTermEmbeddable> noticeEmbeddableList) {
@@ -183,6 +197,7 @@ public final class DtoMapper {
 		return ofNullable(attachmentEntity)
 			.map(attachment -> AttachmentMetadata.builder()
 				.withCategory(attachment.getCategory())
+				.withCreated(attachment.getCreated())
 				.withFilename(attachment.getFilename())
 				.withId(attachment.getId())
 				.withMimeType(attachment.getMimeType())
@@ -256,6 +271,7 @@ public final class DtoMapper {
 					.build())
 				.withMetadata(AttachmentMetadata.builder()
 					.withCategory(attachment.getCategory())
+					.withCreated(attachment.getCreated())
 					.withFilename(attachment.getFilename())
 					.withId(attachment.getId())
 					.withMimeType(attachment.getMimeType())

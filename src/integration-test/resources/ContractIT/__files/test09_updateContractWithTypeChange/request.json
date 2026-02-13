@@ -50,9 +50,9 @@
 	"type": "PURCHASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0009",
 	"objectIdentity": "anotherObjectIdentity",
-	"end": "2024-10-02",
+	"endDate": "2024-10-02",
 	"area": 12,
-	"start": "2024-05-02",
+	"startDate": "2024-05-02",
 	"duration": {
 		"leaseDuration": 555,
 		"unit": "MONTHS"

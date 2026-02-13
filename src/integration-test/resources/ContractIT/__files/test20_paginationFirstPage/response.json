@@ -105,20 +105,28 @@
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ADVANCE"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"notice": [
-				{
-					"party": "LESSOR",
-					"periodOfNotice": 1,
-					"unit": "YEARS"
-				},
-				{
-					"party": "LESSEE",
-					"periodOfNotice": 2,
-					"unit": "YEARS"
-				}
-			],
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 1,
+						"unit": "YEARS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 2,
+						"unit": "YEARS"
+					}
+				],
+				"noticeDate": "2024-06-01",
+				"noticeGivenBy": "LESSOR"
+			},
+			"currentPeriod": {
+				"startDate": "2023-10-02",
+				"endDate": "2024-10-02"
+			},
 			"area": 12,
 			"signedByWitness": true
 		},
@@ -236,20 +244,22 @@
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ARREARS"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"notice": [
-				{
-					"party": "LESSOR",
-					"periodOfNotice": 30,
-					"unit": "DAYS"
-				},
-				{
-					"party": "LESSEE",
-					"periodOfNotice": 60,
-					"unit": "DAYS"
-				}
-			],
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 30,
+						"unit": "DAYS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 60,
+						"unit": "DAYS"
+					}
+				]
+			},
 			"area": 12,
 			"signedByWitness": false
 		}

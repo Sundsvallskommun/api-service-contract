@@ -30,6 +30,7 @@ import org.hibernate.Length;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
@@ -117,7 +118,7 @@ public class ContractEntity {
 		indexes = @Index(name = "idx_contract_property_designation_contract_id", columnList = "contract_id"))
 	private List<PropertyDesignationEmbeddable> propertyDesignations;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "contract_notice",
 		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_contract_notice_contract_id")))
@@ -139,10 +140,22 @@ public class ContractEntity {
 	private InvoicingEmbeddable invoicing;
 
 	@Column(name = "start_date")
-	private LocalDate start;
+	private LocalDate startDate;
 
 	@Column(name = "end_date")
-	private LocalDate end;
+	private LocalDate endDate;
+
+	@Column(name = "current_period_start_date")
+	private LocalDate currentPeriodStartDate;
+
+	@Column(name = "current_period_end_date")
+	private LocalDate currentPeriodEndDate;
+
+	@Column(name = "notice_date")
+	private LocalDate noticeDate;
+
+	@Column(name = "notice_given_by", length = 64)
+	private Party noticeGivenBy;
 
 	@Column(name = "auto_extend")
 	private Boolean autoExtend;

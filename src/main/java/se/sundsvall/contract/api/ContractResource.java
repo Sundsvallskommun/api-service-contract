@@ -158,6 +158,10 @@ class ContractResource {
 		summary = "Diff two versions of a contract",
 		responses = {
 			@ApiResponse(
+				responseCode = "200",
+				description = "Ok",
+				useReturnTypeSchema = true),
+			@ApiResponse(
 				responseCode = "404",
 				description = "Not Found",
 				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))

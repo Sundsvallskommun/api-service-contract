@@ -114,20 +114,22 @@
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ARREARS"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"notice": [
-				{
-					"party": "LESSOR",
-					"periodOfNotice": 30,
-					"unit": "DAYS"
-				},
-				{
-					"party": "LESSEE",
-					"periodOfNotice": 60,
-					"unit": "DAYS"
-				}
-			],
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 30,
+						"unit": "DAYS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 60,
+						"unit": "DAYS"
+					}
+				]
+			},
 			"area": 12,
 			"signedByWitness": false
 		},
@@ -172,9 +174,15 @@
 				"invoiceInterval": "MONTHLY",
 				"invoicedIn": "ADVANCE"
 			},
-			"start": "2024-01-01",
-			"end": "2025-12-31",
-			"notice": [],
+			"startDate": "2024-01-01",
+			"endDate": "2025-12-31",
+			"notice": {
+				"terms": []
+			},
+			"currentPeriod": {
+				"startDate": "2024-01-01",
+				"endDate": "2029-01-01"
+			},
 			"area": 500,
 			"signedByWitness": false
 		},
@@ -218,9 +226,13 @@
 				"invoiceInterval": "YEARLY",
 				"invoicedIn": "ARREARS"
 			},
-			"start": "2023-07-01",
-			"end": "2024-06-30",
-			"notice": [],
+			"startDate": "2023-07-01",
+			"endDate": "2024-06-30",
+			"notice": {
+				"terms": [],
+				"noticeDate": "2024-03-15",
+				"noticeGivenBy": "LESSEE"
+			},
 			"area": 200,
 			"signedByWitness": true
 		}

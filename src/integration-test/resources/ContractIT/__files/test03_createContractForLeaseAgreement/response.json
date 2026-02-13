@@ -148,20 +148,22 @@
 		"invoiceInterval": "QUARTERLY",
 		"invoicedIn": "ADVANCE"
 	},
-	"start": "2023-10-02",
-	"end": "2023-10-10",
-	"notice": [
-		{
-			"party": "LESSOR",
-			"periodOfNotice": 1,
-			"unit": "MONTHS"
-		},
-		{
-			"party": "LESSEE",
-			"periodOfNotice": 2,
-			"unit": "MONTHS"
-		}
-	],
+	"startDate": "2023-10-02",
+	"endDate": "2023-10-10",
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 1,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		]
+	},
 	"area": 12,
 	"signedByWitness": true
 }

@@ -219,7 +219,7 @@ class BillableAgreementRuleTest {
 	}
 
 	@Test
-	void applyBusinessrulesFail() {
+	void applyBusinessrulesFailOnCreate() {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var contractId = "contractId";
@@ -242,5 +242,78 @@ class BillableAgreementRuleTest {
 		verify(invoicingEmbeddableMock, times(2)).getInvoiceInterval();
 		verify(contractEntityMock).getMunicipalityId();
 		verify(bdlIntegrationMock).addBillingCycle(eq(municipalityId), eq(contractId), any(ScheduledBilling.class));
+	}
+
+	@Test
+	void applyBusinessrulesFailOnUpdateWhenBillable() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var contractId = "contractId";
+		final var thrownException = new RuntimeException("BDC update failure");
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, UPDATE);
+		when(contractEntityMock.getMunicipalityId()).thenReturn(municipalityId);
+		when(contractEntityMock.getContractId()).thenReturn(contractId);
+		when(contractEntityMock.getStatus()).thenReturn(ACTIVE);
+		when(contractEntityMock.getInvoicing()).thenReturn(invoicingEmbeddableMock);
+		when(invoicingEmbeddableMock.getInvoiceInterval()).thenReturn(QUARTERLY);
+		doThrow(thrownException).when(bdlIntegrationMock).addBillingCycle(eq(municipalityId), eq(contractId), any(ScheduledBilling.class));
+
+		// Act
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
+
+		// Assert
+		assertThat(e.getCause()).isSameAs(thrownException);
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
+		verify(contractEntityMock).getStatus();
+		verify(contractEntityMock).getMunicipalityId();
+		verify(contractEntityMock, times(4)).getContractId();
+		verify(contractEntityMock, times(2)).getInvoicing();
+		verify(invoicingEmbeddableMock, times(2)).getInvoiceInterval();
+		verify(bdlIntegrationMock).addBillingCycle(eq(municipalityId), eq(contractId), any(ScheduledBilling.class));
+	}
+
+	@Test
+	void applyBusinessrulesFailOnUpdateWhenNotBillable() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var contractId = "contractId";
+		final var thrownException = new RuntimeException("BDC remove failure");
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, UPDATE);
+		when(contractEntityMock.getMunicipalityId()).thenReturn(municipalityId);
+		when(contractEntityMock.getContractId()).thenReturn(contractId);
+		doThrow(thrownException).when(bdlIntegrationMock).removeBillingCycle(municipalityId, contractId);
+
+		// Act
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
+
+		// Assert
+		assertThat(e.getCause()).isSameAs(thrownException);
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
+		verify(contractEntityMock).getStatus();
+		verify(contractEntityMock).getMunicipalityId();
+		verify(contractEntityMock, times(3)).getContractId();
+		verify(bdlIntegrationMock).removeBillingCycle(municipalityId, contractId);
+	}
+
+	@Test
+	void applyBusinessrulesFailOnDelete() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var contractId = "contractId";
+		final var thrownException = new RuntimeException("BDC delete failure");
+		final var businessParameters = new BusinessruleParameters(contractEntityMock, DELETE);
+		when(contractEntityMock.getMunicipalityId()).thenReturn(municipalityId);
+		when(contractEntityMock.getContractId()).thenReturn(contractId);
+		doThrow(thrownException).when(bdlIntegrationMock).removeBillingCycle(municipalityId, contractId);
+
+		// Act
+		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
+
+		// Assert
+		assertThat(e.getCause()).isSameAs(thrownException);
+		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId));
+		verify(contractEntityMock).getMunicipalityId();
+		verify(contractEntityMock, times(3)).getContractId();
+		verify(bdlIntegrationMock).removeBillingCycle(municipalityId, contractId);
 	}
 }

@@ -105,20 +105,28 @@
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ADVANCE"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"notice": [
-				{
-					"party": "LESSOR",
-					"periodOfNotice": 1,
-					"unit": "YEARS"
-				},
-				{
-					"party": "LESSEE",
-					"periodOfNotice": 2,
-					"unit": "YEARS"
-				}
-			],
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 1,
+						"unit": "YEARS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 2,
+						"unit": "YEARS"
+					}
+				],
+				"noticeDate": "2024-06-01",
+				"noticeGivenBy": "LESSOR"
+			},
+			"currentPeriod": {
+				"startDate": "2023-10-02",
+				"endDate": "2024-10-02"
+			},
 			"area": 12,
 			"signedByWitness": true
 		},
@@ -236,20 +244,22 @@
 				"invoiceInterval": "QUARTERLY",
 				"invoicedIn": "ARREARS"
 			},
-			"start": "2023-10-02",
-			"end": "2023-10-10",
-			"notice": [
-				{
-					"party": "LESSOR",
-					"periodOfNotice": 30,
-					"unit": "DAYS"
-				},
-				{
-					"party": "LESSEE",
-					"periodOfNotice": 60,
-					"unit": "DAYS"
-				}
-			],
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 30,
+						"unit": "DAYS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 60,
+						"unit": "DAYS"
+					}
+				]
+			},
 			"area": 12,
 			"signedByWitness": false
 		},
@@ -294,9 +304,15 @@
 				"invoiceInterval": "MONTHLY",
 				"invoicedIn": "ADVANCE"
 			},
-			"start": "2024-01-01",
-			"end": "2025-12-31",
-			"notice": [],
+			"startDate": "2024-01-01",
+			"endDate": "2025-12-31",
+			"notice": {
+				"terms": []
+			},
+			"currentPeriod": {
+				"startDate": "2024-01-01",
+				"endDate": "2029-01-01"
+			},
 			"area": 500,
 			"signedByWitness": false
 		},
@@ -316,7 +332,9 @@
 			"fees": {
 				"additionalInformation": []
 			},
-			"notice": [],
+			"notice": {
+				"terms": []
+			},
 			"signedByWitness": false
 		}
 	],

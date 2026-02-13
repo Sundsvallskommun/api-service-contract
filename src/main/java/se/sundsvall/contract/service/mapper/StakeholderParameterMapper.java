@@ -73,7 +73,7 @@ public final class StakeholderParameterMapper {
 	public static List<Parameter> toParameterList(final List<StakeholderParameterEntity> parameters) {
 		return Optional.ofNullable(parameters).orElse(emptyList()).stream()
 			.map(StakeholderParameterMapper::toParameter)
-			.toList();
+			.collect(toCollection(ArrayList::new));
 	}
 
 	/**

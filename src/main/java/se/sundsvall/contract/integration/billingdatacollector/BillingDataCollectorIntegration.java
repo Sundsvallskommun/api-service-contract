@@ -4,8 +4,10 @@ import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.Sourc
 import static java.util.Optional.ofNullable;
 
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
-import org.apache.commons.collections4.SetUtils;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration component for managing scheduled billing cycles via the BillingDataCollector service.
@@ -27,6 +29,7 @@ public class BillingDataCollectorIntegration {
 	 * @param contractId     id of contract (in Contract service) to add or update billing cycle for
 	 * @param futureSettings billing cycle settings to send to BillingDataCollector service
 	 */
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void addBillingCycle(String municipalityId, String contractId, ScheduledBilling futureSettings) {
 		client.getScheduledBillingByExternalId(municipalityId, CONTRACT, contractId)
 			.ifPresentOrElse(
@@ -47,8 +50,8 @@ public class BillingDataCollectorIntegration {
 	 */
 	boolean differs(ScheduledBilling presentSettings, ScheduledBilling nullableFutureSettings) {
 		return ofNullable(nullableFutureSettings)
-			.map(futureSettings -> !SetUtils.isEqualSet(futureSettings.getBillingDaysOfMonth(), presentSettings.getBillingDaysOfMonth()) ||
-				!SetUtils.isEqualSet(futureSettings.getBillingMonths(), presentSettings.getBillingMonths()))
+			.map(futureSettings -> !Objects.equals(futureSettings.getBillingDaysOfMonth(), presentSettings.getBillingDaysOfMonth()) ||
+				!Objects.equals(futureSettings.getBillingMonths(), presentSettings.getBillingMonths()))
 			.orElse(false);
 	}
 
@@ -59,6 +62,7 @@ public class BillingDataCollectorIntegration {
 	 * @param municipalityId id of municipality owning the contract
 	 * @param contractId     id of contract (in Contract service) to add or update billing cycle for
 	 */
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void removeBillingCycle(String municipalityId, String contractId) {
 		client.getScheduledBillingByExternalId(municipalityId, CONTRACT, contractId)
 			.ifPresent(

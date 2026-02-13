@@ -1,6 +1,7 @@
 package se.sundsvall.contract.integration.db.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.time.OffsetDateTime.now;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -49,9 +52,17 @@ public class AttachmentEntity {
 	@Column(name = "note")
 	private String note;
 
+	@Column(name = "created")
+	private OffsetDateTime created;
+
 	@Lob
 	@Column(name = "content", columnDefinition = "LONGBLOB")
 	private byte[] content;
+
+	@PrePersist
+	public void prePersist() {
+		created = now();
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -62,11 +73,11 @@ public class AttachmentEntity {
 			return false;
 		}
 		return Objects.equals(id, that.id) && Objects.equals(contractId, that.contractId) && Objects.equals(municipalityId, that.municipalityId) && category == that.category && Objects.equals(filename, that.filename) && Objects.equals(mimeType,
-			that.mimeType) && Objects.equals(note, that.note) && Objects.deepEquals(content, that.content);
+			that.mimeType) && Objects.equals(note, that.note) && Objects.equals(created, that.created) && Objects.deepEquals(content, that.content);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, contractId, municipalityId, category, filename, mimeType, note, Arrays.hashCode(content));
+		return Objects.hash(id, contractId, municipalityId, category, filename, mimeType, note, created, Arrays.hashCode(content));
 	}
 }

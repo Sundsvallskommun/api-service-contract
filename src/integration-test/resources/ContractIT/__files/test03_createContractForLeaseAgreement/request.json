@@ -114,9 +114,9 @@
 		}
 	],
 	"objectIdentity": "someObjectIdentity",
-	"end": "2023-10-10",
+	"endDate": "2023-10-10",
 	"area": 12,
-	"start": "2023-10-02",
+	"startDate": "2023-10-02",
 	"leaseType": "LEASEHOLD",
 	"indexTerms": [
 		{
@@ -163,16 +163,18 @@
 		"unit": "MONTHS",
 		"autoExtend": true
 	},
-	"notice": [
-		{
-			"party": "LESSOR",
-			"periodOfNotice": 1,
-			"unit": "MONTHS"
-		},
-		{
-			"party": "LESSEE",
-			"periodOfNotice": 2,
-			"unit": "MONTHS"
-		}
-	]
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 1,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		]
+	}
 }

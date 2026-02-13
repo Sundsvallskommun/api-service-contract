@@ -23,7 +23,9 @@ public final class ContractSpecifications {
 		return (root, query, cb) -> {
 			final var subQuery = query.subquery(Integer.class);
 			final var subRoot = subQuery.from(ContractEntity.class);
-			subQuery.select(cb.max(subRoot.get(VERSION))).where(cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)));
+			subQuery.select(cb.max(subRoot.get(VERSION))).where(
+				cb.equal(root.get(CONTRACT_ID), subRoot.get(CONTRACT_ID)),
+				cb.equal(root.get(MUNICIPALITY_ID), subRoot.get(MUNICIPALITY_ID)));
 
 			return cb.equal(root.get(VERSION), subQuery);
 		};

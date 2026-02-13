@@ -38,7 +38,7 @@ class EntityMapperTest {
 		assertThat(entity.getAreaData()).isEqualTo(dto.getAreaData());
 		assertThat(entity.getContractId()).isEqualTo(dto.getContractId());
 		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
-		assertThat(entity.getEnd()).isEqualTo(dto.getEndDate());
+		assertThat(entity.getEndDate()).isEqualTo(dto.getEndDate());
 		assertThat(entity.getExternalReferenceId()).isEqualTo(dto.getExternalReferenceId());
 		assertThat(entity.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupEntities
 		assertThat(entity.getFees()).isNotNull(); // Mapped via toFeesEmbeddable
@@ -52,6 +52,10 @@ class EntityMapperTest {
 		assertThat(entity.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getObjectIdentity()).isEqualTo(dto.getObjectIdentity());
+		assertThat(entity.getCurrentPeriodStartDate()).isEqualTo(dto.getCurrentPeriod().getStartDate());
+		assertThat(entity.getCurrentPeriodEndDate()).isEqualTo(dto.getCurrentPeriod().getEndDate());
+		assertThat(entity.getNoticeDate()).isEqualTo(dto.getNotice().getNoticeDate());
+		assertThat(entity.getNoticeGivenBy()).isEqualTo(dto.getNotice().getNoticeGivenBy());
 		assertThat(entity.getNoticeTerms()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getPropertyDesignations())
 			.flatExtracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
@@ -60,7 +64,7 @@ class EntityMapperTest {
 				.toList());
 		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
 		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
-		assertThat(entity.getStart()).isEqualTo(dto.getStartDate());
+		assertThat(entity.getStartDate()).isEqualTo(dto.getStartDate());
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
 		assertThat(entity.getVersion()).isEqualTo(dto.getVersion());
@@ -90,7 +94,19 @@ class EntityMapperTest {
 		final var entities = EntityMapper.toStakeholderEntities(dto.getStakeholders());
 
 		// Assert
-		assertThat(entities).isNotNull().isNotEmpty().hasSize(dto.getStakeholders().size());
+		assertThat(entities).isNotNull().hasSize(dto.getStakeholders().size());
+		final var firstEntity = entities.getFirst();
+		final var firstDto = dto.getStakeholders().getFirst();
+		assertThat(firstEntity.getFirstName()).isEqualTo(firstDto.getFirstName());
+		assertThat(firstEntity.getLastName()).isEqualTo(firstDto.getLastName());
+		assertThat(firstEntity.getOrganizationName()).isEqualTo(firstDto.getOrganizationName());
+		assertThat(firstEntity.getOrganizationNumber()).isEqualTo(firstDto.getOrganizationNumber());
+		assertThat(firstEntity.getPartyId()).isEqualTo(firstDto.getPartyId());
+		assertThat(firstEntity.getEmailAddress()).isEqualTo(firstDto.getEmailAddress());
+		assertThat(firstEntity.getPhoneNumber()).isEqualTo(firstDto.getPhoneNumber());
+		assertThat(firstEntity.getRoles()).containsAll(firstDto.getRoles());
+		assertThat(firstEntity.getType()).isEqualTo(firstDto.getType());
+		assertThat(firstEntity.getAddress()).isNotNull();
 	}
 
 	@Test
@@ -142,6 +158,7 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(entity.getAttention()).isEqualTo(dto.getAttention());
+		assertThat(entity.getCareOf()).isEqualTo(dto.getCareOf());
 		assertThat(entity.getCountry()).isEqualTo(dto.getCountry());
 		assertThat(entity.getPostalCode()).isEqualTo(dto.getPostalCode());
 		assertThat(entity.getStreetAddress()).isEqualTo(dto.getStreetAddress());

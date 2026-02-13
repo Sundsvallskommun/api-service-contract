@@ -104,9 +104,9 @@
 	"type": "PURCHASE_AGREEMENT",
 	"externalReferenceId": "MK-TEST0008",
 	"objectIdentity": "someObjectIdentity",
-	"end": "2023-10-10",
+	"endDate": "2023-10-10",
 	"area": 12,
-	"start": "2023-10-02",
+	"startDate": "2023-10-02",
 	"indexTerms": [
 		{
 			"terms": [

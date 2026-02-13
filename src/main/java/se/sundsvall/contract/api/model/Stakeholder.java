@@ -45,6 +45,7 @@ public class Stakeholder {
 	@Schema(description = "Email adress for stakeholder", examples = "test.testorsson@test.se")
 	private String emailAddress;
 
+	@Valid
 	@Schema(description = "Address for stakeholder")
 	private Address address;
 
