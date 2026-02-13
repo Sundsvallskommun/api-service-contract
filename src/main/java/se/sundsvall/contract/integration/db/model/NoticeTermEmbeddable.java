@@ -16,7 +16,7 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-public class NoticeEmbeddable {
+public class NoticeTermEmbeddable {
 
 	@Column(name = "party", length = 64, nullable = false)
 	private Party party;

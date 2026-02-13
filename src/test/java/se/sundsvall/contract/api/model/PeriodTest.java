@@ -12,13 +12,11 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.Party;
 
-class NoticeTest {
+class PeriodTest {
 
 	@BeforeAll
 	static void setup() {
@@ -27,7 +25,7 @@ class NoticeTest {
 
 	@Test
 	void testBean() {
-		assertThat(Notice.class, allOf(
+		assertThat(Period.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -38,24 +36,21 @@ class NoticeTest {
 	@Test
 	void testBuilderMethods() {
 
-		final var terms = List.of(NoticeTerm.builder().build());
-		final var noticeDate = LocalDate.now().plusMonths(3);
-		final var noticeGivenBy = Party.LESSOR;
+		final var startDate = LocalDate.of(2021, 7, 1);
+		final var endDate = LocalDate.of(2030, 6, 30);
 
-		final var object = Notice.builder()
-			.withTerms(terms)
-			.withNoticeDate(noticeDate)
-			.withNoticeGivenBy(noticeGivenBy)
+		final var object = Period.builder()
+			.withStartDate(startDate)
+			.withEndDate(endDate)
 			.build();
 
 		assertThat(object).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(object.getTerms()).isEqualTo(terms);
-		assertThat(object.getNoticeDate()).isEqualTo(noticeDate);
-		assertThat(object.getNoticeGivenBy()).isEqualTo(noticeGivenBy);
+		assertThat(object.getStartDate()).isEqualTo(startDate);
+		assertThat(object.getEndDate()).isEqualTo(endDate);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Notice.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(Period.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }

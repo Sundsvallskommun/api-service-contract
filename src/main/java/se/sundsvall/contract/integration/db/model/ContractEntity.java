@@ -121,7 +121,7 @@ public class ContractEntity {
 	@CollectionTable(
 		name = "contract_notice",
 		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_contract_notice_contract_id")))
-	private List<NoticeEmbeddable> notices;
+	private List<NoticeTermEmbeddable> noticeTerms;
 
 	@Column(name = "object_identity")
 	private String objectIdentity;

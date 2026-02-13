@@ -121,7 +121,7 @@ class ContractEntityTest {
 		var autoExtend = true;
 		var leaseExtension = 4;
 		var leaseExtensionUnit = TimeUnit.YEARS;
-		var notices = List.of(NoticeEmbeddable.builder().build());
+		var noticeTerms = List.of(NoticeTermEmbeddable.builder().build());
 		var area = 1;
 		var areaData = new FeatureCollection();
 
@@ -153,7 +153,7 @@ class ContractEntityTest {
 			.withAutoExtend(autoExtend)
 			.withLeaseExtension(leaseExtension)
 			.withLeaseExtensionUnit(leaseExtensionUnit)
-			.withNotices(notices)
+			.withNoticeTerms(noticeTerms)
 			.withArea(area)
 			.withAreaData(areaData)
 			.build();
@@ -184,7 +184,7 @@ class ContractEntityTest {
 		assertThat(contract.getEnd()).isEqualTo(end);
 		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
 		assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
-		assertThat(contract.getNotices()).isEqualTo(notices);
+		assertThat(contract.getNoticeTerms()).isEqualTo(noticeTerms);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);
 	}

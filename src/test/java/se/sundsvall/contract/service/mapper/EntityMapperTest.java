@@ -6,13 +6,13 @@ import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
-import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
@@ -38,7 +38,7 @@ class EntityMapperTest {
 		assertThat(entity.getAreaData()).isEqualTo(dto.getAreaData());
 		assertThat(entity.getContractId()).isEqualTo(dto.getContractId());
 		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
-		assertThat(entity.getEnd()).isEqualTo(dto.getEnd());
+		assertThat(entity.getEnd()).isEqualTo(dto.getEndDate());
 		assertThat(entity.getExternalReferenceId()).isEqualTo(dto.getExternalReferenceId());
 		assertThat(entity.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupEntities
 		assertThat(entity.getFees()).isNotNull(); // Mapped via toFeesEmbeddable
@@ -52,7 +52,7 @@ class EntityMapperTest {
 		assertThat(entity.getLeasehold()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getObjectIdentity()).isEqualTo(dto.getObjectIdentity());
-		assertThat(entity.getNotices()).isNotNull(); // Is tested in its own method
+		assertThat(entity.getNoticeTerms()).isNotNull(); // Is tested in its own method
 		assertThat(entity.getPropertyDesignations())
 			.flatExtracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
 			.containsAnyElementsOf(dto.getPropertyDesignations().stream()
@@ -60,7 +60,7 @@ class EntityMapperTest {
 				.toList());
 		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
 		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
-		assertThat(entity.getStart()).isEqualTo(dto.getStart());
+		assertThat(entity.getStart()).isEqualTo(dto.getStartDate());
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
 		assertThat(entity.getVersion()).isEqualTo(dto.getVersion());
@@ -220,50 +220,49 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void testToNoticeEmbeddableWithNullUnitDefaultsToDays() {
+	void testToNoticeTermEmbeddableWithNullUnitDefaultsToDays() {
 
 		// Arrange
-		final var notices = List.of(
-			Notice.builder()
-				.withParty(Party.LESSEE)
-				.withPeriodOfNotice(3)
-				.withNoticeDate(LocalDate.now().plusMonths(3))
-				.build());
+		final var notice = Notice.builder()
+			.withTerms(List.of(
+				NoticeTerm.builder()
+					.withParty(Party.LESSEE)
+					.withPeriodOfNotice(3)
+					.build()))
+			.build();
 
 		// Act
-		final var noticeEmbeddables = EntityMapper.toNoticeEmbeddables(notices);
+		final var noticeEmbeddables = EntityMapper.toNoticeTermEmbeddables(notice);
 
 		// Assert
 		assertThat(noticeEmbeddables)
 			.hasSize(1)
-			.extracting(NoticeEmbeddable::getUnit)
+			.extracting(NoticeTermEmbeddable::getUnit)
 			.containsExactly(TimeUnit.DAYS);
 	}
 
 	@Test
-	void testToNoticeEmbeddables() {
+	void testToNoticeTermEmbeddables() {
 
 		// Arrange
 		final var entity = createContract();
 
 		// Act
-		final var noticeEmbeddables = EntityMapper.toNoticeEmbeddables(entity.getNotices());
+		final var noticeEmbeddables = EntityMapper.toNoticeTermEmbeddables(entity.getNotice());
 
 		// Assert
 		assertThat(noticeEmbeddables)
 			.hasSize(2)
 			.containsExactlyInAnyOrder(
-				NoticeEmbeddable.builder()
+				NoticeTermEmbeddable.builder()
 					.withParty(Party.LESSEE)
 					.withPeriodOfNotice(3)
 					.withUnit(TimeUnit.MONTHS)
-					.withNoticeDate(LocalDate.now().plusMonths(3))
 					.build(),
-				NoticeEmbeddable.builder()
+				NoticeTermEmbeddable.builder()
 					.withParty(Party.LESSOR)
 					.withPeriodOfNotice(1)
 					.withUnit(TimeUnit.MONTHS)
-					.withNoticeDate(LocalDate.now().plusMonths(1))
 					.build());
 	}
 }

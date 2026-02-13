@@ -73,7 +73,7 @@
 		"unit": "MONTHS",
 		"autoExtend": true
 	},
-	"notices": [
+	"notice": [
 		{
 			"party": "LESSOR",
 			"periodOfNotice": 1,

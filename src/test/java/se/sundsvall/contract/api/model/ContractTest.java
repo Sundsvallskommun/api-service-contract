@@ -60,13 +60,14 @@ class ContractTest {
 		final var indexTerms = List.of(new TermGroup());
 		final var propertyDesignations = List.of(new PropertyDesignation("SUNDSVALL NORRMALM 1:1", "Sundsvall"), new PropertyDesignation("SUNDSVALL NORRMALM 1:2", "Sundsvall"));
 		final var stakeholders = List.of(new Stakeholder());
-		final var notices = List.of(new Notice());
+		final var notice = Notice.builder().build();
 		final var duration = Duration.builder().build();
 		final var extension = Extension.builder().build();
 		final var fees = Fees.builder().build();
 		final var invoicing = new Invoicing();
-		final var start = LocalDate.of(2020, 1, 1);
-		final var end = LocalDate.of(2022, 12, 31);
+		final var startDate = LocalDate.of(2020, 1, 1);
+		final var endDate = LocalDate.of(2022, 12, 31);
+		final var currentPeriod = Period.builder().build();
 		final var area = 150;
 		final var signedByWitness = true;
 		final var areaData = new FeatureCollection();
@@ -92,10 +93,11 @@ class ContractTest {
 			.withDuration(duration)
 			.withFees(fees)
 			.withInvoicing(invoicing)
-			.withStart(start)
-			.withEnd(end)
+			.withStartDate(startDate)
+			.withEndDate(endDate)
 			.withExtension(extension)
-			.withNotices(notices)
+			.withNotice(notice)
+			.withCurrentPeriod(currentPeriod)
 			.withArea(area)
 			.withSignedByWitness(signedByWitness)
 			.withAreaData(areaData)
@@ -121,10 +123,11 @@ class ContractTest {
 		assertThat(contract.getDuration()).isEqualTo(duration);
 		assertThat(contract.getFees()).isEqualTo(fees);
 		assertThat(contract.getInvoicing()).isEqualTo(invoicing);
-		assertThat(contract.getStart()).isEqualTo(start);
-		assertThat(contract.getEnd()).isEqualTo(end);
+		assertThat(contract.getStartDate()).isEqualTo(startDate);
+		assertThat(contract.getEndDate()).isEqualTo(endDate);
 		assertThat(contract.getExtension()).isEqualTo(extension);
-		assertThat(contract.getNotices()).isEqualTo(notices);
+		assertThat(contract.getNotice()).isEqualTo(notice);
+		assertThat(contract.getCurrentPeriod()).isEqualTo(currentPeriod);
 		assertThat(contract.getArea()).isEqualTo(area);
 		assertThat(contract.isSignedByWitness()).isEqualTo(signedByWitness);
 		assertThat(contract.getAreaData()).isEqualTo(areaData);

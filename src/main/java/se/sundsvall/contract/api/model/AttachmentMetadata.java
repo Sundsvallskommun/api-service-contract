@@ -6,6 +6,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +36,7 @@ public class AttachmentMetadata {
 
 	@Schema(description = "Notes on the attachment", examples = "The contract was a little wrinkled when scanned")
 	private String note;
+
+	@Schema(description = "Date when the attachment was created", examples = "2023-01-01T00:00:00.000Z", accessMode = READ_ONLY)
+	private OffsetDateTime created;
 }
