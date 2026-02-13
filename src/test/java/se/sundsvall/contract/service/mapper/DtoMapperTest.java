@@ -70,7 +70,7 @@ class DtoMapperTest {
 		assertThat(dto.getAreaData()).isEqualTo(contractEntity.getAreaData());
 		assertThat(dto.getContractId()).isEqualTo(contractEntity.getContractId());
 		assertThat(dto.getDescription()).isEqualTo(contractEntity.getDescription());
-		assertThat(dto.getEndDate()).isEqualTo(contractEntity.getEnd());
+		assertThat(dto.getEndDate()).isEqualTo(contractEntity.getEndDate());
 		assertThat(dto.getExternalReferenceId()).isEqualTo(contractEntity.getExternalReferenceId());
 		assertThat(dto.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupDtos
 		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
@@ -79,7 +79,7 @@ class DtoMapperTest {
 		assertThat(dto.getIndexTerms()).isNotNull(); // Mapped via toTermGroupDtos
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getStartDate()).isEqualTo(contractEntity.getStart());
+		assertThat(dto.getStartDate()).isEqualTo(contractEntity.getStartDate());
 		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
 		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
 		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
@@ -89,13 +89,18 @@ class DtoMapperTest {
 				contractEntity.getPropertyDesignations().stream()
 					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
 					.toList());
+		assertThat(dto.getCurrentPeriod()).isNotNull();
+		assertThat(dto.getCurrentPeriod().getStartDate()).isEqualTo(contractEntity.getCurrentPeriodStartDate());
+		assertThat(dto.getCurrentPeriod().getEndDate()).isEqualTo(contractEntity.getCurrentPeriodEndDate());
+		assertThat(dto.getNotice()).isNotNull();
+		assertThat(dto.getNotice().getNoticeDate()).isEqualTo(contractEntity.getNoticeDate());
+		assertThat(dto.getNotice().getNoticeGivenBy()).isEqualTo(contractEntity.getNoticeGivenBy());
 		assertThat(dto).extracting(Contract::getAttachmentMetaData,
 			Contract::getFees,
 			Contract::getInvoicing,
 			Contract::getDuration,
 			Contract::getExtension,
-			Contract::getLeasehold,
-			Contract::getNotice).isNotNull(); // These attributes are tested in their own test methods
+			Contract::getLeasehold).isNotNull(); // These attributes are tested in their own test methods
 	}
 
 	@Test
@@ -158,6 +163,7 @@ class DtoMapperTest {
 		final var attachmentMetaData = AttachmentMetadata.builder()
 			.withId(attachmentEntity.getId())
 			.withCategory(attachmentEntity.getCategory())
+			.withCreated(attachmentEntity.getCreated())
 			.withFilename(attachmentEntity.getFilename())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
@@ -333,6 +339,7 @@ class DtoMapperTest {
 		assertThat(attachment.getMetadata().getId()).isEqualTo(entity.getId());
 		assertThat(attachment.getMetadata().getMimeType()).isEqualTo(entity.getMimeType());
 		assertThat(attachment.getMetadata().getNote()).isEqualTo(entity.getNote());
+		assertThat(attachment.getMetadata().getCreated()).isEqualTo(entity.getCreated());
 	}
 
 	@Test

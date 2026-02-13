@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 class ContractEntityTest {
@@ -116,8 +117,12 @@ class ContractEntityTest {
 			.build();
 		var invoiceInterval = QUARTERLY;
 		var invoicedIn = ADVANCE;
-		var start = now();
-		var end = now();
+		var startDate = now();
+		var endDate = now();
+		var currentPeriodStartDate = now().minusMonths(1);
+		var currentPeriodEndDate = now().plusMonths(6);
+		var noticeDate = now().plusMonths(3);
+		var noticeGivenBy = Party.LESSOR;
 		var autoExtend = true;
 		var leaseExtension = 4;
 		var leaseExtensionUnit = TimeUnit.YEARS;
@@ -148,8 +153,12 @@ class ContractEntityTest {
 				.withInvoiceInterval(invoiceInterval)
 				.withInvoicedIn(invoicedIn)
 				.build())
-			.withStart(start)
-			.withEnd(end)
+			.withStartDate(startDate)
+			.withEndDate(endDate)
+			.withCurrentPeriodStartDate(currentPeriodStartDate)
+			.withCurrentPeriodEndDate(currentPeriodEndDate)
+			.withNoticeDate(noticeDate)
+			.withNoticeGivenBy(noticeGivenBy)
 			.withAutoExtend(autoExtend)
 			.withLeaseExtension(leaseExtension)
 			.withLeaseExtensionUnit(leaseExtensionUnit)
@@ -180,8 +189,12 @@ class ContractEntityTest {
 			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
 			assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
 		});
-		assertThat(contract.getStart()).isEqualTo(start);
-		assertThat(contract.getEnd()).isEqualTo(end);
+		assertThat(contract.getStartDate()).isEqualTo(startDate);
+		assertThat(contract.getEndDate()).isEqualTo(endDate);
+		assertThat(contract.getCurrentPeriodStartDate()).isEqualTo(currentPeriodStartDate);
+		assertThat(contract.getCurrentPeriodEndDate()).isEqualTo(currentPeriodEndDate);
+		assertThat(contract.getNoticeDate()).isEqualTo(noticeDate);
+		assertThat(contract.getNoticeGivenBy()).isEqualTo(noticeGivenBy);
 		assertThat(contract.getAutoExtend()).isEqualTo(autoExtend);
 		assertThat(contract.getLeaseExtension()).isEqualTo(leaseExtension);
 		assertThat(contract.getNoticeTerms()).isEqualTo(noticeTerms);

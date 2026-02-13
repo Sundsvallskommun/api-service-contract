@@ -76,19 +76,19 @@
 		},
 		{
 			"type": "MODIFICATION",
-			"path": "$.notices.0.unit",
+			"path": "$.notice.terms.0.unit",
 			"oldValue": "MONTHS",
 			"newValue": "YEARS"
 		},
 		{
 			"type": "MODIFICATION",
-			"path": "$.notices.0.periodOfNotice",
+			"path": "$.notice.terms.0.periodOfNotice",
 			"oldValue": 3,
 			"newValue": 1
 		},
 		{
 			"type": "MODIFICATION",
-			"path": "$.notices.1.unit",
+			"path": "$.notice.terms.1.unit",
 			"oldValue": "MONTHS",
 			"newValue": "YEARS"
 		},
@@ -151,6 +151,24 @@
 			"path": "$.status",
 			"oldValue": "DRAFT",
 			"newValue": "ACTIVE"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.notice.noticeDate",
+			"newValue": "2024-06-01"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.notice.noticeGivenBy",
+			"newValue": "LESSOR"
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.currentPeriod",
+			"newValue": {
+				"startDate": "2023-10-02",
+				"endDate": "2024-10-02"
+			}
 		}
 	],
 	"availableVersions": [

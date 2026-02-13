@@ -117,20 +117,22 @@
 		"invoiceInterval": "MONTHLY",
 		"invoicedIn": "ARREARS"
 	},
-	"start": "2024-05-02",
-	"end": "2024-10-02",
-	"notice": [
-		{
-			"party": "LESSOR",
-			"periodOfNotice": 1,
-			"unit": "MONTHS"
-		},
-		{
-			"party": "LESSEE",
-			"periodOfNotice": 2,
-			"unit": "MONTHS"
-		}
-	],
+	"startDate": "2024-05-02",
+	"endDate": "2024-10-02",
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 1,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		]
+	},
 	"area": 12,
 	"signedByWitness": true
 }

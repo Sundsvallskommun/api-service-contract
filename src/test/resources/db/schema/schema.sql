@@ -6,6 +6,7 @@
 
     create table attachment (
         municipality_id varchar(4),
+        created datetime(6),
         id bigint not null auto_increment,
         contract_id varchar(10) not null,
         category varchar(64),
@@ -19,6 +20,8 @@
     create table contract (
         area integer,
         auto_extend bit,
+        current_period_end_date date,
+        current_period_start_date date,
         end_date date,
         fee_index_number integer,
         fee_index_year integer,
@@ -29,6 +32,7 @@
         lease_duration integer,
         lease_extension integer,
         municipality_id varchar(4),
+        notice_date date,
         signed_by_witness bit,
         start_date date,
         version integer,
@@ -40,6 +44,7 @@
         invoiced_in varchar(64),
         lease_type varchar(64),
         leasehold_type varchar(64),
+        notice_given_by varchar(64),
         status varchar(64),
         type varchar(64),
         description varchar(4096),
@@ -54,7 +59,6 @@
     ) engine=InnoDB;
 
     create table contract_notice (
-        notice_date date,
         period_of_notice integer not null,
         contract_id bigint not null,
         unit varchar(32) not null,

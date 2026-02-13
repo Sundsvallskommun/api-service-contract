@@ -1,5 +1,6 @@
 {
 	"metadata": {
+		"created": "${json-unit.any-string}",
 		"note": "The contract was a little wrinkled when scanned",
 		"filename": "LeaseContract12.pdf",
 		"id": 2,

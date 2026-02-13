@@ -25,6 +25,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
@@ -72,7 +73,9 @@ public final class EntityMapper {
 			.withAutoExtend(ofNullable(contract.getExtension()).map(Extension::getAutoExtend).orElse(null))
 			.withContractId(contract.getContractId())
 			.withDescription(contract.getDescription())
-			.withEnd(contract.getEndDate())
+			.withCurrentPeriodStartDate(ofNullable(contract.getCurrentPeriod()).map(Period::getStartDate).orElse(null))
+			.withCurrentPeriodEndDate(ofNullable(contract.getCurrentPeriod()).map(Period::getEndDate).orElse(null))
+			.withEndDate(contract.getEndDate())
 			.withExternalReferenceId(contract.getExternalReferenceId())
 			.withExtraParameters(toExtraParameterGroupEntities(contract.getExtraParameters()))
 			.withFees(toFeesEmbeddable(contract.getFees()))
@@ -85,11 +88,13 @@ public final class EntityMapper {
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
+			.withNoticeDate(ofNullable(contract.getNotice()).map(Notice::getNoticeDate).orElse(null))
+			.withNoticeGivenBy(ofNullable(contract.getNotice()).map(Notice::getNoticeGivenBy).orElse(null))
 			.withNoticeTerms(toNoticeTermEmbeddables(contract.getNotice()))
 			.withPropertyDesignations(toPropertyDesignationEmbeddables(contract.getPropertyDesignations()))
 			.withSignedByWitness(contract.isSignedByWitness())
 			.withStakeholders(toStakeholderEntities(contract.getStakeholders()))
-			.withStart(contract.getStartDate())
+			.withStartDate(contract.getStartDate())
 			.withStatus(contract.getStatus())   // Cannot / shouldn't be null
 			.withType(contract.getType()) // Cannot / shouldn't be null
 			.withVersion(contract.getVersion())

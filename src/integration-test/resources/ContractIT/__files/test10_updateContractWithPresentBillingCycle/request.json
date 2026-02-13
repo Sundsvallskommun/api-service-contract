@@ -60,9 +60,9 @@
 		}
 	],
 	"objectIdentity": "anotherObjectIdentity",
-	"end": "2024-10-02",
+	"endDate": "2024-10-02",
 	"area": 12,
-	"start": "2024-05-02",
+	"startDate": "2024-05-02",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",
 	"duration": {
 		"leaseDuration": 5,
@@ -73,18 +73,20 @@
 		"unit": "MONTHS",
 		"autoExtend": true
 	},
-	"notice": [
-		{
-			"party": "LESSOR",
-			"periodOfNotice": 1,
-			"unit": "MONTHS"
-		},
-		{
-			"party": "LESSEE",
-			"periodOfNotice": 2,
-			"unit": "MONTHS"
-		}
-	],
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 1,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		]
+	},
 	"indexTerms": [
 		{
 			"terms": [
