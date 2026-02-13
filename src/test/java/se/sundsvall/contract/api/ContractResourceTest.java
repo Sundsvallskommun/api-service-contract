@@ -150,7 +150,7 @@ class ContractResourceTest {
 			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts")
 				.queryParam("page", 1)
 				.queryParam("size", 20)
-				.queryParam("sort", "start,desc")
+				.queryParam("sort", "startDate,desc")
 				.build(MUNICIPALITY_ID))
 			.exchange()
 			.expectStatus().isOk()

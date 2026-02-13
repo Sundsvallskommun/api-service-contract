@@ -33,6 +33,8 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
@@ -42,7 +44,7 @@ import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
 import se.sundsvall.contract.integration.db.model.FeesEmbeddable;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
-import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.integration.db.model.TermEmbeddable;
@@ -113,14 +115,14 @@ public final class TestFactory {
 			.withAutoExtend(true)
 			.withLeaseExtension(2)
 			.withLeaseExtensionUnit(MONTHS)
-			.withNotices(List.of(
-				NoticeEmbeddable.builder()
+			.withNoticeTerms(List.of(
+				NoticeTermEmbeddable.builder()
 					.withParty(LESSEE)
 					.withPeriodOfNotice(3)
 					.withUnit(MONTHS)
 					.withNoticeDate(LocalDate.now().plusMonths(3))
 					.build(),
-				NoticeEmbeddable.builder()
+				NoticeTermEmbeddable.builder()
 					.withParty(LESSOR)
 					.withPeriodOfNotice(1)
 					.withUnit(MONTHS)
@@ -224,21 +226,27 @@ public final class TestFactory {
 				.withInvoiceInterval(YEARLY)
 				.withInvoicedIn(ADVANCE)
 				.build())
-			.withStart(LocalDate.now().minusMonths(2))
-			.withEnd(LocalDate.now().plusMonths(3))
-			.withNotices(List.of(
-				Notice.builder()
-					.withParty(LESSEE)
-					.withPeriodOfNotice(3)
-					.withUnit(MONTHS)
-					.withNoticeDate(LocalDate.now().plusMonths(3))
-					.build(),
-				Notice.builder()
-					.withParty(LESSOR)
-					.withPeriodOfNotice(1)
-					.withUnit(MONTHS)
-					.withNoticeDate(LocalDate.now().plusMonths(1))
-					.build()))
+			.withStartDate(LocalDate.now().minusMonths(2))
+			.withEndDate(LocalDate.now().plusMonths(3))
+			.withNotice(Notice.builder()
+				.withTerms(List.of(
+					NoticeTerm.builder()
+						.withParty(LESSEE)
+						.withPeriodOfNotice(3)
+						.withUnit(MONTHS)
+						.build(),
+					NoticeTerm.builder()
+						.withParty(LESSOR)
+						.withPeriodOfNotice(1)
+						.withUnit(MONTHS)
+						.build()))
+				.withNoticeDate(LocalDate.now().plusMonths(3))
+				.withNoticeGivenBy(LESSOR)
+				.build())
+			.withCurrentPeriod(Period.builder()
+				.withStartDate(LocalDate.now().minusMonths(2))
+				.withEndDate(LocalDate.now().plusMonths(3))
+				.build())
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
 			.withIndexTerms(List.of(

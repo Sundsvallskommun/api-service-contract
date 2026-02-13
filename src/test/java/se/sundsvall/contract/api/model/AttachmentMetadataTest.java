@@ -5,14 +5,24 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
+import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.time.OffsetDateTime;
+import java.util.Random;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 class AttachmentMetadataTest {
+
+	@BeforeAll
+	static void setup() {
+		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), OffsetDateTime.class);
+	}
 
 	@Test
 	void testBean() {
@@ -31,12 +41,14 @@ class AttachmentMetadataTest {
 		final var category = AttachmentCategory.CONTRACT;
 		final var mimeType = "mimeType";
 		final var note = "note";
+		final var created = OffsetDateTime.now();
 
 		final var attachment = AttachmentMetadata.builder()
 			.withFilename(filename)
 			.withCategory(category)
 			.withMimeType(mimeType)
 			.withNote(note)
+			.withCreated(created)
 			.build();
 
 		assertThat(attachment).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
@@ -44,7 +56,7 @@ class AttachmentMetadataTest {
 		assertThat(attachment.getCategory()).isEqualTo(category);
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
 		assertThat(attachment.getNote()).isEqualTo(note);
-
+		assertThat(attachment.getCreated()).isEqualTo(created);
 	}
 
 	@Test

@@ -90,14 +90,18 @@ public class Contract {
 	@Schema(description = "Invoicing details")
 	private Invoicing invoicing;
 
-	@Schema(description = "Lease period start date", examples = "2020-01-01", format = "date")
-	private LocalDate start;
+	@Schema(description = "Start date of the contract", examples = "2020-01-01", format = "date")
+	private LocalDate startDate;
 
-	@Schema(description = "Lease period end date", examples = "2022-12-31", format = "date")
-	private LocalDate end;
+	@Schema(description = "End date of the contract. Set when the contract is terminated", examples = "2022-12-31", format = "date")
+	private LocalDate endDate;
 
-	@ArraySchema(schema = @Schema(description = "Termination periods"))
-	private List<@Valid Notice> notices;
+	@Valid
+	private Notice notice;
+
+	@Valid
+	@Schema(description = "Current contract period")
+	private Period currentPeriod;
 
 	@Schema(description = "Leased area (m2)", examples = "150")
 	private Integer area;

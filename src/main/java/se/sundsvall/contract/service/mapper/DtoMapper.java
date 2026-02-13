@@ -25,6 +25,7 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.NoticeTerm;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
@@ -32,7 +33,7 @@ import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
-import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.integration.db.model.TermEmbeddable;
@@ -66,7 +67,7 @@ public final class DtoMapper {
 			.withAttachmentMetaData(toAttachmentMetadataDtos(attachmentEntities))
 			.withContractId(contractEntity.getContractId())
 			.withDescription(contractEntity.getDescription())
-			.withEnd(contractEntity.getEnd())
+			.withEndDate(contractEntity.getEnd())
 			.withExternalReferenceId(contractEntity.getExternalReferenceId())
 			.withExtraParameters(toExtraParameterGroupDtos(contractEntity.getExtraParameters()))
 			.withFees(toFeesDto(contractEntity))
@@ -78,11 +79,11 @@ public final class DtoMapper {
 			.withLeasehold(toLeaseholdDto(contractEntity.getLeasehold()))
 			.withMunicipalityId(contractEntity.getMunicipalityId())
 			.withObjectIdentity(contractEntity.getObjectIdentity())
-			.withNotices(toNoticeDtos(contractEntity.getNotices()))
+			.withNotice(toNoticeDto(contractEntity))
 			.withPropertyDesignations(toPropertyDesignationsDtos(contractEntity.getPropertyDesignations()))
 			.withSignedByWitness(contractEntity.isSignedByWitness())
 			.withStakeholders(toStakeholderDtos(contractEntity.getStakeholders()))
-			.withStart(contractEntity.getStart())
+			.withStartDate(contractEntity.getStart())
 			.withStatus(contractEntity.getStatus())
 			.withType(contractEntity.getType())
 			.withVersion(contractEntity.getVersion())
@@ -114,21 +115,26 @@ public final class DtoMapper {
 			.orElse(null);
 	}
 
-	static List<Notice> toNoticeDtos(final List<NoticeEmbeddable> noticeEmbeddableList) {
+	static Notice toNoticeDto(final ContractEntity contractEntity) {
+		return Notice.builder()
+			.withTerms(toNoticeTermDtos(contractEntity.getNoticeTerms()))
+			.build();
+	}
+
+	static List<NoticeTerm> toNoticeTermDtos(final List<NoticeTermEmbeddable> noticeEmbeddableList) {
 		return ofNullable(noticeEmbeddableList)
 			.map(noticeEmbeddables -> noticeEmbeddables.stream()
-				.map(DtoMapper::toNoticeDto)
+				.map(DtoMapper::toNoticeTermDto)
 				.collect(toCollection(ArrayList::new)))
 			.orElse(new ArrayList<>());
 	}
 
-	static Notice toNoticeDto(final NoticeEmbeddable noticeEmbeddable) {
+	static NoticeTerm toNoticeTermDto(final NoticeTermEmbeddable noticeEmbeddable) {
 		return ofNullable(noticeEmbeddable)
-			.map(embeddable -> Notice.builder()
+			.map(embeddable -> NoticeTerm.builder()
 				.withPeriodOfNotice(embeddable.getPeriodOfNotice())
 				.withParty(embeddable.getParty())
 				.withUnit(ofNullable(embeddable.getUnit()).orElse(DAYS))
-				.withNoticeDate(embeddable.getNoticeDate())
 				.build())
 			.orElse(null);
 	}

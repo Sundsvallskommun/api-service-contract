@@ -24,6 +24,7 @@ import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
+import se.sundsvall.contract.api.model.NoticeTerm;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
@@ -33,7 +34,7 @@ import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
 import se.sundsvall.contract.integration.db.model.FeesEmbeddable;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
-import se.sundsvall.contract.integration.db.model.NoticeEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.integration.db.model.TermEmbeddable;
@@ -71,7 +72,7 @@ public final class EntityMapper {
 			.withAutoExtend(ofNullable(contract.getExtension()).map(Extension::getAutoExtend).orElse(null))
 			.withContractId(contract.getContractId())
 			.withDescription(contract.getDescription())
-			.withEnd(contract.getEnd())
+			.withEnd(contract.getEndDate())
 			.withExternalReferenceId(contract.getExternalReferenceId())
 			.withExtraParameters(toExtraParameterGroupEntities(contract.getExtraParameters()))
 			.withFees(toFeesEmbeddable(contract.getFees()))
@@ -84,32 +85,32 @@ public final class EntityMapper {
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))
 			.withMunicipalityId(municipalityId)
 			.withObjectIdentity(contract.getObjectIdentity())
-			.withNotices(toNoticeEmbeddables(contract.getNotices()))
+			.withNoticeTerms(toNoticeTermEmbeddables(contract.getNotice()))
 			.withPropertyDesignations(toPropertyDesignationEmbeddables(contract.getPropertyDesignations()))
 			.withSignedByWitness(contract.isSignedByWitness())
 			.withStakeholders(toStakeholderEntities(contract.getStakeholders()))
-			.withStart(contract.getStart())
+			.withStart(contract.getStartDate())
 			.withStatus(contract.getStatus())   // Cannot / shouldn't be null
 			.withType(contract.getType()) // Cannot / shouldn't be null
 			.withVersion(contract.getVersion())
 			.build();
 	}
 
-	static List<NoticeEmbeddable> toNoticeEmbeddables(final List<Notice> noticeList) {
-		return ofNullable(noticeList)
-			.map(notices -> notices.stream()
-				.map(EntityMapper::toNoticeEmbeddable)
+	static List<NoticeTermEmbeddable> toNoticeTermEmbeddables(final Notice notice) {
+		return ofNullable(notice)
+			.map(Notice::getTerms)
+			.map(terms -> terms.stream()
+				.map(EntityMapper::toNoticeTermEmbeddable)
 				.collect(toCollection(ArrayList::new)))
 			.orElse(new ArrayList<>());
 	}
 
-	static NoticeEmbeddable toNoticeEmbeddable(final Notice notice) {
-		return ofNullable(notice)
-			.map(object -> NoticeEmbeddable.builder()
+	static NoticeTermEmbeddable toNoticeTermEmbeddable(final NoticeTerm noticeTerm) {
+		return ofNullable(noticeTerm)
+			.map(object -> NoticeTermEmbeddable.builder()
 				.withPeriodOfNotice(object.getPeriodOfNotice())
-				.withParty(notice.getParty())
-				.withUnit(ofNullable(notice.getUnit()).orElse(DAYS))
-				.withNoticeDate(notice.getNoticeDate())
+				.withParty(noticeTerm.getParty())
+				.withUnit(ofNullable(noticeTerm.getUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}

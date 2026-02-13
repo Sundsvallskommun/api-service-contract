@@ -116,7 +116,7 @@
 			},
 			"start": "2023-10-02",
 			"end": "2023-10-10",
-			"notices": [
+			"notice": [
 				{
 					"party": "LESSOR",
 					"periodOfNotice": 30,
@@ -174,7 +174,7 @@
 			},
 			"start": "2024-01-01",
 			"end": "2025-12-31",
-			"notices": [],
+			"notice": [],
 			"area": 500,
 			"signedByWitness": false
 		},
@@ -220,7 +220,7 @@
 			},
 			"start": "2023-07-01",
 			"end": "2024-06-30",
-			"notices": [],
+			"notice": [],
 			"area": 200,
 			"signedByWitness": true
 		}

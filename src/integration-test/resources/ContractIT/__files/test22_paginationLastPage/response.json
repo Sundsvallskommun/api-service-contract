@@ -16,7 +16,7 @@
 			"fees": {
 				"additionalInformation": []
 			},
-			"notices": [],
+			"notice": [],
 			"signedByWitness": false
 		}
 	],

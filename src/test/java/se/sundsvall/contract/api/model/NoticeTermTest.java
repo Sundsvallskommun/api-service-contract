@@ -5,29 +5,19 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
-import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
-import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Random;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.model.enums.Party;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
-class NoticeTest {
-
-	@BeforeAll
-	static void setup() {
-		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), LocalDate.class);
-	}
+class NoticeTermTest {
 
 	@Test
 	void testBean() {
-		assertThat(Notice.class, allOf(
+		assertThat(NoticeTerm.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -38,24 +28,24 @@ class NoticeTest {
 	@Test
 	void testBuilderMethods() {
 
-		final var terms = List.of(NoticeTerm.builder().build());
-		final var noticeDate = LocalDate.now().plusMonths(3);
-		final var noticeGivenBy = Party.LESSOR;
+		final var party = Party.LESSEE;
+		final var periodOfNotice = 3;
+		final var unit = TimeUnit.DAYS;
 
-		final var object = Notice.builder()
-			.withTerms(terms)
-			.withNoticeDate(noticeDate)
-			.withNoticeGivenBy(noticeGivenBy)
+		final var object = NoticeTerm.builder()
+			.withParty(party)
+			.withPeriodOfNotice(periodOfNotice)
+			.withUnit(unit)
 			.build();
 
 		assertThat(object).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(object.getTerms()).isEqualTo(terms);
-		assertThat(object.getNoticeDate()).isEqualTo(noticeDate);
-		assertThat(object.getNoticeGivenBy()).isEqualTo(noticeGivenBy);
+		assertThat(object.getPeriodOfNotice()).isEqualTo(periodOfNotice);
+		assertThat(object.getParty()).isEqualTo(party);
+		assertThat(object.getUnit()).isEqualTo(unit);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Notice.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(NoticeTerm.builder().build()).hasAllNullFieldsOrProperties();
 	}
 }

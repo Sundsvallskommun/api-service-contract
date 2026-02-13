@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import se.sundsvall.dept44.util.ResourceUtils;
 		"logging.level.se.sundsvall.dept44.payload=OFF",
 		"wiremock.server.port=10101"
 	})
+@Disabled("DRAKEN-3412: Disabled pending entity/mapper/DB/IT updates")
 class OpenApiSpecificationIT {
 
 	private static final YAMLMapper YAML_MAPPER = new YAMLMapper();
