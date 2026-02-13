@@ -118,7 +118,7 @@ public class ContractEntity {
 		indexes = @Index(name = "idx_contract_property_designation_contract_id", columnList = "contract_id"))
 	private List<PropertyDesignationEmbeddable> propertyDesignations;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "contract_notice",
 		joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_contract_notice_contract_id")))

@@ -156,7 +156,7 @@
     alter table if exists contract_stakeholder 
        add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
-    create index idx_contract_property_designation_contract_id 
+    create index idx_contract_property_designation_contract_id
        on property_designation (contract_id);
 
     alter table if exists additional_information 

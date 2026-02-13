@@ -19,7 +19,7 @@ public class Leasehold {
 
 	private LeaseholdType purpose;
 
-	@Schema(description = "description ", examples = "A simple description of the leasehold")
+	@Schema(description = "Description of the leasehold", examples = "A simple description of the leasehold")
 	private String description;
 
 	@ArraySchema(schema = @Schema(description = "Additional information", examples = "Some additional information"))

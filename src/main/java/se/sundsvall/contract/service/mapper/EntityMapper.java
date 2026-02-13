@@ -114,8 +114,8 @@ public final class EntityMapper {
 		return ofNullable(noticeTerm)
 			.map(object -> NoticeTermEmbeddable.builder()
 				.withPeriodOfNotice(object.getPeriodOfNotice())
-				.withParty(noticeTerm.getParty())
-				.withUnit(ofNullable(noticeTerm.getUnit()).orElse(DAYS))
+				.withParty(object.getParty())
+				.withUnit(ofNullable(object.getUnit()).orElse(DAYS))
 				.build())
 			.orElse(null);
 	}

@@ -168,6 +168,7 @@ public final class TestFactory {
 					.withPostalCode("somePostalCode")
 					.withCountry("someCountry")
 					.withAttention("someAttention")
+					.withCareOf("someCareOf")
 					.withType(VISITING_ADDRESS)
 					.build())
 				.withRoles(List.of(POWER_OF_ATTORNEY_ROLE))
@@ -283,6 +284,7 @@ public final class TestFactory {
 						.withPostalCode("somePostalCode")
 						.withCountry("someCountry")
 						.withAttention("someAttention")
+						.withCareOf("someCareOf")
 						.withType(VISITING_ADDRESS)
 						.build())
 					.withRoles(List.of(POWER_OF_ATTORNEY_ROLE))
@@ -320,6 +322,7 @@ public final class TestFactory {
 			.withPostalCode("somePostalCode")
 			.withCountry("someCountry")
 			.withAttention("someAttention")
+			.withCareOf("someCareOf")
 			.withType(VISITING_ADDRESS)
 			.build();
 	}

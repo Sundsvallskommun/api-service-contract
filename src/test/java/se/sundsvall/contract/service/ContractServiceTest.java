@@ -282,6 +282,83 @@ class ContractServiceTest {
 		verifyNoInteractions(businessruleMock);
 	}
 
+	@Test
+	void diffContractWithSameVersion() {
+
+		final var version = 2;
+		final var landLeaseContractEntity = createContractEntity();
+
+		final var p1 = mock(ContractVersionProjection.class);
+		final var p2 = mock(ContractVersionProjection.class);
+
+		when(p1.getVersion()).thenReturn(1);
+		when(p2.getVersion()).thenReturn(2);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1, p2));
+		when(contractRepositoryMock.findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, version))
+			.thenReturn(Optional.of(landLeaseContractEntity));
+		when(differMock.diff(any(Contract.class), any(Contract.class), anyList()))
+			.thenReturn(List.of());
+
+		final var diff = contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, version, version);
+
+		assertThat(diff.oldVersion()).isEqualTo(version);
+		assertThat(diff.newVersion()).isEqualTo(version);
+		assertThat(diff.changes()).isEmpty();
+
+		verify(contractRepositoryMock, times(2)).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, version);
+	}
+
+	@Test
+	void diffContractWithReversedVersionOrder() {
+
+		final var oldVersion = 3;
+		final var newVersion = 1;
+		final var landLeaseContractEntity = createContractEntity();
+
+		final var p1 = mock(ContractVersionProjection.class);
+		final var p2 = mock(ContractVersionProjection.class);
+		final var p3 = mock(ContractVersionProjection.class);
+
+		when(p1.getVersion()).thenReturn(1);
+		when(p2.getVersion()).thenReturn(2);
+		when(p3.getVersion()).thenReturn(3);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1, p2, p3));
+		when(contractRepositoryMock.findByMunicipalityIdAndContractIdAndVersion(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), any(Integer.class)))
+			.thenReturn(Optional.of(landLeaseContractEntity));
+		when(differMock.diff(any(Contract.class), any(Contract.class), anyList()))
+			.thenReturn(List.of());
+
+		final var diff = contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, oldVersion, newVersion);
+
+		assertThat(diff.oldVersion()).isEqualTo(oldVersion);
+		assertThat(diff.newVersion()).isEqualTo(newVersion);
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, oldVersion);
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, newVersion);
+	}
+
+	@Test
+	void diffContractWithSingleVersionThrowsBadRequest() {
+
+		final var p1 = mock(ContractVersionProjection.class);
+		when(p1.getVersion()).thenReturn(1);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1));
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, null, null))
+			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(Status.BAD_REQUEST));
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(differMock, businessruleMock);
+	}
+
 	@ParameterizedTest
 	@ValueSource(booleans = {
 		true, false

@@ -9,10 +9,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 class DurationTest {
+
+	private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Test
 	void testBean() {
@@ -43,5 +49,34 @@ class DurationTest {
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(Duration.builder().build()).hasAllNullFieldsOrProperties();
+	}
+
+	@ParameterizedTest
+	@ValueSource(ints = {
+		0, -1, -100
+	})
+	void testLeaseDurationMustBePositive(int invalidValue) {
+		final var duration = Duration.builder()
+			.withLeaseDuration(invalidValue)
+			.withUnit(TimeUnit.MONTHS)
+			.build();
+
+		final var violations = VALIDATOR.validate(duration);
+
+		assertThat(violations)
+			.isNotEmpty()
+			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("leaseDuration"));
+	}
+
+	@Test
+	void testValidDurationHasNoViolations() {
+		final var duration = Duration.builder()
+			.withLeaseDuration(3)
+			.withUnit(TimeUnit.MONTHS)
+			.build();
+
+		final var violations = VALIDATOR.validate(duration);
+
+		assertThat(violations).isEmpty();
 	}
 }

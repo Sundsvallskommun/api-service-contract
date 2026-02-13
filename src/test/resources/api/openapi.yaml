@@ -501,6 +501,12 @@ paths:
           format: int32
           exclusiveMinimum: 0
       responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diff"
         "404":
           description: Not Found
           content:
@@ -723,7 +729,7 @@ components:
           readOnly: true
         description:
           type: string
-          description: 'A description '
+          description: A description of the contract
           examples:
           - A simple description of the contract
         externalReferenceId:
@@ -1094,7 +1100,7 @@ components:
           $ref: "#/components/schemas/LeaseholdType"
         description:
           type: string
-          description: 'description '
+          description: Description of the leasehold
           examples:
           - A simple description of the leasehold
         additionalInformation:
@@ -1296,11 +1302,13 @@ components:
           description: Name of property designation
           example: SUNDSVALL BALDER 5:1
           maxLength: 255
+          minLength: 0
         district:
           type: string
           description: District of property designation
           example: Sundsvall
           maxLength: 255
+          minLength: 0
     Stakeholder:
       type: object
       properties:
@@ -1612,6 +1620,40 @@ components:
           description: BASE64-encoded attachment file content
           examples:
           - QkFTRTY0LWVuY29kZWQgZGF0YQ==
+    Change:
+      type: object
+      properties:
+        path:
+          type: string
+        type:
+          type: string
+          enum:
+          - ADDITION
+          - REMOVAL
+          - MODIFICATION
+        oldValue:
+          $ref: "#/components/schemas/JsonNode"
+        newValue:
+          $ref: "#/components/schemas/JsonNode"
+    Diff:
+      type: object
+      properties:
+        oldVersion:
+          type: integer
+          format: int32
+        newVersion:
+          type: integer
+          format: int32
+        availableVersions:
+          type: array
+          items:
+            type: integer
+            format: int32
+        changes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Change"
+    JsonNode: {}
     SpecificationContractEntity: {}
     PageContract:
       type: object

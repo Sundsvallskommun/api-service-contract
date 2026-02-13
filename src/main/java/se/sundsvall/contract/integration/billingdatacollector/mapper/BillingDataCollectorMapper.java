@@ -29,10 +29,12 @@ public final class BillingDataCollectorMapper {
 	 * @return                the scheduled billing object with billing months derived from the contract's invoice interval
 	 */
 	public static ScheduledBilling toScheduledBilling(ContractEntity contractEntity) {
-		final var billingMonths = ofNullable(contractEntity.getInvoicing())
+		final var billingMonths = ofNullable(contractEntity)
+			.map(ContractEntity::getInvoicing)
 			.map(InvoicingEmbeddable::getInvoiceInterval)
 			.map(BillingDataCollectorMapper::calculateBillingMonths)
-			.orElseThrow(() -> new IllegalStateException("Interval type is not defined for contract with id %s".formatted(contractEntity.getContractId())));
+			.orElseThrow(() -> new IllegalStateException("Interval type is not defined for contract with id %s".formatted(
+				ofNullable(contractEntity).map(ContractEntity::getContractId).orElse("unknown"))));
 
 		final var scheduledBilling = new ScheduledBilling();
 
