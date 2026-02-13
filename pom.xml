@@ -17,8 +17,18 @@
 		<geojson-jackson.version>3.0</geojson-jackson.version>
 		<json-diff.version>2.1.0</json-diff.version>
 		<spring-filter.version>3.2.5</spring-filter.version>
-		<testcontainers.version>1.21.4</testcontainers.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>1.21.4</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<!-- Test -->
 		<dependency>

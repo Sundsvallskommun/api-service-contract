@@ -4,17 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import se.sundsvall.contract.Application;
 
-@SpringBootTest(classes = BillableAgreementRuleConfigurationTest.TestConfiguration.class)
+@SpringBootTest(classes = Application.class)
 @ActiveProfiles("junit")
 class BillableAgreementRuleConfigurationTest {
-
-	@EnableConfigurationProperties(BillableAgreementRuleConfiguration.class)
-	static class TestConfiguration {
-	}
 
 	@Autowired
 	private BillableAgreementRuleConfiguration configuration;
