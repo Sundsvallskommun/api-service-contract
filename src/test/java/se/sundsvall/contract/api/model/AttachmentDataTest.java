@@ -53,7 +53,7 @@ class AttachmentDataTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("content"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("content"));
 	}
 
 	@Test
@@ -77,6 +77,6 @@ class AttachmentDataTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("content"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("content"));
 	}
 }

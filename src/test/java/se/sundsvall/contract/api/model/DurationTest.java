@@ -65,7 +65,7 @@ class DurationTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("leaseDuration"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("leaseDuration"));
 	}
 
 	@Test

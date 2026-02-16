@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
@@ -91,9 +92,9 @@ class DtoMapperTest {
 				contractEntity.getPropertyDesignations().stream()
 					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
 					.toList());
-		assertThat(dto.getCurrentPeriod()).isNotNull();
-		assertThat(dto.getCurrentPeriod().getStartDate()).isEqualTo(contractEntity.getCurrentPeriodStartDate());
-		assertThat(dto.getCurrentPeriod().getEndDate()).isEqualTo(contractEntity.getCurrentPeriodEndDate());
+		assertThat(dto.getCurrentPeriod()).isNotNull()
+			.extracting(Period::getStartDate, Period::getEndDate)
+			.containsExactly(contractEntity.getCurrentPeriodStartDate(), contractEntity.getCurrentPeriodEndDate());
 		assertThat(dto.getNotice()).isNotNull();
 		assertThat(dto.getNotice().getNoticeDate()).isEqualTo(contractEntity.getNoticeDate());
 		assertThat(dto.getNotice().getNoticeGivenBy()).isEqualTo(contractEntity.getNoticeGivenBy());

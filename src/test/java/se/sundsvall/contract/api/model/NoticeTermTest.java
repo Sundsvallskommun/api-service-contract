@@ -70,7 +70,7 @@ class NoticeTermTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("periodOfNotice"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("periodOfNotice"));
 	}
 
 	@Test

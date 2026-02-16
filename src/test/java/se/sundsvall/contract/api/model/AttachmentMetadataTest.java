@@ -84,7 +84,7 @@ class AttachmentMetadataTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("filename"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("filename"));
 	}
 
 	@ParameterizedTest(name = "{0}")
@@ -99,7 +99,7 @@ class AttachmentMetadataTest {
 
 		assertThat(violations)
 			.isNotEmpty()
-			.anySatisfy(v -> assertThat(v.getPropertyPath().toString()).isEqualTo("mimeType"));
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("mimeType"));
 	}
 
 	@Test

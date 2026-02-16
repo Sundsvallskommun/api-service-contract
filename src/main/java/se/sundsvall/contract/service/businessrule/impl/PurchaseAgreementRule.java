@@ -54,7 +54,6 @@ public class PurchaseAgreementRule implements BusinessruleInterface {
 
 		} catch (final Exception e) {
 			final var contractId = ofNullable(parameters).map(BusinessruleParameters::contractEntity).map(ContractEntity::getContractId).orElse("[n/a]");
-			logger.error("An exception occurred when applying purchase agreement business rules for contract number {}", contractId, e);
 			throw new BusinessruleException("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractId), e);
 		}
 	}
