@@ -2,7 +2,6 @@ package se.sundsvall.contract.integration.db.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,4 @@ public class NoticeTermEmbeddable {
 
 	@Column(name = "unit", length = 32, nullable = false)
 	private TimeUnit unit;
-
-	@Column(name = "notice_date")
-	private LocalDate noticeDate;
 }

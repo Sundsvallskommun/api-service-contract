@@ -61,9 +61,8 @@ public class BillableAgreementRule implements BusinessruleInterface {
 			}
 
 		} catch (final Exception e) {
-			// Wrap exception and rethrow as a BusinessruleException
-			throw new BusinessruleException("An exception occurred when applying billable agreement business rules for contract number %s"
-				.formatted(ofNullable(parameters).map(BusinessruleParameters::contractEntity).map(ContractEntity::getContractId).orElse("[n/a]")), e);
+			final var contractId = ofNullable(parameters).map(BusinessruleParameters::contractEntity).map(ContractEntity::getContractId).orElse("[n/a]");
+			throw new BusinessruleException("An exception occurred when applying billable agreement business rules for contract number %s".formatted(contractId), e);
 		}
 	}
 

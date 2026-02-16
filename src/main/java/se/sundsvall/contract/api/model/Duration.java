@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class Duration {
 
 	@Schema(description = "The lease duration value", examples = "9")
 	@NotNull
+	@Positive
 	private Integer leaseDuration;
 
 	@Schema(description = "The unit of the duration value", examples = "MONTHS")

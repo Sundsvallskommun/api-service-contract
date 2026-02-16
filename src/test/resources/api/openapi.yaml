@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "6.0"
 servers:
-- url: http://localhost:61000
+- url: http://localhost:52321
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -501,6 +501,12 @@ paths:
           format: int32
           exclusiveMinimum: 0
       responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diff"
         "404":
           description: Not Found
           content:
@@ -617,12 +623,12 @@ components:
         parameters:
           type: object
           additionalProperties: {}
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -694,6 +700,13 @@ components:
           description: Notes on the attachment
           examples:
           - The contract was a little wrinkled when scanned
+        created:
+          type: string
+          format: date-time
+          description: Date when the attachment was created
+          examples:
+          - 2023-01-01T00:00:00.000Z
+          readOnly: true
       required:
       - filename
       - mimeType
@@ -716,7 +729,7 @@ components:
           readOnly: true
         description:
           type: string
-          description: 'A description '
+          description: A description of the contract
           examples:
           - A simple description of the contract
         externalReferenceId:
@@ -785,23 +798,23 @@ components:
         invoicing:
           $ref: "#/components/schemas/Invoicing"
           description: Invoicing details
-        start:
+        startDate:
           type: string
           format: date
-          description: Lease period start date
+          description: Start date of the contract
           examples:
           - 2020-01-01
-        end:
+        endDate:
           type: string
           format: date
-          description: Lease period end date
+          description: End date of the contract. Set when the contract is terminated
           examples:
           - 2022-12-31
-        notices:
-          type: array
-          items:
-            $ref: "#/components/schemas/Notice"
-            description: Termination periods
+        notice:
+          $ref: "#/components/schemas/Notice"
+        currentPeriod:
+          $ref: "#/components/schemas/Period"
+          description: Current contract period
         area:
           type: integer
           format: int32
@@ -1087,7 +1100,7 @@ components:
           $ref: "#/components/schemas/LeaseholdType"
         description:
           type: string
-          description: 'description '
+          description: Description of the leasehold
           examples:
           - A simple description of the leasehold
         additionalInformation:
@@ -1179,7 +1192,27 @@ components:
                   $ref: "#/components/schemas/LngLatAlt"
     Notice:
       type: object
-      description: Notice
+      description: Notice information
+      properties:
+        terms:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoticeTerm"
+            description: Notice terms per party
+        noticeDate:
+          type: string
+          format: date
+          description: Date when notice was given
+          examples:
+          - 2025-01-29
+        noticeGivenBy:
+          $ref: "#/components/schemas/Party"
+          description: Party that initiated the notice
+          examples:
+          - LESSOR
+    NoticeTerm:
+      type: object
+      description: Notice term
       properties:
         party:
           $ref: "#/components/schemas/Party"
@@ -1197,12 +1230,6 @@ components:
           description: The unit of the periodOfNotice value
           examples:
           - MONTHS
-        noticeDate:
-          type: string
-          format: date
-          description: The date of notice
-          examples:
-          - 2024-06-15
       required:
       - party
       - periodOfNotice
@@ -1232,6 +1259,22 @@ components:
       - LESSOR
       - LESSEE
       - ALL
+    Period:
+      type: object
+      description: Contract period
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: Period start date
+          examples:
+          - 2021-07-01
+        endDate:
+          type: string
+          format: date
+          description: Period end date
+          examples:
+          - 2030-06-30
     Point:
       allOf:
       - $ref: "#/components/schemas/GeoJsonObject"
@@ -1259,11 +1302,13 @@ components:
           description: Name of property designation
           example: SUNDSVALL BALDER 5:1
           maxLength: 255
+          minLength: 0
         district:
           type: string
           description: District of property designation
           example: Sundsvall
           maxLength: 255
+          minLength: 0
     Stakeholder:
       type: object
       properties:
@@ -1506,12 +1551,12 @@ components:
         parameters:
           type: object
           additionalProperties: {}
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -1575,6 +1620,40 @@ components:
           description: BASE64-encoded attachment file content
           examples:
           - QkFTRTY0LWVuY29kZWQgZGF0YQ==
+    Change:
+      type: object
+      properties:
+        path:
+          type: string
+        type:
+          type: string
+          enum:
+          - ADDITION
+          - REMOVAL
+          - MODIFICATION
+        oldValue:
+          $ref: "#/components/schemas/JsonNode"
+        newValue:
+          $ref: "#/components/schemas/JsonNode"
+    Diff:
+      type: object
+      properties:
+        oldVersion:
+          type: integer
+          format: int32
+        newVersion:
+          type: integer
+          format: int32
+        availableVersions:
+          type: array
+          items:
+            type: integer
+            format: int32
+        changes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Change"
+    JsonNode: {}
     SpecificationContractEntity: {}
     PageContract:
       type: object
@@ -1599,13 +1678,13 @@ components:
           type: boolean
         last:
           type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
     PageableObject:
@@ -1614,16 +1693,16 @@ components:
         offset:
           type: integer
           format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        paged:
-          type: boolean
         unpaged:
           type: boolean
     SortObject:

@@ -90,9 +90,11 @@
 		"invoiceInterval": "MONTHLY",
 		"invoicedIn": "ARREARS"
 	},
-	"start": "2024-05-02",
-	"end": "2024-10-02",
-	"notice": [],
+	"startDate": "2024-05-02",
+	"endDate": "2024-10-02",
+	"notice": {
+		"terms": []
+	},
 	"area": 12,
 	"signedByWitness": true
 }

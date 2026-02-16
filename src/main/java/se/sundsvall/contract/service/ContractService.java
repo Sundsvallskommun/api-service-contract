@@ -36,7 +36,6 @@ import se.sundsvall.contract.service.diff.Differ;
  * Service for managing contracts.
  */
 @Service
-@Transactional
 public class ContractService {
 
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId '%s' is not present within municipality '%s'.";
@@ -69,6 +68,7 @@ public class ContractService {
 	 * @param  contract       the contract data
 	 * @return                the generated contract id
 	 */
+	@Transactional
 	public String createContract(final String municipalityId, final Contract contract) {
 		// Map to entity
 		final var contractEntity = toContractEntity(municipalityId, contract);
@@ -136,6 +136,7 @@ public class ContractService {
 	 * @param contractId     the contract id
 	 * @param contract       the updated contract data
 	 */
+	@Transactional
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
 		final var oldContractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
 			.orElseThrow(() -> Problem.builder()
@@ -189,6 +190,7 @@ public class ContractService {
 	 * @param municipalityId the municipality id
 	 * @param contractId     the contract id
 	 */
+	@Transactional
 	public void deleteContract(final String municipalityId, final String contractId) {
 		// Fetch contract
 		final var contractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)

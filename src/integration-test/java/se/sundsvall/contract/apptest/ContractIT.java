@@ -17,7 +17,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -26,7 +25,6 @@ import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@Disabled("DRAKEN-3412: Disabled pending entity/mapper/DB/IT updates")
 @WireMockAppTestSuite(files = "classpath:/ContractIT/", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",

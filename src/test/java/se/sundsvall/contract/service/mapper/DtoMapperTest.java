@@ -13,6 +13,7 @@ import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,11 @@ import org.mockito.Mockito;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.LeaseholdEmbeddable;
+import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
@@ -70,7 +73,7 @@ class DtoMapperTest {
 		assertThat(dto.getAreaData()).isEqualTo(contractEntity.getAreaData());
 		assertThat(dto.getContractId()).isEqualTo(contractEntity.getContractId());
 		assertThat(dto.getDescription()).isEqualTo(contractEntity.getDescription());
-		assertThat(dto.getEndDate()).isEqualTo(contractEntity.getEnd());
+		assertThat(dto.getEndDate()).isEqualTo(contractEntity.getEndDate());
 		assertThat(dto.getExternalReferenceId()).isEqualTo(contractEntity.getExternalReferenceId());
 		assertThat(dto.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupDtos
 		assertThat(dto.getLeaseType()).isEqualTo(contractEntity.getLeaseType());
@@ -79,7 +82,7 @@ class DtoMapperTest {
 		assertThat(dto.getIndexTerms()).isNotNull(); // Mapped via toTermGroupDtos
 		assertThat(dto.isSignedByWitness()).isEqualTo(contractEntity.isSignedByWitness());
 		assertThat(dto.getStakeholders()).isNotNull(); // Is tested in its own method
-		assertThat(dto.getStartDate()).isEqualTo(contractEntity.getStart());
+		assertThat(dto.getStartDate()).isEqualTo(contractEntity.getStartDate());
 		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
 		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
 		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
@@ -89,13 +92,18 @@ class DtoMapperTest {
 				contractEntity.getPropertyDesignations().stream()
 					.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
 					.toList());
+		assertThat(dto.getCurrentPeriod()).isNotNull()
+			.extracting(Period::getStartDate, Period::getEndDate)
+			.containsExactly(contractEntity.getCurrentPeriodStartDate(), contractEntity.getCurrentPeriodEndDate());
+		assertThat(dto.getNotice()).isNotNull();
+		assertThat(dto.getNotice().getNoticeDate()).isEqualTo(contractEntity.getNoticeDate());
+		assertThat(dto.getNotice().getNoticeGivenBy()).isEqualTo(contractEntity.getNoticeGivenBy());
 		assertThat(dto).extracting(Contract::getAttachmentMetaData,
 			Contract::getFees,
 			Contract::getInvoicing,
 			Contract::getDuration,
 			Contract::getExtension,
-			Contract::getLeasehold,
-			Contract::getNotice).isNotNull(); // These attributes are tested in their own test methods
+			Contract::getLeasehold).isNotNull(); // These attributes are tested in their own test methods
 	}
 
 	@Test
@@ -158,6 +166,7 @@ class DtoMapperTest {
 		final var attachmentMetaData = AttachmentMetadata.builder()
 			.withId(attachmentEntity.getId())
 			.withCategory(attachmentEntity.getCategory())
+			.withCreated(attachmentEntity.getCreated())
 			.withFilename(attachmentEntity.getFilename())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
@@ -277,7 +286,19 @@ class DtoMapperTest {
 		final var stakeholders = DtoMapper.toStakeholderDtos(entity.getStakeholders());
 
 		// Assert
-		assertThat(stakeholders).isNotNull().isNotEmpty().hasSize(entity.getStakeholders().size());
+		assertThat(stakeholders).isNotNull().hasSize(entity.getStakeholders().size());
+		final var firstDto = stakeholders.getFirst();
+		final var firstEntity = entity.getStakeholders().getFirst();
+		assertThat(firstDto.getFirstName()).isEqualTo(firstEntity.getFirstName());
+		assertThat(firstDto.getLastName()).isEqualTo(firstEntity.getLastName());
+		assertThat(firstDto.getOrganizationName()).isEqualTo(firstEntity.getOrganizationName());
+		assertThat(firstDto.getOrganizationNumber()).isEqualTo(firstEntity.getOrganizationNumber());
+		assertThat(firstDto.getPartyId()).isEqualTo(firstEntity.getPartyId());
+		assertThat(firstDto.getEmailAddress()).isEqualTo(firstEntity.getEmailAddress());
+		assertThat(firstDto.getPhoneNumber()).isEqualTo(firstEntity.getPhoneNumber());
+		assertThat(firstDto.getRoles()).containsAll(firstEntity.getRoles());
+		assertThat(firstDto.getType()).isEqualTo(firstEntity.getType());
+		assertThat(firstDto.getAddress()).isNotNull();
 	}
 
 	@Test
@@ -312,6 +333,7 @@ class DtoMapperTest {
 		// Assert
 		assertThat(address.getStreetAddress()).isEqualTo(entity.getStreetAddress());
 		assertThat(address.getPostalCode()).isEqualTo(entity.getPostalCode());
+		assertThat(address.getCareOf()).isEqualTo(entity.getCareOf());
 		assertThat(address.getCountry()).isEqualTo(entity.getCountry());
 		assertThat(address.getType()).isEqualTo(entity.getType());
 		assertThat(address.getAttention()).isEqualTo(entity.getAttention());
@@ -333,6 +355,7 @@ class DtoMapperTest {
 		assertThat(attachment.getMetadata().getId()).isEqualTo(entity.getId());
 		assertThat(attachment.getMetadata().getMimeType()).isEqualTo(entity.getMimeType());
 		assertThat(attachment.getMetadata().getNote()).isEqualTo(entity.getNote());
+		assertThat(attachment.getMetadata().getCreated()).isEqualTo(entity.getCreated());
 	}
 
 	@Test
@@ -373,6 +396,59 @@ class DtoMapperTest {
 					.withPeriodOfNotice(1)
 					.withUnit(TimeUnit.MONTHS)
 					.build());
+	}
+
+	@Test
+	void testToNoticeDtoReturnsEmptyNoticeWhenAllFieldsAreNull() {
+		// Arrange
+		final var entity = ContractEntity.builder().build();
+
+		// Act
+		final var notice = DtoMapper.toNoticeDto(entity);
+
+		// Assert
+		assertThat(notice).isNotNull();
+		assertThat(notice.getNoticeDate()).isNull();
+		assertThat(notice.getNoticeGivenBy()).isNull();
+		assertThat(notice.getTerms()).isEmpty();
+	}
+
+	@Test
+	void testToNoticeDtoReturnsNoticeWhenOnlyTermsExist() {
+		// Arrange
+		final var entity = ContractEntity.builder()
+			.withNoticeTerms(List.of(
+				NoticeTermEmbeddable.builder()
+					.withParty(Party.LESSEE)
+					.withPeriodOfNotice(3)
+					.withUnit(TimeUnit.MONTHS)
+					.build()))
+			.build();
+
+		// Act
+		final var notice = DtoMapper.toNoticeDto(entity);
+
+		// Assert
+		assertThat(notice).isNotNull();
+		assertThat(notice.getNoticeDate()).isNull();
+		assertThat(notice.getNoticeGivenBy()).isNull();
+		assertThat(notice.getTerms()).hasSize(1);
+	}
+
+	@Test
+	void testToNoticeDtoReturnsNoticeWhenOnlyNoticeDateExists() {
+		// Arrange
+		final var entity = ContractEntity.builder()
+			.withNoticeDate(LocalDate.now())
+			.build();
+
+		// Act
+		final var notice = DtoMapper.toNoticeDto(entity);
+
+		// Assert
+		assertThat(notice).isNotNull();
+		assertThat(notice.getNoticeDate()).isEqualTo(entity.getNoticeDate());
+		assertThat(notice.getTerms()).isEmpty();
 	}
 
 	@ParameterizedTest

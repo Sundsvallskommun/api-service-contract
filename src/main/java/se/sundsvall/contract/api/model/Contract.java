@@ -35,7 +35,7 @@ public class Contract {
 	@Schema(description = "Contract id", examples = "2024-12345", accessMode = READ_ONLY)
 	private String contractId;
 
-	@Schema(description = "A description ", examples = "A simple description of the contract")
+	@Schema(description = "A description of the contract", examples = "A simple description of the contract")
 	private String description;
 
 	@Schema(description = "External referenceId", examples = "123")

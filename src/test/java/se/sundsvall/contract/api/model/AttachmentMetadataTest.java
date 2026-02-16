@@ -11,13 +11,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.time.OffsetDateTime;
 import java.util.Random;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 class AttachmentMetadataTest {
+
+	private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@BeforeAll
 	static void setup() {
@@ -62,5 +70,54 @@ class AttachmentMetadataTest {
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(AttachmentMetadata.builder().build()).hasAllNullFieldsOrProperties();
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("blankStringArgumentProvider")
+	void testFilenameMustNotBeBlank(String description, String invalidValue) {
+		final var metadata = AttachmentMetadata.builder()
+			.withFilename(invalidValue)
+			.withMimeType("application/pdf")
+			.build();
+
+		final var violations = VALIDATOR.validate(metadata);
+
+		assertThat(violations)
+			.isNotEmpty()
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("filename"));
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("blankStringArgumentProvider")
+	void testMimeTypeMustNotBeBlank(String description, String invalidValue) {
+		final var metadata = AttachmentMetadata.builder()
+			.withFilename("file.pdf")
+			.withMimeType(invalidValue)
+			.build();
+
+		final var violations = VALIDATOR.validate(metadata);
+
+		assertThat(violations)
+			.isNotEmpty()
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("mimeType"));
+	}
+
+	@Test
+	void testValidMetadataHasNoViolations() {
+		final var metadata = AttachmentMetadata.builder()
+			.withFilename("file.pdf")
+			.withMimeType("application/pdf")
+			.build();
+
+		final var violations = VALIDATOR.validate(metadata);
+
+		assertThat(violations).isEmpty();
+	}
+
+	private static Stream<Arguments> blankStringArgumentProvider() {
+		return Stream.of(
+			Arguments.of("Null value", null),
+			Arguments.of("Empty string", ""),
+			Arguments.of("Whitespace only", "   "));
 	}
 }

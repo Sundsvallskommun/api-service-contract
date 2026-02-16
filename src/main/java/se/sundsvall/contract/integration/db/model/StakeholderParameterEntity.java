@@ -37,7 +37,7 @@ public class StakeholderParameterEntity {
 
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "stakeholder_id", nullable = false, foreignKey = @ForeignKey(name = "fk_stakeholder_parameter_stakeholder_id"))
 	private StakeholderEntity stakeholderEntity;
 
