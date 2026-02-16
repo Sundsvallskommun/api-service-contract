@@ -82,8 +82,8 @@ VALUES (1, 'Some additional information'),
        (2, 'More additional information'),
        (3, 'Even more additional information');
 
-INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, content)
-VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content');
+INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, content, created)
+VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content', '2024-01-15 10:30:00');
 
 INSERT INTO stakeholder (id, address_type, attention, country, email_address, first_name,
                          last_name, organization_name, organization_number, party_id, phone_number,

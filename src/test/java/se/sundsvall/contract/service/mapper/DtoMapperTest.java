@@ -399,7 +399,7 @@ class DtoMapperTest {
 	}
 
 	@Test
-	void testToNoticeDtoReturnsEmptyNoticeWhenAllFieldsAreNull() {
+	void testToNoticeDtoReturnsNullWhenAllFieldsAreNull() {
 		// Arrange
 		final var entity = ContractEntity.builder().build();
 
@@ -407,10 +407,30 @@ class DtoMapperTest {
 		final var notice = DtoMapper.toNoticeDto(entity);
 
 		// Assert
-		assertThat(notice).isNotNull();
-		assertThat(notice.getNoticeDate()).isNull();
-		assertThat(notice.getNoticeGivenBy()).isNull();
-		assertThat(notice.getTerms()).isEmpty();
+		assertThat(notice).isNull();
+	}
+
+	@Test
+	void testToNoticeDtoReturnsNullWhenEntityIsNull() {
+		// Act
+		final var notice = DtoMapper.toNoticeDto(null);
+
+		// Assert
+		assertThat(notice).isNull();
+	}
+
+	@Test
+	void testToNoticeDtoReturnsNullWhenEmptyTermsAndNoDateOrGivenBy() {
+		// Arrange
+		final var entity = ContractEntity.builder()
+			.withNoticeTerms(emptyList())
+			.build();
+
+		// Act
+		final var notice = DtoMapper.toNoticeDto(entity);
+
+		// Assert
+		assertThat(notice).isNull();
 	}
 
 	@Test

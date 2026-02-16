@@ -20,6 +20,7 @@
 		{
 			"id": 1,
 			"category": "CONTRACT",
+			"created": "2024-01-15T10:30:00Z",
 			"filename": "someFile.pdf",
 			"mimeType": "application/pdf",
 			"note": "someNote"
@@ -131,7 +132,13 @@
 				"periodOfNotice": 2,
 				"unit": "MONTHS"
 			}
-		]
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
+	},
+	"currentPeriod": {
+		"startDate": "2024-05-02",
+		"endDate": "2025-05-02"
 	},
 	"area": 12,
 	"signedByWitness": true

@@ -11,6 +11,7 @@
 		{
 			"id": 1,
 			"category": "CONTRACT",
+			"created": "2024-01-15T10:30:00Z",
 			"filename": "someFile.pdf",
 			"mimeType": "application/pdf",
 			"note": "someNote"
@@ -92,9 +93,6 @@
 	},
 	"startDate": "2024-05-02",
 	"endDate": "2024-10-02",
-	"notice": {
-		"terms": []
-	},
 	"area": 12,
 	"signedByWitness": true
 }
