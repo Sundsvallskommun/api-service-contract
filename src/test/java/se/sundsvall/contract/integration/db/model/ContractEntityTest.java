@@ -88,7 +88,7 @@ class ContractEntityTest {
 				.withParameters(Map.of("someParameter", "someValue"))
 				.build());
 		var stakeholders = List.of(StakeholderEntity.builder().build());
-		var leaseType = LeaseType.LEASEHOLD;
+		var leaseType = LeaseType.LAND_LEASE_RESIDENTIAL;
 		var leasehold = LeaseholdEmbeddable.builder().build();
 		var externalReferenceId = "externalReferenceId";
 		var propertyDesignations = List.of(

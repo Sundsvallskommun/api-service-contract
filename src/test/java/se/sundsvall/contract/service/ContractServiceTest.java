@@ -48,7 +48,6 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
@@ -93,7 +92,6 @@ class ContractServiceTest {
 
 		// Arrange
 		final var contract = Contract.builder()
-			.withLeaseType(LeaseType.LEASEHOLD)
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY)
 				.withInvoicedIn(ARREARS)

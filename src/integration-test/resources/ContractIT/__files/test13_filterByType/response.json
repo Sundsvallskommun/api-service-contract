@@ -5,7 +5,7 @@
 			"contractId": "2024-23456",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0002",
-			"leaseType": "LEASEHOLD",
+			"leaseType": "LAND_LEASE_RESIDENTIAL",
 			"municipalityId": "1984",
 			"objectIdentity": "someObjectIdentity",
 			"status": "DRAFT",

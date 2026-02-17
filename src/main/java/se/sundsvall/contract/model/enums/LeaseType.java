@@ -12,6 +12,5 @@ public enum LeaseType {
 	USUFRUCT_MISC,
 	OBJECT_LEASE,
 	LAND_LEASE_MISC,
-	LEASEHOLD,
 	OTHER_FEE
 }
