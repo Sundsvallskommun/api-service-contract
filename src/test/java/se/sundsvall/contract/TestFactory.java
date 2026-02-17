@@ -8,7 +8,6 @@ import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
-import static se.sundsvall.contract.model.enums.LeaseType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
 import static se.sundsvall.contract.model.enums.Party.LESSEE;
 import static se.sundsvall.contract.model.enums.Party.LESSOR;
@@ -75,7 +74,6 @@ public final class TestFactory {
 	public static ContractEntity.ContractEntityBuilder createContractEntityBuilder() {
 		return ContractEntity.builder()
 			.withContractId("2024-98765")
-			.withLeaseType(LEASEHOLD)
 			.withLeasehold(LeaseholdEmbeddable.builder()
 				.withPurpose(APARTMENT)
 				.withDescription("someDescription")
@@ -192,7 +190,6 @@ public final class TestFactory {
 			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
 			.withContractId("2024-12345")
-			.withLeaseType(LEASEHOLD)
 			.withLeasehold(Leasehold.builder().withPurpose(APARTMENT).withDescription("someDescription").build())
 			.withExternalReferenceId("someExternalReferenceId")
 			.withPropertyDesignations(List.of(

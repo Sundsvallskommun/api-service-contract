@@ -854,6 +854,7 @@ components:
       - PURCHASE_AGREEMENT
       - LAND_LEASE_PUBLIC
       - SHORT_TERM_LEASE_AGREEMENT
+      - LEASEHOLD
     Crs:
       type: object
       properties:
@@ -1090,7 +1091,6 @@ components:
       - USUFRUCT_MISC
       - OBJECT_LEASE
       - LAND_LEASE_MISC
-      - LEASEHOLD
       - OTHER_FEE
     Leasehold:
       type: object
