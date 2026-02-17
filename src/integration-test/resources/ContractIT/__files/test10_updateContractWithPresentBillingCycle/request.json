@@ -85,7 +85,9 @@
 				"periodOfNotice": 2,
 				"unit": "MONTHS"
 			}
-		]
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
 	},
 	"indexTerms": [
 		{
@@ -123,5 +125,9 @@
 		"invoiceInterval": "MONTHLY",
 		"invoicedIn": "ARREARS"
 	},
-	"status": "ACTIVE"
+	"status": "ACTIVE",
+	"currentPeriod": {
+		"startDate": "2024-05-02",
+		"endDate": "2025-05-02"
+	}
 }

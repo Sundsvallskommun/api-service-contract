@@ -162,7 +162,13 @@
 				"periodOfNotice": 2,
 				"unit": "MONTHS"
 			}
-		]
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
+	},
+	"currentPeriod": {
+		"startDate": "2023-10-02",
+		"endDate": "2024-10-02"
 	},
 	"area": 12,
 	"signedByWitness": true

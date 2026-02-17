@@ -21,6 +21,7 @@
 				{
 					"id": 1,
 					"category": "CONTRACT",
+					"created": "2024-01-15T10:30:00Z",
 					"filename": "someFile.pdf",
 					"mimeType": "application/pdf",
 					"note": "someNote"

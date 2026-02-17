@@ -118,11 +118,14 @@ public final class DtoMapper {
 	}
 
 	static Notice toNoticeDto(final ContractEntity contractEntity) {
-		return Notice.builder()
-			.withNoticeDate(contractEntity.getNoticeDate())
-			.withNoticeGivenBy(contractEntity.getNoticeGivenBy())
-			.withTerms(toNoticeTermDtos(contractEntity.getNoticeTerms()))
-			.build();
+		return ofNullable(contractEntity)
+			.map(entity -> Notice.builder()
+				.withNoticeDate(entity.getNoticeDate())
+				.withNoticeGivenBy(entity.getNoticeGivenBy())
+				.withTerms(toNoticeTermDtos(entity.getNoticeTerms()))
+				.build())
+			.filter(notice -> anyNotNull(notice.getNoticeDate(), notice.getNoticeGivenBy()) || isNotEmpty(notice.getTerms()))
+			.orElse(null);
 	}
 
 	static Period toPeriodDto(final ContractEntity contractEntity) {

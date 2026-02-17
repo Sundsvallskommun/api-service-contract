@@ -94,7 +94,9 @@ VALUES (1, 'LESSOR', 3, 'MONTHS'),
        (2, 'LESSOR', 30, 'DAYS'),
        (2, 'LESSEE', 60, 'DAYS'),
        (3, 'LESSOR', 1, 'YEARS'),
-       (3, 'LESSEE', 2, 'YEARS');
+       (3, 'LESSEE', 2, 'YEARS'),
+       (4, 'LESSOR', 6, 'MONTHS'),
+       (4, 'LESSEE', 3, 'MONTHS');
 
 INSERT INTO property_designation (contract_id, name, district)
 VALUES (1, 'SUNDSVALL NORRMALM 1:1', "District 1"),
@@ -106,8 +108,8 @@ VALUES (1, 'Some additional information'),
        (2, 'More additional information'),
        (3, 'Even more additional information');
 
-INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, content)
-VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content');
+INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, content, created)
+VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content', '2024-01-15 10:30:00');
 
 INSERT INTO stakeholder (id, address_type, attention, country, email_address, first_name,
                          last_name, organization_name, organization_number, party_id, phone_number,

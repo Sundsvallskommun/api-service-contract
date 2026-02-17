@@ -154,6 +154,7 @@
 				{
 					"id": 1,
 					"category": "CONTRACT",
+					"created": "2024-01-15T10:30:00Z",
 					"filename": "someFile.pdf",
 					"mimeType": "application/pdf",
 					"note": "someNote"
@@ -307,7 +308,18 @@
 			"startDate": "2024-01-01",
 			"endDate": "2025-12-31",
 			"notice": {
-				"terms": []
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 6,
+						"unit": "MONTHS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 3,
+						"unit": "MONTHS"
+					}
+				]
 			},
 			"currentPeriod": {
 				"startDate": "2024-01-01",
@@ -381,9 +393,6 @@
 			"stakeholders": [],
 			"fees": {
 				"additionalInformation": []
-			},
-			"notice": {
-				"terms": []
 			},
 			"signedByWitness": false
 		}
