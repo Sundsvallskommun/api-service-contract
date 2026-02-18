@@ -1,17 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.junit.jupiter.params.provider.EnumSource.Mode.INCLUDE;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static se.sundsvall.contract.TestFactory.createAddressEmbeddable;
-import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
-import static se.sundsvall.contract.TestFactory.createContractEntity;
-import static se.sundsvall.contract.TestFactory.createContractEntityBuilder;
-import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
-import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
-
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +23,18 @@ import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 import se.sundsvall.contract.service.businessrule.model.Action;
+
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.INCLUDE;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static se.sundsvall.contract.TestFactory.createAddressEmbeddable;
+import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
+import static se.sundsvall.contract.TestFactory.createContractEntity;
+import static se.sundsvall.contract.TestFactory.createContractEntityBuilder;
+import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
+import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
 
 class DtoMapperTest {
 

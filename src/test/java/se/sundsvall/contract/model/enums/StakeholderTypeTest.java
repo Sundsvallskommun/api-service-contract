@@ -1,5 +1,7 @@
 package se.sundsvall.contract.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.StakeholderType.ASSOCIATION;
 import static se.sundsvall.contract.model.enums.StakeholderType.MUNICIPALITY;
@@ -7,8 +9,6 @@ import static se.sundsvall.contract.model.enums.StakeholderType.ORGANIZATION;
 import static se.sundsvall.contract.model.enums.StakeholderType.OTHER;
 import static se.sundsvall.contract.model.enums.StakeholderType.PERSON;
 import static se.sundsvall.contract.model.enums.StakeholderType.REGION;
-
-import org.junit.jupiter.api.Test;
 
 class StakeholderTypeTest {
 

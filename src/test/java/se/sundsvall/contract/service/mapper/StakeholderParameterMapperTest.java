@@ -1,14 +1,14 @@
 package se.sundsvall.contract.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Parameter;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderParameterEntity;
+
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 
 class StakeholderParameterMapperTest {
 

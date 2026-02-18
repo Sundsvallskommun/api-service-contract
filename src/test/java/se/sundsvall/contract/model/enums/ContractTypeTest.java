@@ -1,13 +1,13 @@
 package se.sundsvall.contract.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE_PUBLIC;
 import static se.sundsvall.contract.model.enums.ContractType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.ContractType.SHORT_TERM_LEASE_AGREEMENT;
-
-import org.junit.jupiter.api.Test;
 
 class ContractTypeTest {
 

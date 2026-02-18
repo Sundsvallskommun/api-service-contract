@@ -1,8 +1,5 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -15,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration.CLIENT_ID;
 
 /**
  * Feign client for the BillingDataCollector service API.

@@ -1,16 +1,5 @@
 package se.sundsvall.contract.api;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-import static org.zalando.problem.Status.BAD_REQUEST;
-
 import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,6 +33,17 @@ import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
+import static org.zalando.problem.Status.BAD_REQUEST;
 
 @RestController
 @Validated

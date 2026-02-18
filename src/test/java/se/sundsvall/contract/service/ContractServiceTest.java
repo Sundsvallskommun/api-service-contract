@@ -1,22 +1,5 @@
 package se.sundsvall.contract.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
-import static se.sundsvall.contract.TestFactory.createContractEntity;
-import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
-import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-
 import com.deblock.jsondiff.matcher.Path;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.util.List;
@@ -52,6 +35,23 @@ import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 import se.sundsvall.contract.service.diff.Differ;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
+import static se.sundsvall.contract.TestFactory.createContractEntity;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
 @ExtendWith(MockitoExtension.class)
 class ContractServiceTest {

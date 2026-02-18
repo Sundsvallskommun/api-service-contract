@@ -1,11 +1,11 @@
 package se.sundsvall.contract.service.businessrule.model;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
 import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
 import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
-
-import org.junit.jupiter.api.Test;
 
 class ActionTest {
 

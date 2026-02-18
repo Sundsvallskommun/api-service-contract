@@ -1,5 +1,18 @@
 package se.sundsvall.contract.integration.db.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import org.geojson.FeatureCollection;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.contract.model.enums.ContractType;
+import se.sundsvall.contract.model.enums.LeaseType;
+import se.sundsvall.contract.model.enums.Party;
+import se.sundsvall.contract.model.enums.TimeUnit;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -15,19 +28,6 @@ import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_IN
 import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
 import static se.sundsvall.contract.model.enums.Status.TERMINATED;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import org.geojson.FeatureCollection;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.LeaseType;
-import se.sundsvall.contract.model.enums.Party;
-import se.sundsvall.contract.model.enums.TimeUnit;
 
 class ContractEntityTest {
 

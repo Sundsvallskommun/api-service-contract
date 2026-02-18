@@ -1,8 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static java.time.OffsetDateTime.now;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +17,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.time.OffsetDateTime.now;
 
 @Entity
 @Data

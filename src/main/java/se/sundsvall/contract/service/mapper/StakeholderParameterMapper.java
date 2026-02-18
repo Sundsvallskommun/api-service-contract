@@ -1,9 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +7,10 @@ import java.util.Optional;
 import se.sundsvall.contract.api.model.Parameter;
 import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.integration.db.model.StakeholderParameterEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Mapper for converting between {@link Parameter} and {@link StakeholderParameterEntity} objects.

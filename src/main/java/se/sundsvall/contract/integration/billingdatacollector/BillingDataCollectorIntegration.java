@@ -1,13 +1,13 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
-import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
-import static java.util.Optional.ofNullable;
-
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+import static java.util.Optional.ofNullable;
 
 /**
  * Integration component for managing scheduled billing cycles via the BillingDataCollector service.

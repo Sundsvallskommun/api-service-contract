@@ -1,15 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toCollection;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
-import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
-import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +34,16 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
+import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toStakeholderParameterEntityList;
 
 /**
  * Mapper for converting API model objects to JPA entity objects.

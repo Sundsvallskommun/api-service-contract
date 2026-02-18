@@ -1,10 +1,5 @@
 package se.sundsvall.contract.service.businessrule.impl;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.contract.integration.billingdatacollector.mapper.BillingDataCollectorMapper.toScheduledBilling;
-import static se.sundsvall.contract.service.businessrule.ContractUtility.isBillable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,6 +9,11 @@ import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.configuration.BillableAgreementRuleConfiguration;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.integration.billingdatacollector.mapper.BillingDataCollectorMapper.toScheduledBilling;
+import static se.sundsvall.contract.service.businessrule.ContractUtility.isBillable;
 
 /**
  * Business rule for managing billing cycles in the BillingDataCollector service
