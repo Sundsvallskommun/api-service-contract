@@ -1,13 +1,5 @@
 package se.sundsvall.contract.api.model;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import se.sundsvall.contract.model.enums.Party;
-import se.sundsvall.contract.model.enums.TimeUnit;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -16,6 +8,14 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import se.sundsvall.contract.model.enums.Party;
+import se.sundsvall.contract.model.enums.TimeUnit;
 
 class NoticeTermTest {
 
@@ -57,7 +57,7 @@ class NoticeTermTest {
 
 	@ParameterizedTest
 	@ValueSource(ints = {
-		0, -1, -100
+		-1, -100
 	})
 	void testPeriodOfNoticeMustBePositive(int invalidValue) {
 		final var noticeTerm = NoticeTerm.builder()

@@ -1,8 +1,5 @@
 package se.sundsvall.contract.api.model;
 
-import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.TimeUnit;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -12,7 +9,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import se.sundsvall.contract.model.enums.TimeUnit;
+
 class ExtensionTest {
+
+	private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Test
 	void testBean() {
@@ -102,5 +108,23 @@ class ExtensionTest {
 			.withUnit(TimeUnit.DAYS)
 			.build()
 			.hasValidExtensionProperties()).isTrue();
+	}
+
+	@ParameterizedTest
+	@ValueSource(ints = {
+		-1, -100
+	})
+	void leaseExtensionMustBeZeroOrPositive(int invalidValue) {
+		final var extension = Extension.builder()
+			.withAutoExtend(true)
+			.withLeaseExtension(invalidValue)
+			.withUnit(TimeUnit.DAYS)
+			.build();
+
+		final var violations = VALIDATOR.validate(extension);
+
+		assertThat(violations)
+			.isNotEmpty()
+			.anySatisfy(v -> assertThat(v.getPropertyPath()).hasToString("leaseExtension"));
 	}
 }
