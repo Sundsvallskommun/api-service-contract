@@ -2,7 +2,6 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +22,6 @@ public class Extension {
 	private Boolean autoExtend;
 
 	@Schema(description = "The lease extension value", examples = "2")
-	@Positive
 	private Integer leaseExtension;
 
 	@Schema(description = "The unit of the extension value", examples = "MONTHS")
