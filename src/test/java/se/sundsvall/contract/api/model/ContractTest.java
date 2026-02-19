@@ -1,5 +1,15 @@
 package se.sundsvall.contract.api.model;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Random;
+import org.geojson.FeatureCollection;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.contract.model.ExtraParameterGroup;
+import se.sundsvall.contract.model.Fees;
+import se.sundsvall.contract.model.TermGroup;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -13,16 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MISC;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Random;
-import org.geojson.FeatureCollection;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
-import se.sundsvall.contract.model.TermGroup;
 
 class ContractTest {
 

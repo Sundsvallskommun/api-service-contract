@@ -1,8 +1,5 @@
 package se.sundsvall.contract.service.businessrule.impl;
 
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
-
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +8,9 @@ import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
+
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 
 /**
  * Business rule for purchase agreements that clears lease-specific attributes

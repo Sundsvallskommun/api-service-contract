@@ -1,16 +1,5 @@
 package se.sundsvall.contract.integration.billingdatacollector.mapper;
 
-import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.contract.model.enums.IntervalType.HALF_YEARLY;
-import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
-import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
-
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -25,6 +14,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.model.enums.IntervalType;
+
+import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.contract.model.enums.IntervalType.HALF_YEARLY;
+import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
 
 @ExtendWith(MockitoExtension.class)
 class BillingDataCollectorMapperTest {

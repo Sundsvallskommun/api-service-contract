@@ -1,7 +1,5 @@
 package se.sundsvall.contract.integration.db.model;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -21,6 +19,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data

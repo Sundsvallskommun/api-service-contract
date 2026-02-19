@@ -1,11 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.TestFactory.createAttachment;
-import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
-import static se.sundsvall.contract.TestFactory.createContract;
-import static se.sundsvall.contract.TestFactory.createContractEntity;
-
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -18,6 +12,12 @@ import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.contract.TestFactory.createAttachment;
+import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
+import static se.sundsvall.contract.TestFactory.createContract;
+import static se.sundsvall.contract.TestFactory.createContractEntity;
 
 class EntityMapperTest {
 

@@ -1,13 +1,13 @@
 package se.sundsvall.contract.integration.billingdatacollector.mapper;
 
-import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
-import static java.util.Optional.ofNullable;
-
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import java.util.Set;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.model.enums.IntervalType;
+
+import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+import static java.util.Optional.ofNullable;
 
 /**
  * Mapper for converting {@link ContractEntity} objects to BillingDataCollector API objects.

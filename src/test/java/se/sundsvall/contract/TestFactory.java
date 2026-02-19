@@ -1,22 +1,5 @@
 package se.sundsvall.contract;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
-import static se.sundsvall.contract.model.enums.AddressType.VISITING_ADDRESS;
-import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
-import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
-import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
-import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
-import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
-import static se.sundsvall.contract.model.enums.Party.LESSEE;
-import static se.sundsvall.contract.model.enums.Party.LESSOR;
-import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
-import static se.sundsvall.contract.model.enums.StakeholderType.ASSOCIATION;
-import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
-import static se.sundsvall.contract.model.enums.TimeUnit.MONTHS;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -52,6 +35,23 @@ import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
+import static se.sundsvall.contract.model.enums.AddressType.VISITING_ADDRESS;
+import static se.sundsvall.contract.model.enums.AttachmentCategory.CONTRACT;
+import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
+import static se.sundsvall.contract.model.enums.IntervalType.YEARLY;
+import static se.sundsvall.contract.model.enums.InvoicedIn.ADVANCE;
+import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
+import static se.sundsvall.contract.model.enums.Party.LESSEE;
+import static se.sundsvall.contract.model.enums.Party.LESSOR;
+import static se.sundsvall.contract.model.enums.StakeholderRole.POWER_OF_ATTORNEY_ROLE;
+import static se.sundsvall.contract.model.enums.StakeholderType.ASSOCIATION;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
+import static se.sundsvall.contract.model.enums.TimeUnit.MONTHS;
 
 public final class TestFactory {
 

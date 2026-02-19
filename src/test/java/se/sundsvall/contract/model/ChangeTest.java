@@ -1,10 +1,10 @@
 package se.sundsvall.contract.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.deblock.jsondiff.matcher.Path;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ChangeTest {
 

@@ -1,5 +1,10 @@
 package se.sundsvall.contract.integration.db.model;
 
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.StakeholderType;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
@@ -8,11 +13,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.model.enums.StakeholderRole;
-import se.sundsvall.contract.model.enums.StakeholderType;
 
 class StakeholderEntityTest {
 

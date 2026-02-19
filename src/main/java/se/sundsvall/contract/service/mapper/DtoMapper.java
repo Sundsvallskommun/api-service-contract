@@ -1,17 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toCollection;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
-import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
-import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
-import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
-import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +33,18 @@ import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL;
+import static se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX;
+import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
+import static se.sundsvall.contract.model.enums.TimeUnit.DAYS;
+import static se.sundsvall.contract.service.mapper.StakeholderParameterMapper.toParameterList;
 
 /**
  * Mapper for converting JPA entity objects to API model (DTO) objects.

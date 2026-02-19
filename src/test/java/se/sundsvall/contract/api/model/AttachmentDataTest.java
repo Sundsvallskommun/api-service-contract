@@ -1,5 +1,10 @@
 package se.sundsvall.contract.api.model;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import java.util.Base64;
+import org.junit.jupiter.api.Test;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -8,11 +13,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
-
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import java.util.Base64;
-import org.junit.jupiter.api.Test;
 
 class AttachmentDataTest {
 

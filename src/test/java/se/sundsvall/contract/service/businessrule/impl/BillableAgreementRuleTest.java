@@ -1,22 +1,5 @@
 package se.sundsvall.contract.service.businessrule.impl;
 
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
-import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
-import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
-import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
-import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
-
 import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import java.util.List;
 import java.util.stream.Stream;
@@ -36,6 +19,23 @@ import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 import se.sundsvall.contract.service.businessrule.configuration.BillableAgreementRuleConfiguration;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleException;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
+
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.contract.model.enums.IntervalType.MONTHLY;
+import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
+import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
+import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
+import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
 
 @ExtendWith(MockitoExtension.class)
 class BillableAgreementRuleTest {

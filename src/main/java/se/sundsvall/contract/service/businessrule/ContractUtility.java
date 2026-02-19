@@ -1,11 +1,11 @@
 package se.sundsvall.contract.service.businessrule;
 
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.contract.model.enums.Status.ACTIVE;
-
 import java.util.Objects;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
+
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
 /**
  * Utility class with helper methods for evaluating {@link ContractEntity} properties.

@@ -1,5 +1,7 @@
 package se.sundsvall.contract.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.LeaseholdType.AGRICULTURE;
 import static se.sundsvall.contract.model.enums.LeaseholdType.APARTMENT;
@@ -18,8 +20,6 @@ import static se.sundsvall.contract.model.enums.LeaseholdType.SNOW_DUMP;
 import static se.sundsvall.contract.model.enums.LeaseholdType.SPORTS_PURPOSE;
 import static se.sundsvall.contract.model.enums.LeaseholdType.SURFACE_HEAT;
 import static se.sundsvall.contract.model.enums.LeaseholdType.TRAIL;
-
-import org.junit.jupiter.api.Test;
 
 class LeaseholdTypeTest {
 

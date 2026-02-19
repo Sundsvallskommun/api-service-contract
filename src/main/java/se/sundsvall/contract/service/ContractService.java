@@ -1,18 +1,5 @@
 package se.sundsvall.contract.service;
 
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
-import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
-import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
-import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
-import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
-import static se.sundsvall.contract.service.mapper.DtoMapper.toBusinessruleParameters;
-import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
-import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
-import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -31,6 +18,19 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.diff.Differ;
+
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
+import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
+import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
+import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
+import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toBusinessruleParameters;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
+import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
+import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
 
 /**
  * Service for managing contracts.

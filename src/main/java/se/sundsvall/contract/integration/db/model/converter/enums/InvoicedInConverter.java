@@ -1,12 +1,12 @@
 package se.sundsvall.contract.integration.db.model.converter.enums;
 
-import static java.util.Optional.ofNullable;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.InvoicedIn;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * JPA converter for {@link InvoicedIn}.

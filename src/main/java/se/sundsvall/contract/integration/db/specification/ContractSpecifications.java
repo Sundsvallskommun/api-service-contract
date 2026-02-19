@@ -1,11 +1,11 @@
 package se.sundsvall.contract.integration.db.specification;
 
+import org.springframework.data.jpa.domain.Specification;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
+
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.CONTRACT_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.MUNICIPALITY_ID;
 import static se.sundsvall.contract.integration.db.model.ContractEntity_.VERSION;
-
-import org.springframework.data.jpa.domain.Specification;
-import se.sundsvall.contract.integration.db.model.ContractEntity;
 
 /**
  * JPA specification utility for building dynamic {@link ContractEntity} queries.

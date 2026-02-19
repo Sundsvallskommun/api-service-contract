@@ -1,10 +1,10 @@
 package se.sundsvall.contract.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zalando.problem.Status.BAD_REQUEST;
-
 import com.turkraft.springfilter.parser.InvalidSyntaxException;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zalando.problem.Status.BAD_REQUEST;
 
 class ExceptionHandlerConfigTest {
 

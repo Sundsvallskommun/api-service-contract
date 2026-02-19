@@ -1,5 +1,7 @@
 package se.sundsvall.contract.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MISC;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_RESIDENTIAL;
@@ -10,8 +12,6 @@ import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_FARMING;
 import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_HUNTING;
 import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_MISC;
 import static se.sundsvall.contract.model.enums.LeaseType.USUFRUCT_MOORING;
-
-import org.junit.jupiter.api.Test;
 
 class LeaseTypeTest {
 

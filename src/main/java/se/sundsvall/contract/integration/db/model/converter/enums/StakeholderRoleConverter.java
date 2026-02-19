@@ -1,9 +1,5 @@
 package se.sundsvall.contract.integration.db.model.converter.enums;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import jakarta.persistence.PersistenceException;
@@ -13,6 +9,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import se.sundsvall.contract.model.enums.StakeholderRole;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 
 /**
  * JPA converter for a {@link List} of {@link StakeholderRole} enums, stored as a comma-delimited string.

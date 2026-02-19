@@ -1,7 +1,5 @@
 package se.sundsvall.contract.integration.db.model.generator;
 
-import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
-
 import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import java.util.EnumSet;
@@ -9,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
+
+import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
 
 /**
  * Hibernate id generator that produces contract ids in the format {@code YYYY-NNNNN}

@@ -1,10 +1,5 @@
 package se.sundsvall.contract.service;
 
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.contract.service.mapper.DtoMapper.toAttachmentMetaDataDto;
-import static se.sundsvall.contract.service.mapper.EntityMapper.toAttachmentEntity;
-import static se.sundsvall.contract.service.mapper.EntityMapper.updateAttachmentEntity;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -13,6 +8,11 @@ import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.service.mapper.DtoMapper;
+
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.contract.service.mapper.DtoMapper.toAttachmentMetaDataDto;
+import static se.sundsvall.contract.service.mapper.EntityMapper.toAttachmentEntity;
+import static se.sundsvall.contract.service.mapper.EntityMapper.updateAttachmentEntity;
 
 /**
  * Service for managing contract attachments.

@@ -1,7 +1,5 @@
 package se.sundsvall.contract.service.diff;
 
-import static java.util.Collections.emptyList;
-
 import com.deblock.jsondiff.DiffGenerator;
 import com.deblock.jsondiff.diff.JsonDiff;
 import com.deblock.jsondiff.matcher.CompositeJsonMatcher;
@@ -19,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import se.sundsvall.contract.model.Change;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Component for computing JSON diffs between two objects.
