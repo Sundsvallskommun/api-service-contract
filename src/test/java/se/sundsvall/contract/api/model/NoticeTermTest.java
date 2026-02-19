@@ -57,7 +57,7 @@ class NoticeTermTest {
 
 	@ParameterizedTest
 	@ValueSource(ints = {
-		0, -1, -100
+		-1, -100
 	})
 	void testPeriodOfNoticeMustBePositive(int invalidValue) {
 		final var noticeTerm = NoticeTerm.builder()

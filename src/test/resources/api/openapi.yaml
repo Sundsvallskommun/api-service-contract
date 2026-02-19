@@ -873,6 +873,7 @@ components:
         leaseDuration:
           type: integer
           format: int32
+          minimum: 0
           description: The lease duration value
           examples:
           - "9"
@@ -898,6 +899,7 @@ components:
         leaseExtension:
           type: integer
           format: int32
+          minimum: 0
           description: The lease extension value
           examples:
           - "2"
@@ -1222,6 +1224,7 @@ components:
         periodOfNotice:
           type: integer
           format: int32
+          minimum: 0
           description: The period of notice
           examples:
           - "3"

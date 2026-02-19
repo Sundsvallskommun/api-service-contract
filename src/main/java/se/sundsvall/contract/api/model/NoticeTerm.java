@@ -1,8 +1,8 @@
 package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class NoticeTerm {
 
 	@Schema(description = "The period of notice", examples = "3")
 	@NotNull
-	@Positive
+	@Min(0)
 	private Integer periodOfNotice;
 
 	@Schema(description = "The unit of the periodOfNotice value", examples = "MONTHS")

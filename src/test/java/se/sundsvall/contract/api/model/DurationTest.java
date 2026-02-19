@@ -53,9 +53,9 @@ class DurationTest {
 
 	@ParameterizedTest
 	@ValueSource(ints = {
-		0, -1, -100
+		-1, -100
 	})
-	void testLeaseDurationMustBePositive(int invalidValue) {
+	void testLeaseDurationMustBeZeroOrPositive(int invalidValue) {
 		final var duration = Duration.builder()
 			.withLeaseDuration(invalidValue)
 			.withUnit(TimeUnit.MONTHS)
