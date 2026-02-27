@@ -9,7 +9,7 @@
         created datetime(6),
         id bigint not null auto_increment,
         contract_id varchar(10) not null,
-        category varchar(64),
+        category varchar(64) check ((category in ('OTHER','CONTRACT'))),
         filename varchar(255),
         mime_type varchar(255),
         note varchar(255),
@@ -38,15 +38,15 @@
         version integer,
         id bigint not null auto_increment,
         contract_id varchar(10) not null,
-        lease_duration_unit varchar(32),
-        lease_extension_unit varchar(32),
-        invoice_interval varchar(64),
-        invoiced_in varchar(64),
-        lease_type varchar(64),
-        leasehold_type varchar(64),
-        notice_given_by varchar(64),
-        status varchar(64),
-        type varchar(64),
+        lease_duration_unit varchar(32) check ((lease_duration_unit in ('MONTHS','YEARS','DAYS'))),
+        lease_extension_unit varchar(32) check ((lease_extension_unit in ('MONTHS','YEARS','DAYS'))),
+        invoice_interval varchar(64) check ((invoice_interval in ('YEARLY','HALF_YEARLY','QUARTERLY','MONTHLY'))),
+        invoiced_in varchar(64) check ((invoiced_in in ('ARREARS','ADVANCE'))),
+        lease_type varchar(64) check ((lease_type in ('USUFRUCT_FARMING','SITE_LEASE_COMMERCIAL','LAND_LEASE_RESIDENTIAL','USUFRUCT_HUNTING','OTHER_FEE','LAND_LEASE_MISC','USUFRUCT_MISC'))),
+        leasehold_type varchar(64) check ((leasehold_type in ('TRAIL','AGRICULTURE','RECYCLING_STATION','ROAD','LAND_COMPLEMENT','SIGNBOARD','DEPOT','BOATING_PLACE','DWELLING','SURFACE_HEAT','OTHER','SPORTS_PURPOSE','BUILDING','APARTMENT','LINEUP','SNOW_DUMP','PARKING'))),
+        notice_given_by varchar(64) check ((notice_given_by in ('ALL','LESSEE','LESSOR'))),
+        status varchar(64) check ((status in ('ACTIVE','DRAFT','TERMINATED'))),
+        type varchar(64) check ((type in ('OBJECT_LEASE','LAND_LEASE_PUBLIC','SHORT_TERM_LEASE_AGREEMENT','LEASE_AGREEMENT','PURCHASE_AGREEMENT','LEASEHOLD'))),
         description varchar(4096),
         external_reference_id varchar(255),
         fee_currency varchar(255),
@@ -61,8 +61,8 @@
     create table contract_notice (
         period_of_notice integer not null,
         contract_id bigint not null,
-        unit varchar(32) not null,
-        party varchar(64) not null
+        unit varchar(32) not null check ((unit in ('MONTHS','YEARS','DAYS'))),
+        party varchar(64) not null check ((party in ('ALL','LESSEE','LESSOR')))
     ) engine=InnoDB;
 
     create table contract_stakeholder (
@@ -97,8 +97,8 @@
 
     create table stakeholder (
         id bigint not null auto_increment,
-        address_type varchar(64),
-        type varchar(64),
+        address_type varchar(64) check ((address_type in ('BILLING_ADDRESS','POSTAL_ADDRESS','VISITING_ADDRESS'))),
+        type varchar(64) check ((type in ('ORGANIZATION','OTHER','PERSON','ASSOCIATION','MUNICIPALITY','REGION'))),
         attention varchar(255),
         care_of varchar(255),
         country varchar(255),
@@ -156,7 +156,7 @@
     alter table if exists contract_stakeholder 
        add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
-    create index idx_contract_property_designation_contract_id
+    create index idx_contract_property_designation_contract_id 
        on property_designation (contract_id);
 
     alter table if exists additional_information 

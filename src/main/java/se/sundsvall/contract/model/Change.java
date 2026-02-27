@@ -1,7 +1,7 @@
 package se.sundsvall.contract.model;
 
 import com.deblock.jsondiff.matcher.Path;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 public record Change(Type type, String path, JsonNode oldValue, JsonNode newValue) {
 

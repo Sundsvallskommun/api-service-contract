@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
@@ -18,10 +17,11 @@ import se.sundsvall.contract.integration.db.projection.ContractVersionProjection
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.diff.Differ;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
 import static se.sundsvall.contract.service.businessrule.model.Action.CREATE;
@@ -120,9 +120,12 @@ public class ContractService {
 	@Transactional(readOnly = true)
 	public Page<Contract> getContracts(final String municipalityId, final Specification<ContractEntity> filter, final Pageable pageable) {
 		// Combine mandatory specifications with the optional filter
-		final var specification = withOnlyLatestVersion()
-			.and(withMunicipalityId(municipalityId))
-			.and(filter);
+		var specification = withOnlyLatestVersion()
+			.and(withMunicipalityId(municipalityId));
+
+		if (filter != null) {
+			specification = specification.and(filter);
+		}
 
 		// Get all contracts and map to DTOs
 		return contractRepository.findAll(specification, pageable)
