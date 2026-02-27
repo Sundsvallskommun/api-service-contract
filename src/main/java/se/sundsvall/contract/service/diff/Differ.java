@@ -9,14 +9,13 @@ import com.deblock.jsondiff.matcher.StrictJsonArrayPartialMatcher;
 import com.deblock.jsondiff.matcher.StrictJsonObjectPartialMatcher;
 import com.deblock.jsondiff.matcher.StrictPrimitivePartialMatcher;
 import com.deblock.jsondiff.viewer.JsonDiffViewer;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 import se.sundsvall.contract.model.Change;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Collections.emptyList;
 
@@ -51,7 +50,7 @@ public class Differ {
 			final var json2 = objectMapper.writeValueAsString(newObject);
 
 			return diffJson(json1, json2, excludedPaths);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new IllegalStateException("Unable to diff", e);
 		}
 	}
@@ -94,18 +93,18 @@ public class Differ {
 		}
 
 		@Override
-		public void extraProperty(final Path path, final tools.jackson.databind.JsonNode extraReceivedValue) {
-			changes.add(Change.addition(path, toFasterxmlJsonNode(extraReceivedValue)));
+		public void extraProperty(final Path path, final JsonNode extraReceivedValue) {
+			changes.add(Change.addition(path, extraReceivedValue));
 		}
 
 		@Override
-		public void missingProperty(final Path path, final tools.jackson.databind.JsonNode value) {
-			changes.add(Change.removal(path, toFasterxmlJsonNode(value)));
+		public void missingProperty(final Path path, final JsonNode value) {
+			changes.add(Change.removal(path, value));
 		}
 
 		@Override
-		public void primaryNonMatching(final Path path, final tools.jackson.databind.JsonNode expected, final tools.jackson.databind.JsonNode value) {
-			changes.add(Change.modification(path, toFasterxmlJsonNode(expected), toFasterxmlJsonNode(value)));
+		public void primaryNonMatching(final Path path, final JsonNode expected, final JsonNode value) {
+			changes.add(Change.modification(path, expected, value));
 		}
 
 		@Override
@@ -119,21 +118,8 @@ public class Differ {
 		}
 
 		@Override
-		public void primaryMatching(final Path path, final tools.jackson.databind.JsonNode value) {
+		public void primaryMatching(final Path path, final JsonNode value) {
 			// Intentionally empty
-		}
-
-		// Necessary in order to convert between tools.jackson.databind.JsonNode and com.fasterxml.jackson.databind.JsonNode
-		private JsonNode toFasterxmlJsonNode(tools.jackson.databind.JsonNode toolsNode) {
-			return Optional.ofNullable(toolsNode)
-				.map(node -> {
-					try {
-						return objectMapper.readTree(node.toString());
-					} catch (Exception e) {
-						throw new IllegalArgumentException("Failed to convert tools.jackson JsonNode", e);
-					}
-				})
-				.orElse(null);
 		}
 	}
 }

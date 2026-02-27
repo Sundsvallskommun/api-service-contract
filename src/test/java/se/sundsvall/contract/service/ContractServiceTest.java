@@ -1,7 +1,6 @@
 package se.sundsvall.contract.service;
 
 import com.deblock.jsondiff.matcher.Path;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
+import org.springframework.http.HttpStatus;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Invoicing;
@@ -35,6 +33,8 @@ import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 import se.sundsvall.contract.service.diff.Differ;
+import se.sundsvall.dept44.problem.ThrowableProblem;
+import tools.jackson.databind.node.StringNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -234,7 +234,7 @@ class ContractServiceTest {
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, contract))
-			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(Status.NOT_FOUND));
+			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
 
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
@@ -263,7 +263,7 @@ class ContractServiceTest {
 		when(contractRepositoryMock.findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, newVersion))
 			.thenReturn(Optional.of(landLeaseContractEntity));
 		when(differMock.diff(any(Contract.class), any(Contract.class), anyList()))
-			.thenReturn(List.of(Change.modification(new Path(), new TextNode("oldValue"), new TextNode("newValue"))));
+			.thenReturn(List.of(Change.modification(new Path(), new StringNode("oldValue"), new StringNode("newValue"))));
 
 		final var diff = contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, oldVersion, newVersion);
 
@@ -350,7 +350,7 @@ class ContractServiceTest {
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, null, null))
-			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(Status.BAD_REQUEST));
+			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST));
 
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
 		verifyNoMoreInteractions(contractRepositoryMock);
