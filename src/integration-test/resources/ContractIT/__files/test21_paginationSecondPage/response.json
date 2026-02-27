@@ -69,26 +69,16 @@
 			"contractId": "2024-45678",
 			"description": "Object lease agreement",
 			"externalReferenceId": "MK-TEST0005",
-			"leaseType": "OBJECT_LEASE",
 			"municipalityId": "1984",
 			"objectIdentity": "objectIdentity5",
 			"status": "TERMINATED",
-			"type": "LEASE_AGREEMENT",
+			"type": "OBJECT_LEASE",
 			"attachmentMetaData": [],
 			"additionalTerms": [],
 			"extraParameters": [],
 			"indexTerms": [],
 			"propertyDesignations": [],
 			"stakeholders": [],
-			"duration": {
-				"leaseDuration": 3,
-				"unit": "YEARS"
-			},
-			"extension": {
-				"autoExtend": true,
-				"leaseExtension": 1,
-				"unit": "MONTHS"
-			},
 			"fees": {
 				"currency": "SEK",
 				"yearly": 6000.00,
@@ -124,30 +114,30 @@
 				"property": "contractId",
 				"ignoreCase": false,
 				"nullHandling": "NATIVE",
-				"ascending": true,
-				"descending": false
+				"descending": false,
+				"ascending": true
 			}
 		],
 		"offset": 2,
 		"paged": true,
 		"unpaged": false
 	},
-	"last": false,
 	"totalElements": 5,
 	"totalPages": 3,
+	"last": false,
 	"size": 2,
 	"number": 1,
+	"numberOfElements": 2,
 	"sort": [
 		{
 			"direction": "ASC",
 			"property": "contractId",
 			"ignoreCase": false,
 			"nullHandling": "NATIVE",
-			"ascending": true,
-			"descending": false
+			"descending": false,
+			"ascending": true
 		}
 	],
 	"first": false,
-	"numberOfElements": 2,
 	"empty": false
 }

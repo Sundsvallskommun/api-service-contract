@@ -39,10 +39,10 @@ VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
 
        (5, '2024-45678', 1, 'TERMINATED', '1984',
         'Object lease agreement',
-        true, 200, true, '2024-06-30', 'OBJECT_LEASE', 3, 1, 'YEARS', 'MONTHS', '2023-07-01', 'MK-TEST0005',
+        true, 200, true, '2024-06-30', null, 3, 1, 'YEARS', 'MONTHS', '2023-07-01', 'MK-TEST0005',
         'YEARLY', 'ARREARS', null, null, 'objectIdentity5',
         'SEK', 6000, 500, 30000, 'thirty thousand', null, 2022, 3, 0.10,
-        'LEASE_AGREEMENT',
+        'OBJECT_LEASE',
         null, null, '2024-03-15', 'LESSEE'),
 
        (6, '2024-56789', 1, 'DRAFT', '1984',
