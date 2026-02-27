@@ -51,8 +51,8 @@
 			],
 			"propertyDesignations": [
 				{
-					"district": "District 2",
-					"name": "SUNDSVALL NORRMALM 2:1"
+					"name": "SUNDSVALL NORRMALM 2:1",
+					"district": "District 2"
 				}
 			],
 			"stakeholders": [
@@ -154,10 +154,10 @@
 				{
 					"id": 1,
 					"category": "CONTRACT",
-					"created": "2024-01-15T10:30:00Z",
 					"filename": "someFile.pdf",
 					"mimeType": "application/pdf",
-					"note": "someNote"
+					"note": "someNote",
+					"created": "2024-01-15T10:30:00Z"
 				}
 			],
 			"additionalTerms": [
@@ -193,8 +193,8 @@
 			],
 			"propertyDesignations": [
 				{
-					"district": "District 3",
-					"name": "SUNDSVALL NORRMALM 1:1"
+					"name": "SUNDSVALL NORRMALM 1:1",
+					"district": "District 3"
 				}
 			],
 			"stakeholders": [
@@ -333,26 +333,16 @@
 			"contractId": "2024-45678",
 			"description": "Object lease agreement",
 			"externalReferenceId": "MK-TEST0005",
-			"leaseType": "OBJECT_LEASE",
 			"municipalityId": "1984",
 			"objectIdentity": "objectIdentity5",
 			"status": "TERMINATED",
-			"type": "LEASE_AGREEMENT",
+			"type": "OBJECT_LEASE",
 			"attachmentMetaData": [],
 			"additionalTerms": [],
 			"extraParameters": [],
 			"indexTerms": [],
 			"propertyDesignations": [],
 			"stakeholders": [],
-			"duration": {
-				"leaseDuration": 3,
-				"unit": "YEARS"
-			},
-			"extension": {
-				"autoExtend": true,
-				"leaseExtension": 1,
-				"unit": "MONTHS"
-			},
 			"fees": {
 				"currency": "SEK",
 				"yearly": 6000.00,
@@ -410,8 +400,8 @@
 	"totalPages": 1,
 	"size": 10,
 	"number": 0,
-	"sort": [],
 	"first": true,
 	"numberOfElements": 5,
+	"sort": [],
 	"empty": false
 }
