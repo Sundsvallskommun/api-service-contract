@@ -7,14 +7,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
+import org.springframework.http.HttpStatus;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -71,7 +71,7 @@ class AttachmentServiceTest {
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.createAttachment(MUNICIPALITY_ID, CONTRACT_ID, attachment))
-			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
+			.matches(problem -> problem.getStatus() == HttpStatus.NOT_FOUND)
 			.withMessage("Contract with contractId '2024-12345' is not present within municipality '1984'.");
 
 		verify(mockContractRepository).existsByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
@@ -102,7 +102,7 @@ class AttachmentServiceTest {
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.getAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
-			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
+			.matches(problem -> problem.getStatus() == HttpStatus.NOT_FOUND)
 			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
@@ -153,7 +153,7 @@ class AttachmentServiceTest {
 		// Act & Assert
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, attachment))
-			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
+			.matches(problem -> problem.getStatus() == HttpStatus.NOT_FOUND)
 			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
@@ -186,7 +186,7 @@ class AttachmentServiceTest {
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> attachmentService.deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
-			.matches(problem -> problem.getStatus() == Status.NOT_FOUND)
+			.matches(problem -> problem.getStatus() == HttpStatus.NOT_FOUND)
 			.withMessage("Contract with contractId '2024-12345' and attachmentId '1' is not present within municipality '1984'.");
 
 		verifyNoMoreInteractions(mockAttachmentRepository);

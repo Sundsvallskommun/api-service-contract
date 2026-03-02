@@ -4,6 +4,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +37,7 @@ import static se.sundsvall.contract.model.enums.IntervalType.QUARTERLY;
 import static se.sundsvall.contract.model.enums.InvoicedIn.ARREARS;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ContractResourceTest {

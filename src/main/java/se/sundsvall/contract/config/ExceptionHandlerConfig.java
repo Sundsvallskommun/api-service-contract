@@ -4,10 +4,10 @@ import com.turkraft.springfilter.parser.InvalidSyntaxException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.zalando.problem.Problem;
+import se.sundsvall.dept44.problem.Problem;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.ResponseEntity.badRequest;
-import static org.zalando.problem.Status.BAD_REQUEST;
 
 /**
  * Global exception handler providing custom error responses for specific exception types.

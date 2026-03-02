@@ -4,7 +4,7 @@ import com.turkraft.springfilter.parser.InvalidSyntaxException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 class ExceptionHandlerConfigTest {
 
@@ -16,7 +16,7 @@ class ExceptionHandlerConfigTest {
 
 		final var response = exceptionHandlerConfig.handleInvalidSyntaxException(exception);
 
-		assertThat(response.getStatusCode().value()).isEqualTo(BAD_REQUEST.getStatusCode());
+		assertThat(response.getStatusCode().value()).isEqualTo(BAD_REQUEST.value());
 		assertThat(response.getBody()).isNotNull();
 		assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getBody().getTitle()).isEqualTo("Invalid filter syntax");

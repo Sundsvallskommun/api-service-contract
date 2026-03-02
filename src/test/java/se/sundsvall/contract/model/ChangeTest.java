@@ -1,8 +1,8 @@
 package se.sundsvall.contract.model;
 
 import com.deblock.jsondiff.matcher.Path;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.node.StringNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,8 +12,8 @@ class ChangeTest {
 	void testConstructorAndGetters() {
 		var type = Change.Type.MODIFICATION;
 		var path = "$.someProperty";
-		var oldValue = new TextNode("oldValue");
-		var newValue = new TextNode("newValue");
+		var oldValue = new StringNode("oldValue");
+		var newValue = new StringNode("newValue");
 
 		var change = new Change(type, path, oldValue, newValue);
 
@@ -26,7 +26,7 @@ class ChangeTest {
 	@Test
 	void testFactoryAddition() {
 		var path = new Path().add(new Path.PathItem.ObjectProperty("someProperty"));
-		var newValue = new TextNode("newValue");
+		var newValue = new StringNode("newValue");
 
 		var change = Change.addition(path, newValue);
 
@@ -39,8 +39,8 @@ class ChangeTest {
 	@Test
 	void testFactoryModification() {
 		var path = new Path().add(new Path.PathItem.ObjectProperty("someProperty"));
-		var oldValue = new TextNode("oldValue");
-		var newValue = new TextNode("newValue");
+		var oldValue = new StringNode("oldValue");
+		var newValue = new StringNode("newValue");
 
 		var change = Change.modification(path, oldValue, newValue);
 
@@ -53,7 +53,7 @@ class ChangeTest {
 	@Test
 	void testFactoryRemoval() {
 		var path = new Path().add(new Path.PathItem.ObjectProperty("someProperty"));
-		var oldValue = new TextNode("oldValue");
+		var oldValue = new StringNode("oldValue");
 
 		var change = Change.removal(path, oldValue);
 
