@@ -39,8 +39,8 @@ public class Fees {
 	@Schema(description = "Index year", examples = "2021")
 	private Integer indexYear;
 
-	@Schema(description = "Index number", examples = "1")
-	private Integer indexNumber;
+	@Schema(description = "Index number", examples = "1.00")
+	private BigDecimal indexNumber;
 
 	@Schema(description = "Specifies what proportion of the consumer price index should be used for invoicing.", examples = "0.5")
 	@DecimalMin(value = "0.0")

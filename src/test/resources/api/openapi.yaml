@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
   title: Contracts
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "6.0"
 servers:
-  - url: http://localhost:54639
+  - url: http://localhost:58360
     description: Generated server url
 tags:
   - name: Contract attachments
@@ -614,16 +614,16 @@ components:
     Problem:
       type: object
       properties:
-        title:
-          type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
+        title:
+          type: string
+        detail:
+          type: string
         status:
           type: integer
           format: int32
@@ -853,7 +853,7 @@ components:
             - link
         properties:
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
     Duration:
       type: object
       description: Duration
@@ -917,7 +917,7 @@ components:
       properties:
         properties:
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         geometry:
           oneOf:
             - $ref: "#/components/schemas/Feature"
@@ -992,11 +992,10 @@ components:
           examples:
             - "2021"
         indexNumber:
-          type: integer
-          format: int32
+          type: number
           description: Index number
           examples:
-            - "1"
+            - "1.00"
         indexationRate:
           type: number
           description: Specifies what proportion of the consumer price index should
@@ -1437,13 +1436,13 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
-        detail:
-          type: string
         instance:
           type: string
           format: uri
+        detail:
+          type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
     ThrowableProblem:
       type: object
       properties:
@@ -1460,7 +1459,7 @@ components:
         instance:
           type: string
           format: uri
-        causeAsProblem: { }
+        causeAsProblem: {}
     Violation:
       type: object
       properties:
@@ -1527,9 +1526,19 @@ components:
     JsonNode:
       type: object
       properties:
-        number:
+        empty:
           type: boolean
-        floatingPointNumber:
+        array:
+          type: boolean
+        "null":
+          type: boolean
+        object:
+          type: boolean
+        float:
+          type: boolean
+        container:
+          type: boolean
+        binary:
           type: boolean
         valueNode:
           type: boolean
@@ -1547,46 +1556,36 @@ components:
             - OBJECT
             - POJO
             - STRING
-        string:
-          type: boolean
         integralNumber:
+          type: boolean
+        bigDecimal:
+          type: boolean
+        bigInteger:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        number:
           type: boolean
         pojo:
           type: boolean
-        short:
+        textual:
           type: boolean
+          deprecated: true
         int:
           type: boolean
         long:
           type: boolean
         double:
           type: boolean
-        bigDecimal:
+        string:
           type: boolean
-        bigInteger:
+        short:
           type: boolean
-        textual:
-          type: boolean
-          deprecated: true
         boolean:
-          type: boolean
-        binary:
-          type: boolean
-        container:
-          type: boolean
-        empty:
-          type: boolean
-        array:
-          type: boolean
-        "null":
-          type: boolean
-        object:
-          type: boolean
-        float:
           type: boolean
         embeddedValue:
           type: boolean
-    SpecificationContractEntity: { }
+    SpecificationContractEntity: {}
     PageContract:
       type: object
       properties:
@@ -1596,17 +1595,6 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        numberOfElements:
-          type: integer
-          format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
-        sort:
-          $ref: "#/components/schemas/SortObject"
         size:
           type: integer
           format: int32
@@ -1617,33 +1605,44 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
-        unpaged:
-          type: boolean
-        paged:
-          type: boolean
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        offset:
-          type: integer
-          format: int64
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:
-        unsorted:
+        empty:
           type: boolean
         sorted:
           type: boolean
-        empty:
+        unsorted:
           type: boolean
-  securitySchemes: { }
+  securitySchemes: {}

@@ -23,7 +23,7 @@
         current_period_end_date date,
         current_period_start_date date,
         end_date date,
-        fee_index_number integer,
+        fee_index_number decimal(38,2),
         fee_index_year integer,
         fee_indexation_rate decimal(38,2),
         fee_monthly decimal(38,2),

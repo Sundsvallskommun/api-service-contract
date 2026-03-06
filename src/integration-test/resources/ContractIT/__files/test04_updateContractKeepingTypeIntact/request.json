@@ -10,7 +10,7 @@
 		"monthly": 234.56,
 		"currency": "SEK",
 		"indexationRate": 0.5,
-		"indexNumber": 3,
+		"indexNumber": 3.00,
 		"yearly": 2814.72,
 		"indexYear": 2022
 	},
