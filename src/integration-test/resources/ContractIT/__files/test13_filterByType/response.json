@@ -106,8 +106,8 @@
 				"totalAsText": "five thousand",
 				"indexType": "KPI 80",
 				"indexYear": 2021,
-				"indexNumber": 3,
-				"indexationRate": 0.3,
+				"indexNumber": 3.00,
+				"indexationRate": 0.30,
 				"additionalInformation": []
 			},
 			"invoicing": {
@@ -166,7 +166,7 @@
 				"totalAsText": "sixty thousand",
 				"indexType": "KPI",
 				"indexYear": 2023,
-				"indexNumber": 1,
+				"indexNumber": 1.00,
 				"indexationRate": 0.25,
 				"additionalInformation": []
 			},

@@ -36,7 +36,7 @@ class FeesTest {
 		final var indexType = "indexType";
 		final var indexationRate = BigDecimal.valueOf(0.5);
 		final var indexYear = 2022;
-		final var indexNumber = 5;
+		final var indexNumber = new BigDecimal("5.00");
 		final var additionalInformation = List.of("aaa", "bbb");
 
 		final var fees = Fees.builder()

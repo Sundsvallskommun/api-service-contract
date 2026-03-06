@@ -112,7 +112,7 @@ class ContractEntityTest {
 			.withIndexType("KPI 80")
 			.withIndexYear(2023)
 			.withIndexationRate(BigDecimal.valueOf(0.5))
-			.withIndexNumber(2)
+			.withIndexNumber(new BigDecimal("2.00"))
 			.withAdditionalInformation(List.of("additionalInfo1", "additionalInfo2"))
 			.build();
 		var invoiceInterval = QUARTERLY;

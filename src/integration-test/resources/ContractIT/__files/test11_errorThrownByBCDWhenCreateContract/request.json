@@ -10,7 +10,7 @@
 		"monthly": 123.45,
 		"currency": "SEK",
 		"indexationRate": 0.4,
-		"indexNumber": 2,
+		"indexNumber": 2.00,
 		"yearly": 234.56,
 		"indexYear": 2021
 	},

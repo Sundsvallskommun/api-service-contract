@@ -34,7 +34,7 @@ class FeesEmbeddableTest {
 		var totalAsText = "FEMTITVÅTUSENTVÅHUNDRAKRONOR";
 		var indexType = "KPI 80";
 		var indexYear = 2023;
-		var indexNumber = 2;
+		var indexNumber = new BigDecimal("2.00");
 		var indexationRate = BigDecimal.valueOf(0.5);
 		var additionalInformation = List.of("info1", "info2");
 

@@ -95,7 +95,7 @@
 				"total": 500.00,
 				"totalAsText": "five hundred",
 				"indexYear": 2021,
-				"indexNumber": 2,
+				"indexNumber": 2.00,
 				"indexationRate": 0.50,
 				"additionalInformation": [
 					"someAdditionalInfo3",
@@ -237,7 +237,7 @@
 				"totalAsText": "five thousand",
 				"indexType": "KPI 80",
 				"indexYear": 2021,
-				"indexNumber": 3,
+				"indexNumber": 3.00,
 				"indexationRate": 0.30,
 				"additionalInformation": []
 			},

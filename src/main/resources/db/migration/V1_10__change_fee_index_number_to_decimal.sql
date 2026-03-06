@@ -1,0 +1,1 @@
+ALTER TABLE contract MODIFY COLUMN fee_index_number decimal(38,2);

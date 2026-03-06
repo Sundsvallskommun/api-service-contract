@@ -110,7 +110,7 @@
 		"total": 500.00,
 		"totalAsText": "five hundred",
 		"indexYear": 2021,
-		"indexNumber": 2,
+		"indexNumber": 2.00,
 		"indexationRate": 0.40,
 		"additionalInformation": [
 			"someAdditionalInfo1",

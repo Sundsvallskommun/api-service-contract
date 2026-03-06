@@ -43,7 +43,7 @@ public class FeesEmbeddable {
 	private Integer indexYear;
 
 	@Column(name = "fee_index_number")
-	private Integer indexNumber;
+	private BigDecimal indexNumber;
 
 	@Column(name = "fee_indexation_rate")
 	private BigDecimal indexationRate;
