@@ -64,6 +64,11 @@
 			<version>${geojson-jackson.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.github.deblockt</groupId>
 			<artifactId>json-diff</artifactId>
 			<version>${json-diff.version}</version>
