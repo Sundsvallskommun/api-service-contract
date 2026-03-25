@@ -3,7 +3,9 @@ package se.sundsvall.contract.model.enums;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_LICENSE;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MISC;
+import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_MUNICIPALITY;
 import static se.sundsvall.contract.model.enums.LeaseType.LAND_LEASE_RESIDENTIAL;
 import static se.sundsvall.contract.model.enums.LeaseType.OTHER_FEE;
 import static se.sundsvall.contract.model.enums.LeaseType.SITE_LEASE_COMMERCIAL;
@@ -22,6 +24,8 @@ class LeaseTypeTest {
 			USUFRUCT_FARMING,
 			USUFRUCT_MISC,
 			LAND_LEASE_MISC,
+			LAND_LEASE_LICENSE,
+			LAND_LEASE_MUNICIPALITY,
 			OTHER_FEE);
 	}
 
@@ -33,6 +37,8 @@ class LeaseTypeTest {
 		assertThat(USUFRUCT_FARMING).hasToString("USUFRUCT_FARMING");
 		assertThat(USUFRUCT_MISC).hasToString("USUFRUCT_MISC");
 		assertThat(LAND_LEASE_MISC).hasToString("LAND_LEASE_MISC");
+		assertThat(LAND_LEASE_LICENSE).hasToString("LAND_LEASE_LICENSE");
+		assertThat(LAND_LEASE_MUNICIPALITY).hasToString("LAND_LEASE_MUNICIPALITY");
 		assertThat(OTHER_FEE).hasToString("OTHER_FEE");
 	}
 }
