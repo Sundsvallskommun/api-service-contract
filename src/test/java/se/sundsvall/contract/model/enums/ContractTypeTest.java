@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.contract.model.enums.ContractType.LAND_LEASE_PUBLIC;
 import static se.sundsvall.contract.model.enums.ContractType.LEASEHOLD;
 import static se.sundsvall.contract.model.enums.ContractType.LEASE_AGREEMENT;
+import static se.sundsvall.contract.model.enums.ContractType.MAINTENANCE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.ContractType.OBJECT_LEASE;
 import static se.sundsvall.contract.model.enums.ContractType.PURCHASE_AGREEMENT;
 import static se.sundsvall.contract.model.enums.ContractType.SHORT_TERM_LEASE_AGREEMENT;
@@ -15,7 +16,7 @@ class ContractTypeTest {
 	@Test
 	void enums() {
 		assertThat(ContractType.values())
-			.containsExactlyInAnyOrder(LEASE_AGREEMENT, PURCHASE_AGREEMENT, LAND_LEASE_PUBLIC, SHORT_TERM_LEASE_AGREEMENT, LEASEHOLD, OBJECT_LEASE);
+			.containsExactlyInAnyOrder(LEASE_AGREEMENT, PURCHASE_AGREEMENT, LAND_LEASE_PUBLIC, SHORT_TERM_LEASE_AGREEMENT, LEASEHOLD, OBJECT_LEASE, MAINTENANCE_AGREEMENT);
 	}
 
 	@Test
@@ -26,5 +27,6 @@ class ContractTypeTest {
 		assertThat(SHORT_TERM_LEASE_AGREEMENT).hasToString("SHORT_TERM_LEASE_AGREEMENT");
 		assertThat(LEASEHOLD).hasToString("LEASEHOLD");
 		assertThat(OBJECT_LEASE).hasToString("OBJECT_LEASE");
+		assertThat(MAINTENANCE_AGREEMENT).hasToString("MAINTENANCE_AGREEMENT");
 	}
 }
