@@ -4,9 +4,10 @@ import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
 import java.util.Set;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
-import se.sundsvall.contract.model.enums.IntervalType;
+import se.sundsvall.contract.model.enums.LeaseType;
 
 import static generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum.CONTRACT;
+import static java.time.Month.JUNE;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -30,8 +31,6 @@ public final class BillingDataCollectorMapper {
 	 */
 	public static ScheduledBilling toScheduledBilling(ContractEntity contractEntity) {
 		final var billingMonths = ofNullable(contractEntity)
-			.map(ContractEntity::getInvoicing)
-			.map(InvoicingEmbeddable::getInvoiceInterval)
 			.map(BillingDataCollectorMapper::calculateBillingMonths)
 			.orElseThrow(() -> new IllegalStateException("Interval type is not defined for contract with id %s".formatted(
 				ofNullable(contractEntity).map(ContractEntity::getContractId).orElse("unknown"))));
@@ -46,12 +45,26 @@ public final class BillingDataCollectorMapper {
 		return scheduledBilling;
 	}
 
-	private static Set<Integer> calculateBillingMonths(IntervalType intervalType) {
-		return switch (intervalType) {
-			case MONTHLY -> SET_OF_MONTH;
-			case QUARTERLY -> SET_OF_QUARTER;
-			case HALF_YEARLY -> SET_OF_HALF_YEAR;
-			case YEARLY -> SET_OF_YEAR;
-		};
+	private static Set<Integer> calculateBillingMonths(ContractEntity contractEntity) {
+		return ofNullable(contractEntity.getInvoicing())
+			.map(InvoicingEmbeddable::getInvoiceInterval)
+			.map(intervalType -> {
+				return switch (intervalType) {
+					case MONTHLY -> SET_OF_MONTH;
+					case QUARTERLY -> SET_OF_QUARTER;
+					case HALF_YEARLY -> SET_OF_HALF_YEAR;
+					case YEARLY -> isLandLeaseResidentialWithEndDateLastOfJune(contractEntity) ? Set.of(6) : SET_OF_YEAR;
+				};
+			})
+			.orElse(null);
+
+	}
+
+	private static boolean isLandLeaseResidentialWithEndDateLastOfJune(ContractEntity contractEntity) {
+		return contractEntity.getCurrentPeriodEndDate() != null
+			&& contractEntity.getCurrentPeriodEndDate().getMonth().equals(JUNE)
+			&& contractEntity.getCurrentPeriodEndDate().getDayOfMonth() == 30
+			&& contractEntity.getLeaseType() != null
+			&& contractEntity.getLeaseType().equals(LeaseType.LAND_LEASE_RESIDENTIAL);
 	}
 }

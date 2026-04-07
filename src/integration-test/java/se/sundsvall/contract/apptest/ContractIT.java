@@ -506,4 +506,64 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	/**
+	 * Test verifies the following:
+	 * - Create is performed for a LAND_LEASE_RESIDENTIAL contract with YEARLY interval and currentPeriodEndDate June 30
+	 * - BDC billing cycle is created with billingMonths [6] (June) instead of [12] (December)
+	 */
+	@Test
+	void test24_createContractWithJuneBillingSchedule() {
+		final var location = setupCall()
+			.withServicePath(fromPath(PATH)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(POST)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(CREATED)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
+			.sendRequest()
+			.getResponseHeaders().getLocation();
+
+		assertThat(location).isNotNull();
+		assertThat(location.getPath()).isNotNull();
+
+		// Verify it's there
+		setupCall()
+			.withServicePath(location.getPath())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Test verifies the following:
+	 * - Update is performed for a contract changed to LAND_LEASE_RESIDENTIAL with YEARLY interval and currentPeriodEndDate June 30
+	 * - BDC billing cycle is updated with billingMonths [6] (June) instead of [12] (December)
+	 */
+	@Test
+	void test25_updateContractWithJuneBillingSchedule() {
+		final var path = fromPath(PATH + "/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		// Update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PUT)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequest();
+
+		// Verify update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }
