@@ -1,0 +1,17 @@
+{
+	"id": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+	"externalId": "2024-12345",
+	"source": "CONTRACT",
+	"billingDaysOfMonth": [
+		1
+	],
+	"billingMonths": [
+		3,
+		6,
+		9,
+		12
+	],
+	"lastBilled": "2025-12-01T00:00:00.000+01:00",
+	"nextScheduledBilling": "2026-12-01",
+	"paused": false
+}
