@@ -1,6 +1,7 @@
 package se.sundsvall.contract.integration.db;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
+import se.sundsvall.contract.model.enums.Status;
 
 /**
  * Repository for {@link ContractEntity} entities.
@@ -60,4 +62,13 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long>,
 	 * @return                list of matching contract version projections
 	 */
 	List<ContractVersionProjection> findByMunicipalityIdAndContractId(String municipalityId, String contractId, Sort sort);
+
+	/**
+	 * Finds all contracts matching the given status where end date is before the given date.
+	 *
+	 * @param  status  the contract status to filter on
+	 * @param  endDate the date to compare end date against
+	 * @return         list of matching contracts
+	 */
+	List<ContractEntity> findByStatusAndEndDateBefore(Status status, LocalDate endDate);
 }

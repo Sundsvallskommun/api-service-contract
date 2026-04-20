@@ -7,7 +7,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -101,7 +100,6 @@ class ContractIT extends AbstractAppTest {
 	 * Test verifies the following:
 	 * - Update is performed
 	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
-	 * - Rule for inovicing is executed but as this contract has no cycle propagated in BDC no deletion of it is performed
 	 */
 	@Test
 	void test04_updateContractKeepingTypeIntact() {
@@ -133,11 +131,6 @@ class ContractIT extends AbstractAppTest {
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 
-	/**
-	 * Test verifies the following:
-	 * - Delete is performed
-	 * - Rule for inovicing is executed and as this contract has a cycle propagated in BDC a deletion of it is performed
-	 */
 	@Test
 	void test05_deleteContract() {
 		final var contractPath = fromPath(PATH + "/{contractId}")
@@ -216,7 +209,6 @@ class ContractIT extends AbstractAppTest {
 	 * Test verifies the following:
 	 * - Create is performed
 	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
-	 * - Rule for inovicing is executed and as this contract has no cycle propagated in BDC a new cycle is propagated in BDC
 	 */
 	@Test
 	void test08_createContractForPurchaseAgreement() {
@@ -244,11 +236,6 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
-	/**
-	 * Test verifies the following:
-	 * - Update is performed
-	 * - Rule for inovicing is executed but contract has no cycle propagated in BDC a no delete call is performed
-	 */
 	@Test
 	void test09_updateContractWithTypeChange() {
 		final var path = fromPath(PATH + "/{contractId}")
@@ -279,11 +266,6 @@ class ContractIT extends AbstractAppTest {
 		assertThat(contractEntity.getVersion()).isEqualTo(1);
 	}
 
-	/**
-	 * Test verifies the following:
-	 * - Update is performed
-	 * - Rule for inovicing is executed and as contract has a cycle propagated in BDC a call for updating it is performed
-	 */
 	@Test
 	void test10_updateContractWithPresentBillingCycle() {
 		final var path = fromPath(PATH + "/{contractId}")
@@ -306,25 +288,6 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test11_errorThrownByBCDWhenCreateContract() {
-		assertThat(contractRepository.count()).isEqualTo(6); // There should be 6 entities added by script at start
-
-		setupCall()
-			.withServicePath(fromPath(PATH)
-				.build(MUNICIPALITY_ID)
-				.toString())
-			.withHttpMethod(POST)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(INTERNAL_SERVER_ERROR)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-
-		assertThat(contractRepository.count()).isEqualTo(6); // Verify no entity has been created in database, i.e. there should still only the entities added by script
-
 	}
 
 	@Test
@@ -507,63 +470,4 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
-	/**
-	 * Test verifies the following:
-	 * - Create is performed for a LAND_LEASE_RESIDENTIAL contract with YEARLY interval and currentPeriodEndDate June 30
-	 * - BDC billing cycle is created with billingMonths [6] (June) instead of [12] (December)
-	 */
-	@Test
-	void test24_createContractWithJuneBillingSchedule() {
-		final var location = setupCall()
-			.withServicePath(fromPath(PATH)
-				.build(MUNICIPALITY_ID)
-				.toString())
-			.withHttpMethod(POST)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
-			.sendRequest()
-			.getResponseHeaders().getLocation();
-
-		assertThat(location).isNotNull();
-		assertThat(location.getPath()).isNotNull();
-
-		// Verify it's there
-		setupCall()
-			.withServicePath(location.getPath())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-	}
-
-	/**
-	 * Test verifies the following:
-	 * - Update is performed for a contract changed to LAND_LEASE_RESIDENTIAL with YEARLY interval and currentPeriodEndDate June 30
-	 * - BDC billing cycle is updated with billingMonths [6] (June) instead of [12] (December)
-	 */
-	@Test
-	void test25_updateContractWithJuneBillingSchedule() {
-		final var path = fromPath(PATH + "/{contractId}")
-			.build(MUNICIPALITY_ID, CONTRACT_ID)
-			.toString();
-
-		// Update
-		setupCall()
-			.withServicePath(path)
-			.withHttpMethod(PUT)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(OK)
-			.sendRequest();
-
-		// Verify update
-		setupCall()
-			.withServicePath(path)
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-	}
 }

@@ -1,17 +1,15 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
-import generated.se.sundsvall.billingdatacollector.ScheduledBilling;
-import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import java.util.Optional;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractCreatedEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractDeletedEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractTerminatedEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractUpdatedEvent;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.contract.integration.billingdatacollector.configuration.BillingDataCollectorConfiguration.CLIENT_ID;
@@ -28,54 +26,46 @@ import static se.sundsvall.contract.integration.billingdatacollector.configurati
 public interface BillingDataCollectorClient {
 
 	/**
-	 * Create a new scheduled billing cycle
-	 *
-	 * @param  municipalityId   the municipality id of the municipality that owns the contract
-	 * @param  scheduledBilling request containing billing cycle information
-	 * @return                  an object of type ScheduledBilling representing the created billing cycle information
-	 */
-	@PostMapping(path = "/{municipalityId}/scheduled-billing", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	ScheduledBilling createScheduledBilling(
-		@PathVariable final String municipalityId,
-		@RequestBody final ScheduledBilling scheduledBilling);
-
-	/**
-	 * Read a scheduled billing cycle by external id
-	 *
-	 * @param  municipalityId the municipality id of the municipality that owns the contract
-	 * @param  source         the source of the contract (always CONTRACT in this case)
-	 * @param  externalId     the id of the contract
-	 * @return                an optional with object of ScheduledBilling class if billing cycle is found, otherwise an
-	 *                        empty optional
-	 */
-	@GetMapping(path = "/{municipalityId}/scheduled-billing/external/{source}/{externalId}", produces = APPLICATION_JSON_VALUE)
-	Optional<ScheduledBilling> getScheduledBillingByExternalId(
-		@PathVariable final String municipalityId,
-		@PathVariable final SourceEnum source,
-		@PathVariable final String externalId);
-
-	/**
-	 * Update an existing scheduled billing cycle
-	 *
-	 * @param  municipalityId   the municipality id of the municipality that owns the contract
-	 * @param  id               the id of the billing cycle
-	 * @param  scheduledBilling request containing billing cycle information
-	 * @return                  an object of type ScheduledBilling representing the updated billing cycle information
-	 */
-	@PutMapping(path = "/{municipalityId}/scheduled-billing/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	ScheduledBilling updateScheduledBilling(
-		@PathVariable final String municipalityId,
-		@PathVariable final String id,
-		@RequestBody final ScheduledBilling scheduledBilling);
-
-	/**
-	 * Delete an existing scheduled billing cycle
+	 * Notify billing that a contract has been created
 	 *
 	 * @param municipalityId the municipality id of the municipality that owns the contract
-	 * @param id             the id of the billing cycle
+	 * @param event          the contract created event payload
 	 */
-	@DeleteMapping(path = "/{municipalityId}/scheduled-billing/{id}")
-	void deleteScheduledBilling(
+	@PostMapping(path = "/{municipalityId}/contracts/created", consumes = APPLICATION_JSON_VALUE)
+	void contractCreated(
 		@PathVariable final String municipalityId,
-		@PathVariable final String id);
+		@RequestBody final ContractCreatedEvent event);
+
+	/**
+	 * Notify billing that a contract has been updated
+	 *
+	 * @param municipalityId the municipality id of the municipality that owns the contract
+	 * @param event          the contract updated event payload
+	 */
+	@PostMapping(path = "/{municipalityId}/contracts/updated", consumes = APPLICATION_JSON_VALUE)
+	void contractUpdated(
+		@PathVariable final String municipalityId,
+		@RequestBody final ContractUpdatedEvent event);
+
+	/**
+	 * Notify billing that a contract has been deleted
+	 *
+	 * @param municipalityId the municipality id of the municipality that owns the contract
+	 * @param event          the contract deleted event payload
+	 */
+	@PostMapping(path = "/{municipalityId}/contracts/deleted", consumes = APPLICATION_JSON_VALUE)
+	void contractDeleted(
+		@PathVariable final String municipalityId,
+		@RequestBody final ContractDeletedEvent event);
+
+	/**
+	 * Notify billing that a contract has been terminated
+	 *
+	 * @param municipalityId the municipality id of the municipality that owns the contract
+	 * @param event          the termination event payload
+	 */
+	@PostMapping(path = "/{municipalityId}/contracts/terminated", consumes = APPLICATION_JSON_VALUE)
+	void contractTerminated(
+		@PathVariable final String municipalityId,
+		@RequestBody final ContractTerminatedEvent event);
 }

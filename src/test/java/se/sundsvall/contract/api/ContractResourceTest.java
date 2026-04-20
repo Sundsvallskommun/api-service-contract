@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -200,6 +201,18 @@ class ContractResourceTest {
 
 		verify(contractServiceMock).createContract(MUNICIPALITY_ID, contract);
 		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void diffContractWithOnlyOneVersionSet() {
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}/diff")
+				.queryParam("oldVersion", 2)
+				.build(MUNICIPALITY_ID, CONTRACT_ID))
+			.exchange()
+			.expectStatus().isBadRequest();
+
+		verifyNoInteractions(contractServiceMock);
 	}
 
 	@Test

@@ -40,3 +40,10 @@ business-rules:
   billable-agreement-rule:
     managed-municipality-ids:
       - 1984
+
+scheduler:
+  outbox:
+    dispatch:
+      delay-ms: 86400000  # 24 hours — prevent OutboxDispatcher from firing during IT tests
+  contract-termination:
+    cron: "0 0 1 31 12 *"  # Dec 31 at 01:00 — effectively never fires during IT tests
