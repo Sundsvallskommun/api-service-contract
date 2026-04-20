@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.geojson.FeatureCollection;
 import org.hibernate.Length;
+import org.hibernate.annotations.ColumnDefault;
 import se.sundsvall.contract.integration.db.model.generator.GenerateOnInsert;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
@@ -59,6 +60,7 @@ public class ContractEntity {
 
 	@Version
 	@Column(name = "lock_version", nullable = false)
+	@ColumnDefault("0")
 	private long lockVersion;
 
 	@Column(name = "type", length = 64, updatable = false)
