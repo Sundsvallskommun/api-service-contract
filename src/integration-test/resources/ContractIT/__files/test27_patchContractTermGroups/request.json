@@ -1,0 +1,13 @@
+{
+	"indexTerms": [
+		{
+			"header": "Patched Index Header",
+			"terms": [
+				{
+					"term": "Patched index term",
+					"description": "A patched description for the index term"
+				}
+			]
+		}
+	]
+}

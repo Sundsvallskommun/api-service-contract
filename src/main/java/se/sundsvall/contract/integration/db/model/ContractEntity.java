@@ -15,9 +15,9 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -54,9 +54,12 @@ public class ContractEntity {
 	@Column(name = "contract_id", length = 10, nullable = false)
 	private String contractId;
 
-	@Builder.Default
 	@Column(name = "version")
-	private int version = 1;
+	private int version;
+
+	@Version
+	@Column(name = "lock_version", nullable = false)
+	private long lockVersion;
 
 	@Column(name = "type", length = 64, updatable = false)
 	private ContractType type;
@@ -171,9 +174,4 @@ public class ContractEntity {
 
 	@Column(name = "area_data", length = Length.LONG32)
 	private FeatureCollection areaData;
-
-	@PrePersist
-	public void prePersist() {
-		this.version++;
-	}
 }

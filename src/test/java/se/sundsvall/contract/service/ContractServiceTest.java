@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Invoicing;
+import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -224,6 +225,61 @@ class ContractServiceTest {
 		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void patchContract(boolean match) {
+		// Arrange
+		final var existingEntity = createContractEntity();
+		final var initialVersion = existingEntity.getVersion();
+
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
+			.thenReturn(Optional.of(existingEntity));
+		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
+
+		final var patchPayload = PatchContract.builder()
+			.withDescription("a patched description")
+			.build();
+
+		// Act
+		contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload);
+
+		// Assert
+		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+		verify(businessruleMock).appliesTo(any(ContractEntity.class));
+		if (match) {
+			verify(businessruleMock).apply(businessruleParametersCaptor.capture());
+			assertThat(businessruleParametersCaptor.getValue()).satisfies(businessruleParameters -> {
+				assertThat(businessruleParameters.contractEntity()).isSameAs(existingEntity);
+				assertThat(businessruleParameters.action()).isEqualTo(Action.UPDATE);
+			});
+		}
+		verify(contractRepositoryMock).save(existingEntity);
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
+
+		// Patched fields are applied, version is preserved
+		assertThat(existingEntity.getDescription()).isEqualTo("a patched description");
+		assertThat(existingEntity.getVersion()).isEqualTo(initialVersion);
+	}
+
+	@Test
+	void patchContractShouldThrow404WhenNoMatch() {
+		final var patchPayload = PatchContract.builder()
+			.withDescription("a patched description")
+			.build();
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class)))
+			.thenReturn(Optional.empty());
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload))
+			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
+
+		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
 	}
 
 	@Test

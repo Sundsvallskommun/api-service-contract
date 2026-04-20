@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
+import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -30,6 +31,7 @@ import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
 import static se.sundsvall.contract.service.mapper.DtoMapper.toBusinessruleParameters;
 import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
 import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
+import static se.sundsvall.contract.service.mapper.EntityMapper.patchContractEntity;
 import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
 
 /**
@@ -70,8 +72,9 @@ public class ContractService {
 	 */
 	@Transactional
 	public String createContract(final String municipalityId, final Contract contract) {
-		// Map to entity
+		// Map to entity, explicitly starting at version 1
 		final var contractEntity = toContractEntity(municipalityId, contract);
+		contractEntity.setVersion(1);
 
 		// Save entity to create an initial version based on incoming request
 		contractRepository.save(contractEntity);
@@ -130,6 +133,32 @@ public class ContractService {
 		// Get all contracts and map to DTOs
 		return contractRepository.findAll(specification, pageable)
 			.map(contractEntity -> toContractDto(contractEntity, attachmentRepository.findAllByMunicipalityIdAndContractId(municipalityId, contractEntity.getContractId())));
+	}
+
+	/**
+	 * Patches an existing contract in place, applying only the non-null fields from the payload.
+	 * Does not create a new version, but triggers matching business rules the same way as {@link #updateContract}.
+	 *
+	 * @param municipalityId the municipality id
+	 * @param contractId     the contract id
+	 * @param patch          the partial contract data to apply
+	 */
+	@Transactional
+	public void patchContract(final String municipalityId, final String contractId, final PatchContract patch) {
+		final var existingEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
+			.orElseThrow(() -> Problem.builder()
+				.withStatus(NOT_FOUND)
+				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
+				.build());
+
+		// Apply the patch payload in place on the existing entity (version preserved)
+		patchContractEntity(existingEntity, patch);
+
+		// Apply matching businessrules
+		applyBusinessrules(existingEntity, UPDATE);
+
+		// Save changes on the existing entity — no new version is created
+		contractRepository.save(existingEntity);
 	}
 
 	/**

@@ -1,9 +1,11 @@
 package se.sundsvall.contract.apptest;
 
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -18,10 +20,8 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.contract.Application;
-import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -38,9 +38,6 @@ class ContractIT extends AbstractAppTest {
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String PATH = "/{municipalityId}/contracts";
-
-	@Autowired
-	private ContractRepository contractRepository;
 
 	@Test
 	void test01_readContract() {
@@ -126,11 +123,18 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		// We can't fetch older versions via the API, so check that we have an older version of the contract
-		// The old version should have id 1.
-		final var contractEntity = contractRepository.findById(1L).get();
-		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
-		assertThat(contractEntity.getVersion()).isEqualTo(1);
+		// Verify that the previous version is still retrievable and exposes the expected contractId/version
+		setupCall()
+			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
+			.withServicePath(fromPath(PATH + "/{contractId}")
+				.queryParam("version", 1)
+				.build(MUNICIPALITY_ID, CONTRACT_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse("previous-version-response.json")
+			.sendRequest();
 	}
 
 	/**
@@ -272,11 +276,18 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		// We can't fetch older versions via the API, so check that we have an older version of the contract
-		// The old version should have id 1.
-		final var contractEntity = contractRepository.findById(1L).get();
-		assertThat(contractEntity.getContractId()).isEqualTo(CONTRACT_ID);
-		assertThat(contractEntity.getVersion()).isEqualTo(1);
+		// Verify that the previous version is still retrievable and exposes the expected contractId/version
+		setupCall()
+			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
+			.withServicePath(fromPath(PATH + "/{contractId}")
+				.queryParam("version", 1)
+				.build(MUNICIPALITY_ID, CONTRACT_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse("previous-version-response.json")
+			.sendRequest();
 	}
 
 	/**
@@ -310,8 +321,7 @@ class ContractIT extends AbstractAppTest {
 
 	@Test
 	void test11_errorThrownByBCDWhenCreateContract() {
-		assertThat(contractRepository.count()).isEqualTo(6); // There should be 6 entities added by script at start
-
+		// POST fails because the BDC integration throws
 		setupCall()
 			.withServicePath(fromPath(PATH)
 				.build(MUNICIPALITY_ID)
@@ -323,8 +333,19 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
-		assertThat(contractRepository.count()).isEqualTo(6); // Verify no entity has been created in database, i.e. there should still only the entities added by script
-
+		// Verify no new contract leaked through the rollback — the list should match the seeded baseline.
+		// Use sendRequest() (without stub verification) since the WireMock stubs were already consumed by the POST above.
+		setupCall()
+			.withServicePath(fromPath(PATH)
+				.queryParam("page", 0)
+				.queryParam("size", 10)
+				.build(MUNICIPALITY_ID)
+				.toString())
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse("list-response.json")
+			.sendRequest();
 	}
 
 	@Test
@@ -558,6 +579,69 @@ class ContractIT extends AbstractAppTest {
 			.sendRequest();
 
 		// Verify update
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Test verifies the following:
+	 * - Patch is performed on the existing contract without creating a new version
+	 *   (the expected response asserts that the returned version is still 2 — same as before the patch)
+	 * - Only the fields sent in the patch payload (description, area, startDate, endDate and currentPeriod) are updated;
+	 *   all other fields remain as before
+	 * - Business rule for invoicing is executed (UPDATE action); GET of the existing BDC cycle returns matching
+	 *   settings so no further call to BDC is made
+	 */
+	@Test
+	void test26_patchContract() {
+		final var path = fromPath(PATH + "/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		// Patch
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PATCH)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequest();
+
+		// Verify patch by performing a GET: version remains at 2, only patched fields changed.
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Test verifies the following:
+	 * - Patching indexTerms replaces the existing index term groups in place
+	 * - additionalTerms (not sent in the payload) are preserved
+	 * - The contract version is not bumped (still 2)
+	 */
+	@Test
+	void test27_patchContractTermGroups() {
+		final var path = fromPath(PATH + "/{contractId}")
+			.build(MUNICIPALITY_ID, CONTRACT_ID)
+			.toString();
+
+		// Patch — replace indexTerms only
+		setupCall()
+			.withServicePath(path)
+			.withHttpMethod(PATCH)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.sendRequest();
+
+		// Verify: indexTerms replaced, additionalTerms intact, version still 2
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
