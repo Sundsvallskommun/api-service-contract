@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.contract.integration.billingdatacollector.HttpBillingEventPublisher;
+import se.sundsvall.contract.integration.billingdatacollector.BillingEventPublisher;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractCreatedEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractDeletedEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractTerminatedEvent;
@@ -22,9 +22,12 @@ import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
+import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,7 +46,10 @@ class OutboxDispatcherTest {
 	private OutboxRepository outboxRepositoryMock;
 
 	@Mock
-	private HttpBillingEventPublisher publisherMock;
+	private BillingEventPublisher publisherMock;
+
+	@Mock
+	private Dept44HealthUtility dept44HealthUtilityMock;
 
 	private ObjectMapper objectMapper;
 	private OutboxDispatcher dispatcher;
@@ -51,7 +57,8 @@ class OutboxDispatcherTest {
 	@BeforeEach
 	void setUp() {
 		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-		dispatcher = new OutboxDispatcher(outboxRepositoryMock, publisherMock, objectMapper);
+		dispatcher = new OutboxDispatcher(outboxRepositoryMock, publisherMock, objectMapper, dept44HealthUtilityMock);
+		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of());
 	}
 
 	@Test
@@ -63,8 +70,10 @@ class OutboxDispatcherTest {
 		dispatcher.dispatch();
 
 		// Assert
+		verify(outboxRepositoryMock).findExhausted();
 		verify(outboxRepositoryMock).findUnsent();
 		verifyNoInteractions(publisherMock);
+		verifyNoInteractions(dept44HealthUtilityMock);
 	}
 
 	@Test
@@ -154,6 +163,24 @@ class OutboxDispatcherTest {
 	}
 
 	@Test
+	void dispatchTruncatesLongErrorMessages() throws Exception {
+		// Arrange
+		final var event = new ContractTerminatedEvent(CONTRACT_ID, MUNICIPALITY_ID, END_DATE, InvoicedIn.ADVANCE, IntervalType.QUARTERLY);
+		final var entity = buildOutboxEntity("CONTRACT_TERMINATED", objectMapper.writeValueAsString(event));
+		final var longMessage = "x".repeat(1000);
+		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of(entity));
+		doThrow(new RuntimeException(longMessage)).when(publisherMock).publish(any());
+
+		// Act
+		dispatcher.dispatch();
+
+		// Assert
+		final var captor = ArgumentCaptor.forClass(OutboxEntity.class);
+		verify(outboxRepositoryMock).save(captor.capture());
+		assertThat(captor.getValue().getLastError()).hasSize(512);
+	}
+
+	@Test
 	void dispatchWithUnknownEventTypeSavesError() {
 		// Arrange
 		final var entity = buildOutboxEntity("UNKNOWN_EVENT_TYPE", "{}");
@@ -172,13 +199,13 @@ class OutboxDispatcherTest {
 
 	@Test
 	void dispatchStopsRetryingAfterMaxRetries() throws Exception {
-		// Arrange — entity already at 4 retries (next failure will be 5, findUnsent won't return it again)
+		// Arrange — entity already at MAX_RETRIES - 1, next failure exhausts it
 		final var event = new ContractTerminatedEvent(CONTRACT_ID, MUNICIPALITY_ID, END_DATE, InvoicedIn.ADVANCE, IntervalType.QUARTERLY);
 		final var entity = OutboxEntity.builder()
 			.withContractId(CONTRACT_ID)
 			.withEventType("CONTRACT_TERMINATED")
 			.withPayload(objectMapper.writeValueAsString(event))
-			.withRetries(4)
+			.withRetries(OutboxRepository.MAX_RETRIES - 1)
 			.build();
 		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of(entity));
 		doThrow(new RuntimeException("still failing")).when(publisherMock).publish(any());
@@ -186,10 +213,30 @@ class OutboxDispatcherTest {
 		// Act
 		dispatcher.dispatch();
 
-		// Assert — saved with retries = 5, findUnsent will no longer pick it up
+		// Assert — saved with retries = MAX_RETRIES, findUnsent will no longer pick it up
 		final var captor = ArgumentCaptor.forClass(OutboxEntity.class);
 		verify(outboxRepositoryMock).save(captor.capture());
-		assertThat(captor.getValue().getRetries()).isEqualTo(5);
+		assertThat(captor.getValue().getRetries()).isEqualTo(OutboxRepository.MAX_RETRIES);
+	}
+
+	@Test
+	void dispatchSetsHealthUnhealthyWhenExhaustedRecordsExist() {
+		// Arrange
+		final var exhaustedEntity = OutboxEntity.builder()
+			.withContractId(CONTRACT_ID)
+			.withEventType("CONTRACT_TERMINATED")
+			.withPayload("{}")
+			.withRetries(OutboxRepository.MAX_RETRIES)
+			.build();
+		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of(exhaustedEntity));
+		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of());
+
+		// Act
+		dispatcher.dispatch();
+
+		// Assert
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(eq("outbox-dispatcher"), contains("1"));
+		verifyNoInteractions(publisherMock);
 	}
 
 	private OutboxEntity buildOutboxEntity(final String eventType, final String payload) {

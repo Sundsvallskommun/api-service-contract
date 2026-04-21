@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
+import se.sundsvall.contract.integration.billingdatacollector.event.BillingEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractCreatedEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractDeletedEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractUpdatedEvent;
@@ -262,7 +263,7 @@ public class ContractService {
 			.forEach(rule -> rule.apply(toBusinessruleParameters(contractEntity, action)));
 	}
 
-	private OutboxEntity toOutboxEntity(final ContractEntity contract, final se.sundsvall.contract.integration.billingdatacollector.event.BillingEvent event) {
+	private OutboxEntity toOutboxEntity(final ContractEntity contract, final BillingEvent event) {
 		try {
 			return OutboxEntity.builder()
 				.withContractId(contract.getContractId())

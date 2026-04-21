@@ -1,6 +1,5 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import se.sundsvall.contract.integration.billingdatacollector.event.BillingEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractCreatedEvent;
@@ -8,7 +7,6 @@ import se.sundsvall.contract.integration.billingdatacollector.event.ContractDele
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractTerminatedEvent;
 import se.sundsvall.contract.integration.billingdatacollector.event.ContractUpdatedEvent;
 
-@Primary
 @Component
 public class HttpBillingEventPublisher implements BillingEventPublisher {
 

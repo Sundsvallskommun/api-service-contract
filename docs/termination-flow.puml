@@ -38,15 +38,15 @@ database "billing DB\n(scheduled_billing)" as billingDB
 
 user -> service : PUT /{municipalityId}/contracts/{contractId}\n{ endDate: "2026-06-30" }
 service -> contractDB : UPDATE contract SET end_date = '2026-06-30'
-service -> contractDB : INSERT outbox\n(CONTRACT_END_DATE_UPDATED,\ncontractId, endDate, invoicedIn, invoiceInterval)
+service -> contractDB : INSERT outbox\n(CONTRACT_UPDATED,\ncontractId, endDate, invoicedIn, invoiceInterval)
 service --> user : 204 No Content
 
 ...senare...
 
-dispatcher -> contractDB : SELECT * FROM outbox\nWHERE status='PENDING' AND retries < 5
-contractDB --> dispatcher : [CONTRACT_END_DATE_UPDATED-rad]
+dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 5
+contractDB --> dispatcher : [CONTRACT_UPDATED-rad]
 
-dispatcher -> billing : POST /contracts/end-date-updated\n{ contractId, endDate, invoicedIn, invoiceInterval }
+dispatcher -> billing : POST /contracts/updated\n{ contractId, endDate, invoicedIn, invoiceInterval }
 
 note over billing
   Billing avgör själv:

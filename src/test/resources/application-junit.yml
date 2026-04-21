@@ -36,8 +36,3 @@ integration:
     read-timeout: 456
     base-url: http://billing-data-collector.url
 
-business-rules:
-  billable-agreement-rule:
-    managed-municipality-ids:
-      - 1234
-      - 5678
