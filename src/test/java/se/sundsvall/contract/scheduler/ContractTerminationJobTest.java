@@ -147,10 +147,11 @@ class ContractTerminationJobTest {
 		final var failingObjectMapper = mock(ObjectMapper.class);
 		when(failingObjectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("boom") {});
 		final var failingJob = new ContractTerminationJob(contractRepositoryMock, outboxRepositoryMock, failingObjectMapper);
+		final var contract = buildContract();
 
 		// Act & Assert
 		assertThatExceptionOfType(IllegalStateException.class)
-			.isThrownBy(() -> failingJob.terminate(buildContract()))
+			.isThrownBy(() -> failingJob.terminate(contract))
 			.withMessageContaining("Failed to serialize CONTRACT_TERMINATED event for contract")
 			.withMessageContaining(CONTRACT_ID);
 	}
