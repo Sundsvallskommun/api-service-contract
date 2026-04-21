@@ -1,22 +1,14 @@
 package se.sundsvall.contract.apptest;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -54,7 +46,6 @@ class OutboxIT extends AbstractAppTest {
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.sendRequest();
 
 		final var entries = outboxRepository.findAll();
@@ -108,18 +99,6 @@ class OutboxIT extends AbstractAppTest {
 	 */
 	@Test
 	void test04_dispatchSendsCreatedEventToBilling() {
-		// Stub token endpoint
-		wiremock.stubFor(post(urlPathEqualTo("/api-gateway/token"))
-			.willReturn(aResponse()
-				.withStatus(200)
-				.withHeader("Content-Type", "application/json")
-				.withBodyFile("common/responses/api-gateway-token-response.json")));
-
-		// Stub billing endpoint
-		wiremock.stubFor(post(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/created"))
-			.willReturn(aResponse().withStatus(200)));
-
-		// Create contract → writes to outbox
 		setupCall()
 			.withServicePath(fromPath(PATH).build(MUNICIPALITY_ID).toString())
 			.withHttpMethod(POST)
@@ -129,13 +108,9 @@ class OutboxIT extends AbstractAppTest {
 
 		assertThat(outboxRepository.findUnsent()).hasSize(1);
 
-		// Dispatch → sends to billing
 		outboxDispatcher.dispatch();
 
-		// Verify billing was called once
-		wiremock.verify(1, postRequestedFor(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/created")));
-
-		// Verify outbox was cleared after successful dispatch
+		verifyStubs();
 		assertThat(outboxRepository.findUnsent()).isEmpty();
 	}
 
@@ -145,15 +120,6 @@ class OutboxIT extends AbstractAppTest {
 	 */
 	@Test
 	void test05_dispatchSendsUpdatedEventToBilling() {
-		wiremock.stubFor(post(urlPathEqualTo("/api-gateway/token"))
-			.willReturn(aResponse()
-				.withStatus(200)
-				.withHeader("Content-Type", "application/json")
-				.withBodyFile("common/responses/api-gateway-token-response.json")));
-
-		wiremock.stubFor(post(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/updated"))
-			.willReturn(aResponse().withStatus(200)));
-
 		setupCall()
 			.withServicePath(fromPath(PATH + "/{contractId}").build(MUNICIPALITY_ID, CONTRACT_ID).toString())
 			.withHttpMethod(PUT)
@@ -163,7 +129,7 @@ class OutboxIT extends AbstractAppTest {
 
 		outboxDispatcher.dispatch();
 
-		wiremock.verify(1, postRequestedFor(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/updated")));
+		verifyStubs();
 		assertThat(outboxRepository.findUnsent()).isEmpty();
 	}
 
@@ -173,15 +139,6 @@ class OutboxIT extends AbstractAppTest {
 	 */
 	@Test
 	void test06_dispatchSendsDeletedEventToBilling() {
-		wiremock.stubFor(post(urlPathEqualTo("/api-gateway/token"))
-			.willReturn(aResponse()
-				.withStatus(200)
-				.withHeader("Content-Type", "application/json")
-				.withBodyFile("common/responses/api-gateway-token-response.json")));
-
-		wiremock.stubFor(post(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/deleted"))
-			.willReturn(aResponse().withStatus(200)));
-
 		setupCall()
 			.withServicePath(fromPath(PATH + "/{contractId}").build(MUNICIPALITY_ID, CONTRACT_ID).toString())
 			.withHttpMethod(DELETE)
@@ -190,7 +147,7 @@ class OutboxIT extends AbstractAppTest {
 
 		outboxDispatcher.dispatch();
 
-		wiremock.verify(1, postRequestedFor(urlEqualTo("/api-billing-data-collector/" + MUNICIPALITY_ID + "/contracts/deleted")));
+		verifyStubs();
 		assertThat(outboxRepository.findUnsent()).isEmpty();
 	}
 }
