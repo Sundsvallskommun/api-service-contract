@@ -1,15 +1,8 @@
 package se.sundsvall.contract.integration.billingdatacollector.event;
 
-import java.time.LocalDate;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.contract.model.enums.InvoicedIn;
-
 public record ContractTerminatedEvent(
-	String contractId,
-	String municipalityId,
-	LocalDate endDate,
-	InvoicedIn invoicedIn,
-	IntervalType invoiceInterval)
+	String id,
+	String municipalityId)
 	implements
 	BillingEvent {
 

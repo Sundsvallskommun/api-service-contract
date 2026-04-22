@@ -1,7 +1,7 @@
 {
 	"request": {
 		"method": "POST",
-		"url": "/api-billing-data-collector/1984/contracts/created"
+		"url": "/api-billing-data-collector/1984/CONTRACTS/events"
 	},
 	"response": {
 		"status": 200

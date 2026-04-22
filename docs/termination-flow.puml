@@ -28,9 +28,9 @@ title Termination flow — GET och POST mellan apparna
 
 actor Användare as user
 participant "ContractService\n(contract)" as service
-participant "ContractTerminationJob\n@Scheduled dagligen" as job
+participant "ContractTerminationJob\n@Dept44Scheduled dagligen" as job
 database "contract DB\n(contracts + outbox)" as contractDB
-participant "OutboxDispatcher\n@Scheduled var 30s" as dispatcher
+participant "OutboxDispatcher\n@Dept44Scheduled var 5 min" as dispatcher
 participant "billing-data-collector" as billing
 database "billing DB\n(scheduled_billing)" as billingDB
 
@@ -38,18 +38,23 @@ database "billing DB\n(scheduled_billing)" as billingDB
 
 user -> service : PUT /{municipalityId}/contracts/{contractId}\n{ endDate: "2026-06-30" }
 service -> contractDB : UPDATE contract SET end_date = '2026-06-30'
-service -> contractDB : INSERT outbox\n(CONTRACT_UPDATED,\ncontractId, endDate, invoicedIn, invoiceInterval)
+service -> contractDB : INSERT outbox\n(CONTRACT_UPDATED, contractId, municipalityId)
 service --> user : 204 No Content
 
-...senare...
+...senare (var 5:e minut)...
 
-dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 5
+dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 12 ORDER BY created_at ASC
 contractDB --> dispatcher : [CONTRACT_UPDATED-rad]
 
-dispatcher -> billing : POST /contracts/updated\n{ contractId, endDate, invoicedIn, invoiceInterval }
+dispatcher -> billing : POST /{municipalityId}/contracts/updated\n{ contractId, municipalityId }
+
+billing -> service : GET /{municipalityId}/contracts/{contractId}
+service -> contractDB : SELECT contract
+contractDB --> service : [kontraktsdata]
+service --> billing : 200 OK { contract }
 
 note over billing
-  Billing avgör själv:
+  Billing avgör själv utifrån kontraktsdata:
   ADVANCE + endDate efter nästa billing → behåll, sätt finalBillingDate
   ADVANCE + endDate före nästa billing  → ta bort
   ARREARS + endDate efter nästa billing → ta bort
@@ -66,25 +71,30 @@ else Behåll med finalBillingDate
 end
 
 billing --> dispatcher : 200 OK
-dispatcher -> contractDB : UPDATE outbox SET status='SENT'
+dispatcher -> contractDB : DELETE FROM outbox WHERE id = ?
 
 == Ticket 1: Schemajobb sätter TERMINATED när endDate passerats ==
 
 job -> contractDB : SELECT * FROM contracts\nWHERE status='ACTIVE'\nAND end_date < TODAY
 contractDB --> job : [utgångna kontrakt]
 
-job -> contractDB : UPDATE contracts SET status='TERMINATED'\n+ INSERT outbox (CONTRACT_TERMINATED,\ncontractId, endDate, invoicedIn, invoiceInterval)\n[SAMMA TRANSAKTION]
+job -> contractDB : UPDATE contracts SET status='TERMINATED'\n+ INSERT outbox (CONTRACT_TERMINATED, contractId, municipalityId)\n[SAMMA TRANSAKTION]
 
-...senare...
+...senare (var 5:e minut)...
 
-dispatcher -> contractDB : SELECT * FROM outbox\nWHERE status='PENDING' AND retries < 5
+dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 12 ORDER BY created_at ASC
 contractDB --> dispatcher : [CONTRACT_TERMINATED-rad]
 
-dispatcher -> billing : POST /contracts/terminated\n{ contractId, endDate, invoicedIn, invoiceInterval }
+dispatcher -> billing : POST /{municipalityId}/contracts/terminated\n{ contractId, municipalityId }
+
+billing -> service : GET /{municipalityId}/contracts/{contractId}
+service -> contractDB : SELECT contract
+contractDB --> service : [kontraktsdata]
+service --> billing : 200 OK { contract }
 
 billing -> billingDB : DELETE scheduled_billing WHERE external_id = contractId
 billing --> dispatcher : 200 OK
-dispatcher -> contractDB : UPDATE outbox SET status='SENT'
+dispatcher -> contractDB : DELETE FROM outbox WHERE id = ?
 
 == Befintligt flöde: Billing kör fakturering (ingen förändring) ==
 

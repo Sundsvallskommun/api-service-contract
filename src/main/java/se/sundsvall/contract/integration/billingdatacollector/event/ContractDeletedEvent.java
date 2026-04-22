@@ -1,7 +1,7 @@
 package se.sundsvall.contract.integration.billingdatacollector.event;
 
 public record ContractDeletedEvent(
-	String contractId,
+	String id,
 	String municipalityId)
 	implements
 	BillingEvent {

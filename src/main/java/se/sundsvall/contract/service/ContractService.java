@@ -98,16 +98,7 @@ public class ContractService {
 		// Notify billing
 		outboxRepository.save(toOutboxEntity(contractEntity, new ContractCreatedEvent(
 			contractEntity.getContractId(),
-			contractEntity.getMunicipalityId(),
-			contractEntity.getType(),
-			contractEntity.getStatus(),
-			contractEntity.getStartDate(),
-			contractEntity.getEndDate(),
-			contractEntity.getCurrentPeriodStartDate(),
-			contractEntity.getCurrentPeriodEndDate(),
-			ofNullable(contractEntity.getInvoicing()).map(i -> i.getInvoicedIn()).orElse(null),
-			ofNullable(contractEntity.getInvoicing()).map(i -> i.getInvoiceInterval()).orElse(null),
-			contractEntity.getLeaseType())));
+			contractEntity.getMunicipalityId())));
 
 		return savedContractId;
 	}
@@ -185,16 +176,7 @@ public class ContractService {
 		// Notify billing
 		outboxRepository.save(toOutboxEntity(newContractEntity, new ContractUpdatedEvent(
 			newContractEntity.getContractId(),
-			newContractEntity.getMunicipalityId(),
-			newContractEntity.getType(),
-			newContractEntity.getStatus(),
-			newContractEntity.getStartDate(),
-			newContractEntity.getEndDate(),
-			newContractEntity.getCurrentPeriodStartDate(),
-			newContractEntity.getCurrentPeriodEndDate(),
-			ofNullable(newContractEntity.getInvoicing()).map(i -> i.getInvoicedIn()).orElse(null),
-			ofNullable(newContractEntity.getInvoicing()).map(i -> i.getInvoiceInterval()).orElse(null),
-			newContractEntity.getLeaseType())));
+			newContractEntity.getMunicipalityId())));
 
 		// Save changes
 		contractRepository.save(newContractEntity);

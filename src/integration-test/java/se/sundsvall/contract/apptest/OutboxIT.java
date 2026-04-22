@@ -72,7 +72,7 @@ class OutboxIT extends AbstractAppTest {
 		assertThat(entries).hasSize(1);
 		assertThat(entries.getFirst().getEventType()).isEqualTo("CONTRACT_UPDATED");
 		assertThat(entries.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
-		assertThat(entries.getFirst().getPayload()).contains("\"contractId\":\"" + CONTRACT_ID + "\"");
+		assertThat(entries.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 	}
 
 	/**
@@ -90,7 +90,7 @@ class OutboxIT extends AbstractAppTest {
 		assertThat(entries).hasSize(1);
 		assertThat(entries.getFirst().getEventType()).isEqualTo("CONTRACT_DELETED");
 		assertThat(entries.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
-		assertThat(entries.getFirst().getPayload()).contains("\"contractId\":\"" + CONTRACT_ID + "\"");
+		assertThat(entries.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 	}
 
 	/**
