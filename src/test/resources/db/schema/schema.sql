@@ -37,6 +37,7 @@
         start_date date,
         version integer,
         id bigint not null auto_increment,
+        lock_version bigint default 0 not null,
         contract_id varchar(10) not null,
         lease_duration_unit varchar(32) check ((lease_duration_unit in ('MONTHS','YEARS','DAYS'))),
         lease_extension_unit varchar(32) check ((lease_extension_unit in ('MONTHS','YEARS','DAYS'))),

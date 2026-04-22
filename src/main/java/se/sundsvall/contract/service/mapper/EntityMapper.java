@@ -15,6 +15,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
@@ -97,7 +98,6 @@ public final class EntityMapper {
 			.withStartDate(contract.getStartDate())
 			.withStatus(contract.getStatus())   // Cannot / shouldn't be null
 			.withType(contract.getType()) // Cannot / shouldn't be null
-			.withVersion(contract.getVersion())
 			.build();
 	}
 
@@ -120,11 +120,11 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	static InvoicingEmbeddable toInvoicingEntity(final Invoicing contract) {
-		return ofNullable(contract)
-			.map(invoicing -> InvoicingEmbeddable.builder()
-				.withInvoiceInterval(invoicing.getInvoiceInterval())
-				.withInvoicedIn(invoicing.getInvoicedIn())
+	static InvoicingEmbeddable toInvoicingEntity(final Invoicing invoicing) {
+		return ofNullable(invoicing)
+			.map(source -> InvoicingEmbeddable.builder()
+				.withInvoiceInterval(source.getInvoiceInterval())
+				.withInvoicedIn(source.getInvoicedIn())
 				.build())
 			.orElse(null);
 	}
@@ -225,6 +225,88 @@ public final class EntityMapper {
 	}
 
 	/**
+	 * Applies non-null fields from the given {@link PatchContract} onto an existing {@link ContractEntity} in place,
+	 * preserving fields that are not provided in the patch payload. The version is not modified.
+	 *
+	 * @param  entity the existing entity to update
+	 * @param  patch  the patch payload
+	 * @return        the updated entity
+	 */
+	public static ContractEntity patchContractEntity(final ContractEntity entity, final PatchContract patch) {
+		setPropertyUnlessNull(patch.getArea(), entity::setArea);
+		setPropertyUnlessNull(patch.getAreaData(), entity::setAreaData);
+		setPropertyUnlessNull(patch.getDescription(), entity::setDescription);
+		setPropertyUnlessNull(patch.getEndDate(), entity::setEndDate);
+		setPropertyUnlessNull(patch.getExternalReferenceId(), entity::setExternalReferenceId);
+		setPropertyUnlessNull(patch.getLeaseType(), entity::setLeaseType);
+		setPropertyUnlessNull(patch.getObjectIdentity(), entity::setObjectIdentity);
+		setPropertyUnlessNull(patch.getSignedByWitness(), entity::setSignedByWitness);
+		setPropertyUnlessNull(patch.getStartDate(), entity::setStartDate);
+		setPropertyUnlessNull(patch.getStatus(), entity::setStatus);
+		setPropertyUnlessNull(patch.getType(), entity::setType);
+
+		ofNullable(patch.getExtension()).ifPresent(extension -> {
+			setPropertyUnlessNull(extension.getAutoExtend(), entity::setAutoExtend);
+			setPropertyUnlessNull(extension.getLeaseExtension(), entity::setLeaseExtension);
+			setPropertyUnlessNull(extension.getUnit(), entity::setLeaseExtensionUnit);
+		});
+		ofNullable(patch.getCurrentPeriod()).ifPresent(period -> {
+			setPropertyUnlessNull(period.getStartDate(), entity::setCurrentPeriodStartDate);
+			setPropertyUnlessNull(period.getEndDate(), entity::setCurrentPeriodEndDate);
+		});
+		ofNullable(patch.getNotice()).ifPresent(notice -> {
+			setPropertyUnlessNull(notice.getNoticeDate(), entity::setNoticeDate);
+			setPropertyUnlessNull(notice.getNoticeGivenBy(), entity::setNoticeGivenBy);
+			setPropertyUnlessNull(notice.getTerms(), _ -> replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, toNoticeTermEmbeddables(notice)));
+		});
+
+		setPropertyUnlessNull(patch.getFees(), fees -> entity.setFees(toFeesEmbeddable(fees)));
+		setPropertyUnlessNull(patch.getInvoicing(), invoicing -> entity.setInvoicing(toInvoicingEntity(invoicing)));
+		setPropertyUnlessNull(patch.getLeasehold(), leasehold -> entity.setLeasehold(toLeaseholdEntity(leasehold)));
+		setPropertyUnlessNull(patch.getPropertyDesignations(), propertyDesignations -> replaceCollection(entity.getPropertyDesignations(), entity::setPropertyDesignations, toPropertyDesignationEmbeddables(propertyDesignations)));
+		setPropertyUnlessNull(patch.getStakeholders(), stakeholders -> replaceCollection(entity.getStakeholders(), entity::setStakeholders, toStakeholderEntities(stakeholders)));
+		setPropertyUnlessNull(patch.getExtraParameters(), extraParameters -> replaceCollection(entity.getExtraParameters(), entity::setExtraParameters, toExtraParameterGroupEntities(extraParameters)));
+
+		if (patch.getIndexTerms() != null || patch.getAdditionalTerms() != null) {
+			replaceCollection(entity.getTermGroups(), entity::setTermGroups,
+				mergeTermGroups(entity.getTermGroups(), patch.getIndexTerms(), patch.getAdditionalTerms()));
+		}
+
+		return entity;
+	}
+
+	private static <T> void replaceCollection(final List<T> existing, final Consumer<List<T>> setter, final List<T> replacement) {
+		// Mutate the existing (Hibernate-managed) collection in place to preserve orphanRemoval semantics.
+		// Fall back to replacing via setter for immutable/unmodifiable lists (e.g. test fixtures).
+		if (existing == null) {
+			setter.accept(replacement);
+			return;
+		}
+		try {
+			existing.clear();
+			existing.addAll(replacement);
+		} catch (UnsupportedOperationException e) {
+			setter.accept(new ArrayList<>(replacement));
+		}
+	}
+
+	private static List<TermGroupEntity> mergeTermGroups(final List<TermGroupEntity> existing,
+		final List<TermGroup> indexTerms, final List<TermGroup> additionalTerms) {
+
+		final var existingList = ofNullable(existing).orElseGet(ArrayList::new);
+
+		final var indexEntities = indexTerms != null
+			? indexTerms.stream().map(t -> toTermGroupEntity(t, TYPE_INDEX)).collect(toCollection(ArrayList::new))
+			: existingList.stream().filter(tg -> TYPE_INDEX.equals(tg.getType())).collect(toCollection(ArrayList::new));
+
+		final var additionalEntities = additionalTerms != null
+			? additionalTerms.stream().map(t -> toTermGroupEntity(t, TYPE_ADDITIONAL)).collect(toCollection(ArrayList::new))
+			: existingList.stream().filter(tg -> TYPE_ADDITIONAL.equals(tg.getType())).collect(toCollection(ArrayList::new));
+
+		return Stream.concat(indexEntities.stream(), additionalEntities.stream()).collect(toCollection(ArrayList::new));
+	}
+
+	/**
 	 * Creates a new {@link ContractEntity} as a new version of an existing contract.
 	 *
 	 * @param  municipalityId the municipality ID to set on the entity
@@ -235,8 +317,8 @@ public final class EntityMapper {
 	public static ContractEntity createNewContractEntity(final String municipalityId, final ContractEntity oldContract, final Contract contract) {
 		final var contractEntity = toContractEntity(municipalityId, contract);
 
-		// Set the version, the PrePersist will take care of upping the version by one.
-		contractEntity.setVersion(oldContract.getVersion());
+		// Bump the version number by one, based on the existing contract's version.
+		contractEntity.setVersion(oldContract.getVersion() + 1);
 		// Set the contractId since it will be generated otherwise.
 		contractEntity.setContractId(oldContract.getContractId());
 

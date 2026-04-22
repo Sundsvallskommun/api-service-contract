@@ -47,14 +47,6 @@ class ContractEntityTest {
 	}
 
 	@Test
-	void testPrePersist() {
-		var entity = ContractEntity.builder().build();
-		assertThat(entity.getVersion()).isOne();
-		entity.prePersist();
-		assertThat(entity.getVersion()).isEqualTo(2);
-	}
-
-	@Test
 	void testBuilderMethods() {
 		var type = ContractType.LEASE_AGREEMENT;
 		var version = 1;
@@ -129,12 +121,14 @@ class ContractEntityTest {
 		var noticeTerms = List.of(NoticeTermEmbeddable.builder().build());
 		var area = 1;
 		var areaData = new FeatureCollection();
+		var lockVersion = 1L;
 
 		var contract = ContractEntity.builder()
 			.withId(id)
 			.withContractId(contractId)
 			.withType(type)
 			.withVersion(version)
+			.withLockVersion(lockVersion)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
 			.withTermGroups(termGroups)
@@ -204,6 +198,6 @@ class ContractEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(ContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version");
+		assertThat(ContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version", "lockVersion");
 	}
 }

@@ -17,6 +17,7 @@ import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
+import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
@@ -257,6 +258,25 @@ class ContractResourceTest {
 			.expectBody().isEmpty();
 
 		verify(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
+		verifyNoMoreInteractions(contractServiceMock);
+	}
+
+	@Test
+	void patchContract() {
+		final var patch = PatchContract.builder()
+			.withDescription("a patched description")
+			.build();
+
+		doNothing().when(contractServiceMock).patchContract(MUNICIPALITY_ID, CONTRACT_ID, patch);
+
+		webTestClient.patch()
+			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
+			.bodyValue(patch)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody().isEmpty();
+
+		verify(contractServiceMock).patchContract(MUNICIPALITY_ID, CONTRACT_ID, patch);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 

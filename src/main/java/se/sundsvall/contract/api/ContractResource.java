@@ -10,15 +10,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.jspecify.annotations.Nullable;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
+import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.service.ContractService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -151,6 +153,28 @@ class ContractResource {
 		@RequestBody @Valid final Contract contract) {
 
 		service.updateContract(municipalityId, contractId, contract);
+		return ok().build();
+	}
+
+	@Operation(
+		summary = "Patch a contract",
+		description = "Applies only the non-null fields from the payload onto the existing contract. Does not create a new version.",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "Ok"),
+			@ApiResponse(
+				responseCode = "404",
+				description = "Not Found",
+				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
+		})
+	@PatchMapping(path = "/{contractId}", consumes = APPLICATION_JSON_VALUE)
+	ResponseEntity<Void> patchContract(
+		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(description = "Contract id") @PathVariable final String contractId,
+		@RequestBody @Valid final PatchContract patch) {
+
+		service.patchContract(municipalityId, contractId, patch);
 		return ok().build();
 	}
 
