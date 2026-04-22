@@ -60,9 +60,6 @@ public class PatchContract {
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	private List<Stakeholder> stakeholders;
 
-	@Schema(description = "Lease duration")
-	private Duration duration;
-
 	@Schema(description = "Lease extension")
 	private Extension extension;
 

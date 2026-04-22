@@ -1,7 +1,9 @@
 package se.sundsvall.contract.service.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
@@ -11,6 +13,9 @@ import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
+import se.sundsvall.contract.integration.db.model.TermGroupEntity;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
@@ -259,7 +264,6 @@ class EntityMapperTest {
 			.withStatus(source.getStatus())
 			.withType(source.getType())
 			.withSignedByWitness(source.isSignedByWitness())
-			.withDuration(source.getDuration())
 			.withExtension(source.getExtension())
 			.withCurrentPeriod(source.getCurrentPeriod())
 			.withNotice(source.getNotice())
@@ -276,11 +280,11 @@ class EntityMapperTest {
 
 	private static ContractEntity createMutableContractEntity() {
 		final var entity = createContractEntity();
-		entity.setPropertyDesignations(new java.util.ArrayList<>(entity.getPropertyDesignations()));
-		entity.setStakeholders(new java.util.ArrayList<>(entity.getStakeholders()));
-		entity.setExtraParameters(new java.util.ArrayList<>(entity.getExtraParameters()));
-		entity.setNoticeTerms(new java.util.ArrayList<>(entity.getNoticeTerms()));
-		entity.setTermGroups(new java.util.ArrayList<>(entity.getTermGroups()));
+		entity.setPropertyDesignations(new ArrayList<>(entity.getPropertyDesignations()));
+		entity.setStakeholders(new ArrayList<>(entity.getStakeholders()));
+		entity.setExtraParameters(new ArrayList<>(entity.getExtraParameters()));
+		entity.setNoticeTerms(new ArrayList<>(entity.getNoticeTerms()));
+		entity.setTermGroups(new ArrayList<>(entity.getTermGroups()));
 		return entity;
 	}
 
@@ -305,8 +309,6 @@ class EntityMapperTest {
 		assertThat(entity.getStatus()).isEqualTo(patch.getStatus());
 		assertThat(entity.getType()).isEqualTo(patch.getType());
 		assertThat(entity.isSignedByWitness()).isEqualTo(patch.getSignedByWitness());
-		assertThat(entity.getLeaseDuration()).isEqualTo(patch.getDuration().getLeaseDuration());
-		assertThat(entity.getLeaseDurationUnit()).isEqualTo(patch.getDuration().getUnit());
 		assertThat(entity.getLeaseExtension()).isEqualTo(patch.getExtension().getLeaseExtension());
 		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(patch.getExtension().getUnit());
 		assertThat(entity.getAutoExtend()).isEqualTo(patch.getExtension().getAutoExtend());
@@ -359,7 +361,7 @@ class EntityMapperTest {
 		assertThat(entity.getPropertyDesignations())
 			.hasSize(1)
 			.extracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
-			.containsExactly(org.assertj.core.groups.Tuple.tuple("patchedName", "patchedDistrict"));
+			.containsExactly(Tuple.tuple("patchedName", "patchedDistrict"));
 	}
 
 	@Test
@@ -367,16 +369,16 @@ class EntityMapperTest {
 
 		// Arrange
 		final var entity = createContractEntity();
-		entity.setTermGroups(new java.util.ArrayList<>(entity.getTermGroups()));
+		entity.setTermGroups(new ArrayList<>(entity.getTermGroups()));
 		final var originalAdditional = entity.getTermGroups().stream()
-			.filter(tg -> se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
+			.filter(tg -> TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
 			.toList();
 
 		final var patch = PatchContract.builder()
 			.withIndexTerms(List.of(
-				se.sundsvall.contract.model.TermGroup.builder()
+				TermGroup.builder()
 					.withHeader("replaced index header")
-					.withTerms(List.of(se.sundsvall.contract.model.Term.builder()
+					.withTerms(List.of(Term.builder()
 						.withName("t1").withDescription("d1").build()))
 					.build()))
 			.build();
@@ -386,12 +388,12 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(entity.getTermGroups())
-			.filteredOn(tg -> se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_INDEX.equals(tg.getType()))
+			.filteredOn(tg -> TermGroupEntity.TYPE_INDEX.equals(tg.getType()))
 			.hasSize(1)
 			.extracting("header")
 			.containsExactly("replaced index header");
 		assertThat(entity.getTermGroups())
-			.filteredOn(tg -> se.sundsvall.contract.integration.db.model.TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
+			.filteredOn(tg -> TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
 			.hasSameSizeAs(originalAdditional);
 	}
 

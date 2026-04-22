@@ -57,7 +57,6 @@ class PatchContractTest {
 		final var propertyDesignations = List.of(new PropertyDesignation("SUNDSVALL NORRMALM 1:1", "Sundsvall"));
 		final var stakeholders = List.of(new Stakeholder());
 		final var notice = Notice.builder().build();
-		final var duration = Duration.builder().build();
 		final var extension = Extension.builder().build();
 		final var fees = Fees.builder().build();
 		final var invoicing = new Invoicing();
@@ -81,7 +80,6 @@ class PatchContractTest {
 			.withIndexTerms(indexTerms)
 			.withPropertyDesignations(propertyDesignations)
 			.withStakeholders(stakeholders)
-			.withDuration(duration)
 			.withExtension(extension)
 			.withFees(fees)
 			.withInvoicing(invoicing)
@@ -106,7 +104,6 @@ class PatchContractTest {
 		assertThat(patch.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(patch.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(patch.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(patch.getDuration()).isEqualTo(duration);
 		assertThat(patch.getExtension()).isEqualTo(extension);
 		assertThat(patch.getFees()).isEqualTo(fees);
 		assertThat(patch.getInvoicing()).isEqualTo(invoicing);

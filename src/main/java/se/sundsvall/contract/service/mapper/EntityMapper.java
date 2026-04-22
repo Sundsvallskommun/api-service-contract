@@ -245,10 +245,6 @@ public final class EntityMapper {
 		setPropertyUnlessNull(patch.getStatus(), entity::setStatus);
 		setPropertyUnlessNull(patch.getType(), entity::setType);
 
-		ofNullable(patch.getDuration()).ifPresent(duration -> {
-			setPropertyUnlessNull(duration.getLeaseDuration(), entity::setLeaseDuration);
-			setPropertyUnlessNull(duration.getUnit(), entity::setLeaseDurationUnit);
-		});
 		ofNullable(patch.getExtension()).ifPresent(extension -> {
 			setPropertyUnlessNull(extension.getAutoExtend(), entity::setAutoExtend);
 			setPropertyUnlessNull(extension.getLeaseExtension(), entity::setLeaseExtension);

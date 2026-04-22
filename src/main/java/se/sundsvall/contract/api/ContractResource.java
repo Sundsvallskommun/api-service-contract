@@ -172,7 +172,7 @@ class ContractResource {
 	ResponseEntity<Void> patchContract(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(description = "Contract id") @PathVariable final String contractId,
-		@RequestBody final PatchContract patch) {
+		@RequestBody @Valid final PatchContract patch) {
 
 		service.patchContract(municipalityId, contractId, patch);
 		return ok().build();

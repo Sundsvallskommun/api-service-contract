@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "7.1"
 servers:
-- url: http://localhost:53419
+- url: http://localhost:64382
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -675,9 +675,9 @@ components:
         type:
           type: string
           format: uri
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         status:
           type: integer
@@ -1600,11 +1600,9 @@ components:
           type: boolean
         number:
           type: boolean
-        bigInteger:
+        bigDecimal:
           type: boolean
         valueNode:
-          type: boolean
-        bigDecimal:
           type: boolean
         floatingPointNumber:
           type: boolean
@@ -1620,28 +1618,30 @@ components:
           - OBJECT
           - POJO
           - STRING
+        missingNode:
+          type: boolean
         integralNumber:
           type: boolean
-        missingNode:
+        bigInteger:
           type: boolean
         string:
           type: boolean
-        pojo:
-          type: boolean
-        short:
-          type: boolean
-        binary:
-          type: boolean
-        long:
-          type: boolean
         double:
           type: boolean
-        int:
+        binary:
           type: boolean
         textual:
           type: boolean
           deprecated: true
         boolean:
+          type: boolean
+        short:
+          type: boolean
+        int:
+          type: boolean
+        long:
+          type: boolean
+        pojo:
           type: boolean
         embeddedValue:
           type: boolean
@@ -1702,9 +1702,6 @@ components:
           items:
             $ref: "#/components/schemas/Stakeholder"
             description: List of stakeholders
-        duration:
-          $ref: "#/components/schemas/Duration"
-          description: Lease duration
         extension:
           $ref: "#/components/schemas/Extension"
           description: Lease extension
@@ -1765,17 +1762,17 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -1786,23 +1783,23 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
-        pageNumber:
-          type: integer
-          format: int32
         pageSize:
           type: integer
           format: int32
+        pageNumber:
+          type: integer
+          format: int32
         paged:
+          type: boolean
+        unpaged:
           type: boolean
     SortObject:
       type: object
       properties:
         empty:
           type: boolean
-        unsorted:
-          type: boolean
         sorted:
+          type: boolean
+        unsorted:
           type: boolean
   securitySchemes: {}
