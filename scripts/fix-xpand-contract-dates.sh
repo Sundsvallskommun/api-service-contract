@@ -95,7 +95,16 @@ Credentials and URLs are configured at the top of this script.
 EOF
 }
 
-log()   { printf '%s %s\n' "$(date +%H:%M:%S)" "$*" | tee -a "${LOG_ROOT}/run.log"; }
+# log() writes to stderr and the run log — NEVER stdout. Stdout is reserved
+# for function return values captured via $(...) (resolve_contract_id,
+# patch_contract, build_body, json_string, json_number). Mixing log output
+# onto stdout would contaminate those return values.
+log() {
+    local line
+    line="$(date +%H:%M:%S) $*"
+    printf '%s\n' "${line}" >> "${LOG_ROOT}/run.log"
+    printf '%s\n' "${line}" >&2
+}
 logv()  { [[ "${VERBOSE}" == "true" ]] && log "$@" || true; }
 fatal() { log "FATAL: $*"; exit 1; }
 
