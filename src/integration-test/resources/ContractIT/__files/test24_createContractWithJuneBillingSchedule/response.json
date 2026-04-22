@@ -1,0 +1,102 @@
+{
+	"version": 1,
+	"contractId": "${json-unit.regex}^\\d{4}-000\\d{2}$",
+	"description": "Land lease residential with June billing",
+	"externalReferenceId": "MK-TEST0024",
+	"leaseType": "LAND_LEASE_RESIDENTIAL",
+	"municipalityId": "1984",
+	"objectIdentity": "someObjectIdentity",
+	"status": "ACTIVE",
+	"type": "LEASE_AGREEMENT",
+	"leasehold": {
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription",
+		"additionalInformation": [
+			"Some additional information"
+		]
+	},
+	"attachmentMetaData": [],
+	"additionalTerms": [],
+	"extraParameters": [],
+	"indexTerms": [],
+	"propertyDesignations": [
+		{
+			"name": "SUNDSVALL NORRMALM 123:1",
+			"district": "District x"
+		}
+	],
+	"stakeholders": [
+		{
+			"type": "PERSON",
+			"roles": [
+				"SIGNATORY"
+			],
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+			"phoneNumber": "somePhoneNumber",
+			"emailAddress": "someEmail",
+			"address": {
+				"type": "POSTAL_ADDRESS",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"town": "someTown",
+				"country": "SE",
+				"attention": "someAttention"
+			},
+			"parameters": []
+		}
+	],
+	"duration": {
+		"leaseDuration": 2,
+		"unit": "YEARS"
+	},
+	"extension": {
+		"autoExtend": true,
+		"leaseExtension": 1,
+		"unit": "YEARS"
+	},
+	"fees": {
+		"currency": "SEK",
+		"yearly": 234.56,
+		"monthly": 123.45,
+		"total": 500.00,
+		"totalAsText": "five hundred",
+		"indexYear": 2021,
+		"indexNumber": 2.00,
+		"indexationRate": 0.40,
+		"additionalInformation": [
+			"someAdditionalInfo1"
+		]
+	},
+	"invoicing": {
+		"invoiceInterval": "YEARLY",
+		"invoicedIn": "ADVANCE"
+	},
+	"startDate": "2024-01-01",
+	"endDate": "2025-12-31",
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 3,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
+	},
+	"currentPeriod": {
+		"startDate": "2024-01-01",
+		"endDate": "2025-06-30"
+	},
+	"area": 12,
+	"signedByWitness": false
+}

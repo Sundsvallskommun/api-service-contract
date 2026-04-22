@@ -177,6 +177,11 @@ public class ContractService {
 		// Apply matching businessrules
 		applyBusinessrules(existingEntity, UPDATE);
 
+		// Notify billing
+		outboxRepository.save(toOutboxEntity(existingEntity, ContractUpdatedEvent.of(
+			existingEntity.getContractId(),
+			existingEntity.getMunicipalityId())));
+
 		// Save changes on the existing entity — no new version is created
 		contractRepository.save(existingEntity);
 	}

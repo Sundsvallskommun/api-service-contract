@@ -1,0 +1,95 @@
+{
+	"municipalityId": "1984",
+	"fees": {
+		"additionalInformation": [
+			"someAdditionalInfo1"
+		],
+		"total": 500,
+		"totalAsText": "five hundred",
+		"monthly": 123.45,
+		"currency": "SEK",
+		"indexationRate": 0.4,
+		"indexNumber": 2.00,
+		"yearly": 234.56,
+		"indexYear": 2021
+	},
+	"description": "Land lease residential with June billing",
+	"stakeholders": [
+		{
+			"firstName": "someFirstName",
+			"lastName": "someLastName",
+			"emailAddress": "someEmail",
+			"phoneNumber": "somePhoneNumber",
+			"address": {
+				"country": "SE",
+				"town": "someTown",
+				"streetAddress": "someStreetAddress",
+				"postalCode": "12345",
+				"attention": "someAttention",
+				"type": "POSTAL_ADDRESS"
+			},
+			"organizationName": "someOrganizationName",
+			"organizationNumber": "771122-1234",
+			"roles": [
+				"SIGNATORY"
+			],
+			"type": "PERSON",
+			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
+		}
+	],
+	"type": "LEASE_AGREEMENT",
+	"externalReferenceId": "MK-TEST0024",
+	"propertyDesignations": [
+		{
+			"district": "District x",
+			"name": "SUNDSVALL NORRMALM 123:1"
+		}
+	],
+	"objectIdentity": "someObjectIdentity",
+	"endDate": "2025-12-31",
+	"area": 12,
+	"startDate": "2024-01-01",
+	"leaseType": "LAND_LEASE_RESIDENTIAL",
+	"duration": {
+		"leaseDuration": 2,
+		"unit": "YEARS"
+	},
+	"extension": {
+		"leaseExtension": 1,
+		"unit": "YEARS",
+		"autoExtend": true
+	},
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 3,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
+	},
+	"leasehold": {
+		"additionalInformation": [
+			"Some additional information"
+		],
+		"purpose": "AGRICULTURE",
+		"description": "SomeLeaseholdDescription"
+	},
+	"invoicing": {
+		"invoiceInterval": "YEARLY",
+		"invoicedIn": "ADVANCE"
+	},
+	"status": "ACTIVE",
+	"currentPeriod": {
+		"startDate": "2024-01-01",
+		"endDate": "2025-06-30"
+	},
+	"signedByWitness": false
+}

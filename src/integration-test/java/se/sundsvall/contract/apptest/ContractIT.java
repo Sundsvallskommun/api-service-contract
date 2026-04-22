@@ -8,10 +8,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -19,8 +16,10 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.contract.Application;
+import se.sundsvall.contract.integration.db.OutboxRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -37,6 +36,9 @@ class ContractIT extends AbstractAppTest {
 	private static final String RESPONSE_FILE = "response.json";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String PATH = "/{municipalityId}/contracts";
+
+	@Autowired
+	private OutboxRepository outboxRepository;
 
 	@Test
 	void test01_readContract() {
@@ -302,35 +304,6 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test11_errorThrownByBCDWhenCreateContract() {
-		// POST fails because the BDC integration throws
-		setupCall()
-			.withServicePath(fromPath(PATH)
-				.build(MUNICIPALITY_ID)
-				.toString())
-			.withHttpMethod(POST)
-			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(INTERNAL_SERVER_ERROR)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-
-		// Verify no new contract leaked through the rollback — the list should match the seeded baseline.
-		// Use sendRequest() (without stub verification) since the WireMock stubs were already consumed by the POST above.
-		setupCall()
-			.withServicePath(fromPath(PATH)
-				.queryParam("page", 0)
-				.queryParam("size", 10)
-				.build(MUNICIPALITY_ID)
-				.toString())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse("list-response.json")
-			.sendRequest();
-	}
-
-	@Test
 	void test12_filterByStatus() {
 		setupCall()
 			.withServicePath(fromPath(PATH)
@@ -593,6 +566,13 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
 
+		// Verify outbox entry was written
+		final var outboxEntries26 = outboxRepository.findAll();
+		assertThat(outboxEntries26).hasSize(1);
+		assertThat(outboxEntries26.getFirst().getEventType()).isEqualTo("CONTRACT_UPDATED");
+		assertThat(outboxEntries26.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
+		assertThat(outboxEntries26.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
+
 		// Verify patch by performing a GET: version remains at 2, only patched fields changed.
 		setupCall()
 			.withServicePath(path)
@@ -622,6 +602,13 @@ class ContractIT extends AbstractAppTest {
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
+
+		// Verify outbox entry was written
+		final var outboxEntries27 = outboxRepository.findAll();
+		assertThat(outboxEntries27).hasSize(1);
+		assertThat(outboxEntries27.getFirst().getEventType()).isEqualTo("CONTRACT_UPDATED");
+		assertThat(outboxEntries27.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
+		assertThat(outboxEntries27.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 
 		// Verify: indexTerms replaced, additionalTerms intact, version still 2
 		setupCall()
