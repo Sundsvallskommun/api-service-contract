@@ -29,6 +29,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.OutboxEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
@@ -125,7 +126,7 @@ class ContractServiceTest {
 			});
 		}
 		verify(contractRepositoryMock, times(2)).save(any(ContractEntity.class));
-		verify(outboxRepositoryMock).save(any());
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}
 
@@ -247,7 +248,7 @@ class ContractServiceTest {
 			});
 		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
-		verify(outboxRepositoryMock).save(any());
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}
 
@@ -406,7 +407,7 @@ class ContractServiceTest {
 				assertThat(businessruleParameters.action()).isEqualTo(Action.DELETE);
 			});
 		}
-		verify(outboxRepositoryMock).save(any());
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
 		verify(contractRepositoryMock).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}

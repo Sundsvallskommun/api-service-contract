@@ -1,13 +1,10 @@
 package se.sundsvall.contract.integration.billingdatacollector.event;
 
-public record ContractCreatedEvent(
-	String id,
-	String municipalityId)
+public record ContractCreatedEvent(String id, String municipalityId, String eventType)
 	implements
 	BillingEvent {
 
-	@Override
-	public String eventType() {
-		return "CONTRACT_CREATED";
+	public static ContractCreatedEvent of(final String id, final String municipalityId) {
+		return new ContractCreatedEvent(id, municipalityId, "CONTRACT_CREATED");
 	}
 }

@@ -41,7 +41,7 @@ public class ContractTerminationWorker {
 	}
 
 	private OutboxEntity toOutboxEntity(final ContractEntity contract) {
-		final var event = new ContractTerminatedEvent(
+		final var event = ContractTerminatedEvent.of(
 			contract.getContractId(),
 			contract.getMunicipalityId());
 

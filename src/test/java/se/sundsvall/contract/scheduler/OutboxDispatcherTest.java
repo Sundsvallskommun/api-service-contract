@@ -4,6 +4,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.OutboxRepository;
@@ -30,11 +31,11 @@ class OutboxDispatcherTest {
 	@Mock
 	private Dept44HealthUtility dept44HealthUtilityMock;
 
+	@InjectMocks
 	private OutboxDispatcher dispatcher;
 
 	@BeforeEach
 	void setUp() {
-		dispatcher = new OutboxDispatcher(outboxRepositoryMock, outboxWorkerMock, dept44HealthUtilityMock);
 		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of());
 	}
 

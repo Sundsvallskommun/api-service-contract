@@ -1,7 +1,14 @@
 {
 	"request": {
 		"method": "POST",
-		"url": "/api-billing-data-collector/1984/CONTRACTS/events"
+		"url": "/api-billing-data-collector/1984/CONTRACTS/events",
+		"bodyPatterns": [
+			{
+				"equalToJson": "{\"id\":\"2024-12345\",\"municipalityId\":\"1984\",\"eventType\":\"CONTRACT_DELETED\"}",
+				"ignoreArrayOrder": true,
+				"ignoreExtraElements": true
+			}
+		]
 	},
 	"response": {
 		"status": 200

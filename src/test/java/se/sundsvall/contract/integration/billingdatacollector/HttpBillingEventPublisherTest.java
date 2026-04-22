@@ -33,28 +33,28 @@ class HttpBillingEventPublisherTest {
 
 	@Test
 	void publishContractCreatedEvent() {
-		final var event = new ContractCreatedEvent(CONTRACT_ID, MUNICIPALITY_ID);
+		final var event = ContractCreatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
 		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACTS, event);
 	}
 
 	@Test
 	void publishContractUpdatedEvent() {
-		final var event = new ContractUpdatedEvent(CONTRACT_ID, MUNICIPALITY_ID);
+		final var event = ContractUpdatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
 		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACTS, event);
 	}
 
 	@Test
 	void publishContractDeletedEvent() {
-		final var event = new ContractDeletedEvent(CONTRACT_ID, MUNICIPALITY_ID);
+		final var event = ContractDeletedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
 		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACTS, event);
 	}
 
 	@Test
 	void publishContractTerminatedEvent() {
-		final var event = new ContractTerminatedEvent(CONTRACT_ID, MUNICIPALITY_ID);
+		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
 		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACTS, event);
 	}

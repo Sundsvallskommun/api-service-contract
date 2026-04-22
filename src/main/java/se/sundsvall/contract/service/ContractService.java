@@ -96,7 +96,7 @@ public class ContractService {
 		final var savedContractId = contractRepository.save(contractEntity).getContractId();
 
 		// Notify billing
-		outboxRepository.save(toOutboxEntity(contractEntity, new ContractCreatedEvent(
+		outboxRepository.save(toOutboxEntity(contractEntity, ContractCreatedEvent.of(
 			contractEntity.getContractId(),
 			contractEntity.getMunicipalityId())));
 
@@ -174,7 +174,7 @@ public class ContractService {
 		applyBusinessrules(newContractEntity, UPDATE);
 
 		// Notify billing
-		outboxRepository.save(toOutboxEntity(newContractEntity, new ContractUpdatedEvent(
+		outboxRepository.save(toOutboxEntity(newContractEntity, ContractUpdatedEvent.of(
 			newContractEntity.getContractId(),
 			newContractEntity.getMunicipalityId())));
 
@@ -231,7 +231,7 @@ public class ContractService {
 		applyBusinessrules(contractEntity, DELETE);
 
 		// Notify billing before deletion
-		outboxRepository.save(toOutboxEntity(contractEntity, new ContractDeletedEvent(
+		outboxRepository.save(toOutboxEntity(contractEntity, ContractDeletedEvent.of(
 			contractEntity.getContractId(),
 			contractEntity.getMunicipalityId())));
 
