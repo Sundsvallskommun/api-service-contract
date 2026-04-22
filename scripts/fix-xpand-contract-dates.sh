@@ -45,15 +45,15 @@ set -euo pipefail
 # ============================================================================
 # EDIT BEFORE RUNNING
 # ============================================================================
-WSO2_BASE_URL="https://api-test.sundsvall.se"     # WSO2 gateway base URL
-TOKEN_URL="${WSO2_BASE_URL}/token"                # OAuth2 token endpoint
-CLIENT_ID=""                                       # WSO2 app client id
-CLIENT_SECRET=""                                   # WSO2 app client secret
-API_PATH_PREFIX="/contract/2.0"                   # gateway route to contract service
-MUNICIPALITY_ID="2281"                             # Sundsvall
-USE_EXTERNAL_REF="false"                           # true = look up contractId by arrendekontrakt
-DRY_RUN="true"                                     # true by default; pass -x to mutate
-THROTTLE_MS="100"                                  # sleep between PATCH calls
+WSO2_BASE_URL="https://wso2-gateway-host.se"		# WSO2 gateway base URL
+TOKEN_URL="${WSO2_BASE_URL}/token"					# OAuth2 token endpoint
+CLIENT_ID=""										# WSO2 app client id
+CLIENT_SECRET=""									# WSO2 app client secret
+API_PATH_PREFIX="/contract/7.1"						# gateway route to contract service
+MUNICIPALITY_ID="2281"								# Sundsvall
+USE_EXTERNAL_REF="false"							# true = look up contractId by arrendekontrakt
+DRY_RUN="true"										# true by default; pass -x to mutate
+THROTTLE_MS="100"									# sleep between PATCH calls
 VERBOSE="false"
 # ============================================================================
 
