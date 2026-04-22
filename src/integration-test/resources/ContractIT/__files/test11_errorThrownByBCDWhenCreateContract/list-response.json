@@ -1,0 +1,407 @@
+{
+	"content": [
+		{
+			"version": 1,
+			"contractId": "2024-23456",
+			"description": "someDescription",
+			"externalReferenceId": "MK-TEST0002",
+			"leaseType": "LAND_LEASE_RESIDENTIAL",
+			"municipalityId": "1984",
+			"objectIdentity": "someObjectIdentity",
+			"status": "DRAFT",
+			"type": "LEASE_AGREEMENT",
+			"leasehold": {
+				"purpose": "AGRICULTURE",
+				"description": "SomeLeaseholdDescription",
+				"additionalInformation": [
+					"More additional information"
+				]
+			},
+			"attachmentMetaData": [],
+			"additionalTerms": [
+				{
+					"header": "Additional Basic Terms",
+					"terms": [
+						{
+							"description": "Additional terms",
+							"term": "Party"
+						}
+					]
+				}
+			],
+			"extraParameters": [
+				{
+					"name": "someParameters2",
+					"parameters": {
+						"key3": "value3",
+						"key4": "value5"
+					}
+				}
+			],
+			"indexTerms": [
+				{
+					"header": "Basic Terms",
+					"terms": [
+						{
+							"description": "Description for basic terms",
+							"term": "Some Parties"
+						}
+					]
+				}
+			],
+			"propertyDesignations": [
+				{
+					"name": "SUNDSVALL NORRMALM 2:1",
+					"district": "District 2"
+				}
+			],
+			"stakeholders": [
+				{
+					"type": "PERSON",
+					"roles": [
+						"POWER_OF_ATTORNEY_ROLE",
+						"SIGNATORY"
+					],
+					"organizationName": "someOrganizationName",
+					"organizationNumber": "771122-1234",
+					"firstName": "someFirstName",
+					"lastName": "someLastName",
+					"partyId": "40f14de9-815d-44a5-a34d-b1d38b628e07",
+					"phoneNumber": "somePhoneNumber",
+					"emailAddress": "someEmail",
+					"address": {
+						"type": "VISITING_ADDRESS",
+						"streetAddress": "someStreetAddress",
+						"postalCode": "12345",
+						"town": "someTown",
+						"country": "SE",
+						"attention": "someAttention"
+					},
+					"parameters": [
+						{
+							"key": "parameterX",
+							"displayName": "Parameter X",
+							"values": [
+								"value-x1",
+								"value-x2"
+							]
+						}
+					]
+				}
+			],
+			"duration": {
+				"leaseDuration": 2,
+				"unit": "YEARS"
+			},
+			"extension": {
+				"autoExtend": true,
+				"leaseExtension": 1,
+				"unit": "YEARS"
+			},
+			"fees": {
+				"currency": "EUR",
+				"yearly": 1000.00,
+				"monthly": 120.00,
+				"total": 5000.00,
+				"totalAsText": "five thousand",
+				"indexType": "KPI 80",
+				"indexYear": 2021,
+				"indexNumber": 3.00,
+				"indexationRate": 0.30,
+				"additionalInformation": []
+			},
+			"invoicing": {
+				"invoiceInterval": "QUARTERLY",
+				"invoicedIn": "ARREARS"
+			},
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 30,
+						"unit": "DAYS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 60,
+						"unit": "DAYS"
+					}
+				]
+			},
+			"area": 12,
+			"signedByWitness": false
+		},
+		{
+			"version": 2,
+			"contractId": "2024-12345",
+			"description": "someDescription",
+			"externalReferenceId": "MK-TEST0001",
+			"leaseType": "LAND_LEASE_RESIDENTIAL",
+			"municipalityId": "1984",
+			"objectIdentity": "someObjectIdentity",
+			"status": "ACTIVE",
+			"type": "PURCHASE_AGREEMENT",
+			"leasehold": {
+				"purpose": "AGRICULTURE",
+				"description": "SomeLeaseholdDescription",
+				"additionalInformation": [
+					"Even more additional information"
+				]
+			},
+			"attachmentMetaData": [
+				{
+					"id": 1,
+					"category": "CONTRACT",
+					"filename": "someFile.pdf",
+					"mimeType": "application/pdf",
+					"note": "someNote",
+					"created": "2024-01-15T10:30:00Z"
+				}
+			],
+			"additionalTerms": [
+				{
+					"header": "More information",
+					"terms": [
+						{
+							"description": "No pöle vaulting indoors",
+							"term": "Respected by all parties"
+						}
+					]
+				}
+			],
+			"extraParameters": [
+				{
+					"name": "someParameters3",
+					"parameters": {
+						"key5": "value5",
+						"key6": "value6"
+					}
+				}
+			],
+			"indexTerms": [
+				{
+					"header": "Basic Terms Here",
+					"terms": [
+						{
+							"description": "Something something",
+							"term": "Donald must be happy"
+						}
+					]
+				}
+			],
+			"propertyDesignations": [
+				{
+					"name": "SUNDSVALL NORRMALM 1:1",
+					"district": "District 3"
+				}
+			],
+			"stakeholders": [
+				{
+					"type": "PERSON",
+					"roles": [
+						"SIGNATORY"
+					],
+					"organizationName": "someOrganizationName",
+					"organizationNumber": "771122-1234",
+					"firstName": "someFirstName",
+					"lastName": "someLastName",
+					"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07",
+					"phoneNumber": "somePhoneNumber",
+					"emailAddress": "someEmail",
+					"address": {
+						"type": "POSTAL_ADDRESS",
+						"streetAddress": "someStreetAddress",
+						"postalCode": "12345",
+						"town": "someTown",
+						"country": "SE",
+						"attention": "someAttention"
+					},
+					"parameters": []
+				}
+			],
+			"fees": {
+				"currency": "SEK",
+				"yearly": 234.56,
+				"monthly": 123.45,
+				"total": 500.00,
+				"totalAsText": "five hundred",
+				"indexYear": 2021,
+				"indexNumber": 2.00,
+				"indexationRate": 0.50,
+				"additionalInformation": [
+					"someAdditionalInfo3",
+					"someAdditionalInfo4"
+				]
+			},
+			"invoicing": {
+				"invoiceInterval": "QUARTERLY",
+				"invoicedIn": "ADVANCE"
+			},
+			"startDate": "2023-10-02",
+			"endDate": "2023-10-10",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 1,
+						"unit": "YEARS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 2,
+						"unit": "YEARS"
+					}
+				],
+				"noticeDate": "2024-06-01",
+				"noticeGivenBy": "LESSOR"
+			},
+			"currentPeriod": {
+				"startDate": "2023-10-02",
+				"endDate": "2024-10-02"
+			},
+			"area": 12,
+			"signedByWitness": true
+		},
+		{
+			"version": 1,
+			"contractId": "2024-34567",
+			"description": "Land lease residential",
+			"externalReferenceId": "MK-TEST0004",
+			"leaseType": "LAND_LEASE_RESIDENTIAL",
+			"municipalityId": "1984",
+			"objectIdentity": "objectIdentity4",
+			"status": "ACTIVE",
+			"type": "LEASE_AGREEMENT",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"duration": {
+				"leaseDuration": 5,
+				"unit": "YEARS"
+			},
+			"extension": {
+				"autoExtend": false,
+				"leaseExtension": 2,
+				"unit": "YEARS"
+			},
+			"fees": {
+				"currency": "SEK",
+				"yearly": 12000.00,
+				"monthly": 1000.00,
+				"total": 60000.00,
+				"totalAsText": "sixty thousand",
+				"indexType": "KPI",
+				"indexYear": 2023,
+				"indexNumber": 1.00,
+				"indexationRate": 0.25,
+				"additionalInformation": []
+			},
+			"invoicing": {
+				"invoiceInterval": "MONTHLY",
+				"invoicedIn": "ADVANCE"
+			},
+			"startDate": "2024-01-01",
+			"endDate": "2025-12-31",
+			"notice": {
+				"terms": [
+					{
+						"party": "LESSOR",
+						"periodOfNotice": 6,
+						"unit": "MONTHS"
+					},
+					{
+						"party": "LESSEE",
+						"periodOfNotice": 3,
+						"unit": "MONTHS"
+					}
+				]
+			},
+			"currentPeriod": {
+				"startDate": "2024-01-01",
+				"endDate": "2029-01-01"
+			},
+			"area": 500,
+			"signedByWitness": false
+		},
+		{
+			"version": 1,
+			"contractId": "2024-45678",
+			"description": "Object lease agreement",
+			"externalReferenceId": "MK-TEST0005",
+			"municipalityId": "1984",
+			"objectIdentity": "objectIdentity5",
+			"status": "TERMINATED",
+			"type": "OBJECT_LEASE",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"fees": {
+				"currency": "SEK",
+				"yearly": 6000.00,
+				"monthly": 500.00,
+				"total": 30000.00,
+				"totalAsText": "thirty thousand",
+				"indexYear": 2022,
+				"indexNumber": 3.00,
+				"indexationRate": 0.10,
+				"additionalInformation": []
+			},
+			"invoicing": {
+				"invoiceInterval": "YEARLY",
+				"invoicedIn": "ARREARS"
+			},
+			"startDate": "2023-07-01",
+			"endDate": "2024-06-30",
+			"notice": {
+				"terms": [],
+				"noticeDate": "2024-03-15",
+				"noticeGivenBy": "LESSEE"
+			},
+			"area": 200,
+			"signedByWitness": true
+		},
+		{
+			"version": 1,
+			"contractId": "2024-56789",
+			"description": "Minimal purchase agreement",
+			"municipalityId": "1984",
+			"status": "DRAFT",
+			"type": "PURCHASE_AGREEMENT",
+			"attachmentMetaData": [],
+			"additionalTerms": [],
+			"extraParameters": [],
+			"indexTerms": [],
+			"propertyDesignations": [],
+			"stakeholders": [],
+			"fees": {
+				"additionalInformation": []
+			},
+			"signedByWitness": false
+		}
+	],
+	"pageable": {
+		"pageNumber": 0,
+		"pageSize": 10,
+		"sort": [],
+		"offset": 0,
+		"paged": true,
+		"unpaged": false
+	},
+	"last": true,
+	"totalElements": 5,
+	"totalPages": 1,
+	"size": 10,
+	"number": 0,
+	"first": true,
+	"numberOfElements": 5,
+	"sort": [],
+	"empty": false
+}

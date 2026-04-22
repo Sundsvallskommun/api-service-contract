@@ -1,13 +1,21 @@
 package se.sundsvall.contract.service.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchContract;
+import se.sundsvall.contract.api.model.PropertyDesignation;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.NoticeTermEmbeddable;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
+import se.sundsvall.contract.integration.db.model.TermGroupEntity;
+import se.sundsvall.contract.model.Term;
+import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.Party;
 import se.sundsvall.contract.model.enums.Status;
@@ -67,7 +75,8 @@ class EntityMapperTest {
 		assertThat(entity.getStartDate()).isEqualTo(dto.getStartDate());
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
-		assertThat(entity.getVersion()).isEqualTo(dto.getVersion());
+		// Note: version is not mapped here; it is explicitly managed by the service layer
+		// (createContract sets it to 1, createNewContractEntity bumps it).
 	}
 
 	@Test
@@ -213,8 +222,179 @@ class EntityMapperTest {
 		// Act
 		final var updatedEntity = EntityMapper.createNewContractEntity(MUNICIPALITY_ID, oldContractEntity, newContract);
 
-		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion());
+		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion() + 1);
 		assertThat(updatedEntity.getContractId()).isEqualTo(oldContractEntity.getContractId());
+	}
+
+	@Test
+	void testPatchContractEntity_updatesOnlyProvidedFields() {
+
+		// Arrange
+		final var entity = createContractEntity();
+		final var originalVersion = entity.getVersion();
+		final var originalStatus = entity.getStatus();
+		final var originalType = entity.getType();
+		final var originalArea = entity.getArea();
+
+		final var patch = PatchContract.builder()
+			.withDescription("a new description")
+			.build();
+
+		// Act
+		final var result = EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert
+		assertThat(result).isSameAs(entity);
+		assertThat(result.getDescription()).isEqualTo("a new description");
+		assertThat(result.getVersion()).isEqualTo(originalVersion);
+		assertThat(result.getStatus()).isEqualTo(originalStatus);
+		assertThat(result.getType()).isEqualTo(originalType);
+		assertThat(result.getArea()).isEqualTo(originalArea);
+	}
+
+	private static PatchContract buildFullPatchFrom(final Contract source) {
+		return PatchContract.builder()
+			.withDescription(source.getDescription())
+			.withArea(source.getArea())
+			.withAreaData(source.getAreaData())
+			.withEndDate(source.getEndDate())
+			.withStartDate(source.getStartDate())
+			.withExternalReferenceId(source.getExternalReferenceId())
+			.withObjectIdentity(source.getObjectIdentity())
+			.withStatus(source.getStatus())
+			.withType(source.getType())
+			.withSignedByWitness(source.isSignedByWitness())
+			.withExtension(source.getExtension())
+			.withCurrentPeriod(source.getCurrentPeriod())
+			.withNotice(source.getNotice())
+			.withFees(source.getFees())
+			.withInvoicing(source.getInvoicing())
+			.withLeasehold(source.getLeasehold())
+			.withPropertyDesignations(source.getPropertyDesignations())
+			.withStakeholders(source.getStakeholders())
+			.withExtraParameters(source.getExtraParameters())
+			.withIndexTerms(source.getIndexTerms())
+			.withAdditionalTerms(source.getAdditionalTerms())
+			.build();
+	}
+
+	private static ContractEntity createMutableContractEntity() {
+		final var entity = createContractEntity();
+		entity.setPropertyDesignations(new ArrayList<>(entity.getPropertyDesignations()));
+		entity.setStakeholders(new ArrayList<>(entity.getStakeholders()));
+		entity.setExtraParameters(new ArrayList<>(entity.getExtraParameters()));
+		entity.setNoticeTerms(new ArrayList<>(entity.getNoticeTerms()));
+		entity.setTermGroups(new ArrayList<>(entity.getTermGroups()));
+		return entity;
+	}
+
+	@Test
+	void testPatchContractEntity_appliesScalarAndNestedScalarFields() {
+
+		// Arrange
+		final var entity = createMutableContractEntity();
+		final var patch = buildFullPatchFrom(createContract());
+
+		// Act
+		EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert — scalar and scalar-inside-nested fields from the patch payload are applied onto the entity
+		assertThat(entity.getDescription()).isEqualTo(patch.getDescription());
+		assertThat(entity.getArea()).isEqualTo(patch.getArea());
+		assertThat(entity.getAreaData()).isEqualTo(patch.getAreaData());
+		assertThat(entity.getEndDate()).isEqualTo(patch.getEndDate());
+		assertThat(entity.getStartDate()).isEqualTo(patch.getStartDate());
+		assertThat(entity.getExternalReferenceId()).isEqualTo(patch.getExternalReferenceId());
+		assertThat(entity.getObjectIdentity()).isEqualTo(patch.getObjectIdentity());
+		assertThat(entity.getStatus()).isEqualTo(patch.getStatus());
+		assertThat(entity.getType()).isEqualTo(patch.getType());
+		assertThat(entity.isSignedByWitness()).isEqualTo(patch.getSignedByWitness());
+		assertThat(entity.getLeaseExtension()).isEqualTo(patch.getExtension().getLeaseExtension());
+		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(patch.getExtension().getUnit());
+		assertThat(entity.getAutoExtend()).isEqualTo(patch.getExtension().getAutoExtend());
+		assertThat(entity.getCurrentPeriodStartDate()).isEqualTo(patch.getCurrentPeriod().getStartDate());
+		assertThat(entity.getCurrentPeriodEndDate()).isEqualTo(patch.getCurrentPeriod().getEndDate());
+		assertThat(entity.getNoticeDate()).isEqualTo(patch.getNotice().getNoticeDate());
+		assertThat(entity.getNoticeGivenBy()).isEqualTo(patch.getNotice().getNoticeGivenBy());
+	}
+
+	@Test
+	void testPatchContractEntity_replacesNestedCollectionsAndEmbeddables() {
+
+		// Arrange
+		final var entity = createMutableContractEntity();
+		final var patch = buildFullPatchFrom(createContract());
+
+		// Act
+		EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert — collections and embedded value objects are replaced
+		assertThat(entity.getNoticeTerms()).hasSameSizeAs(patch.getNotice().getTerms());
+		assertThat(entity.getFees()).isNotNull();
+		assertThat(entity.getInvoicing()).isNotNull();
+		assertThat(entity.getLeasehold()).isNotNull();
+		assertThat(entity.getPropertyDesignations()).hasSameSizeAs(patch.getPropertyDesignations());
+		assertThat(entity.getStakeholders()).hasSameSizeAs(patch.getStakeholders());
+		assertThat(entity.getExtraParameters()).hasSameSizeAs(patch.getExtraParameters());
+		assertThat(entity.getTermGroups())
+			.hasSize(patch.getIndexTerms().size() + patch.getAdditionalTerms().size());
+	}
+
+	@Test
+	void testPatchContractEntity_replacesCollectionsOnImmutableExistingLists() {
+
+		// Arrange — existing collections from TestFactory use List.of (immutable); exercises setter-fallback path
+		final var entity = createContractEntity();
+
+		final var patch = PatchContract.builder()
+			.withPropertyDesignations(List.of(
+				PropertyDesignation.builder()
+					.withName("patchedName")
+					.withDistrict("patchedDistrict")
+					.build()))
+			.build();
+
+		// Act
+		EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert
+		assertThat(entity.getPropertyDesignations())
+			.hasSize(1)
+			.extracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
+			.containsExactly(Tuple.tuple("patchedName", "patchedDistrict"));
+	}
+
+	@Test
+	void testPatchContractEntity_replacesOnlyIndexTermsKeepsAdditional() {
+
+		// Arrange
+		final var entity = createContractEntity();
+		entity.setTermGroups(new ArrayList<>(entity.getTermGroups()));
+		final var originalAdditional = entity.getTermGroups().stream()
+			.filter(tg -> TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
+			.toList();
+
+		final var patch = PatchContract.builder()
+			.withIndexTerms(List.of(
+				TermGroup.builder()
+					.withHeader("replaced index header")
+					.withTerms(List.of(Term.builder()
+						.withName("t1").withDescription("d1").build()))
+					.build()))
+			.build();
+
+		// Act
+		EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert
+		assertThat(entity.getTermGroups())
+			.filteredOn(tg -> TermGroupEntity.TYPE_INDEX.equals(tg.getType()))
+			.hasSize(1)
+			.extracting("header")
+			.containsExactly("replaced index header");
+		assertThat(entity.getTermGroups())
+			.filteredOn(tg -> TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
+			.hasSameSizeAs(originalAdditional);
 	}
 
 	@Test
