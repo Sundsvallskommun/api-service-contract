@@ -59,3 +59,7 @@ application-default.*
 # Claude
 /.claude/
 /CLAUDE.md
+
+# Migration scripts
+/scripts/data/*.csv
+/scripts/logs/
