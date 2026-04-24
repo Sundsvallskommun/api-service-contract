@@ -52,7 +52,7 @@ public class ContractTerminationWorker {
 				.withPayload(objectMapper.writeValueAsString(event))
 				.build();
 		} catch (final JsonProcessingException e) {
-			throw new IllegalStateException("Failed to serialize CONTRACT_TERMINATED event for contract %s".formatted(contract.getContractId()), e);
+			throw new IllegalStateException("Failed to serialize TERMINATED event for contract %s".formatted(contract.getContractId()), e);
 		}
 	}
 }
