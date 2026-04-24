@@ -9,7 +9,6 @@ import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
@@ -82,8 +81,6 @@ public final class EntityMapper {
 			.withFees(toFeesEmbeddable(contract.getFees()))
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
 			.withLeaseType(contract.getLeaseType())
-			.withLeaseDuration(ofNullable(contract.getDuration()).map(Duration::getLeaseDuration).orElse(null))
-			.withLeaseDurationUnit(ofNullable(contract.getDuration()).map(Duration::getUnit).orElse(DAYS))
 			.withLeaseExtension(ofNullable(contract.getExtension()).map(Extension::getLeaseExtension).orElse(null))
 			.withLeaseExtensionUnit(ofNullable(contract.getExtension()).map(Extension::getUnit).orElse(DAYS))
 			.withLeasehold(toLeaseholdEntity(contract.getLeasehold()))

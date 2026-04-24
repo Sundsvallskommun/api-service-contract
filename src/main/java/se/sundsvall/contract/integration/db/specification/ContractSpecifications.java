@@ -38,6 +38,6 @@ public final class ContractSpecifications {
 	 * @return                a specification matching contracts belonging to the given municipality
 	 */
 	public static Specification<ContractEntity> withMunicipalityId(final String municipalityId) {
-		return (root, query, cb) -> cb.equal(root.get(MUNICIPALITY_ID), municipalityId);
+		return (root, _, cb) -> cb.equal(root.get(MUNICIPALITY_ID), municipalityId);
 	}
 }

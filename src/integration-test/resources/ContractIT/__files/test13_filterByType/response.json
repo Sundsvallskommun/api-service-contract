@@ -89,10 +89,6 @@
 					]
 				}
 			],
-			"duration": {
-				"leaseDuration": 2,
-				"unit": "YEARS"
-			},
 			"extension": {
 				"autoExtend": true,
 				"leaseExtension": 1,
@@ -149,10 +145,6 @@
 			"indexTerms": [],
 			"propertyDesignations": [],
 			"stakeholders": [],
-			"duration": {
-				"leaseDuration": 5,
-				"unit": "YEARS"
-			},
 			"extension": {
 				"autoExtend": false,
 				"leaseExtension": 2,

@@ -79,9 +79,6 @@ public class Contract {
 	private List<@Valid Stakeholder> stakeholders;
 
 	@Valid
-	private Duration duration;
-
-	@Valid
 	private Extension extension;
 
 	@Valid

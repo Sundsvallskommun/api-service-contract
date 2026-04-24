@@ -4,14 +4,6 @@
 	"changes": [
 		{
 			"type": "REMOVAL",
-			"path": "$.duration",
-			"oldValue": {
-				"leaseDuration": 2,
-				"unit": "YEARS"
-			}
-		},
-		{
-			"type": "REMOVAL",
 			"path": "$.extension",
 			"oldValue": {
 				"autoExtend": true,
