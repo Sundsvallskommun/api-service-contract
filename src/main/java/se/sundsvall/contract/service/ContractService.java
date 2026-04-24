@@ -1,5 +1,7 @@
 package se.sundsvall.contract.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -11,9 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.PatchContract;
+import se.sundsvall.contract.integration.billingdatacollector.event.BillingEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractCreatedEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractDeletedEvent;
+import se.sundsvall.contract.integration.billingdatacollector.event.ContractUpdatedEvent;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
+import se.sundsvall.contract.integration.db.OutboxRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.OutboxEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.service.businessrule.BusinessruleInterface;
 import se.sundsvall.contract.service.businessrule.model.Action;
@@ -48,20 +56,25 @@ public class ContractService {
 
 	private final ContractRepository contractRepository;
 	private final AttachmentRepository attachmentRepository;
+	private final OutboxRepository outboxRepository;
 	private final List<BusinessruleInterface> businessRules;
-
 	private final Differ differ;
+	private final ObjectMapper objectMapper;
 
 	public ContractService(
 		final ContractRepository contractRepository,
 		final AttachmentRepository attachmentRepository,
+		final OutboxRepository outboxRepository,
 		final List<BusinessruleInterface> businessRules,
-		final Differ differ) {
+		final Differ differ,
+		final ObjectMapper objectMapper) {
 
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
+		this.outboxRepository = outboxRepository;
 		this.businessRules = businessRules;
 		this.differ = differ;
+		this.objectMapper = objectMapper;
 	}
 
 	/**
@@ -84,7 +97,14 @@ public class ContractService {
 		applyBusinessrules(contractEntity, CREATE);
 
 		// If entity attributes has been altered by business rules, save them as a new version and finally return id
-		return contractRepository.save(contractEntity).getContractId();
+		final var savedContractId = contractRepository.save(contractEntity).getContractId();
+
+		// Notify billing
+		outboxRepository.save(toOutboxEntity(contractEntity, ContractCreatedEvent.of(
+			contractEntity.getContractId(),
+			contractEntity.getMunicipalityId())));
+
+		return savedContractId;
 	}
 
 	/**
@@ -158,6 +178,11 @@ public class ContractService {
 		// Apply matching businessrules
 		applyBusinessrules(existingEntity, UPDATE);
 
+		// Notify billing
+		outboxRepository.save(toOutboxEntity(existingEntity, ContractUpdatedEvent.of(
+			existingEntity.getContractId(),
+			existingEntity.getMunicipalityId())));
+
 		// Save changes on the existing entity — no new version is created
 		contractRepository.save(existingEntity);
 	}
@@ -182,6 +207,11 @@ public class ContractService {
 
 		// Apply matching businessrules
 		applyBusinessrules(newContractEntity, UPDATE);
+
+		// Notify billing
+		outboxRepository.save(toOutboxEntity(newContractEntity, ContractUpdatedEvent.of(
+			newContractEntity.getContractId(),
+			newContractEntity.getMunicipalityId())));
 
 		// Save changes
 		contractRepository.save(newContractEntity);
@@ -242,6 +272,11 @@ public class ContractService {
 		// Apply matching businessrules
 		applyBusinessrules(contractEntity, DELETE);
 
+		// Notify billing before deletion
+		outboxRepository.save(toOutboxEntity(contractEntity, ContractDeletedEvent.of(
+			contractEntity.getContractId(),
+			contractEntity.getMunicipalityId())));
+
 		attachmentRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 		contractRepository.deleteAllByMunicipalityIdAndContractId(contractEntity.getMunicipalityId(), contractEntity.getContractId());
 	}
@@ -250,5 +285,17 @@ public class ContractService {
 		businessRules.stream()
 			.filter(rule -> rule.appliesTo(contractEntity))
 			.forEach(rule -> rule.apply(toBusinessruleParameters(contractEntity, action)));
+	}
+
+	private OutboxEntity toOutboxEntity(final ContractEntity contract, final BillingEvent event) {
+		try {
+			return OutboxEntity.builder()
+				.withContractId(contract.getContractId())
+				.withEventType(event.eventType())
+				.withPayload(objectMapper.writeValueAsString(event))
+				.build();
+		} catch (final JsonProcessingException e) {
+			throw new IllegalStateException("Failed to serialize %s event for contract %s".formatted(event.eventType(), contract.getContractId()), e);
+		}
 	}
 }

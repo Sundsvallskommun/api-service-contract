@@ -1,5 +1,0 @@
-{
-	"detail": "Database was busy, couldn't create billing cycle",
-	"title": "Internal server error",
-	"status": 500
-}

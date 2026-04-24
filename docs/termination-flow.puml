@@ -1,0 +1,114 @@
+@startuml termination-flow
+
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceBoxBorderColor #555555
+
+skinparam participant {
+  BackgroundColor #E1F5EE
+  BorderColor #0F6E56
+  FontColor #085041
+}
+
+skinparam database {
+  BackgroundColor #E6F1FB
+  BorderColor #185FA5
+  FontColor #0C447C
+}
+
+skinparam actor {
+  BackgroundColor #EEEDFE
+  BorderColor #534AB7
+}
+
+title Termination flow — GET och POST mellan apparna
+
+actor Användare as user
+participant "ContractService\n(contract)" as service
+participant "ContractTerminationJob\n@Dept44Scheduled dagligen" as job
+database "contract DB\n(contracts + outbox)" as contractDB
+participant "OutboxDispatcher\n@Dept44Scheduled var 5 min" as dispatcher
+participant "billing-data-collector" as billing
+database "billing DB\n(scheduled_billing)" as billingDB
+
+== Ticket 2: Användare sätter endDate på ett kontrakt ==
+
+user -> service : PUT /{municipalityId}/contracts/{contractId}\n{ endDate: "2026-06-30" }
+service -> contractDB : UPDATE contract SET end_date = '2026-06-30'
+service -> contractDB : INSERT outbox\n(CONTRACT_UPDATED, contractId, municipalityId)
+service --> user : 204 No Content
+
+...senare (var 5:e minut)...
+
+dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 12 ORDER BY created_at ASC
+contractDB --> dispatcher : [CONTRACT_UPDATED-rad]
+
+dispatcher -> billing : POST /{municipalityId}/contracts/updated\n{ contractId, municipalityId }
+
+billing -> service : GET /{municipalityId}/contracts/{contractId}
+service -> contractDB : SELECT contract
+contractDB --> service : [kontraktsdata]
+service --> billing : 200 OK { contract }
+
+note over billing
+  Billing avgör själv utifrån kontraktsdata:
+  ADVANCE + endDate efter nästa billing → behåll, sätt finalBillingDate
+  ADVANCE + endDate före nästa billing  → ta bort
+  ARREARS + endDate efter nästa billing → ta bort
+  ARREARS + endDate före nästa billing  → behåll, sätt finalBillingDate
+end note
+
+billing -> billingDB : GET scheduled_billing WHERE external_id = contractId
+billingDB --> billing : [scheduled billing-rad]
+
+alt Ta bort scheduled-billing
+  billing -> billingDB : DELETE scheduled_billing
+else Behåll med finalBillingDate
+  billing -> billingDB : UPDATE scheduled_billing SET final_billing_date = endDate
+end
+
+billing --> dispatcher : 200 OK
+dispatcher -> contractDB : DELETE FROM outbox WHERE id = ?
+
+== Ticket 1: Schemajobb sätter TERMINATED när endDate passerats ==
+
+job -> contractDB : SELECT * FROM contracts\nWHERE status='ACTIVE'\nAND end_date < TODAY
+contractDB --> job : [utgångna kontrakt]
+
+job -> contractDB : UPDATE contracts SET status='TERMINATED'\n+ INSERT outbox (CONTRACT_TERMINATED, contractId, municipalityId)\n[SAMMA TRANSAKTION]
+
+...senare (var 5:e minut)...
+
+dispatcher -> contractDB : SELECT * FROM outbox\nWHERE retries < 12 ORDER BY created_at ASC
+contractDB --> dispatcher : [CONTRACT_TERMINATED-rad]
+
+dispatcher -> billing : POST /{municipalityId}/contracts/terminated\n{ contractId, municipalityId }
+
+billing -> service : GET /{municipalityId}/contracts/{contractId}
+service -> contractDB : SELECT contract
+contractDB --> service : [kontraktsdata]
+service --> billing : 200 OK { contract }
+
+billing -> billingDB : DELETE scheduled_billing WHERE external_id = contractId
+billing --> dispatcher : 200 OK
+dispatcher -> contractDB : DELETE FROM outbox WHERE id = ?
+
+== Befintligt flöde: Billing kör fakturering (ingen förändring) ==
+
+billing -> billing : BillingScheduler triggar
+billing -> service : GET /{municipalityId}/contracts/{contractId}
+service -> contractDB : SELECT contract
+contractDB --> service : [kontraktsdata]
+service --> billing : 200 OK { contract }
+
+note over billing
+  Läser finalBillingDate från extraParameters.
+  Om scheduledDate > finalBillingDate → hoppa över.
+end note
+
+billing -> billing : Skapa faktura
+
+@enduml

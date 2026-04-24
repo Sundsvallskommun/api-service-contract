@@ -1,6 +1,9 @@
 package se.sundsvall.contract.service;
 
 import com.deblock.jsondiff.matcher.Path;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +30,7 @@ import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.integration.db.model.OutboxEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.model.Change;
 import se.sundsvall.contract.model.enums.ContractType;
@@ -70,6 +74,9 @@ class ContractServiceTest {
 	private AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
+	private se.sundsvall.contract.integration.db.OutboxRepository outboxRepositoryMock;
+
+	@Mock
 	private Differ differMock;
 
 	@Mock
@@ -82,7 +89,8 @@ class ContractServiceTest {
 
 	@BeforeEach
 	void initialize() {
-		contractService = new ContractService(contractRepositoryMock, attachmentRepositoryMock, List.of(businessruleMock), differMock);
+		final var objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+		contractService = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(businessruleMock), differMock, objectMapper);
 	}
 
 	@ParameterizedTest
@@ -119,7 +127,8 @@ class ContractServiceTest {
 			});
 		}
 		verify(contractRepositoryMock, times(2)).save(any(ContractEntity.class));
-		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}
 
 	@Test
@@ -153,6 +162,22 @@ class ContractServiceTest {
 		assertThat(result).isNotNull();
 
 		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 2);
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(businessruleMock);
+	}
+
+	@Test
+	void getContractWithSpecificVersionShouldThrow404WhenNoMatch() {
+		// Arrange
+		when(contractRepositoryMock.findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 5))
+			.thenReturn(Optional.empty());
+
+		// Act & Assert
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.getContract(MUNICIPALITY_ID, CONTRACT_ID, 5))
+			.satisfies(p -> assertThat(p.getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractIdAndVersion(MUNICIPALITY_ID, CONTRACT_ID, 5);
 		verifyNoMoreInteractions(contractRepositoryMock);
 		verifyNoInteractions(businessruleMock);
 	}
@@ -224,7 +249,8 @@ class ContractServiceTest {
 			});
 		}
 		verify(contractRepositoryMock).save(any(ContractEntity.class));
-		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}
 
 	@ParameterizedTest
@@ -506,8 +532,9 @@ class ContractServiceTest {
 				assertThat(businessruleParameters.action()).isEqualTo(Action.DELETE);
 			});
 		}
+		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
 		verify(contractRepositoryMock).deleteAllByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID);
-		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock);
+		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
 	}
 
 	@Test
@@ -522,6 +549,28 @@ class ContractServiceTest {
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
 		verifyNoInteractions(businessruleMock);
+	}
+
+	@Test
+	void createContractShouldThrowIllegalStateWhenSerializationFails() throws Exception {
+		// Arrange
+		final var failingObjectMapper = mock(ObjectMapper.class);
+		when(failingObjectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("boom") {});
+		final var service = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(), differMock, failingObjectMapper);
+		when(contractRepositoryMock.save(any(ContractEntity.class)))
+			.thenReturn(ContractEntity.builder().withContractId(CONTRACT_ID).build());
+
+		final var contract = Contract.builder()
+			.withStatus(ACTIVE)
+			.withType(ContractType.LEASE_AGREEMENT)
+			.build();
+
+		// Act & Assert
+		assertThatExceptionOfType(IllegalStateException.class)
+			.isThrownBy(() -> service.createContract(MUNICIPALITY_ID, contract))
+			.withMessageContaining("Failed to serialize CREATED event for contract");
+
+		verify(failingObjectMapper).writeValueAsString(any());
 	}
 
 	/**
