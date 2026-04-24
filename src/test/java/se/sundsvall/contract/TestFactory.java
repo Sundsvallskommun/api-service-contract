@@ -10,7 +10,6 @@ import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
@@ -202,10 +201,6 @@ public final class TestFactory {
 					.withDistrict("someOtherPropertyDesignationDistrict")
 					.build()))
 			.withObjectIdentity("someObjectIdentity")
-			.withDuration(Duration.builder()
-				.withLeaseDuration(30)
-				.withUnit(DAYS)
-				.build())
 			.withExtension(Extension.builder()
 				.withAutoExtend(true)
 				.withLeaseExtension(2)

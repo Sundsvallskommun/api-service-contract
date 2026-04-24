@@ -54,8 +54,6 @@ class EntityMapperTest {
 		assertThat(entity.getFees()).isNotNull(); // Mapped via toFeesEmbeddable
 		assertThat(entity.getInvoicing()).isNotNull();  // Is tested in its own method
 		assertThat(entity.getLeaseType()).isEqualTo(dto.getLeaseType());
-		assertThat(entity.getLeaseDuration()).isEqualTo(dto.getDuration().getLeaseDuration());
-		assertThat(entity.getLeaseDurationUnit()).isEqualTo(dto.getDuration().getUnit());
 		assertThat(entity.getLeaseExtension()).isEqualTo(dto.getExtension().getLeaseExtension());
 		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(dto.getExtension().getUnit());
 		assertThat(entity.getAutoExtend()).isEqualTo(dto.getExtension().getAutoExtend());
@@ -414,7 +412,6 @@ class EntityMapperTest {
 		// Assert
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
-		assertThat(entity.getLeaseDurationUnit()).isEqualTo(TimeUnit.DAYS);
 		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(TimeUnit.DAYS);
 	}
 

@@ -121,10 +121,6 @@
 			"parameters": []
 		}
 	],
-	"duration": {
-		"leaseDuration": 2,
-		"unit": "MONTHS"
-	},
 	"extension": {
 		"autoExtend": true,
 		"leaseExtension": 1,

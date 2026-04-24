@@ -101,7 +101,6 @@ class DtoMapperTest {
 		assertThat(dto).extracting(Contract::getAttachmentMetaData,
 			Contract::getFees,
 			Contract::getInvoicing,
-			Contract::getDuration,
 			Contract::getExtension,
 			Contract::getLeasehold).isNotNull(); // These attributes are tested in their own test methods
 	}
@@ -115,7 +114,6 @@ class DtoMapperTest {
 		final var dto = DtoMapper.toContractDto(contractEntity, null);
 
 		// Assert
-		assertThat(dto.getDuration()).isNull();
 		assertThat(dto.getExtension()).isNull();
 	}
 
@@ -238,29 +236,13 @@ class DtoMapperTest {
 	}
 
 	@ParameterizedTest(name = "{0}")
-	@MethodSource("toDurationAndExtensionDtoArgumentProvider")
-	void testToDurationDto(String description, ContractEntity entity, boolean shouldHaveDuration) {
-		// Act
-		final var duration = DtoMapper.toDurationDto(entity);
-
-		// Assert
-		if (shouldHaveDuration) {
-			assertThat(duration).isNotNull();
-			assertThat(duration.getLeaseDuration()).isEqualTo(20);
-			assertThat(duration.getUnit()).isEqualTo(TimeUnit.MONTHS);
-		} else {
-			assertThat(duration).isNull();
-		}
-	}
-
-	@ParameterizedTest(name = "{0}")
-	@MethodSource("toDurationAndExtensionDtoArgumentProvider")
-	void testToExtensionDto(String description, ContractEntity entity, boolean shouldHaveDuration) {
+	@MethodSource("toExtensionDtoArgumentProvider")
+	void testToExtensionDto(String description, ContractEntity entity, boolean shouldHaveExtension) {
 		// Act
 		final var extension = DtoMapper.toExtensionDto(entity);
 
 		// Assert
-		if (shouldHaveDuration) {
+		if (shouldHaveExtension) {
 			assertThat(extension).isNotNull();
 			assertThat(extension.getAutoExtend()).isTrue();
 			assertThat(extension.getLeaseExtension()).isEqualTo(2);
@@ -270,7 +252,7 @@ class DtoMapperTest {
 		}
 	}
 
-	private static Stream<Arguments> toDurationAndExtensionDtoArgumentProvider() {
+	private static Stream<Arguments> toExtensionDtoArgumentProvider() {
 		return Stream.of(
 			Arguments.of("Lease agreement contract", createContractEntity(), true),
 			Arguments.of("Purchase agreement contract", createContractEntityBuilder().withType(PURCHASE_AGREEMENT).build(), false));

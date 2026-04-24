@@ -74,10 +74,6 @@
 			"indexTerms": [],
 			"propertyDesignations": [],
 			"stakeholders": [],
-			"duration": {
-				"leaseDuration": 5,
-				"unit": "YEARS"
-			},
 			"extension": {
 				"autoExtend": false,
 				"leaseExtension": 2,
@@ -211,10 +207,6 @@
 					]
 				}
 			],
-			"duration": {
-				"leaseDuration": 2,
-				"unit": "YEARS"
-			},
 			"extension": {
 				"autoExtend": true,
 				"leaseExtension": 1,

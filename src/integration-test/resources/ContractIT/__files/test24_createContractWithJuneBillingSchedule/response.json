@@ -49,10 +49,6 @@
 			"parameters": []
 		}
 	],
-	"duration": {
-		"leaseDuration": 2,
-		"unit": "YEARS"
-	},
 	"extension": {
 		"autoExtend": true,
 		"leaseExtension": 1,
