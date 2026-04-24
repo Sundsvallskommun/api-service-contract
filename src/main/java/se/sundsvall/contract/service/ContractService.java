@@ -43,6 +43,7 @@ public class ContractService {
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND = "Contract with contractId '%s' is not present within municipality '%s'.";
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_VERSION_NOT_FOUND = "Contract with contractId '%s', version '%d' is not present within municipality '%s'.";
 	private static final String CONTRACT_ID_MUNICIPALITY_ID_DIFF_SINGLE_PROBLEM = "Diff operation cannot be performed: only one version of contract with contractId '%s' exists in municipality '%s'.";
+	private static final String CONTRACT_ID_MUNICIPALITY_ID_DIFF_VERSION_NOT_FOUND = "Diff operation cannot be performed: version '%d' of contract with contractId '%s' does not exist in municipality '%s'.";
 	private static final Sort VERSION_ASC = Sort.by("version").ascending();
 
 	private final ContractRepository contractRepository;
@@ -207,7 +208,14 @@ public class ContractService {
 		}
 
 		final var actualNewVersion = ofNullable(newVersion).orElse(availableVersions.getLast());
+		if (!availableVersions.contains(actualNewVersion)) {
+			throw Problem.valueOf(BAD_REQUEST, CONTRACT_ID_MUNICIPALITY_ID_DIFF_VERSION_NOT_FOUND.formatted(actualNewVersion, contractId, municipalityId));
+		}
+
 		final var actualOldVersion = ofNullable(oldVersion).orElse(actualNewVersion - 1);
+		if (!availableVersions.contains(actualOldVersion)) {
+			throw Problem.valueOf(BAD_REQUEST, CONTRACT_ID_MUNICIPALITY_ID_DIFF_VERSION_NOT_FOUND.formatted(actualOldVersion, contractId, municipalityId));
+		}
 
 		final var newContract = getContract(municipalityId, contractId, actualNewVersion);
 		final var oldContract = getContract(municipalityId, contractId, actualOldVersion);

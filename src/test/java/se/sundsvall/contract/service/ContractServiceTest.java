@@ -413,6 +413,75 @@ class ContractServiceTest {
 		verifyNoInteractions(differMock, businessruleMock);
 	}
 
+	@Test
+	void diffContractWithNonExistentNewVersionThrowsBadRequest() {
+
+		final var p1 = mock(ContractVersionProjection.class);
+		final var p2 = mock(ContractVersionProjection.class);
+		when(p1.getVersion()).thenReturn(1);
+		when(p2.getVersion()).thenReturn(2);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1, p2));
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 1, 99))
+			.satisfies(thrownProblem -> {
+				assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+				assertThat(thrownProblem.getDetail()).contains("version '99'").contains(CONTRACT_ID).contains(MUNICIPALITY_ID);
+			});
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(differMock, businessruleMock);
+	}
+
+	@Test
+	void diffContractWithNonExistentOldVersionThrowsBadRequest() {
+
+		final var p1 = mock(ContractVersionProjection.class);
+		final var p2 = mock(ContractVersionProjection.class);
+		when(p1.getVersion()).thenReturn(1);
+		when(p2.getVersion()).thenReturn(2);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1, p2));
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 99, 2))
+			.satisfies(thrownProblem -> {
+				assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+				assertThat(thrownProblem.getDetail()).contains("version '99'").contains(CONTRACT_ID).contains(MUNICIPALITY_ID);
+			});
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(differMock, businessruleMock);
+	}
+
+	@Test
+	void diffContractWithImplicitOldVersionBelowOneThrowsBadRequest() {
+
+		final var p1 = mock(ContractVersionProjection.class);
+		final var p2 = mock(ContractVersionProjection.class);
+		when(p1.getVersion()).thenReturn(1);
+		when(p2.getVersion()).thenReturn(2);
+
+		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending()))
+			.thenReturn(List.of(p1, p2));
+
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> contractService.diffContract(MUNICIPALITY_ID, CONTRACT_ID, null, 1))
+			.satisfies(thrownProblem -> {
+				assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+				assertThat(thrownProblem.getDetail()).contains("version '0'").contains(CONTRACT_ID).contains(MUNICIPALITY_ID);
+			});
+
+		verify(contractRepositoryMock).findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID, Sort.by("version").ascending());
+		verifyNoMoreInteractions(contractRepositoryMock);
+		verifyNoInteractions(differMock, businessruleMock);
+	}
+
 	@ParameterizedTest
 	@ValueSource(booleans = {
 		true, false
