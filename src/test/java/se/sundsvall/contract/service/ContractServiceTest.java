@@ -499,7 +499,7 @@ class ContractServiceTest {
 		// Act & Assert
 		assertThatExceptionOfType(IllegalStateException.class)
 			.isThrownBy(() -> service.createContract(MUNICIPALITY_ID, contract))
-			.withMessageContaining("Failed to serialize CONTRACT_CREATED event for contract");
+			.withMessageContaining("Failed to serialize CREATED event for contract");
 
 		verify(failingObjectMapper).writeValueAsString(any());
 	}

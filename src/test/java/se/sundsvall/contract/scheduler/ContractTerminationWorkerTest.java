@@ -90,7 +90,7 @@ class ContractTerminationWorkerTest {
 		// Act & Assert
 		assertThatExceptionOfType(IllegalStateException.class)
 			.isThrownBy(() -> failingWorker.terminate(contract))
-			.withMessageContaining("Failed to serialize CONTRACT_TERMINATED event for contract")
+			.withMessageContaining("Failed to serialize TERMINATED event for contract")
 			.withMessageContaining(CONTRACT_ID);
 	}
 
