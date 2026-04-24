@@ -5,6 +5,6 @@ public record ContractCreatedEvent(String id, String municipalityId, String even
 	BillingEvent {
 
 	public static ContractCreatedEvent of(final String id, final String municipalityId) {
-		return new ContractCreatedEvent(id, municipalityId, "CONTRACT_CREATED");
+		return new ContractCreatedEvent(id, municipalityId, "CREATED");
 	}
 }

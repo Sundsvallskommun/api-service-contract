@@ -569,7 +569,7 @@ class ContractIT extends AbstractAppTest {
 		// Verify outbox entry was written
 		final var outboxEntries26 = outboxRepository.findAll();
 		assertThat(outboxEntries26).hasSize(1);
-		assertThat(outboxEntries26.getFirst().getEventType()).isEqualTo("CONTRACT_UPDATED");
+		assertThat(outboxEntries26.getFirst().getEventType()).isEqualTo("UPDATED");
 		assertThat(outboxEntries26.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(outboxEntries26.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 
@@ -606,7 +606,7 @@ class ContractIT extends AbstractAppTest {
 		// Verify outbox entry was written
 		final var outboxEntries27 = outboxRepository.findAll();
 		assertThat(outboxEntries27).hasSize(1);
-		assertThat(outboxEntries27.getFirst().getEventType()).isEqualTo("CONTRACT_UPDATED");
+		assertThat(outboxEntries27.getFirst().getEventType()).isEqualTo("UPDATED");
 		assertThat(outboxEntries27.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(outboxEntries27.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 

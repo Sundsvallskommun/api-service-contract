@@ -5,6 +5,6 @@ public record ContractTerminatedEvent(String id, String municipalityId, String e
 	BillingEvent {
 
 	public static ContractTerminatedEvent of(final String id, final String municipalityId) {
-		return new ContractTerminatedEvent(id, municipalityId, "CONTRACT_TERMINATED");
+		return new ContractTerminatedEvent(id, municipalityId, "TERMINATED");
 	}
 }

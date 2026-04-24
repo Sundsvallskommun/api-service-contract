@@ -59,7 +59,7 @@ class ContractTerminationWorkerTest {
 
 		final var outboxEntity = outboxCaptor.getValue();
 		assertThat(outboxEntity.getContractId()).isEqualTo(CONTRACT_ID);
-		assertThat(outboxEntity.getEventType()).isEqualTo("CONTRACT_TERMINATED");
+		assertThat(outboxEntity.getEventType()).isEqualTo("TERMINATED");
 		assertThat(outboxEntity.getRetries()).isZero();
 	}
 

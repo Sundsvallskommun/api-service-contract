@@ -57,8 +57,8 @@ class OutboxDispatcherTest {
 	@Test
 	void dispatchDelegatesToWorkerForEachEntry() {
 		// Arrange
-		final var entity1 = buildOutboxEntity("CONTRACT_CREATED");
-		final var entity2 = buildOutboxEntity("CONTRACT_UPDATED");
+		final var entity1 = buildOutboxEntity("CREATED");
+		final var entity2 = buildOutboxEntity("UPDATED");
 		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of(entity1, entity2));
 
 		// Act
@@ -72,7 +72,7 @@ class OutboxDispatcherTest {
 	@Test
 	void dispatchSetsHealthUnhealthyWhenExhaustedRecordsExist() {
 		// Arrange
-		final var exhaustedEntity = buildOutboxEntity("CONTRACT_TERMINATED");
+		final var exhaustedEntity = buildOutboxEntity("TERMINATED");
 		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of(exhaustedEntity));
 		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of());
 

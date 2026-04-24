@@ -4,7 +4,7 @@
 		"url": "/api-billing-data-collector/1984/CONTRACTS/events",
 		"bodyPatterns": [
 			{
-				"equalToJson": "{\"id\":\"2024-12345\",\"municipalityId\":\"1984\",\"eventType\":\"CONTRACT_UPDATED\"}",
+				"equalToJson": "{\"id\":\"2024-12345\",\"municipalityId\":\"1984\",\"eventType\":\"UPDATED\"}",
 				"ignoreArrayOrder": true,
 				"ignoreExtraElements": true
 			}

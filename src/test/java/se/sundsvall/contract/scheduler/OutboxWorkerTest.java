@@ -48,7 +48,7 @@ class OutboxWorkerTest {
 	void processContractCreatedEventSuccessfully() throws Exception {
 		// Arrange
 		final var event = ContractCreatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_CREATED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("CREATED", objectMapper.writeValueAsString(event));
 
 		// Act
 		worker.process(entity);
@@ -63,7 +63,7 @@ class OutboxWorkerTest {
 	void processContractUpdatedEventSuccessfully() throws Exception {
 		// Arrange
 		final var event = ContractUpdatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_UPDATED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("UPDATED", objectMapper.writeValueAsString(event));
 
 		// Act
 		worker.process(entity);
@@ -78,7 +78,7 @@ class OutboxWorkerTest {
 	void processContractDeletedEventSuccessfully() throws Exception {
 		// Arrange
 		final var event = ContractDeletedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_DELETED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("DELETED", objectMapper.writeValueAsString(event));
 
 		// Act
 		worker.process(entity);
@@ -93,7 +93,7 @@ class OutboxWorkerTest {
 	void processContractTerminatedEventSuccessfully() throws Exception {
 		// Arrange
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_TERMINATED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("TERMINATED", objectMapper.writeValueAsString(event));
 
 		// Act
 		worker.process(entity);
@@ -108,7 +108,7 @@ class OutboxWorkerTest {
 	void processFailureIncrementsRetriesAndSavesError() throws Exception {
 		// Arrange
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_TERMINATED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("TERMINATED", objectMapper.writeValueAsString(event));
 		doThrow(new RuntimeException("billing-data-collector unavailable")).when(publisherMock).publish(any());
 
 		// Act
@@ -126,7 +126,7 @@ class OutboxWorkerTest {
 	void processTruncatesLongErrorMessages() throws Exception {
 		// Arrange
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
-		final var entity = buildOutboxEntity("CONTRACT_TERMINATED", objectMapper.writeValueAsString(event));
+		final var entity = buildOutboxEntity("TERMINATED", objectMapper.writeValueAsString(event));
 		doThrow(new RuntimeException("x".repeat(1000))).when(publisherMock).publish(any());
 
 		// Act
@@ -160,7 +160,7 @@ class OutboxWorkerTest {
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		final var entity = OutboxEntity.builder()
 			.withContractId(CONTRACT_ID)
-			.withEventType("CONTRACT_TERMINATED")
+			.withEventType("TERMINATED")
 			.withPayload(objectMapper.writeValueAsString(event))
 			.withRetries(OutboxRepository.MAX_RETRIES - 1)
 			.build();

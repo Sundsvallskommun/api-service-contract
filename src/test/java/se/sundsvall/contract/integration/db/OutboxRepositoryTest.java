@@ -25,10 +25,10 @@ class OutboxRepositoryTest {
 	@Test
 	void findUnsentReturnsOnlyRowsBelowMaxRetries() {
 		// Arrange
-		outboxRepository.save(buildOutboxEntity("CONTRACT_CREATED", 0));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_UPDATED", OutboxRepository.MAX_RETRIES - 1));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_DELETED", OutboxRepository.MAX_RETRIES));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_TERMINATED", OutboxRepository.MAX_RETRIES + 1));
+		outboxRepository.save(buildOutboxEntity("CREATED", 0));
+		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.MAX_RETRIES - 1));
+		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.MAX_RETRIES));
+		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.MAX_RETRIES + 1));
 
 		// Act
 		final var result = outboxRepository.findUnsent();
@@ -36,16 +36,16 @@ class OutboxRepositoryTest {
 		// Assert
 		assertThat(result).hasSize(2)
 			.extracting(OutboxEntity::getEventType)
-			.containsExactly("CONTRACT_CREATED", "CONTRACT_UPDATED");
+			.containsExactly("CREATED", "UPDATED");
 	}
 
 	@Test
 	void findExhaustedReturnsOnlyRowsAtOrAboveMaxRetries() {
 		// Arrange
-		outboxRepository.save(buildOutboxEntity("CONTRACT_CREATED", 0));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_UPDATED", OutboxRepository.MAX_RETRIES - 1));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_DELETED", OutboxRepository.MAX_RETRIES));
-		outboxRepository.save(buildOutboxEntity("CONTRACT_TERMINATED", OutboxRepository.MAX_RETRIES + 1));
+		outboxRepository.save(buildOutboxEntity("CREATED", 0));
+		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.MAX_RETRIES - 1));
+		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.MAX_RETRIES));
+		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.MAX_RETRIES + 1));
 
 		// Act
 		final var result = outboxRepository.findExhausted();
@@ -53,7 +53,7 @@ class OutboxRepositoryTest {
 		// Assert
 		assertThat(result).hasSize(2)
 			.extracting(OutboxEntity::getEventType)
-			.containsExactlyInAnyOrder("CONTRACT_DELETED", "CONTRACT_TERMINATED");
+			.containsExactlyInAnyOrder("DELETED", "TERMINATED");
 	}
 
 	private OutboxEntity buildOutboxEntity(final String eventType, final int retries) {

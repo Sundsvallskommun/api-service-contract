@@ -61,10 +61,10 @@ public class OutboxWorker {
 	private BillingEvent deserialize(final OutboxEntity entity) {
 		try {
 			return switch (entity.getEventType()) {
-				case "CONTRACT_CREATED" -> objectMapper.readValue(entity.getPayload(), ContractCreatedEvent.class);
-				case "CONTRACT_UPDATED" -> objectMapper.readValue(entity.getPayload(), ContractUpdatedEvent.class);
-				case "CONTRACT_DELETED" -> objectMapper.readValue(entity.getPayload(), ContractDeletedEvent.class);
-				case "CONTRACT_TERMINATED" -> objectMapper.readValue(entity.getPayload(), ContractTerminatedEvent.class);
+				case "CREATED" -> objectMapper.readValue(entity.getPayload(), ContractCreatedEvent.class);
+				case "UPDATED" -> objectMapper.readValue(entity.getPayload(), ContractUpdatedEvent.class);
+				case "DELETED" -> objectMapper.readValue(entity.getPayload(), ContractDeletedEvent.class);
+				case "TERMINATED" -> objectMapper.readValue(entity.getPayload(), ContractTerminatedEvent.class);
 				default -> throw new IllegalArgumentException("Unknown event type: " + entity.getEventType());
 			};
 		} catch (final Exception e) {
