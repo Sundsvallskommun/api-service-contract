@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "7.1"
+  version: "8.0"
 servers:
 - url: http://localhost:64382
   description: Generated server url
@@ -833,8 +833,6 @@ components:
           items:
             $ref: "#/components/schemas/Stakeholder"
             description: List of stakeholders
-        duration:
-          $ref: "#/components/schemas/Duration"
         extension:
           $ref: "#/components/schemas/Extension"
         fees:
@@ -912,25 +910,6 @@ components:
         properties:
           type: object
           additionalProperties: {}
-    Duration:
-      type: object
-      description: Duration
-      properties:
-        leaseDuration:
-          type: integer
-          format: int32
-          description: The lease duration value
-          examples:
-          - "9"
-          minimum: 0
-        unit:
-          $ref: "#/components/schemas/TimeUnit"
-          description: The unit of the duration value
-          examples:
-          - MONTHS
-      required:
-      - leaseDuration
-      - unit
     Extension:
       type: object
       description: Extension

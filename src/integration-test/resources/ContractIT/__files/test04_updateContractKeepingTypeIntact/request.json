@@ -64,10 +64,6 @@
 	"area": 12,
 	"startDate": "2024-05-02",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",
-	"duration": {
-		"leaseDuration": 5,
-		"unit": "MONTHS"
-	},
 	"extension": {
 		"leaseExtension": 1,
 		"unit": "MONTHS",

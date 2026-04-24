@@ -61,7 +61,6 @@ class ContractTest {
 		final var propertyDesignations = List.of(new PropertyDesignation("SUNDSVALL NORRMALM 1:1", "Sundsvall"), new PropertyDesignation("SUNDSVALL NORRMALM 1:2", "Sundsvall"));
 		final var stakeholders = List.of(new Stakeholder());
 		final var notice = Notice.builder().build();
-		final var duration = Duration.builder().build();
 		final var extension = Extension.builder().build();
 		final var fees = Fees.builder().build();
 		final var invoicing = new Invoicing();
@@ -90,7 +89,6 @@ class ContractTest {
 			.withIndexTerms(indexTerms)
 			.withPropertyDesignations(propertyDesignations)
 			.withStakeholders(stakeholders)
-			.withDuration(duration)
 			.withFees(fees)
 			.withInvoicing(invoicing)
 			.withStartDate(startDate)
@@ -120,7 +118,6 @@ class ContractTest {
 		assertThat(contract.getIndexTerms()).isEqualTo(indexTerms);
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(contract.getDuration()).isEqualTo(duration);
 		assertThat(contract.getFees()).isEqualTo(fees);
 		assertThat(contract.getInvoicing()).isEqualTo(invoicing);
 		assertThat(contract.getStartDate()).isEqualTo(startDate);

@@ -135,10 +135,6 @@
 		"invoicedIn": "ADVANCE"
 	},
 	"status": "ACTIVE",
-	"duration": {
-		"leaseDuration": 555,
-		"unit": "MONTHS"
-	},
 	"extension": {
 		"leaseExtension": 666,
 		"unit": "MONTHS",

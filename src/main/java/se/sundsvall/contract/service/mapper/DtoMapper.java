@@ -8,7 +8,6 @@ import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.Duration;
 import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
@@ -76,7 +75,6 @@ public final class DtoMapper {
 			.withIndexTerms(toTermGroupDtos(filterByType(contractEntity.getTermGroups(), TYPE_INDEX)))
 			.withInvoicing(toInvoicingDto(contractEntity))
 			.withLeaseType(contractEntity.getLeaseType())
-			.withDuration(toDurationDto(contractEntity))
 			.withExtension(toExtensionDto(contractEntity))
 			.withLeasehold(toLeaseholdDto(contractEntity.getLeasehold()))
 			.withMunicipalityId(contractEntity.getMunicipalityId())
@@ -94,16 +92,6 @@ public final class DtoMapper {
 
 	static boolean isLeaseAgreement(ContractEntity contractEntity) {
 		return Objects.equals(LEASE_AGREEMENT, contractEntity.getType());
-	}
-
-	static Duration toDurationDto(final ContractEntity contractEntity) {
-		return ofNullable(contractEntity)
-			.filter(DtoMapper::isLeaseAgreement)
-			.map(entity -> Duration.builder()
-				.withLeaseDuration(entity.getLeaseDuration())
-				.withUnit(ofNullable(entity.getLeaseDurationUnit()).orElse(DAYS))
-				.build())
-			.orElse(null);
 	}
 
 	static Extension toExtensionDto(final ContractEntity contractEntity) {
