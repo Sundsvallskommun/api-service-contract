@@ -1,5 +1,6 @@
 set foreign_key_checks = 0;
 
+truncate table outbox;
 truncate table additional_information;
 truncate table attachment;
 truncate table contract;

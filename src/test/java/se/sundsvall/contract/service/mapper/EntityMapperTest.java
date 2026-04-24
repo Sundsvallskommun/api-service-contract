@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
+import se.sundsvall.contract.api.model.Attachment;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
@@ -433,6 +435,26 @@ class EntityMapperTest {
 			.hasSize(1)
 			.extracting(NoticeTermEmbeddable::getUnit)
 			.containsExactly(TimeUnit.DAYS);
+	}
+
+	@Test
+	void testUpdateAttachmentEntityWithNullMetadataFieldsPreservesOriginalValues() {
+		// Arrange - entity with existing values
+		final var entity = createAttachmentEntity();
+		final var originalCategory = entity.getCategory();
+		final var originalFilename = entity.getFilename();
+
+		// Attachment metadata where all fields are null — setPropertyUnlessNull should skip the setters
+		final var attachment = Attachment.builder()
+			.withMetadata(AttachmentMetadata.builder().build())
+			.build();
+
+		// Act
+		final var updated = EntityMapper.updateAttachmentEntity(entity, attachment);
+
+		// Assert - original values preserved since null was not propagated
+		assertThat(updated.getCategory()).isEqualTo(originalCategory);
+		assertThat(updated.getFilename()).isEqualTo(originalFilename);
 	}
 
 	@Test

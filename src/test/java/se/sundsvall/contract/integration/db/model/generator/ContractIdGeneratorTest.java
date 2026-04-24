@@ -93,4 +93,11 @@ class ContractIdGeneratorTest {
 		String generatedString = contractIdGenerator.generate(mockSession, null, mockCurrentValue, EventType.INSERT).toString();
 		assertThat(generatedString).isEqualTo("2024-00001");
 	}
+
+	@Test
+	void testGenerate_currentValueBlank() {
+		when(mockCurrentValue.toString()).thenReturn("   "); // blank — should fall through to DB sequence
+		String generatedString = contractIdGenerator.generate(mockSession, null, mockCurrentValue, EventType.INSERT).toString();
+		assertThat(generatedString).isEqualTo("2024-00001");
+	}
 }

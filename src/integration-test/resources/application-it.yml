@@ -36,7 +36,9 @@ integration:
   billing-data-collector:
     base-url: http://localhost:${wiremock.server.port:}/api-billing-data-collector
 
-business-rules:
-  billable-agreement-rule:
-    managed-municipality-ids:
-      - 1984
+scheduler:
+  outbox:
+    dispatch:
+      cron: "-"  # Disable scheduler during IT tests
+  contract-termination:
+    cron: "-"  # Disable scheduler during IT tests

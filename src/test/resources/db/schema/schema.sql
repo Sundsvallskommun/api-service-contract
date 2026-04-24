@@ -90,6 +90,17 @@
         additional_information varchar(255)
     ) engine=InnoDB;
 
+    create table outbox (
+        retries integer not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        contract_id varchar(10) not null,
+        event_type varchar(64) not null,
+        last_error varchar(512),
+        payload json not null,
+        primary key (id)
+    ) engine=InnoDB;
+
     create table property_designation (
         contract_id bigint not null,
         district varchar(255),
@@ -157,7 +168,10 @@
     alter table if exists contract_stakeholder 
        add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
-    create index idx_contract_property_designation_contract_id 
+    create index idx_outbox_retries
+       on outbox (retries);
+
+    create index idx_contract_property_designation_contract_id
        on property_designation (contract_id);
 
     alter table if exists additional_information 
@@ -215,7 +229,7 @@
        foreign key (contract_id) 
        references contract (id);
 
-    alter table if exists term_group_term 
-       add constraint fk_term_group_term_term_group_id 
-       foreign key (term_group_id) 
+    alter table if exists term_group_term
+       add constraint fk_term_group_term_term_group_id
+       foreign key (term_group_id)
        references term_group (id);
