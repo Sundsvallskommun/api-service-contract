@@ -93,8 +93,6 @@ class ContractEntityTest {
 				.withDistrict("otherPropertyDesignationDistrict")
 				.build());
 		var objectIdentity = "objectIdentity";
-		var leaseDuration = 3;
-		var leaseDurationUnit = TimeUnit.MONTHS;
 		var fees = FeesEmbeddable.builder()
 			.withCurrency("SEK")
 			.withYearly(BigDecimal.valueOf(4350))
@@ -140,8 +138,6 @@ class ContractEntityTest {
 			.withExternalReferenceId(externalReferenceId)
 			.withPropertyDesignations(propertyDesignations)
 			.withObjectIdentity(objectIdentity)
-			.withLeaseDuration(leaseDuration)
-			.withLeaseDurationUnit(leaseDurationUnit)
 			.withFees(fees)
 			.withInvoicing(InvoicingEmbeddable.builder()
 				.withInvoiceInterval(invoiceInterval)
@@ -177,7 +173,6 @@ class ContractEntityTest {
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
 		assertThat(contract.getPropertyDesignations()).isEqualTo(propertyDesignations);
 		assertThat(contract.getObjectIdentity()).isEqualTo(objectIdentity);
-		assertThat(contract.getLeaseDuration()).isEqualTo(leaseDuration);
 		assertThat(contract.getFees()).isEqualTo(fees);
 		assertThat(contract.getInvoicing()).satisfies(invoicing -> {
 			assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);

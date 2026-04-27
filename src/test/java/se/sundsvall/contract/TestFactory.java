@@ -89,8 +89,6 @@ public final class TestFactory {
 					.withDistrict("someOtherPropertyDesignationDistrict")
 					.build()))
 			.withObjectIdentity("someObjectIdentity")
-			.withLeaseDuration(20)
-			.withLeaseDurationUnit(MONTHS)
 			.withFees(FeesEmbeddable.builder()
 				.withCurrency("SEK")
 				.withYearly(BigDecimal.valueOf(4350))
