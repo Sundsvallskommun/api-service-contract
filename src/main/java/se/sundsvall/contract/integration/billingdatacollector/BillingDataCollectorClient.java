@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
+import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,11 +28,12 @@ public interface BillingDataCollectorClient {
 	 * via GET /{municipalityId}/contracts/{id} using the provided id and municipalityId.
 	 *
 	 * @param municipalityId the municipality id
+	 * @param source         the source system
 	 * @param event          the billing event payload
 	 */
 	@PostMapping(path = "/{municipalityId}/{source}/events", consumes = APPLICATION_JSON_VALUE)
 	void sendEvent(
 		@PathVariable final String municipalityId,
-		@PathVariable final BillingSource source,
+		@PathVariable final SourceEnum source,
 		@RequestBody final BillingEvent event);
 }
