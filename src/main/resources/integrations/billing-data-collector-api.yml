@@ -1,14 +1,13 @@
 openapi: 3.1.0
 info:
-  title: BillingDataCollector
+  title: api-billing-data-collector
   contact: {}
   license:
     name: MIT License
-    url: 'https://opensource.org/licenses/MIT'
-  version: '1.2'
+    url: https://opensource.org/licenses/MIT
+  version: "1.2"
 servers:
-  - url: >-
-      https://billing-data-collector-af-billingdatacollector.apps.ocp201.sundsvall.se
+  - url: http://localhost:50028
     description: Generated server url
 tags:
   - name: Billing Data Collector
@@ -16,7 +15,7 @@ tags:
   - name: Counterpart
     description: Counterpart resources
 paths:
-  '/{municipalityId}/scheduled-billing/{id}':
+  /{municipalityId}/scheduled-billing/{id}:
     get:
       tags:
         - Billing Data Collector
@@ -27,8 +26,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -36,52 +33,42 @@ paths:
           in: path
           description: id of scheduled billing
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: b82bd8ac-1507-4d9a-958d-369261eecc14
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduledBilling'
-        '400':
+                $ref: "#/components/schemas/ScheduledBilling"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '404':
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
+                $ref: "#/components/schemas/Problem"
     put:
       tags:
         - Billing Data Collector
@@ -92,8 +79,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -101,8 +86,6 @@ paths:
           in: path
           description: id of scheduled billing
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: b82bd8ac-1507-4d9a-958d-369261eecc14
@@ -110,49 +93,41 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScheduledBilling'
+              $ref: "#/components/schemas/ScheduledBilling"
         required: true
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduledBilling'
-        '400':
+                $ref: "#/components/schemas/ScheduledBilling"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '404':
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
         - Billing Data Collector
@@ -163,8 +138,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -172,54 +145,96 @@ paths:
           in: path
           description: id of scheduled billing
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: b82bd8ac-1507-4d9a-958d-369261eecc14
       responses:
-        '204':
+        "204":
           description: Successful deletion
-        '400':
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '404':
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
-  '/{municipalityId}/trigger':
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{source}/events:
     post:
       tags:
         - Billing Data Collector
-      summary: >-
-        Trigger billing for all flowInstanceId:s between two specific dates.
+      summary: Handle events from external services
+      operationId: handleEvent
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: source
+          in: path
+          description: Source system sending the event
+          required: true
+          schema:
+            type: string
+            enum:
+              - CONTRACT
+              - OPENE
+          example: CONTRACT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/trigger:
+    post:
+      tags:
+        - Billing Data Collector
+      summary: Trigger billing for all flowInstanceId:s between two specific dates.
         Will return a list of all triggered flowInstanceId:s
       operationId: triggerBilling
       parameters:
@@ -227,47 +242,38 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
         - name: startDate
           in: query
           required: true
-          style: form
-          explode: true
           schema:
             type: string
             format: date
-          example: '2024-01-01T00:00:00.000Z'
+          example: 2024-01-01
         - name: endDate
           in: query
           required: true
-          style: form
-          explode: true
           schema:
             type: string
             format: date
-          example: '2024-02-01T00:00:00.000Z'
+          example: 2024-02-01
         - name: familyIds
           in: query
-          description: >-
-            FamilyIds to trigger billing for. If not provided, billing will be
-            triggered for all supported familyIds
+          description: "FamilyIds to trigger billing for. If not provided, billing will\
+          \ be triggered for all supported familyIds"
           required: false
-          style: form
-          explode: true
           schema:
             type: array
             items:
               type: string
             uniqueItems: true
           example:
-            - '123'
-            - '456'
+            - "123"
+            - "456"
       responses:
-        '202':
+        "202":
           description: Accepted
           content:
             application/json:
@@ -275,35 +281,27 @@ paths:
                 type: array
                 items:
                   type: string
-        '400':
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
-  '/{municipalityId}/trigger/{flowInstanceId}':
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/trigger/{flowInstanceId}:
     post:
       tags:
         - Billing Data Collector
@@ -314,8 +312,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -323,44 +319,34 @@ paths:
           in: path
           description: flowInstanceId to trigger billing for
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
             minLength: 1
           example: 123
       responses:
-        '202':
+        "202":
           description: Accepted
-        '400':
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
-  '/{municipalityId}/scheduled-billing':
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/scheduled-billing:
     get:
       tags:
         - Billing Data Collector
@@ -371,8 +357,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -380,8 +364,6 @@ paths:
           in: query
           description: Zero-based page index (0..N)
           required: false
-          style: form
-          explode: true
           schema:
             type: integer
             default: 0
@@ -390,59 +372,46 @@ paths:
           in: query
           description: The size of the page to be returned
           required: false
-          style: form
-          explode: true
           schema:
             type: integer
             default: 20
             minimum: 1
         - name: sort
           in: query
-          description: >-
-            Sorting criteria in the format: property,(asc|desc). Default sort
-            order is ascending. Multiple sort criteria are supported.
+          description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
           required: false
-          style: form
-          explode: true
           schema:
             type: array
             items:
               type: string
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageScheduledBilling'
-        '400':
+                $ref: "#/components/schemas/PageScheduledBilling"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
+                $ref: "#/components/schemas/Problem"
     post:
       tags:
         - Billing Data Collector
@@ -453,8 +422,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -462,40 +429,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScheduledBilling'
+              $ref: "#/components/schemas/ScheduledBilling"
         required: true
       responses:
-        '201':
+        "201":
           description: Created
-        '400':
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
-  '/{municipalityId}/scheduled-billing/external/{source}/{externalId}':
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/scheduled-billing/external/{source}/{externalId}:
     get:
       tags:
         - Billing Data Collector
@@ -506,8 +465,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -515,8 +472,6 @@ paths:
           in: path
           description: Source system where data is collected
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
             enum:
@@ -527,53 +482,43 @@ paths:
           in: path
           description: externalId of scheduled billing
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: b82bd8ac-1507-4d9a-958d-369261eecc14
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduledBilling'
-        '400':
+                $ref: "#/components/schemas/ScheduledBilling"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '404':
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
-  '/{municipalityId}/counterpart':
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/counterpart:
     get:
       tags:
         - Counterpart
@@ -584,8 +529,6 @@ paths:
           in: path
           description: Municipality id
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
           example: 2281
@@ -593,8 +536,6 @@ paths:
           in: query
           description: Party id
           required: true
-          style: form
-          explode: true
           schema:
             type: string
           example: fb2f0290-3820-11ed-a261-0242ac120002
@@ -602,52 +543,42 @@ paths:
           in: query
           description: Stakeholder type
           required: false
-          style: form
-          explode: true
           schema:
             type: string
           example: PERSON
       responses:
-        '200':
+        "200":
           description: Successful
           content:
             text/plain:
               schema:
                 type: string
-        '400':
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
           description: Bad Request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        '404':
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '502':
+                $ref: "#/components/schemas/Problem"
+        "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-      security:
-        - default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -655,36 +586,30 @@ paths:
       summary: OpenAPI
       operationId: getApiDocs
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/yaml:
               schema:
                 type: string
-      security:
-        - default: []
       x-auth-type: None
       x-throttling-tier: Unlimited
       x-wso2-mutual-ssl: Optional
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-        optional: false
 components:
   schemas:
     Problem:
       type: object
       properties:
+        title:
+          type: string
+        detail:
+          type: string
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
-        title:
-          type: string
-        detail:
-          type: string
         status:
           type: integer
           format: int32
@@ -716,10 +641,9 @@ components:
           items:
             type: integer
             format: int32
-            description: >-
-              Days of month when billing should be scheduled. On short months,
-              highest possible date will be used if value is bigger than number
-              of days in month
+            description: "Days of month when billing should be scheduled. On short\
+              \ months, highest possible date will be used if value is bigger than\
+              \ number of days in month"
             example: 1
             maximum: 31
             minimum: 1
@@ -740,19 +664,26 @@ components:
           type: string
           format: date-time
           description: Timestamp when of last successful billing
-          example: '2000-10-30T23:30:00.000Z'
+          example: 2000-10-31T01:30:00.000+02:00
           readOnly: true
         nextScheduledBilling:
           type: string
           format: date
           description: Date of next scheduled billing if still active
-          example: '2001-05-15T00:00:00.000Z'
+          example: 2001-05-15
           readOnly: true
         paused:
           type: boolean
           default: false
-          description: 'If set to true, scheduled billing will not be triggered'
+          description: "If set to true, scheduled billing will not be triggered"
           example: false
+        finalBillingDate:
+          type: string
+          format: date
+          description: "If set, this is the last billing — no further billings will\
+            \ be scheduled after this date"
+          example: 2026-06-30
+          readOnly: true
       required:
         - billingDaysOfMonth
         - billingMonths
@@ -770,16 +701,16 @@ components:
         violations:
           type: array
           items:
-            $ref: '#/components/schemas/Violation'
+            $ref: "#/components/schemas/Violation"
         title:
+          type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
+        detail:
           type: string
         instance:
           type: string
           format: uri
-        detail:
-          type: string
-        causeAsProblem:
-          $ref: '#/components/schemas/ThrowableProblem'
     ThrowableProblem:
       type: object
       properties:
@@ -804,6 +735,27 @@ components:
           type: string
         message:
           type: string
+    EventRequest:
+      type: object
+      description: Billing source event
+      properties:
+        id:
+          type: string
+          description: External id
+          example: 2026-00001
+        municipalityId:
+          type: string
+          description: Municipality id
+          example: "2281"
+        eventType:
+          type: string
+          description: Event type
+          enum:
+            - CREATED
+            - UPDATED
+            - DELETED
+            - TERMINATED
+          example: CREATED
     PageScheduledBilling:
       type: object
       properties:
@@ -813,35 +765,34 @@ components:
         totalElements:
           type: integer
           format: int64
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
         content:
           type: array
           items:
-            $ref: '#/components/schemas/ScheduledBilling'
+            $ref: "#/components/schemas/ScheduledBilling"
         number:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageable:
-          $ref: '#/components/schemas/PageableObject'
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: '#/components/schemas/SortObject'
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
-        offset:
-          type: integer
-          format: int64
+        unpaged:
+          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -851,66 +802,17 @@ components:
           type: integer
           format: int32
         sort:
-          $ref: '#/components/schemas/SortObject'
-        unpaged:
-          type: boolean
+          $ref: "#/components/schemas/SortObject"
+        offset:
+          type: integer
+          format: int64
     SortObject:
       type: object
       properties:
-        empty:
+        unsorted:
           type: boolean
         sorted:
           type: boolean
-        unsorted:
+        empty:
           type: boolean
-  securitySchemes:
-    default:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: 'https://test.com'
-          scopes: {}
-x-wso2-auth-header: Authorization
-x-wso2-api-key-header: ApiKey
-x-wso2-cors:
-  corsConfigurationEnabled: false
-  accessControlAllowOrigins:
-    - '*'
-  accessControlAllowCredentials: false
-  accessControlAllowHeaders:
-    - authorization
-    - Access-Control-Allow-Origin
-    - Content-Type
-    - SOAPAction
-    - apikey
-    - Internal-Key
-    - testKey
-  accessControlAllowMethods:
-    - GET
-    - PUT
-    - POST
-    - DELETE
-    - PATCH
-    - OPTIONS
-  empty: false
-x-wso2-production-endpoints:
-  urls:
-    - >-
-      https://billing-data-collector-af-billingdatacollector.apps.ocp201.sundsvall.se
-  type: http
-x-wso2-sandbox-endpoints:
-  urls:
-    - >-
-      https://billing-data-collector-af-billingdatacollector.apps.ocp201.sundsvall.se
-  type: http
-x-wso2-basePath: /billing-data-collector/1.2
-x-wso2-transports:
-  - http
-  - https
-x-wso2-application-security:
-  security-types:
-    - oauth2
-  optional: false
-x-wso2-response-cache:
-  enabled: false
-  cacheTimeoutInSeconds: 300
+  securitySchemes: {}
