@@ -36,7 +36,8 @@ class OutboxDispatcherTest {
 
 	@BeforeEach
 	void setUp() {
-		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of());
+		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of());
+		when(outboxRepositoryMock.findUnhealthy()).thenReturn(List.of());
 	}
 
 	@Test
@@ -48,8 +49,8 @@ class OutboxDispatcherTest {
 		dispatcher.dispatch();
 
 		// Assert
-		verify(outboxRepositoryMock).findExhausted();
 		verify(outboxRepositoryMock).findUnsent();
+		verify(outboxRepositoryMock).findUnhealthy();
 		verifyNoInteractions(outboxWorkerMock);
 		verifyNoInteractions(dept44HealthUtilityMock);
 	}
@@ -70,10 +71,10 @@ class OutboxDispatcherTest {
 	}
 
 	@Test
-	void dispatchSetsHealthUnhealthyWhenExhaustedRecordsExist() {
+	void dispatchSetsHealthUnhealthyWhenUnhealthyRecordsExist() {
 		// Arrange
-		final var exhaustedEntity = buildOutboxEntity("TERMINATED");
-		when(outboxRepositoryMock.findExhausted()).thenReturn(List.of(exhaustedEntity));
+		final var unhealthyEntity = buildOutboxEntity("TERMINATED");
+		when(outboxRepositoryMock.findUnhealthy()).thenReturn(List.of(unhealthyEntity));
 		when(outboxRepositoryMock.findUnsent()).thenReturn(List.of());
 
 		// Act

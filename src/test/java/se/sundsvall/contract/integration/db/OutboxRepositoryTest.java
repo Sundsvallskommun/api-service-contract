@@ -23,32 +23,32 @@ class OutboxRepositoryTest {
 	private OutboxRepository outboxRepository;
 
 	@Test
-	void findUnsentReturnsOnlyRowsBelowMaxRetries() {
+	void findUnsentReturnsAllRows() {
 		// Arrange
 		outboxRepository.save(buildOutboxEntity("CREATED", 0));
-		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.MAX_RETRIES - 1));
-		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.MAX_RETRIES));
-		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.MAX_RETRIES + 1));
+		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.UNHEALTHY_THRESHOLD - 1));
+		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.UNHEALTHY_THRESHOLD));
+		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.UNHEALTHY_THRESHOLD + 1));
 
 		// Act
 		final var result = outboxRepository.findUnsent();
 
 		// Assert
-		assertThat(result).hasSize(2)
+		assertThat(result).hasSize(4)
 			.extracting(OutboxEntity::getEventType)
-			.containsExactly("CREATED", "UPDATED");
+			.containsExactly("CREATED", "UPDATED", "DELETED", "TERMINATED");
 	}
 
 	@Test
-	void findExhaustedReturnsOnlyRowsAtOrAboveMaxRetries() {
+	void findUnhealthyReturnsOnlyRowsAtOrAboveUnhealthyThreshold() {
 		// Arrange
 		outboxRepository.save(buildOutboxEntity("CREATED", 0));
-		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.MAX_RETRIES - 1));
-		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.MAX_RETRIES));
-		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.MAX_RETRIES + 1));
+		outboxRepository.save(buildOutboxEntity("UPDATED", OutboxRepository.UNHEALTHY_THRESHOLD - 1));
+		outboxRepository.save(buildOutboxEntity("DELETED", OutboxRepository.UNHEALTHY_THRESHOLD));
+		outboxRepository.save(buildOutboxEntity("TERMINATED", OutboxRepository.UNHEALTHY_THRESHOLD + 1));
 
 		// Act
-		final var result = outboxRepository.findExhausted();
+		final var result = outboxRepository.findUnhealthy();
 
 		// Assert
 		assertThat(result).hasSize(2)
