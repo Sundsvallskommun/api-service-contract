@@ -37,7 +37,7 @@ public class PurchaseAgreementRule implements BusinessruleInterface {
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Resets lease duration and extension attributes to null since they are not applicable for purchase agreements.
+	 * Resets lease extension attributes to null since they are not applicable for purchase agreements.
 	 */
 	@Override
 	public void apply(BusinessruleParameters parameters) throws BusinessruleException {
@@ -45,9 +45,7 @@ public class PurchaseAgreementRule implements BusinessruleInterface {
 			final var contractEntity = parameters.contractEntity();
 			logger.info("Applying purchase agreement business rules for contract number {}", contractEntity.getContractId());
 
-			// Reset duration and extension to null as these attributes are not applicable for purchase agreements
-			contractEntity.setLeaseDuration(null);
-			contractEntity.setLeaseDurationUnit(null);
+			// Reset extension attributes to null as they are not applicable for purchase agreements
 			contractEntity.setLeaseExtension(null);
 			contractEntity.setLeaseExtensionUnit(null);
 			contractEntity.setAutoExtend(null);

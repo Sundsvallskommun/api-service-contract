@@ -132,12 +132,6 @@ public class ContractEntity {
 	@Column(name = "object_identity")
 	private String objectIdentity;
 
-	@Column(name = "lease_duration")
-	private Integer leaseDuration;
-
-	@Column(name = "lease_duration_unit", length = 32)
-	private TimeUnit leaseDurationUnit;
-
 	@Embedded
 	private FeesEmbeddable fees;
 

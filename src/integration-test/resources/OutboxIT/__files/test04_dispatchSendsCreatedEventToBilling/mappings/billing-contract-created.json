@@ -1,0 +1,16 @@
+{
+	"request": {
+		"method": "POST",
+		"url": "/api-billing-data-collector/1984/CONTRACTS/events",
+		"bodyPatterns": [
+			{
+				"equalToJson": "{\"municipalityId\":\"1984\",\"eventType\":\"CREATED\"}",
+				"ignoreArrayOrder": true,
+				"ignoreExtraElements": true
+			}
+		]
+	},
+	"response": {
+		"status": 200
+	}
+}

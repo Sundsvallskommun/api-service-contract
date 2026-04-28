@@ -70,8 +70,6 @@ class PurchaseAgreementRuleTest {
 		rule.apply(new BusinessruleParameters(contractEntityMock, null));
 
 		verify(contractEntityMock).getContractId();
-		verify(contractEntityMock).setLeaseDuration(null);
-		verify(contractEntityMock).setLeaseDurationUnit(null);
 		verify(contractEntityMock).setLeaseExtension(null);
 		verify(contractEntityMock).setLeaseExtensionUnit(null);
 		verify(contractEntityMock).setAutoExtend(null);
@@ -84,14 +82,14 @@ class PurchaseAgreementRuleTest {
 		final var thrownException = new NullPointerException("I am a teapot");
 		final var businessParameters = new BusinessruleParameters(contractEntityMock, null);
 		when(contractEntityMock.getContractId()).thenReturn(contractId);
-		doThrow(thrownException).when(contractEntityMock).setLeaseDuration(null);
+		doThrow(thrownException).when(contractEntityMock).setLeaseExtension(null);
 
 		final var e = assertThrows(BusinessruleException.class, () -> rule.apply(businessParameters));
 
 		assertThat(e.getCause()).isSameAs(thrownException);
 		assertThat(e.getMessage()).isEqualTo("An exception occurred when applying purchase agreement business rules for contract number %s".formatted(contractId));
 		verify(contractEntityMock, times(2)).getContractId();
-		verify(contractEntityMock).setLeaseDuration(null);
+		verify(contractEntityMock).setLeaseExtension(null);
 		verifyNoMoreInteractions(contractEntityMock);
 	}
 }
