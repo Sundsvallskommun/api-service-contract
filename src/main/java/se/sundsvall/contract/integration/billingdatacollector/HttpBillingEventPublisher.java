@@ -14,6 +14,6 @@ public class HttpBillingEventPublisher implements BillingEventPublisher {
 
 	@Override
 	public void publish(final BillingEvent event) {
-		client.sendEvent(event.municipalityId(), BillingSource.CONTRACTS, event);
+		client.sendEvent(event.municipalityId(), BillingSource.CONTRACT, event);
 	}
 }
