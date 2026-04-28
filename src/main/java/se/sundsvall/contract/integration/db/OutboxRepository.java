@@ -9,11 +9,11 @@ import se.sundsvall.contract.integration.db.model.OutboxEntity;
 @CircuitBreaker(name = "outboxRepository")
 public interface OutboxRepository extends JpaRepository<OutboxEntity, Long> {
 
-	int MAX_RETRIES = 12;
+	int UNHEALTHY_THRESHOLD = 5;
 
-	@Query("SELECT o FROM OutboxEntity o WHERE o.retries < " + MAX_RETRIES + " ORDER BY o.createdAt ASC")
+	@Query("SELECT o FROM OutboxEntity o ORDER BY o.createdAt ASC")
 	List<OutboxEntity> findUnsent();
 
-	@Query("SELECT o FROM OutboxEntity o WHERE o.retries >= " + MAX_RETRIES)
-	List<OutboxEntity> findExhausted();
+	@Query("SELECT o FROM OutboxEntity o WHERE o.retries >= " + UNHEALTHY_THRESHOLD)
+	List<OutboxEntity> findUnhealthy();
 }

@@ -28,10 +28,10 @@ public class OutboxDispatcher {
 		cron = "${scheduler.outbox.dispatch.cron:0 */5 * * * *}",
 		lockAtMostFor = "${scheduler.outbox.dispatch.lock-at-most-for:PT30S}")
 	public void dispatch() {
-		final var exhausted = outboxRepository.findExhausted();
-		if (!exhausted.isEmpty()) {
+		final var unhealthy = outboxRepository.findUnhealthy();
+		if (!unhealthy.isEmpty()) {
 			dept44HealthUtility.setHealthIndicatorUnhealthy(JOB_NAME,
-				"Found %d exhausted outbox record(s) that require manual intervention".formatted(exhausted.size()));
+				"Found %d outbox record(s) with %d or more failed attempts".formatted(unhealthy.size(), OutboxRepository.UNHEALTHY_THRESHOLD));
 		}
 		outboxRepository.findUnsent().forEach(outboxWorker::process);
 	}
