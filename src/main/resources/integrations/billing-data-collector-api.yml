@@ -1,17 +1,19 @@
 openapi: 3.1.0
 info:
   title: api-billing-data-collector
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "1.1"
+  version: "1.2"
 servers:
-  - url: http://localhost:33015
+  - url: http://localhost:50028
     description: Generated server url
 tags:
   - name: Billing Data Collector
     description: Billing Data Collector resources
+  - name: Counterpart
+    description: Counterpart resources
 paths:
   /{municipalityId}/scheduled-billing/{id}:
     get:
@@ -129,7 +131,7 @@ paths:
     delete:
       tags:
         - Billing Data Collector
-      summary: Get scheduled billing by id
+      summary: Delete scheduled billing by id
       operationId: deleteScheduledBilling
       parameters:
         - name: municipalityId
@@ -155,6 +157,59 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{source}/events:
+    post:
+      tags:
+        - Billing Data Collector
+      summary: Handle events from external services
+      operationId: handleEvent
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: source
+          in: path
+          description: Source system sending the event
+          required: true
+          schema:
+            type: string
+            enum:
+              - CONTRACT
+              - OPENE
+          example: CONTRACT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           content:
@@ -206,7 +261,8 @@ paths:
           example: 2024-02-01
         - name: familyIds
           in: query
-          description: "FamilyIds to trigger billing for. If not provided, billing will be triggered for all supported familyIds"
+          description: "FamilyIds to trigger billing for. If not provided, billing will\
+          \ be triggered for all supported familyIds"
           required: false
           schema:
             type: array
@@ -322,7 +378,8 @@ paths:
             minimum: 1
         - name: sort
           in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+          description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
           required: false
           schema:
             type: array
@@ -377,10 +434,6 @@ paths:
       responses:
         "201":
           description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ScheduledBilling"
         "400":
           description: Bad Request
           content:
@@ -465,6 +518,67 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/counterpart:
+    get:
+      tags:
+        - Counterpart
+      summary: Find counterpart by partyId and stakeholderType
+      operationId: getCounterpart
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: partyId
+          in: query
+          description: Party id
+          required: true
+          schema:
+            type: string
+          example: fb2f0290-3820-11ed-a261-0242ac120002
+        - name: stakeholderType
+          in: query
+          description: Stakeholder type
+          required: false
+          schema:
+            type: string
+          example: PERSON
+      responses:
+        "200":
+          description: Successful
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -486,29 +600,19 @@ components:
     Problem:
       type: object
       properties:
+        title:
+          type: string
+        detail:
+          type: string
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-        title:
-          type: string
-        detail:
-          type: string
         status:
-          $ref: "#/components/schemas/StatusType"
-    StatusType:
-      type: object
-      properties:
-        statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ScheduledBilling:
       type: object
       description: Scheduled billing
@@ -573,6 +677,13 @@ components:
           default: false
           description: "If set to true, scheduled billing will not be triggered"
           example: false
+        finalBillingDate:
+          type: string
+          format: date
+          description: "If set, this is the last billing — no further billings will\
+            \ be scheduled after this date"
+          example: 2026-06-30
+          readOnly: true
       required:
         - billingDaysOfMonth
         - billingMonths
@@ -581,160 +692,42 @@ components:
     ConstraintViolationProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
         type:
           type: string
           format: uri
         status:
-          $ref: "#/components/schemas/StatusType"
+          type: integer
+          format: int32
         violations:
           type: array
           items:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        message:
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
+        detail:
           type: string
         instance:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-        detail:
-          type: string
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
-          type: string
     ThrowableProblem:
       type: object
       properties:
-        cause: { }
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
-        message:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
           type: string
         instance:
           type: string
           format: uri
-        type:
-          type: string
-          format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
-          type: string
+        causeAsProblem: {}
     Violation:
       type: object
       properties:
@@ -742,15 +735,47 @@ components:
           type: string
         message:
           type: string
+    EventRequest:
+      type: object
+      description: Billing source event
+      properties:
+        id:
+          type: string
+          description: External id
+          example: 2026-00001
+        municipalityId:
+          type: string
+          description: Municipality id
+          example: "2281"
+        eventType:
+          type: string
+          description: Event type
+          enum:
+            - CREATED
+            - UPDATED
+            - DELETED
+            - TERMINATED
+          example: CREATED
     PageScheduledBilling:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
@@ -761,25 +786,13 @@ components:
         number:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
-        offset:
-          type: integer
-          format: int64
+        unpaged:
+          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -790,15 +803,16 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
+        offset:
+          type: integer
+          format: int64
     SortObject:
       type: object
       properties:
-        empty:
+        unsorted:
           type: boolean
         sorted:
           type: boolean
-        unsorted:
+        empty:
           type: boolean
-  securitySchemes: { }
+  securitySchemes: {}
