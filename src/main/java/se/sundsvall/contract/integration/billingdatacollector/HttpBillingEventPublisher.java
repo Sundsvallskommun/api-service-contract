@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
+import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import org.springframework.stereotype.Component;
 import se.sundsvall.contract.integration.billingdatacollector.event.BillingEvent;
 
@@ -14,6 +15,6 @@ public class HttpBillingEventPublisher implements BillingEventPublisher {
 
 	@Override
 	public void publish(final BillingEvent event) {
-		client.sendEvent(event.municipalityId(), BillingSource.CONTRACT, event);
+		client.sendEvent(event.municipalityId(), SourceEnum.CONTRACT, event);
 	}
 }

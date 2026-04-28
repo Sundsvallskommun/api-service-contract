@@ -1,5 +1,6 @@
 package se.sundsvall.contract.integration.billingdatacollector;
 
+import generated.se.sundsvall.billingdatacollector.ScheduledBilling.SourceEnum;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,27 +36,27 @@ class HttpBillingEventPublisherTest {
 	void publishContractCreatedEvent() {
 		final var event = ContractCreatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
-		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACT, event);
+		verify(clientMock).sendEvent(MUNICIPALITY_ID, SourceEnum.CONTRACT, event);
 	}
 
 	@Test
 	void publishContractUpdatedEvent() {
 		final var event = ContractUpdatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
-		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACT, event);
+		verify(clientMock).sendEvent(MUNICIPALITY_ID, SourceEnum.CONTRACT, event);
 	}
 
 	@Test
 	void publishContractDeletedEvent() {
 		final var event = ContractDeletedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
-		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACT, event);
+		verify(clientMock).sendEvent(MUNICIPALITY_ID, SourceEnum.CONTRACT, event);
 	}
 
 	@Test
 	void publishContractTerminatedEvent() {
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		publisher.publish(event);
-		verify(clientMock).sendEvent(MUNICIPALITY_ID, BillingSource.CONTRACT, event);
+		verify(clientMock).sendEvent(MUNICIPALITY_ID, SourceEnum.CONTRACT, event);
 	}
 }
