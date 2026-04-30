@@ -155,14 +155,14 @@ class OutboxWorkerTest {
 	}
 
 	@Test
-	void processStopsRetryingAfterMaxRetries() throws Exception {
+	void processKeepsRetryingBeyondUnhealthyThreshold() throws Exception {
 		// Arrange
 		final var event = ContractTerminatedEvent.of(CONTRACT_ID, MUNICIPALITY_ID);
 		final var entity = OutboxEntity.builder()
 			.withContractId(CONTRACT_ID)
 			.withEventType("TERMINATED")
 			.withPayload(objectMapper.writeValueAsString(event))
-			.withRetries(OutboxRepository.MAX_RETRIES - 1)
+			.withRetries(OutboxRepository.UNHEALTHY_THRESHOLD + 10)
 			.build();
 		doThrow(new RuntimeException("still failing")).when(publisherMock).publish(any());
 
@@ -172,7 +172,7 @@ class OutboxWorkerTest {
 		// Assert
 		final var captor = ArgumentCaptor.forClass(OutboxEntity.class);
 		verify(outboxRepositoryMock).save(captor.capture());
-		assertThat(captor.getValue().getRetries()).isEqualTo(OutboxRepository.MAX_RETRIES);
+		assertThat(captor.getValue().getRetries()).isEqualTo(OutboxRepository.UNHEALTHY_THRESHOLD + 11);
 	}
 
 	private OutboxEntity buildOutboxEntity(final String eventType, final String payload) {

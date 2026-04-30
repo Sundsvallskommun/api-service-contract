@@ -45,12 +45,7 @@ public class OutboxWorker {
 			entity.setRetries(newRetries);
 			entity.setLastError(truncate(e.getMessage()));
 			outboxRepository.save(entity);
-			if (newRetries >= OutboxRepository.MAX_RETRIES) {
-				LOG.error("Outbox event {} for contract {} has exhausted all {} retries and will no longer be retried. Manual intervention required. Last error: {}",
-					entity.getEventType(), entity.getContractId(), OutboxRepository.MAX_RETRIES, e.getMessage());
-			} else {
-				LOG.warn("Failed to dispatch outbox event {} for contract {}, retries: {}", entity.getEventType(), entity.getContractId(), newRetries, e);
-			}
+			LOG.warn("Failed to dispatch outbox event {} for contract {}, retries: {}", entity.getEventType(), entity.getContractId(), newRetries, e);
 		}
 	}
 
