@@ -65,10 +65,16 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long>,
 
 	/**
 	 * Finds all contracts matching the given status where end date is before the given date.
+	 * <p>
+	 * <b>Intentionally cross-tenant:</b> this query is not scoped by {@code municipalityId}
+	 * because it is only invoked by the contract-termination scheduler ({@code ContractTerminationJob}),
+	 * which must sweep expired contracts across every municipality on every run. Do not call
+	 * this from request-scoped code paths — those must filter by {@code municipalityId}
+	 * to preserve tenant isolation.
 	 *
 	 * @param  status  the contract status to filter on
 	 * @param  endDate the date to compare end date against
-	 * @return         list of matching contracts
+	 * @return         list of matching contracts across all municipalities
 	 */
 	List<ContractEntity> findByStatusAndEndDateBefore(Status status, LocalDate endDate);
 }

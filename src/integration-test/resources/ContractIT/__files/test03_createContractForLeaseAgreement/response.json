@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"contractId": "${json-unit.regex}^\\d{4}-000\\d{2}$",
+	"contractId": "${json-unit.regex}^\\d{4}-\\d{6}$",
 	"description": "someDescription",
 	"externalReferenceId": "MK-TEST0003",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",
