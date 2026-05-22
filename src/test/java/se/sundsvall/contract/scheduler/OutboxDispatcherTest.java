@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OutboxDispatcherTest {
 
+	private static final String JOB_NAME = "outbox-dispatcher";
 	private static final String CONTRACT_ID = "CONTRACT-1";
 
 	@Mock
@@ -51,8 +52,8 @@ class OutboxDispatcherTest {
 		// Assert
 		verify(outboxRepositoryMock).findUnsent();
 		verify(outboxRepositoryMock).findUnhealthy();
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy(JOB_NAME);
 		verifyNoInteractions(outboxWorkerMock);
-		verifyNoInteractions(dept44HealthUtilityMock);
 	}
 
 	@Test
@@ -68,6 +69,7 @@ class OutboxDispatcherTest {
 		// Assert
 		verify(outboxWorkerMock).process(entity1);
 		verify(outboxWorkerMock).process(entity2);
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy(JOB_NAME);
 	}
 
 	@Test
@@ -81,7 +83,7 @@ class OutboxDispatcherTest {
 		dispatcher.dispatch();
 
 		// Assert
-		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(eq("outbox-dispatcher"), contains("1"));
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(eq(JOB_NAME), contains("1"));
 		verifyNoInteractions(outboxWorkerMock);
 	}
 

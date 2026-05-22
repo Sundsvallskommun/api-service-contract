@@ -4,6 +4,8 @@ import jakarta.persistence.PersistenceException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.Year;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.jdbc.spi.StatementPreparer;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -46,12 +48,18 @@ class ContractIdGeneratorTest {
 	private JdbcCoordinator mockJdbcCoordinator;
 
 	@Mock
-	private ResultSet mockResultSet;
+	private ResultSet mockGeneratedKeys;
 
 	@Mock
 	private PreparedStatement mockPreparedStatement;
 
-	private static final String GENERATE_ID_QUERY = "SELECT CONCAT(YEAR(CURRENT_DATE), '-', LPAD(NEXT VALUE FOR `contract_id_seq`, 5, 0))";
+	private static final String UPSERT_COUNTER_QUERY = """
+		INSERT INTO contract_id_counter (`year`, last_value)
+		VALUES (?, LAST_INSERT_ID(1))
+		ON DUPLICATE KEY UPDATE last_value = LAST_INSERT_ID(last_value + 1)
+		""";
+
+	private final int currentYear = Year.now().getValue();
 
 	@InjectMocks
 	private ContractIdGenerator contractIdGenerator;
@@ -60,28 +68,30 @@ class ContractIdGeneratorTest {
 	void setUp() throws SQLException {
 		when(mockSession.getJdbcCoordinator()).thenReturn(mockJdbcCoordinator);
 		when(mockJdbcCoordinator.getStatementPreparer()).thenReturn(mockStatementPreparer);
-		when(mockStatementPreparer.prepareStatement(GENERATE_ID_QUERY)).thenReturn(mockPreparedStatement);
-		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(true);
-		when(mockResultSet.getString(1)).thenReturn("2024-00001");
+		when(mockStatementPreparer.prepareStatement(UPSERT_COUNTER_QUERY, Statement.RETURN_GENERATED_KEYS)).thenReturn(mockPreparedStatement);
+		when(mockPreparedStatement.getGeneratedKeys()).thenReturn(mockGeneratedKeys);
+		when(mockGeneratedKeys.next()).thenReturn(true);
+		when(mockGeneratedKeys.getLong(1)).thenReturn(1L);
 	}
 
 	@Test
 	void testGenerate() throws SQLException {
 		String generatedString = contractIdGenerator.generate(mockSession, null, null, EventType.INSERT).toString();
-		assertThat(generatedString).isEqualTo("2024-00001");
+		assertThat(generatedString).isEqualTo("%d-000001".formatted(currentYear));
 
 		verify(mockSession).getJdbcCoordinator();
 		verify(mockJdbcCoordinator).getStatementPreparer();
-		verify(mockStatementPreparer).prepareStatement(GENERATE_ID_QUERY);
-		verify(mockPreparedStatement).executeQuery();
-		verify(mockResultSet).next();
-		verify(mockResultSet).getString(1);
+		verify(mockStatementPreparer).prepareStatement(UPSERT_COUNTER_QUERY, Statement.RETURN_GENERATED_KEYS);
+		verify(mockPreparedStatement).setInt(1, currentYear);
+		verify(mockPreparedStatement).executeUpdate();
+		verify(mockPreparedStatement).getGeneratedKeys();
+		verify(mockGeneratedKeys).next();
+		verify(mockGeneratedKeys).getLong(1);
 	}
 
 	@Test
 	void testGenerate_throwsException() throws SQLException {
-		when(mockResultSet.next()).thenReturn(false);
+		when(mockGeneratedKeys.next()).thenReturn(false);
 		assertThatExceptionOfType(PersistenceException.class)
 			.isThrownBy(() -> contractIdGenerator.generate(mockSession, null, null, EventType.INSERT))
 			.withMessage("Contract id generation failed");
@@ -96,8 +106,8 @@ class ContractIdGeneratorTest {
 
 	@Test
 	void testGenerate_currentValueBlank() {
-		when(mockCurrentValue.toString()).thenReturn("   "); // blank — should fall through to DB sequence
+		when(mockCurrentValue.toString()).thenReturn("   "); // blank — should fall through to the counter table
 		String generatedString = contractIdGenerator.generate(mockSession, null, mockCurrentValue, EventType.INSERT).toString();
-		assertThat(generatedString).isEqualTo("2024-00001");
+		assertThat(generatedString).isEqualTo("%d-000001".formatted(currentYear));
 	}
 }

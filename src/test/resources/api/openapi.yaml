@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "8.0"
+  version: "8.1"
 servers:
-- url: http://localhost:64382
+- url: http://localhost:60719
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -1353,21 +1353,29 @@ components:
           description: Name of the organization
           examples:
           - Sundsvalls kommun
+          maxLength: 255
+          minLength: 0
         organizationNumber:
           type: string
           description: Swedish organization number
           examples:
           - 212000-2411
+          maxLength: 255
+          minLength: 0
         firstName:
           type: string
           description: Stakeholders first name
           examples:
           - Test
+          maxLength: 255
+          minLength: 0
         lastName:
           type: string
           description: Stakeholders last name
           examples:
           - Testorsson
+          maxLength: 255
+          minLength: 0
         partyId:
           type: string
           description: PartyId
@@ -1378,11 +1386,15 @@ components:
           description: Phone number for stakeholder
           examples:
           - "0701231212"
+          maxLength: 255
+          minLength: 0
         emailAddress:
           type: string
           description: Email adress for stakeholder
           examples:
           - test.testorsson@test.se
+          maxLength: 255
+          minLength: 0
         address:
           $ref: "#/components/schemas/Address"
           description: Address for stakeholder
@@ -1575,15 +1587,30 @@ components:
           type: boolean
         float:
           type: boolean
-        container:
+        binary:
           type: boolean
-        number:
+        textual:
+          type: boolean
+          deprecated: true
+        pojo:
+          type: boolean
+        short:
+          type: boolean
+        long:
+          type: boolean
+        boolean:
+          type: boolean
+        int:
+          type: boolean
+        double:
+          type: boolean
+        string:
+          type: boolean
+        missingNode:
           type: boolean
         bigDecimal:
           type: boolean
-        valueNode:
-          type: boolean
-        floatingPointNumber:
+        integralNumber:
           type: boolean
         nodeType:
           type: string
@@ -1597,30 +1624,15 @@ components:
           - OBJECT
           - POJO
           - STRING
-        missingNode:
+        floatingPointNumber:
           type: boolean
-        integralNumber:
+        valueNode:
           type: boolean
         bigInteger:
           type: boolean
-        string:
+        number:
           type: boolean
-        double:
-          type: boolean
-        binary:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        boolean:
-          type: boolean
-        short:
-          type: boolean
-        int:
-          type: boolean
-        long:
-          type: boolean
-        pojo:
+        container:
           type: boolean
         embeddedValue:
           type: boolean
@@ -1741,8 +1753,6 @@ components:
         number:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
@@ -1752,6 +1762,8 @@ components:
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
     PageableObject:
@@ -1760,18 +1772,18 @@ components:
         offset:
           type: integer
           format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageSize:
+        pageNumber:
           type: integer
           format: int32
-        pageNumber:
+        pageSize:
           type: integer
           format: int32
         paged:
           type: boolean
         unpaged:
           type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
     SortObject:
       type: object
       properties:

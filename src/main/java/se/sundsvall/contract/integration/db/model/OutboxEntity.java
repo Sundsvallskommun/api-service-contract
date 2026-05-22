@@ -30,7 +30,7 @@ public class OutboxEntity {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	@Column(name = "contract_id", length = 10, nullable = false)
+	@Column(name = "contract_id", length = 11, nullable = false)
 	private String contractId;
 
 	@Column(name = "event_type", length = 64, nullable = false)

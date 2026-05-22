@@ -34,7 +34,7 @@ public class AttachmentEntity {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	@Column(name = "contract_id", length = 10, nullable = false)
+	@Column(name = "contract_id", length = 11, nullable = false)
 	private String contractId;
 
 	@Column(name = "municipality_id", length = 4)

@@ -52,7 +52,7 @@ public class ContractEntity {
 	private Long id;
 
 	@GenerateOnInsert
-	@Column(name = "contract_id", length = 10, nullable = false)
+	@Column(name = "contract_id", length = 11, nullable = false)
 	private String contractId;
 
 	@Column(name = "version")
