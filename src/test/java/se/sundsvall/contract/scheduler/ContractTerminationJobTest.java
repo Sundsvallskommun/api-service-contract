@@ -34,13 +34,13 @@ class ContractTerminationJobTest {
 	@Test
 	void runWithNoExpiredContracts() {
 		// Arrange
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
+		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
 
 		// Act
 		job.run();
 
 		// Assert
-		verify(contractRepositoryMock).findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
+		verify(contractRepositoryMock).findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
 		verifyNoInteractions(contractTerminationWorkerMock);
 	}
 
@@ -48,7 +48,7 @@ class ContractTerminationJobTest {
 	void runTerminatesExpiredContracts() {
 		// Arrange
 		final var contract = ContractEntity.builder().withContractId("CONTRACT-1").build();
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
+		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
 
 		// Act
 		job.run();
@@ -62,7 +62,7 @@ class ContractTerminationJobTest {
 		// Arrange
 		final var contract1 = ContractEntity.builder().withContractId("CONTRACT-1").build();
 		final var contract2 = ContractEntity.builder().withContractId("CONTRACT-2").build();
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract1, contract2));
+		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract1, contract2));
 
 		// Act
 		job.run();

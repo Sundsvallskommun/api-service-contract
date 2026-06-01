@@ -28,7 +28,7 @@ public class ContractTerminationJob {
 		cron = "${scheduler.contract-termination.cron:0 0 1 * * *}",
 		lockAtMostFor = "${scheduler.contract-termination.lock-at-most-for:PT1H}")
 	public void run() {
-		final var expiredContracts = contractRepository.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
+		final var expiredContracts = contractRepository.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
 		LOG.info("Found {} contract(s) to terminate", expiredContracts.size());
 		expiredContracts.forEach(contractTerminationWorker::terminate);
 	}
