@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.PropertyDesignationEmbeddable;
+import se.sundsvall.contract.integration.db.model.StakeholderEntity;
 import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.dept44.problem.violations.Violation;
@@ -34,6 +35,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class ContractValidator {
 
 	static final String PRIMARY_BILLING_PARTY_MESSAGE = "A stakeholder with role PRIMARY_BILLING_PARTY is required when both invoicing interval and invoicedIn are set.";
+	static final String PRIMARY_BILLING_PARTY_NAME_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an organization name, or both a first and last name.";
 	static final String PROPERTY_DESIGNATION_MESSAGE = "At least one property designation with a name is required for lease type '%s'.";
 	static final String END_DATE_MESSAGE = "endDate must not be set to a date before today's date";
 
@@ -86,7 +88,10 @@ public class ContractValidator {
 
 	/**
 	 * When a contract is set up for invoicing (both interval and invoicedIn present), it must have a stakeholder with
-	 * the {@link StakeholderRole#PRIMARY_BILLING_PARTY} role — otherwise billing has no recipient.
+	 * the {@link StakeholderRole#PRIMARY_BILLING_PARTY} role — otherwise billing has no recipient. That billing party
+	 * must also carry a usable recipient name (an organization name, or both a first and last name), since the billing
+	 * pipeline otherwise rejects the record with "recipient must either have an organization name or a first and last
+	 * name defined".
 	 */
 	private void validatePrimaryBillingParty(final ContractEntity contract, final List<Violation> violations) {
 		final var invoicing = contract.getInvoicing();
@@ -95,14 +100,25 @@ public class ContractValidator {
 			return;
 		}
 
-		final var hasPrimaryBillingParty = ofNullable(contract.getStakeholders()).orElse(List.of()).stream()
-			.filter(stakeholder -> nonNull(stakeholder.getRoles()))
-			.flatMap(stakeholder -> stakeholder.getRoles().stream())
-			.anyMatch(StakeholderRole.PRIMARY_BILLING_PARTY::equals);
+		final var billingParties = ofNullable(contract.getStakeholders()).orElse(List.of()).stream()
+			.filter(stakeholder -> nonNull(stakeholder.getRoles()) && stakeholder.getRoles().contains(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.toList();
 
-		if (!hasPrimaryBillingParty) {
+		if (billingParties.isEmpty()) {
 			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_MESSAGE));
+		} else if (billingParties.stream().noneMatch(ContractValidator::hasUsableRecipientName)) {
+			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 		}
+	}
+
+	private static boolean hasUsableRecipientName(final StakeholderEntity stakeholder) {
+		final var hasOrganizationName = isNotBlank(stakeholder.getOrganizationName());
+		final var hasFullName = isNotBlank(stakeholder.getFirstName()) && isNotBlank(stakeholder.getLastName());
+		return hasOrganizationName || hasFullName;
+	}
+
+	private static boolean isNotBlank(final String value) {
+		return value != null && !value.isBlank();
 	}
 
 	/**

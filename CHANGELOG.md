@@ -18,7 +18,9 @@ New constraints on `POST`, `PUT` and `PATCH /{municipalityId}/contracts`:
 - **Fee index fields** — `fees.indexType`, `fees.indexYear` and `fees.indexNumber` are all-or-nothing: if any is
   set, all must be set and `indexNumber` must be greater than `0`.
 - **`PRIMARY_BILLING_PARTY`** — when both `invoicing.invoiceInterval` and `invoicing.invoicedIn` are set, at least
-  one stakeholder must have the `PRIMARY_BILLING_PARTY` role.
+  one stakeholder must have the `PRIMARY_BILLING_PARTY` role, and that billing party must have a usable recipient
+  name (an organization name, or both a first and last name) — otherwise billing rejects the record with
+  "recipient must either have an organization name or a first and last name defined".
 - **`propertyDesignations`** — at least one designation with a (non-blank) name is required when `leaseType`
   starts with `LAND_LEASE_` or `SITE_LEASE_`.
 - **`endDate`** — may not be **set or changed** to a date before today (today/future/`null` allowed). An unchanged

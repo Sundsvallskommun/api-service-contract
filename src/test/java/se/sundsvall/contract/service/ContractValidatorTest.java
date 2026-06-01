@@ -43,6 +43,13 @@ class ContractValidatorTest {
 			.build();
 	}
 
+	private static StakeholderEntity namedBillingParty() {
+		return StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.withOrganizationName("Sundsvalls kommun")
+			.build();
+	}
+
 	// ----------------------------------------------------------------------------------------------------------
 	// Happy path
 	// ----------------------------------------------------------------------------------------------------------
@@ -57,7 +64,7 @@ class ContractValidatorTest {
 		final var contract = ContractEntity.builder()
 			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withInvoicing(completeInvoicing())
-			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSOR, StakeholderRole.PRIMARY_BILLING_PARTY)))
+			.withStakeholders(List.of(namedBillingParty()))
 			.withPropertyDesignations(List.of(PropertyDesignationEmbeddable.builder().withName("SUNDSVALL BALDER 5:1").build()))
 			.withFees(FeesEmbeddable.builder()
 				.withIndexType("KPI 80")
@@ -89,13 +96,58 @@ class ContractValidatorTest {
 	}
 
 	@Test
-	void invoicingCompleteWithPrimaryBillingPartyPasses() {
+	void invoicingCompleteWithNamedPrimaryBillingPartyPasses() {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(namedBillingParty()))
+			.build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void billingPartyWithoutUsableNameIsRejected() {
 		final var contract = ContractEntity.builder()
 			.withInvoicing(completeInvoicing())
 			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.PRIMARY_BILLING_PARTY)))
 			.build();
 
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
+				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+	}
+
+	@Test
+	void billingPartyWithFirstAndLastNamePasses() {
+		final var billingParty = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.withFirstName("Test")
+			.withLastName("Testorsson")
+			.build();
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(billingParty))
+			.build();
+
 		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void billingPartyWithOnlyFirstNameIsRejected() {
+		final var billingParty = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.withFirstName("Test")
+			.build();
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(billingParty))
+			.build();
+
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
+				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 	}
 
 	@Test
