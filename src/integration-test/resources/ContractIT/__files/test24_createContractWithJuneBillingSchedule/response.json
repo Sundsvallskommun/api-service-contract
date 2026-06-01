@@ -29,7 +29,8 @@
 		{
 			"type": "PERSON",
 			"roles": [
-				"SIGNATORY"
+				"SIGNATORY",
+				"PRIMARY_BILLING_PARTY"
 			],
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
@@ -60,6 +61,7 @@
 		"monthly": 123.45,
 		"total": 500.00,
 		"totalAsText": "five hundred",
+		"indexType": "KPI 80",
 		"indexYear": 2021,
 		"indexNumber": 2.00,
 		"indexationRate": 0.40,
@@ -72,7 +74,7 @@
 		"invoicedIn": "ADVANCE"
 	},
 	"startDate": "2024-01-01",
-	"endDate": "2025-12-31",
+	"endDate": "2099-12-31",
 	"notice": {
 		"terms": [
 			{

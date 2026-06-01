@@ -71,7 +71,8 @@
 		{
 			"type": "ORGANIZATION",
 			"roles": [
-				"SELLER"
+				"SELLER",
+				"PRIMARY_BILLING_PARTY"
 			],
 			"organizationName": "another org",
 			"organizationNumber": "771122-2345",
@@ -102,6 +103,7 @@
 		"monthly": 234.56,
 		"total": 1172.80,
 		"totalAsText": "eleven hundered seventy two and 80/100 SEK",
+		"indexType": "KPI 80",
 		"indexYear": 2022,
 		"indexNumber": 3.00,
 		"indexationRate": 0.50,
@@ -115,7 +117,7 @@
 		"invoicedIn": "ARREARS"
 	},
 	"startDate": "2024-05-02",
-	"endDate": "2024-10-02",
+	"endDate": "2099-12-31",
 	"notice": {
 		"terms": [
 			{

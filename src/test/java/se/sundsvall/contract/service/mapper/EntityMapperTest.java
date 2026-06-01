@@ -157,6 +157,36 @@ class EntityMapperTest {
 	}
 
 	@Test
+	void testToContractEntityNormalizesBlankExternalReferenceIdToNull() {
+		final var dto = createContract();
+		dto.setExternalReferenceId("   ");
+
+		final var entity = EntityMapper.toContractEntity(MUNICIPALITY_ID, dto);
+
+		assertThat(entity.getExternalReferenceId()).isNull();
+	}
+
+	@Test
+	void testToFeesEmbeddableNormalizesBlankIndexTypeToNull() {
+		final var fees = createContract().getFees();
+		fees.setIndexType("  ");
+
+		final var entity = EntityMapper.toFeesEmbeddable(fees);
+
+		assertThat(entity.getIndexType()).isNull();
+	}
+
+	@Test
+	void testToLeaseholdEntityFiltersBlankAdditionalInformation() {
+		final var leasehold = createContract().getLeasehold();
+		leasehold.setAdditionalInformation(new ArrayList<>(java.util.Arrays.asList("keep", "  ", "", null, "alsoKeep")));
+
+		final var entity = EntityMapper.toLeaseholdEntity(leasehold);
+
+		assertThat(entity.getAdditionalInformation()).containsExactly("keep", "alsoKeep");
+	}
+
+	@Test
 	void testToAddressEmbeddable() {
 
 		// Arrange

@@ -59,6 +59,27 @@ public final class EntityMapper {
 	}
 
 	/**
+	 * Normalizes a blank (null, empty or whitespace-only) string to {@code null} so that blank values are not
+	 * persisted as empty strings.
+	 */
+	private static String blankToNull(final String value) {
+		return (value == null || value.isBlank()) ? null : value;
+	}
+
+	/**
+	 * Filters out null and blank elements from a list of strings, preserving order. Returns {@code null} when the
+	 * input is {@code null}.
+	 */
+	private static List<String> filterBlanks(final List<String> values) {
+		if (values == null) {
+			return null;
+		}
+		return values.stream()
+			.filter(value -> value != null && !value.isBlank())
+			.collect(toCollection(ArrayList::new));
+	}
+
+	/**
 	 * Converts a {@link Contract} to a {@link ContractEntity}.
 	 *
 	 * @param  municipalityId the municipality ID to set on the entity
@@ -76,7 +97,7 @@ public final class EntityMapper {
 			.withCurrentPeriodStartDate(ofNullable(contract.getCurrentPeriod()).map(Period::getStartDate).orElse(null))
 			.withCurrentPeriodEndDate(ofNullable(contract.getCurrentPeriod()).map(Period::getEndDate).orElse(null))
 			.withEndDate(contract.getEndDate())
-			.withExternalReferenceId(contract.getExternalReferenceId())
+			.withExternalReferenceId(blankToNull(contract.getExternalReferenceId()))
 			.withExtraParameters(toExtraParameterGroupEntities(contract.getExtraParameters()))
 			.withFees(toFeesEmbeddable(contract.getFees()))
 			.withInvoicing(toInvoicingEntity(contract.getInvoicing()))
@@ -158,7 +179,7 @@ public final class EntityMapper {
 	static LeaseholdEmbeddable toLeaseholdEntity(final Leasehold fromLeasehold) {
 		return ofNullable(fromLeasehold)
 			.map(leasehold -> LeaseholdEmbeddable.builder()
-				.withAdditionalInformation(leasehold.getAdditionalInformation())
+				.withAdditionalInformation(filterBlanks(leasehold.getAdditionalInformation()))
 				.withDescription(leasehold.getDescription())
 				.withPurpose(leasehold.getPurpose())
 				.build())
@@ -234,7 +255,7 @@ public final class EntityMapper {
 		setPropertyUnlessNull(patch.getAreaData(), entity::setAreaData);
 		setPropertyUnlessNull(patch.getDescription(), entity::setDescription);
 		setPropertyUnlessNull(patch.getEndDate(), entity::setEndDate);
-		setPropertyUnlessNull(patch.getExternalReferenceId(), entity::setExternalReferenceId);
+		setPropertyUnlessNull(blankToNull(patch.getExternalReferenceId()), entity::setExternalReferenceId);
 		setPropertyUnlessNull(patch.getLeaseType(), entity::setLeaseType);
 		setPropertyUnlessNull(patch.getObjectIdentity(), entity::setObjectIdentity);
 		setPropertyUnlessNull(patch.getSignedByWitness(), entity::setSignedByWitness);
@@ -347,7 +368,7 @@ public final class EntityMapper {
 				.withMonthly(f.getMonthly())
 				.withTotal(f.getTotal())
 				.withTotalAsText(f.getTotalAsText())
-				.withIndexType(f.getIndexType())
+				.withIndexType(blankToNull(f.getIndexType()))
 				.withIndexYear(f.getIndexYear())
 				.withIndexNumber(f.getIndexNumber())
 				.withIndexationRate(f.getIndexationRate())

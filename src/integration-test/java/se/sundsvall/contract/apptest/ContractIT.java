@@ -1,5 +1,6 @@
 package se.sundsvall.contract.apptest;
 
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -189,6 +190,7 @@ class ContractIT extends AbstractAppTest {
 			.toString();
 
 		setupCall()
+			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER))
 			.withServicePath(path)
 			.withHttpMethod(POST)
 			.withExpectedResponseStatus(OK)

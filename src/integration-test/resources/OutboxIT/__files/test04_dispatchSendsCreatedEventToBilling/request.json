@@ -12,6 +12,7 @@
 		"indexationRate": 0.4,
 		"indexNumber": 2.00,
 		"yearly": 234.56,
+		"indexType": "KPI 80",
 		"indexYear": 2021
 	},
 	"attachments": [
@@ -51,7 +52,8 @@
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
 			"roles": [
-				"SIGNATORY"
+				"SIGNATORY",
+				"PRIMARY_BILLING_PARTY"
 			],
 			"type": "PERSON",
 			"parameters": [
@@ -114,7 +116,7 @@
 		}
 	],
 	"objectIdentity": "someObjectIdentity",
-	"endDate": "2023-10-10",
+	"endDate": "2099-12-31",
 	"area": 12,
 	"startDate": "2023-10-02",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",
