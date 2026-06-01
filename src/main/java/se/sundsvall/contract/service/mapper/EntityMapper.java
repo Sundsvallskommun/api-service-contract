@@ -67,13 +67,10 @@ public final class EntityMapper {
 	}
 
 	/**
-	 * Filters out null and blank elements from a list of strings, preserving order. Returns {@code null} when the
-	 * input is {@code null}.
+	 * Filters out null and blank elements from a list of strings, preserving order. Callers that need to preserve a
+	 * {@code null} input (rather than an empty list) should guard the call with {@link java.util.Optional}.
 	 */
 	private static List<String> filterBlanks(final List<String> values) {
-		if (values == null) {
-			return null;
-		}
 		return values.stream()
 			.filter(value -> value != null && !value.isBlank())
 			.collect(toCollection(ArrayList::new));
@@ -179,7 +176,7 @@ public final class EntityMapper {
 	static LeaseholdEmbeddable toLeaseholdEntity(final Leasehold fromLeasehold) {
 		return ofNullable(fromLeasehold)
 			.map(leasehold -> LeaseholdEmbeddable.builder()
-				.withAdditionalInformation(filterBlanks(leasehold.getAdditionalInformation()))
+				.withAdditionalInformation(ofNullable(leasehold.getAdditionalInformation()).map(EntityMapper::filterBlanks).orElse(null))
 				.withDescription(leasehold.getDescription())
 				.withPurpose(leasehold.getPurpose())
 				.build())

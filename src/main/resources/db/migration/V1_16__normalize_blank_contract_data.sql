@@ -6,21 +6,21 @@
 --
 -- This migration only performs SAFE, business-meaning-preserving normalization. Violations that cannot be fixed
 -- without domain knowledge (missing PRIMARY_BILLING_PARTY, partial fee index data, missing property designations,
--- recipients lacking name/address, over-30-character descriptions) are NOT touched here; use
--- db/diagnostics/billing_data_violations.sql to identify and correct those rows manually.
+-- recipients lacking name/address, over-30-character descriptions) are NOT touched here and must be identified and
+-- corrected manually with domain knowledge.
 
 -- Remove blank fee additional-information entries (used as invoice row descriptions downstream).
 delete from fee_additional_information
 where additional_information is null
-   or trim(additional_information) = '';
+   or length(trim(additional_information)) = 0;
 
 -- Remove blank leasehold additional-information entries.
 delete from additional_information
 where additional_information is null
-   or trim(additional_information) = '';
+   or length(trim(additional_information)) = 0;
 
 -- Store blank external reference ids as null instead of empty strings.
 update contract
 set external_reference_id = null
 where external_reference_id is not null
-  and trim(external_reference_id) = '';
+  and length(trim(external_reference_id)) = 0;

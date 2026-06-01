@@ -36,7 +36,7 @@ New constraints on `POST`, `PUT` and `PATCH /{municipalityId}/contracts`:
 
 - Migration `V1_16` normalizes existing blank data (blank `external_reference_id` → `null`; blank
   `fee_additional_information` / `additional_information` rows removed).
-- `db/diagnostics/billing_data_violations.sql` lists existing contracts that violate the new rules but cannot be
-  auto-corrected (missing billing party, partial index, missing designation, recipient missing name/address,
-  over-long descriptions) — run against test and production and correct manually.
+- Existing contracts that violate the new rules but cannot be auto-corrected (missing billing party, partial index,
+  missing designation, recipient missing name/address, over-long descriptions) must be identified and corrected
+  manually in test and production with domain knowledge.
 
