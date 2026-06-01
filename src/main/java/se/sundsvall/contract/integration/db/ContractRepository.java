@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.projection.ContractVersionProjection;
 import se.sundsvall.contract.model.enums.Status;
@@ -64,17 +66,30 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long>,
 	List<ContractVersionProjection> findByMunicipalityIdAndContractId(String municipalityId, String contractId, Sort sort);
 
 	/**
-	 * Finds all contracts matching the given status where end date is before the given date.
+	 * Finds all non-auto-extending contracts matching the given status where end date is before the given date.
+	 * Contracts with {@code autoExtend = true} are excluded — their lifecycle is managed by
+	 * {@code ContractAutoExtensionJob}.
 	 * <p>
-	 * <b>Intentionally cross-tenant:</b> this query is not scoped by {@code municipalityId}
-	 * because it is only invoked by the contract-termination scheduler ({@code ContractTerminationJob}),
-	 * which must sweep expired contracts across every municipality on every run. Do not call
-	 * this from request-scoped code paths — those must filter by {@code municipalityId}
-	 * to preserve tenant isolation.
+	 * <b>Intentionally cross-tenant:</b> only invoked by {@code ContractTerminationJob}.
+	 * Do not call from request-scoped code paths.
 	 *
 	 * @param  status  the contract status to filter on
 	 * @param  endDate the date to compare end date against
 	 * @return         list of matching contracts across all municipalities
 	 */
-	List<ContractEntity> findByStatusAndEndDateBefore(Status status, LocalDate endDate);
+	@Query("SELECT c FROM ContractEntity c WHERE c.status = :status AND c.endDate < :endDate AND (c.autoExtend IS NULL OR c.autoExtend = false)")
+	List<ContractEntity> findNonAutoExtendingByStatusAndEndDateBefore(@Param("status") Status status, @Param("endDate") LocalDate endDate);
+
+	/**
+	 * Finds all contracts matching the given status where auto-extend is enabled and the current
+	 * period end date is before the given date.
+	 * <p>
+	 * <b>Intentionally cross-tenant:</b> only invoked by {@code ContractAutoExtensionJob}.
+	 * Do not call from request-scoped code paths.
+	 *
+	 * @param  status               the contract status to filter on
+	 * @param  currentPeriodEndDate the date to compare current period end date against
+	 * @return                      list of matching contracts across all municipalities
+	 */
+	List<ContractEntity> findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status status, LocalDate currentPeriodEndDate);
 }

@@ -16,59 +16,59 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ContractTerminationJobTest {
+class ContractAutoExtensionJobTest {
 
 	@Mock
 	private ContractRepository contractRepositoryMock;
 
 	@Mock
-	private ContractTerminationWorker contractTerminationWorkerMock;
+	private ContractAutoExtensionWorker contractAutoExtensionWorkerMock;
 
-	private ContractTerminationJob job;
+	private ContractAutoExtensionJob job;
 
 	@BeforeEach
 	void setUp() {
-		job = new ContractTerminationJob(contractRepositoryMock, contractTerminationWorkerMock);
+		job = new ContractAutoExtensionJob(contractRepositoryMock, contractAutoExtensionWorkerMock);
 	}
 
 	@Test
-	void runWithNoExpiredContracts() {
+	void runWithNoContractsToExtend() {
 		// Arrange
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
+		when(contractRepositoryMock.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
 
 		// Act
 		job.run();
 
 		// Assert
-		verify(contractRepositoryMock).findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
-		verifyNoInteractions(contractTerminationWorkerMock);
+		verify(contractRepositoryMock).findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status.ACTIVE, LocalDate.now());
+		verifyNoInteractions(contractAutoExtensionWorkerMock);
 	}
 
 	@Test
-	void runTerminatesExpiredContracts() {
+	void runExtendsEligibleContract() {
 		// Arrange
 		final var contract = ContractEntity.builder().withContractId("CONTRACT-1").build();
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
+		when(contractRepositoryMock.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
 
 		// Act
 		job.run();
 
 		// Assert
-		verify(contractTerminationWorkerMock).terminate(contract);
+		verify(contractAutoExtensionWorkerMock).extend(contract);
 	}
 
 	@Test
-	void runTerminatesMultipleExpiredContracts() {
+	void runExtendsMultipleEligibleContracts() {
 		// Arrange
 		final var contract1 = ContractEntity.builder().withContractId("CONTRACT-1").build();
 		final var contract2 = ContractEntity.builder().withContractId("CONTRACT-2").build();
-		when(contractRepositoryMock.findNonAutoExtendingByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract1, contract2));
+		when(contractRepositoryMock.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract1, contract2));
 
 		// Act
 		job.run();
 
 		// Assert
-		verify(contractTerminationWorkerMock).terminate(contract1);
-		verify(contractTerminationWorkerMock).terminate(contract2);
+		verify(contractAutoExtensionWorkerMock).extend(contract1);
+		verify(contractAutoExtensionWorkerMock).extend(contract2);
 	}
 }
