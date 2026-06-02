@@ -43,19 +43,25 @@ public class ContractAutoExtensionWorker {
 
 		final var oldStart = contract.getCurrentPeriodStartDate();
 		final var oldEnd = contract.getCurrentPeriodEndDate();
-		final var newStart = oldEnd.plusDays(1);
+		var newStart = oldEnd.plusDays(1);
 		var newEnd = addExtension(oldEnd, contract.getLeaseExtension(), contract.getLeaseExtensionUnit());
 
-		if (contract.getEndDate() != null && contract.getEndDate().isBefore(newEnd)) {
-			newEnd = contract.getEndDate();
-		}
-
-		if (!newEnd.isAfter(LocalDate.now())) {
-			contract.setStatus(Status.TERMINATED);
-			contractRepository.save(contract);
-			outboxRepository.save(toOutboxEntity(contract));
-			LOG.info("Terminated auto-extending contract {}: endDate {} has passed, extension could not reach a future date", contract.getContractId(), contract.getEndDate());
-			return;
+		while (true) {
+			if (contract.getEndDate() != null && contract.getEndDate().isBefore(newEnd)) {
+				newEnd = contract.getEndDate();
+			}
+			if (!newEnd.isBefore(LocalDate.now())) {
+				break;
+			}
+			if (contract.getEndDate() != null && !newEnd.isBefore(contract.getEndDate())) {
+				contract.setStatus(Status.TERMINATED);
+				contractRepository.save(contract);
+				outboxRepository.save(toOutboxEntity(contract));
+				LOG.info("Terminated auto-extending contract {}: endDate {} has passed, extension could not reach a future date", contract.getContractId(), contract.getEndDate());
+				return;
+			}
+			newStart = newEnd.plusDays(1);
+			newEnd = addExtension(newEnd, contract.getLeaseExtension(), contract.getLeaseExtensionUnit());
 		}
 
 		contract.setCurrentPeriodStartDate(newStart);

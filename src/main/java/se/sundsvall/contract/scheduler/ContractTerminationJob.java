@@ -31,5 +31,9 @@ public class ContractTerminationJob {
 		final var expiredContracts = contractRepository.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
 		LOG.info("Found {} contract(s) to terminate", expiredContracts.size());
 		expiredContracts.forEach(contractTerminationWorker::terminate);
+
+		final var expiredPeriodContracts = contractRepository.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
+		LOG.info("Found {} non-auto-extending contract(s) with expired period to terminate", expiredPeriodContracts.size());
+		expiredPeriodContracts.forEach(contractTerminationWorker::terminate);
 	}
 }

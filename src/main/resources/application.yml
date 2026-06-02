@@ -26,6 +26,11 @@ dept44:
         max:
           limit: 100
 
+scheduler:
+  contract-auto-extension:
+    cron: "0 0 2 * * *"
+    lock-at-most-for: "PT1H"
+
 openapi:
   name: ${spring.application.name}
   title: Contracts

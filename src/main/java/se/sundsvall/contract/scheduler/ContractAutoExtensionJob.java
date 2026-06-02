@@ -25,11 +25,17 @@ public class ContractAutoExtensionJob {
 
 	@Dept44Scheduled(
 		name = "contract-auto-extension",
-		cron = "${scheduler.contract-auto-extension.cron:0 0 2 * * *}",
-		lockAtMostFor = "${scheduler.contract-auto-extension.lock-at-most-for:PT1H}")
+		cron = "${scheduler.contract-auto-extension.cron}",
+		lockAtMostFor = "${scheduler.contract-auto-extension.lock-at-most-for}")
 	public void run() {
-		final var contracts = contractRepository.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status.ACTIVE, LocalDate.now());
+		final var contracts = contractRepository.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
 		LOG.info("Found {} contract(s) to auto-extend", contracts.size());
-		contracts.forEach(contractAutoExtensionWorker::extend);
+		contracts.forEach(contract -> {
+			try {
+				contractAutoExtensionWorker.extend(contract);
+			} catch (final Exception e) {
+				LOG.error("Failed to auto-extend contract {}: {}", contract.getContractId(), e.getMessage(), e);
+			}
+		});
 	}
 }
