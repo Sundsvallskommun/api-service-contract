@@ -1128,6 +1128,9 @@ components:
           - QUARTERLY
         invoicedIn:
           $ref: "#/components/schemas/InvoicedIn"
+      required:
+      - invoiceInterval
+      - invoicedIn
     LeaseType:
       type: string
       description: Lease type
