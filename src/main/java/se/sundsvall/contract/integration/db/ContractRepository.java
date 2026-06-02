@@ -77,4 +77,17 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long>,
 	 * @return         list of matching contracts across all municipalities
 	 */
 	List<ContractEntity> findByStatusAndEndDateBefore(Status status, LocalDate endDate);
+
+	/**
+	 * Finds all contracts matching the given status where auto-extend is enabled and the current
+	 * period end date is before the given date.
+	 * <p>
+	 * <b>Intentionally cross-tenant:</b> only invoked by {@code ContractAutoExtensionJob}.
+	 * Do not call from request-scoped code paths.
+	 *
+	 * @param  status               the contract status to filter on
+	 * @param  currentPeriodEndDate the date to compare current period end date against
+	 * @return                      list of matching contracts across all municipalities
+	 */
+	List<ContractEntity> findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateBefore(Status status, LocalDate currentPeriodEndDate);
 }
