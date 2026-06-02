@@ -11,6 +11,7 @@
 		"indexationRate": 0.4,
 		"indexNumber": 2.00,
 		"yearly": 234.56,
+		"indexType": "KPI 80",
 		"indexYear": 2021
 	},
 	"description": "Land lease residential with June billing",
@@ -31,7 +32,8 @@
 			"organizationName": "someOrganizationName",
 			"organizationNumber": "771122-1234",
 			"roles": [
-				"SIGNATORY"
+				"SIGNATORY",
+				"PRIMARY_BILLING_PARTY"
 			],
 			"type": "PERSON",
 			"partyId": "40f14de6-815d-44b2-a34d-b1d38b628e07"
@@ -46,7 +48,7 @@
 		}
 	],
 	"objectIdentity": "someObjectIdentity",
-	"endDate": "2025-12-31",
+	"endDate": "2099-12-31",
 	"area": 12,
 	"startDate": "2024-01-01",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",

@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "8.1"
+  version: "9.0"
 servers:
-- url: http://localhost:63899
+- url: http://localhost:60349
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -669,16 +669,16 @@ components:
     Problem:
       type: object
       properties:
-        title:
-          type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
+        title:
+          type: string
+        detail:
+          type: string
         status:
           type: integer
           format: int32
@@ -1063,9 +1063,12 @@ components:
           minimum: 0.0
         additionalInformation:
           type: array
-          description: Additional information
+          description: Additional information. Each entry must be non-blank and between
+            1 and 30 characters (used as invoice row descriptions).
           items:
             type: string
+            maxLength: 30
+            minLength: 1
     GeoJsonObject:
       type: object
       discriminator:
@@ -1125,6 +1128,9 @@ components:
           - QUARTERLY
         invoicedIn:
           $ref: "#/components/schemas/InvoicedIn"
+      required:
+      - invoiceInterval
+      - invoicedIn
     LeaseType:
       type: string
       description: Lease type
@@ -1509,13 +1515,13 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
+        instance:
+          type: string
+          format: uri
         detail:
           type: string
         causeAsProblem:
           $ref: "#/components/schemas/ThrowableProblem"
-        instance:
-          type: string
-          format: uri
     ThrowableProblem:
       type: object
       properties:
@@ -1599,9 +1605,38 @@ components:
     JsonNode:
       type: object
       properties:
-        floatingPointNumber:
+        empty:
+          type: boolean
+        array:
+          type: boolean
+        "null":
+          type: boolean
+        object:
+          type: boolean
+        float:
           type: boolean
         container:
+          type: boolean
+        string:
+          type: boolean
+        pojo:
+          type: boolean
+        int:
+          type: boolean
+        double:
+          type: boolean
+        long:
+          type: boolean
+        short:
+          type: boolean
+        textual:
+          type: boolean
+          deprecated: true
+        boolean:
+          type: boolean
+        binary:
+          type: boolean
+        number:
           type: boolean
         nodeType:
           type: string
@@ -1615,46 +1650,17 @@ components:
           - OBJECT
           - POJO
           - STRING
+        bigDecimal:
+          type: boolean
         missingNode:
+          type: boolean
+        floatingPointNumber:
           type: boolean
         valueNode:
           type: boolean
-        pojo:
-          type: boolean
-        short:
-          type: boolean
-        int:
-          type: boolean
-        long:
-          type: boolean
-        double:
-          type: boolean
-        bigDecimal:
-          type: boolean
-        bigInteger:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        boolean:
-          type: boolean
-        binary:
-          type: boolean
-        number:
-          type: boolean
-        string:
-          type: boolean
         integralNumber:
           type: boolean
-        empty:
-          type: boolean
-        array:
-          type: boolean
-        "null":
-          type: boolean
-        object:
-          type: boolean
-        float:
+        bigInteger:
           type: boolean
         embeddedValue:
           type: boolean
@@ -1759,23 +1765,12 @@ components:
     PageContract:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        numberOfElements:
+        totalPages:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
         size:
           type: integer
           format: int32
@@ -1786,11 +1781,27 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
         pageNumber:
@@ -1799,20 +1810,15 @@ components:
         pageSize:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
-        offset:
-          type: integer
-          format: int64
     SortObject:
       type: object
       properties:
+        empty:
+          type: boolean
         sorted:
           type: boolean
         unsorted:
-          type: boolean
-        empty:
           type: boolean
   securitySchemes: {}

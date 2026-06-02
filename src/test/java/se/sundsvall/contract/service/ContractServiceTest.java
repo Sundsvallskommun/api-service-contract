@@ -39,6 +39,8 @@ import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 import se.sundsvall.contract.service.diff.Differ;
 import se.sundsvall.dept44.problem.ThrowableProblem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 import tools.jackson.databind.node.StringNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,6 +84,9 @@ class ContractServiceTest {
 	@Mock
 	private Businessrule businessruleMock;
 
+	@Mock
+	private ContractValidator contractValidatorMock;
+
 	@Captor
 	private ArgumentCaptor<BusinessruleParameters> businessruleParametersCaptor;
 
@@ -90,7 +95,7 @@ class ContractServiceTest {
 	@BeforeEach
 	void initialize() {
 		final var objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-		contractService = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(businessruleMock), differMock, objectMapper);
+		contractService = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(businessruleMock), differMock, objectMapper, contractValidatorMock);
 	}
 
 	@ParameterizedTest
@@ -321,6 +326,60 @@ class ContractServiceTest {
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractRepositoryMock);
 		verifyNoInteractions(businessruleMock);
+	}
+
+	@Test
+	void createContractAbortsWhenValidationFails() {
+		// Arrange
+		final var contract = TestFactory.createContract();
+		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("stakeholders", "boom"))))
+			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+
+		// Act & Assert
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> contractService.createContract(MUNICIPALITY_ID, contract));
+
+		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verifyNoInteractions(contractRepositoryMock, outboxRepositoryMock, businessruleMock);
+	}
+
+	@Test
+	void updateContractAbortsWhenValidationFails() {
+		// Arrange
+		final var existingEntity = createContractEntity();
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
+			.thenReturn(Optional.of(existingEntity));
+		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("fees.indexNumber", "boom"))))
+			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+
+		// Act & Assert
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()));
+
+		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
+	}
+
+	@Test
+	void patchContractAbortsWhenValidationFails() {
+		// Arrange
+		final var existingEntity = createContractEntity();
+		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
+			.thenReturn(Optional.of(existingEntity));
+		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("propertyDesignations", "boom"))))
+			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+
+		final var patchPayload = PatchContract.builder().withDescription("patched").build();
+
+		// Act & Assert
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload));
+
+		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
 	}
 
 	@Test
@@ -556,7 +615,7 @@ class ContractServiceTest {
 		// Arrange
 		final var failingObjectMapper = mock(ObjectMapper.class);
 		when(failingObjectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("boom") {});
-		final var service = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(), differMock, failingObjectMapper);
+		final var service = new ContractService(contractRepositoryMock, attachmentRepositoryMock, outboxRepositoryMock, List.of(), differMock, failingObjectMapper, contractValidatorMock);
 		when(contractRepositoryMock.save(any(ContractEntity.class)))
 			.thenReturn(ContractEntity.builder().withContractId(CONTRACT_ID).build());
 

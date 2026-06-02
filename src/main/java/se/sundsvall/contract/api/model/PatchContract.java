@@ -2,6 +2,7 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -63,6 +64,7 @@ public class PatchContract {
 	@Schema(description = "Lease extension")
 	private Extension extension;
 
+	@Valid
 	@Schema(description = "Fee details")
 	private Fees fees;
 

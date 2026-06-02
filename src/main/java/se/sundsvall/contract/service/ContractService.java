@@ -60,6 +60,7 @@ public class ContractService {
 	private final List<BusinessruleInterface> businessRules;
 	private final Differ differ;
 	private final ObjectMapper objectMapper;
+	private final ContractValidator contractValidator;
 
 	public ContractService(
 		final ContractRepository contractRepository,
@@ -67,7 +68,8 @@ public class ContractService {
 		final OutboxRepository outboxRepository,
 		final List<BusinessruleInterface> businessRules,
 		final Differ differ,
-		final ObjectMapper objectMapper) {
+		final ObjectMapper objectMapper,
+		final ContractValidator contractValidator) {
 
 		this.contractRepository = contractRepository;
 		this.attachmentRepository = attachmentRepository;
@@ -75,6 +77,7 @@ public class ContractService {
 		this.businessRules = businessRules;
 		this.differ = differ;
 		this.objectMapper = objectMapper;
+		this.contractValidator = contractValidator;
 	}
 
 	/**
@@ -89,6 +92,9 @@ public class ContractService {
 		// Map to entity, explicitly starting at version 1
 		final var contractEntity = toContractEntity(municipalityId, contract);
 		contractEntity.setVersion(1);
+
+		// Validate billing constraints on the mapped entity before persisting (no previous endDate for a new contract)
+		contractValidator.validate(contractEntity, null);
 
 		// Save entity to create an initial version based on incoming request
 		contractRepository.save(contractEntity);
@@ -172,8 +178,14 @@ public class ContractService {
 				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
 				.build());
 
+		// Capture the previously stored endDate before the patch mutates the entity in place
+		final var previousEndDate = existingEntity.getEndDate();
+
 		// Apply the patch payload in place on the existing entity (version preserved)
 		patchContractEntity(existingEntity, patch);
+
+		// Validate billing constraints on the merged entity before persisting
+		contractValidator.validate(existingEntity, previousEndDate);
 
 		// Apply matching businessrules
 		applyBusinessrules(existingEntity, UPDATE);
@@ -204,6 +216,9 @@ public class ContractService {
 
 		// Create a new entity
 		final var newContractEntity = createNewContractEntity(municipalityId, oldContractEntity, contract);
+
+		// Validate billing constraints on the mapped entity; an unchanged (already past) endDate is allowed
+		contractValidator.validate(newContractEntity, oldContractEntity.getEndDate());
 
 		// Apply matching businessrules
 		applyBusinessrules(newContractEntity, UPDATE);

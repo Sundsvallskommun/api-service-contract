@@ -12,11 +12,6 @@
 			}
 		},
 		{
-			"type": "REMOVAL",
-			"path": "$.fees.indexType",
-			"oldValue": "KPI 80"
-		},
-		{
 			"type": "MODIFICATION",
 			"path": "$.fees.additionalInformation.0",
 			"oldValue": "someAdditionalInfo1",
@@ -161,6 +156,11 @@
 				"startDate": "2023-10-02",
 				"endDate": "2024-10-02"
 			}
+		},
+		{
+			"type": "ADDITION",
+			"path": "$.stakeholders.0.roles.1",
+			"newValue": "PRIMARY_BILLING_PARTY"
 		}
 	],
 	"availableVersions": [

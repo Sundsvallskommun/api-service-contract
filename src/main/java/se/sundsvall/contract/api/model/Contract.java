@@ -84,6 +84,7 @@ public class Contract {
 	@Valid
 	private Fees fees;
 
+	@Valid
 	@Schema(description = "Invoicing details")
 	private Invoicing invoicing;
 

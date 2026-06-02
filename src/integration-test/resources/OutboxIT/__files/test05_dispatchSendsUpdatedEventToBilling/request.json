@@ -12,6 +12,7 @@
 		"indexationRate": 0.5,
 		"indexNumber": 3.00,
 		"yearly": 2814.72,
+		"indexType": "KPI 80",
 		"indexYear": 2022
 	},
 	"description": "some other description",
@@ -41,7 +42,8 @@
 			"organizationName": "another org",
 			"organizationNumber": "771122-2345",
 			"roles": [
-				"SELLER"
+				"SELLER",
+				"PRIMARY_BILLING_PARTY"
 			],
 			"type": "ORGANIZATION",
 			"partyId": "4a29b325-4b8f-41e9-927d-946ef3953e99"
@@ -60,7 +62,7 @@
 		}
 	],
 	"objectIdentity": "anotherObjectIdentity",
-	"endDate": "2024-10-02",
+	"endDate": "2099-12-31",
 	"area": 12,
 	"startDate": "2024-05-02",
 	"leaseType": "LAND_LEASE_RESIDENTIAL",

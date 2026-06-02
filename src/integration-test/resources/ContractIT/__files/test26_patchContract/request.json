@@ -2,7 +2,7 @@
 	"description": "a patched description",
 	"area": 99,
 	"startDate": "2026-01-15",
-	"endDate": "2026-12-31",
+	"endDate": "2099-12-31",
 	"currentPeriod": {
 		"startDate": "2026-01-15",
 		"endDate": "2026-06-30"

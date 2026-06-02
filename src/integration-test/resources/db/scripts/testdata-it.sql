@@ -25,7 +25,7 @@ VALUES (1, '2024-12345', 1, 'DRAFT', '1984',
         'someDescription',
         true, 12, true, '2023-10-10', 'LAND_LEASE_RESIDENTIAL', 1, 'YEARS', '2023-10-02', 'MK-TEST0001',
         'QUARTERLY', 'ADVANCE', 'SomeLeaseholdDescription', 'AGRICULTURE', 'someObjectIdentity',
-        'SEK', 234.56, 123.45, 500, 'five hundred', null, 2021, 2, 0.5,
+        'SEK', 234.56, 123.45, 500, 'five hundred', 'KPI 80', 2021, 2, 0.5,
         'PURCHASE_AGREEMENT',
         '2023-10-02', '2024-10-02', '2024-06-01', 'LESSOR'),
 
@@ -128,7 +128,7 @@ VALUES (1, 'POSTAL_ADDRESS', 'someAttention', 'SE', 'someEmail', 'someFirstName'
         'someOrganizationName', '771122-1234', '40f14de6-815d-44b2-a34d-b1d38b628e07',
         'somePhoneNumber',
         '12345', 'someStreetAddress',
-        'someTown', 'PERSON', 'SIGNATORY');
+        'someTown', 'PERSON', 'SIGNATORY,PRIMARY_BILLING_PARTY');
 
 INSERT INTO contract_stakeholder (contract_id, stakeholder_id)
 VALUES (1, 1),
