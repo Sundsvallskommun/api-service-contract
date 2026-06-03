@@ -34,6 +34,27 @@ class EntityMapperTest {
 	private static final String MUNICIPALITY_ID = "1984";
 
 	@Test
+	void toPropertyDesignationEmbeddables_dropsMissingAndEmptyNamesButKeepsWhitespace() {
+		final var input = new ArrayList<PropertyDesignation>();
+		input.add(PropertyDesignation.builder().withName("SUNDSVALL BALDER 5:1").withDistrict("Sundsvall").build());
+		input.add(PropertyDesignation.builder().withName("").withDistrict("droppedEmpty").build()); // empty name -> dropped
+		input.add(PropertyDesignation.builder().withDistrict("droppedNullName").build());           // null name -> dropped
+		input.add(PropertyDesignation.builder().withName("   ").build());                            // whitespace -> kept for validator
+		input.add(null);                                                                             // null element -> dropped
+
+		final var result = EntityMapper.toPropertyDesignationEmbeddables(input);
+
+		assertThat(result)
+			.extracting(PropertyDesignationEmbeddable::getName)
+			.containsExactly("SUNDSVALL BALDER 5:1", "   ");
+	}
+
+	@Test
+	void toPropertyDesignationEmbeddables_nullListYieldsEmptyList() {
+		assertThat(EntityMapper.toPropertyDesignationEmbeddables(null)).isEmpty();
+	}
+
+	@Test
 	void testToContractEntity() {
 
 		// Arrange

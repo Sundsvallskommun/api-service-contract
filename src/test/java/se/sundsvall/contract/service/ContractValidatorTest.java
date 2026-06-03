@@ -170,49 +170,37 @@ class ContractValidatorTest {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
-	// Property designations by lease type
+	// Property designation names must not be blank (whitespace-only); designations are never required
 	// ----------------------------------------------------------------------------------------------------------
 
-	@ParameterizedTest
-	@EnumSource(value = LeaseType.class, names = {
-		"LAND_LEASE_RESIDENTIAL", "LAND_LEASE_MISC", "LAND_LEASE_LICENSE", "LAND_LEASE_MUNICIPALITY", "SITE_LEASE_COMMERCIAL"
-	})
-	void landAndSiteLeaseRequirePropertyDesignation(final LeaseType leaseType) {
-		final var contract = ContractEntity.builder().withLeaseType(leaseType).build();
-
-		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
-			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains("propertyDesignations"));
-	}
-
-	@ParameterizedTest
-	@EnumSource(value = LeaseType.class, names = {
-		"USUFRUCT_HUNTING", "USUFRUCT_FARMING", "USUFRUCT_MISC", "OTHER_FEE"
-	})
-	void otherLeaseTypesDoNotRequirePropertyDesignation(final LeaseType leaseType) {
-		final var contract = ContractEntity.builder().withLeaseType(leaseType).build();
-
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
-	}
-
 	@Test
-	void landLeaseWithBlankDesignationNameIsRejected() {
+	void blankDesignationNameIsRejected() {
 		final var contract = ContractEntity.builder()
-			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withPropertyDesignations(List.of(PropertyDesignationEmbeddable.builder().withName("  ").build()))
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
 			.isThrownBy(() -> validator.validate(contract, null))
-			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains("propertyDesignations"));
+			.satisfies(problem -> {
+				assertThat(problem.getStatus()).isEqualTo(BAD_REQUEST);
+				assertThat(problem.getViolations()).extracting(Violation::field).contains("propertyDesignations");
+				assertThat(problem.getViolations()).extracting(Violation::message).contains(ContractValidator.PROPERTY_DESIGNATION_BLANK_MESSAGE);
+			});
 	}
 
 	@Test
-	void landLeaseWithNamedDesignationPasses() {
+	void namedDesignationPasses() {
 		final var contract = ContractEntity.builder()
-			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withPropertyDesignations(List.of(PropertyDesignationEmbeddable.builder().withName("SUNDSVALL BALDER 5:1").build()))
 			.build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@ParameterizedTest
+	@EnumSource(LeaseType.class)
+	void designationsAreNeverRequiredRegardlessOfLeaseType(final LeaseType leaseType) {
+		final var contract = ContractEntity.builder().withLeaseType(leaseType).build();
 
 		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
 	}
@@ -224,9 +212,9 @@ class ContractValidatorTest {
 	@Test
 	void multipleViolationsAreAccumulated() {
 		final var contract = ContractEntity.builder()
-			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withInvoicing(completeInvoicing())
 			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
+			.withPropertyDesignations(List.of(PropertyDesignationEmbeddable.builder().withName("  ").build()))
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)

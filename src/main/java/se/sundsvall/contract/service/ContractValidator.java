@@ -24,11 +24,12 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
  *
  * <p>
  * Only rules that span multiple objects, or that depend on the previously stored state, live here: the
- * PRIMARY_BILLING_PARTY rule (invoicing + stakeholders), the property-designation-by-lease-type rule (leaseType +
- * propertyDesignations), and the endDate rule (which must be compared against the previously stored endDate). On a
- * patch the relevant data may live on the existing contract and not be re-sent, so the merged entity is the only place
- * these can be evaluated correctly. Single-object/field constraints (e.g. the fee index trio and additionalInformation
- * size) are declared as bean-validation annotations on the API model instead.
+ * PRIMARY_BILLING_PARTY rule (invoicing + stakeholders), the property-designation name rule (a sent-in designation must
+ * not have a whitespace-only name), and the endDate rule (which must be compared against the previously stored
+ * endDate).
+ * On a patch the relevant data may live on the existing contract and not be re-sent, so the merged entity is the only
+ * place these can be evaluated correctly. Single-object/field constraints (e.g. the fee index trio and
+ * additionalInformation size) are declared as bean-validation annotations on the API model instead.
  * </p>
  */
 @Component
@@ -36,11 +37,8 @@ public class ContractValidator {
 
 	static final String PRIMARY_BILLING_PARTY_MESSAGE = "A stakeholder with role PRIMARY_BILLING_PARTY is required when both invoicing interval and invoicedIn are set.";
 	static final String PRIMARY_BILLING_PARTY_NAME_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an organization name, or both a first and last name.";
-	static final String PROPERTY_DESIGNATION_MESSAGE = "At least one property designation with a name is required for lease type '%s'.";
+	static final String PROPERTY_DESIGNATION_BLANK_MESSAGE = "Property designation name must not be blank.";
 	static final String END_DATE_MESSAGE = "endDate must not be set to a date before today's date";
-
-	private static final String LAND_LEASE_PREFIX = "LAND_LEASE_";
-	private static final String SITE_LEASE_PREFIX = "SITE_LEASE_";
 
 	private final Clock clock;
 
@@ -122,26 +120,18 @@ public class ContractValidator {
 	}
 
 	/**
-	 * Lease types that describe a piece of land (LAND_LEASE_* / SITE_LEASE_*) must reference at least one property
-	 * designation with a (non-blank) name.
+	 * Property designations are not required, and there is no longer any requirement tied to the lease type. However, a
+	 * designation that <em>is</em> sent in must carry a real name. Elements whose name is {@code null} or the empty
+	 * string are dropped during mapping and never reach this point; a name consisting solely of whitespace is kept and
+	 * rejected here, so that no blank designation rows are ever persisted.
 	 */
 	private void validatePropertyDesignations(final ContractEntity contract, final List<Violation> violations) {
-		final var leaseType = contract.getLeaseType();
-		if (leaseType == null) {
-			return;
-		}
-
-		final var requiresDesignation = leaseType.name().startsWith(LAND_LEASE_PREFIX) || leaseType.name().startsWith(SITE_LEASE_PREFIX);
-		if (!requiresDesignation) {
-			return;
-		}
-
-		final var hasNamedDesignation = ofNullable(contract.getPropertyDesignations()).orElse(List.of()).stream()
+		final var hasBlankName = ofNullable(contract.getPropertyDesignations()).orElse(List.of()).stream()
 			.map(PropertyDesignationEmbeddable::getName)
-			.anyMatch(name -> nonNull(name) && !name.isBlank());
+			.anyMatch(name -> nonNull(name) && name.isBlank());
 
-		if (!hasNamedDesignation) {
-			violations.add(new Violation("propertyDesignations", PROPERTY_DESIGNATION_MESSAGE.formatted(leaseType.name())));
+		if (hasBlankName) {
+			violations.add(new Violation("propertyDesignations", PROPERTY_DESIGNATION_BLANK_MESSAGE));
 		}
 	}
 }
