@@ -35,12 +35,14 @@ class ContractTerminationJobTest {
 	void runWithNoExpiredContracts() {
 		// Arrange
 		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
+		when(contractRepositoryMock.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
 
 		// Act
 		job.run();
 
 		// Assert
 		verify(contractRepositoryMock).findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
+		verify(contractRepositoryMock).findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
 		verifyNoInteractions(contractTerminationWorkerMock);
 	}
 
@@ -49,6 +51,7 @@ class ContractTerminationJobTest {
 		// Arrange
 		final var contract = ContractEntity.builder().withContractId("CONTRACT-1").build();
 		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
+		when(contractRepositoryMock.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
 
 		// Act
 		job.run();
@@ -63,6 +66,7 @@ class ContractTerminationJobTest {
 		final var contract1 = ContractEntity.builder().withContractId("CONTRACT-1").build();
 		final var contract2 = ContractEntity.builder().withContractId("CONTRACT-2").build();
 		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract1, contract2));
+		when(contractRepositoryMock.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
 
 		// Act
 		job.run();
@@ -70,5 +74,19 @@ class ContractTerminationJobTest {
 		// Assert
 		verify(contractTerminationWorkerMock).terminate(contract1);
 		verify(contractTerminationWorkerMock).terminate(contract2);
+	}
+
+	@Test
+	void runTerminatesNonAutoExtendingContractsWithExpiredPeriod() {
+		// Arrange – autoExtend=false contract whose currentPeriodEndDate has passed but endDate has not
+		final var contract = ContractEntity.builder().withContractId("CONTRACT-3").build();
+		when(contractRepositoryMock.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now())).thenReturn(List.of());
+		when(contractRepositoryMock.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now())).thenReturn(List.of(contract));
+
+		// Act
+		job.run();
+
+		// Assert
+		verify(contractTerminationWorkerMock).terminate(contract);
 	}
 }

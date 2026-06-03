@@ -125,6 +125,54 @@ class ContractAutoExtensionWorkerTest {
 	}
 
 	@Test
+	void extendRollsForwardWhenNewEndIsToday() {
+		// 1-day extension; job picks up yesterday's end → newEnd = today, should roll one more period
+		final var contract = ContractEntity.builder()
+			.withContractId(CONTRACT_ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withStatus(Status.ACTIVE)
+			.withAutoExtend(true)
+			.withCurrentPeriodStartDate(LocalDate.now().minusDays(2))
+			.withCurrentPeriodEndDate(LocalDate.now().minusDays(1))
+			.withLeaseExtension(1)
+			.withLeaseExtensionUnit(TimeUnit.DAYS)
+			.build();
+
+		worker.extend(contract);
+
+		// A period ending today is still valid today; newEnd == today is accepted (>= today)
+		assertThat(contract.getCurrentPeriodStartDate()).isEqualTo(LocalDate.now());
+		assertThat(contract.getCurrentPeriodEndDate()).isEqualTo(LocalDate.now());
+		assertThat(contract.getStatus()).isEqualTo(Status.ACTIVE);
+		verify(contractRepositoryMock).save(contract);
+		verifyNoInteractions(outboxRepositoryMock);
+	}
+
+	@Test
+	void extendRollsForwardMultiplePeriodsOnDowntime() {
+		// Job was down; currentPeriodEnd is 5 days in the past with a 1-day extension interval
+		final var contract = ContractEntity.builder()
+			.withContractId(CONTRACT_ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withStatus(Status.ACTIVE)
+			.withAutoExtend(true)
+			.withCurrentPeriodStartDate(LocalDate.now().minusDays(6))
+			.withCurrentPeriodEndDate(LocalDate.now().minusDays(5))
+			.withLeaseExtension(1)
+			.withLeaseExtensionUnit(TimeUnit.DAYS)
+			.build();
+
+		worker.extend(contract);
+
+		// Rolls forward until newEnd >= today; with 1-day steps the final period is [today, today]
+		assertThat(contract.getCurrentPeriodStartDate()).isEqualTo(LocalDate.now());
+		assertThat(contract.getCurrentPeriodEndDate()).isEqualTo(LocalDate.now());
+		assertThat(contract.getStatus()).isEqualTo(Status.ACTIVE);
+		verify(contractRepositoryMock).save(contract);
+		verifyNoInteractions(outboxRepositoryMock);
+	}
+
+	@Test
 	void terminatesWhenEndDateHasPassed() {
 		// Arrange – endDate is in the past so the extension cannot reach a future date
 		final var endDate = LocalDate.now().minusDays(1);
