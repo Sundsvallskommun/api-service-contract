@@ -30,6 +30,9 @@ scheduler:
   contract-auto-extension:
     cron: "0 0 2 * * *"
     lock-at-most-for: "PT1H"
+  contract-termination:
+    cron: "0 0 1 * * *"
+    lock-at-most-for: "PT1H"
 
 openapi:
   name: ${spring.application.name}

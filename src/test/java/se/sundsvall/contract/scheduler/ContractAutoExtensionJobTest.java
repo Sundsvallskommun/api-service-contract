@@ -10,7 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.model.enums.Status;
+import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -19,17 +22,22 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ContractAutoExtensionJobTest {
 
+	private static final String JOB_NAME = "contract-auto-extension";
+
 	@Mock
 	private ContractRepository contractRepositoryMock;
 
 	@Mock
 	private ContractAutoExtensionWorker contractAutoExtensionWorkerMock;
 
+	@Mock
+	private Dept44HealthUtility dept44HealthUtilityMock;
+
 	private ContractAutoExtensionJob job;
 
 	@BeforeEach
 	void setUp() {
-		job = new ContractAutoExtensionJob(contractRepositoryMock, contractAutoExtensionWorkerMock);
+		job = new ContractAutoExtensionJob(contractRepositoryMock, contractAutoExtensionWorkerMock, dept44HealthUtilityMock);
 	}
 
 	@Test
@@ -43,6 +51,7 @@ class ContractAutoExtensionJobTest {
 		// Assert
 		verify(contractRepositoryMock).findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
 		verifyNoInteractions(contractAutoExtensionWorkerMock);
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy(JOB_NAME);
 	}
 
 	@Test
@@ -56,6 +65,7 @@ class ContractAutoExtensionJobTest {
 
 		// Assert
 		verify(contractAutoExtensionWorkerMock).extend(contract);
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy(JOB_NAME);
 	}
 
 	@Test
@@ -71,6 +81,7 @@ class ContractAutoExtensionJobTest {
 		// Assert
 		verify(contractAutoExtensionWorkerMock).extend(contract1);
 		verify(contractAutoExtensionWorkerMock).extend(contract2);
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy(JOB_NAME);
 	}
 
 	@Test
@@ -87,5 +98,6 @@ class ContractAutoExtensionJobTest {
 		// Assert – contract2 is still processed despite contract1 failing
 		verify(contractAutoExtensionWorkerMock).extend(contract1);
 		verify(contractAutoExtensionWorkerMock).extend(contract2);
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(eq(JOB_NAME), contains("1"));
 	}
 }

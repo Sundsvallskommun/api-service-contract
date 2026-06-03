@@ -25,8 +25,8 @@ public class ContractTerminationJob {
 
 	@Dept44Scheduled(
 		name = "contract-termination",
-		cron = "${scheduler.contract-termination.cron:0 0 1 * * *}",
-		lockAtMostFor = "${scheduler.contract-termination.lock-at-most-for:PT1H}")
+		cron = "${scheduler.contract-termination.cron}",
+		lockAtMostFor = "${scheduler.contract-termination.lock-at-most-for}")
 	public void run() {
 		final var expiredContracts = contractRepository.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
 		LOG.info("Found {} contract(s) to terminate", expiredContracts.size());
