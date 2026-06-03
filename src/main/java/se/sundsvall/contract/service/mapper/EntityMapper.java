@@ -340,12 +340,28 @@ public final class EntityMapper {
 		return contractEntity;
 	}
 
+	/**
+	 * Maps property designations to embeddables, dropping any element whose name is missing (null) or the empty string so
+	 * that no empty rows are persisted. A whitespace-only name is deliberately kept here so that
+	 * {@link se.sundsvall.contract.service.ContractValidator} can reject it with a validation error rather than have it
+	 * silently dropped.
+	 */
 	static List<PropertyDesignationEmbeddable> toPropertyDesignationEmbeddables(List<PropertyDesignation> propertyDesignationList) {
 		return ofNullable(propertyDesignationList)
 			.map(propertyDesignations -> propertyDesignations.stream()
+				.filter(Objects::nonNull)
+				.filter(propertyDesignation -> hasName(propertyDesignation.getName()))
 				.map(EntityMapper::toPropertyDesignationEmbeddable)
 				.collect(toCollection(ArrayList::new)))
 			.orElse(new ArrayList<>());
+	}
+
+	/**
+	 * A property-designation name carries data unless it is {@code null} or the empty string. A whitespace-only name is
+	 * treated as carrying (invalid) data so that the validation layer can reject it instead of it being silently dropped.
+	 */
+	private static boolean hasName(final String name) {
+		return name != null && !name.isEmpty();
 	}
 
 	private static PropertyDesignationEmbeddable toPropertyDesignationEmbeddable(PropertyDesignation fromPropertyDesignation) {
