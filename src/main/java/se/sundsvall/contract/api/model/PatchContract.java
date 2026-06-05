@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.geojson.FeatureCollection;
+import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
@@ -22,73 +23,96 @@ import se.sundsvall.contract.model.enums.Status;
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@Schema(description = "Partial contract payload used for PATCH. Only the fields present in the payload are applied to the existing contract.")
+@Schema(description = "Partial contract payload used for PATCH (JSON Merge Patch semantics): a field that is omitted is "
+	+ "left unchanged, a field set to null is cleared, and a field set to a value is updated.")
 public class PatchContract {
 
 	@Schema(description = "A description of the contract", examples = "A simple description of the contract")
-	private String description;
+	@Builder.Default
+	private JsonNullable<String> description = JsonNullable.undefined();
 
 	@Schema(description = "External referenceId", examples = "123")
-	private String externalReferenceId;
+	@Builder.Default
+	private JsonNullable<String> externalReferenceId = JsonNullable.undefined();
 
 	@Schema(description = "Type of lease")
-	private LeaseType leaseType;
+	@Builder.Default
+	private JsonNullable<LeaseType> leaseType = JsonNullable.undefined();
 
 	@Schema(description = "Object identity (from Lantmäteriet)", examples = "909a6a80-d1a4-90ec-e040-ed8f66444c3f")
-	private String objectIdentity;
+	@Builder.Default
+	private JsonNullable<String> objectIdentity = JsonNullable.undefined();
 
 	@Schema(description = "Contract status")
-	private Status status;
+	@Builder.Default
+	private JsonNullable<Status> status = JsonNullable.undefined();
 
 	@Schema(description = "Contract type")
-	private ContractType type;
+	@Builder.Default
+	private JsonNullable<ContractType> type = JsonNullable.undefined();
 
 	@Schema(description = "Type of leasehold")
-	private Leasehold leasehold;
+	@Builder.Default
+	private JsonNullable<Leasehold> leasehold = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
-	private List<TermGroup> additionalTerms;
+	@Builder.Default
+	private JsonNullable<List<TermGroup>> additionalTerms = JsonNullable.undefined();
 
 	@Schema(description = "Extra parameters")
-	private List<ExtraParameterGroup> extraParameters;
+	@Builder.Default
+	private JsonNullable<List<ExtraParameterGroup>> extraParameters = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
-	private List<TermGroup> indexTerms;
+	@Builder.Default
+	private JsonNullable<List<TermGroup>> indexTerms = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Property designations"))
-	private List<PropertyDesignation> propertyDesignations;
+	@Builder.Default
+	private JsonNullable<List<PropertyDesignation>> propertyDesignations = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
-	private List<Stakeholder> stakeholders;
+	@Builder.Default
+	private JsonNullable<List<Stakeholder>> stakeholders = JsonNullable.undefined();
 
 	@Schema(description = "Lease extension")
-	private Extension extension;
+	@Builder.Default
+	private JsonNullable<Extension> extension = JsonNullable.undefined();
 
 	@Valid
 	@Schema(description = "Fee details")
-	private Fees fees;
+	@Builder.Default
+	private JsonNullable<Fees> fees = JsonNullable.undefined();
 
 	@Schema(description = "Invoicing details")
-	private Invoicing invoicing;
+	@Builder.Default
+	private JsonNullable<Invoicing> invoicing = JsonNullable.undefined();
 
 	@Schema(description = "Start date of the contract", examples = "2020-01-01", format = "date")
-	private LocalDate startDate;
+	@Builder.Default
+	private JsonNullable<LocalDate> startDate = JsonNullable.undefined();
 
 	@Schema(description = "End date of the contract. Set when the contract is terminated", examples = "2022-12-31", format = "date")
-	private LocalDate endDate;
+	@Builder.Default
+	private JsonNullable<LocalDate> endDate = JsonNullable.undefined();
 
 	@Schema(description = "Notice details")
-	private Notice notice;
+	@Builder.Default
+	private JsonNullable<Notice> notice = JsonNullable.undefined();
 
 	@Schema(description = "Current contract period")
-	private Period currentPeriod;
+	@Builder.Default
+	private JsonNullable<Period> currentPeriod = JsonNullable.undefined();
 
 	@Schema(description = "Leased area (m2)", examples = "150")
-	private Integer area;
+	@Builder.Default
+	private JsonNullable<Integer> area = JsonNullable.undefined();
 
 	@Schema(description = "Whether the contract is signed by a witness")
-	private Boolean signedByWitness;
+	@Builder.Default
+	private JsonNullable<Boolean> signedByWitness = JsonNullable.undefined();
 
 	@Schema(description = "Part(s) of property covered by the lease. Described by GeoJSON using polygon(s)")
-	private FeatureCollection areaData;
+	@Builder.Default
+	private JsonNullable<FeatureCollection> areaData = JsonNullable.undefined();
 }

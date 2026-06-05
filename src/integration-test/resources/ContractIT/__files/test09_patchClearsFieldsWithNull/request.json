@@ -10,7 +10,7 @@
 		"monthly": 234.56,
 		"currency": "SEK",
 		"indexationRate": 0.5,
-		"indexNumber": 3.00,
+		"indexNumber": 3.0,
 		"yearly": 2814.72,
 		"indexType": "KPI 80",
 		"indexYear": 2022
@@ -88,5 +88,10 @@
 		"invoiceInterval": "MONTHLY",
 		"invoicedIn": "ARREARS"
 	},
-	"status": "DRAFT"
+	"status": "DRAFT",
+	"leaseType": null,
+	"leasehold": null,
+	"notice": null,
+	"currentPeriod": null,
+	"propertyDesignations": null
 }

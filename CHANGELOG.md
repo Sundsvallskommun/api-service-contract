@@ -2,6 +2,30 @@
 
 All notable changes to the Contracts API are documented here.
 
+## 10.0 — 2026-06-04
+
+### Breaking changes (endpoint removed)
+
+- **`PUT /{municipalityId}/contracts/{contractId}`** ("Update a contract") has been **removed**. It was the
+  only operation that created a new contract version; `POST` creates version 1 and `PATCH` updates the
+  latest version in place. Clients that updated contracts via `PUT` must switch to
+  **`PATCH /{municipalityId}/contracts/{contractId}`**, which applies the non-null fields from the payload
+  onto the existing contract (no new version is created) and emits the same `CONTRACT_UPDATED` billing event.
+- The contract versioning columns and the `POST /{municipalityId}/contracts/{contractId}/diff` endpoint are
+  retained and remain functional; with `PUT` gone, contracts created and patched through the API stay at
+  version 1.
+
+### Other behavioural changes
+
+- **`PATCH` now supports clearing fields (JSON Merge Patch semantics).** A field that is **omitted** from the
+  payload is left unchanged, a field set to **`null`** is now **cleared**, and a field set to a value is updated.
+  Previously a `null` was indistinguishable from an omitted field and was ignored, so there was no way to clear a
+  value. (`signedByWitness` is a primitive boolean and cannot be cleared; an explicit `null` for it is ignored.)
+- **Contract `type` is now updatable via `PATCH`.** The `type` column was previously mapped non-updatable, so
+  the type could only change as a side effect of `PUT` creating a new version. With `PUT` removed, the
+  non-updatable mapping was dropped so a `PATCH` that includes `type` changes it in place (and the
+  purchase-agreement business rule is re-evaluated accordingly).
+
 ## 9.0 — 2026-06-01
 
 ### Breaking changes (request validation tightened)

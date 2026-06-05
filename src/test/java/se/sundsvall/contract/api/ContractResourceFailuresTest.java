@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -65,20 +66,11 @@ class ContractResourceFailuresTest {
 		verifyNoInteractions(contractServiceMock);
 	}
 
-	private void putExpectingBadRequest(final Object body) {
-		webTestClient.put()
-			.uri(ID_PATH, MUNICIPALITY_ID, CONTRACT_ID)
-			.bodyValue(body)
-			.exchange()
-			.expectStatus().isBadRequest();
-
-		verifyNoInteractions(contractServiceMock);
-	}
-
-	private void patchExpectingBadRequest(final PatchContract body) {
+	private void patchExpectingBadRequest(final String jsonBody) {
 		webTestClient.patch()
 			.uri(ID_PATH, MUNICIPALITY_ID, CONTRACT_ID)
-			.bodyValue(body)
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(jsonBody)
 			.exchange()
 			.expectStatus().isBadRequest();
 
@@ -97,17 +89,6 @@ class ContractResourceFailuresTest {
 	@Test
 	void postWithoutTypeIsRejected() {
 		postExpectingBadRequest(Contract.builder().withStatus(Status.ACTIVE).build());
-	}
-
-	// ----------------------------------------------------------------------------------------------------------
-	// PUT also enforces nested bean validation (e.g. the fee index trio)
-	// ----------------------------------------------------------------------------------------------------------
-
-	@Test
-	void putWithPartialFeeIndexIsRejected() {
-		putExpectingBadRequest(validContract()
-			.withFees(Fees.builder().withIndexType("KPI 80").build())
-			.build());
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -134,9 +115,13 @@ class ContractResourceFailuresTest {
 
 	@Test
 	void patchWithBlankAdditionalInformationIsRejected() {
-		patchExpectingBadRequest(PatchContract.builder()
-			.withFees(Fees.builder().withAdditionalInformation(List.of("   ")).build())
-			.build());
+		patchExpectingBadRequest("""
+			{
+				"fees": {
+					"additionalInformation": ["   "]
+				}
+			}
+			""");
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -167,9 +152,13 @@ class ContractResourceFailuresTest {
 
 	@Test
 	void patchWithPartialFeeIndexIsRejected() {
-		patchExpectingBadRequest(PatchContract.builder()
-			.withFees(Fees.builder().withIndexType("KPI 80").build())
-			.build());
+		patchExpectingBadRequest("""
+			{
+				"fees": {
+					"indexType": "KPI 80"
+				}
+			}
+			""");
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -212,7 +201,7 @@ class ContractResourceFailuresTest {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
-	// Invoicing.invoiceInterval / Invoicing.invoicedIn: @NotNull when an invoicing object is present (POST / PUT)
+	// Invoicing.invoiceInterval / Invoicing.invoicedIn: @NotNull when an invoicing object is present (POST / PATCH)
 	// ----------------------------------------------------------------------------------------------------------
 
 	@Test
@@ -240,12 +229,5 @@ class ContractResourceFailuresTest {
 			.build();
 
 		postExpectingBadRequest(contract);
-	}
-
-	@Test
-	void putWithInvoicingMissingInvoicedInIsRejected() {
-		putExpectingBadRequest(validContract()
-			.withInvoicing(Invoicing.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
-			.build());
 	}
 }

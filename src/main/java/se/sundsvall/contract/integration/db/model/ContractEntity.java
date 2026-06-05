@@ -63,7 +63,7 @@ public class ContractEntity {
 	@ColumnDefault("0")
 	private long lockVersion;
 
-	@Column(name = "type", length = 64, updatable = false)
+	@Column(name = "type", length = 64)
 	private ContractType type;
 
 	@Column(name = "status", length = 64)

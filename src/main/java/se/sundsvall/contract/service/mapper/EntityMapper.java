@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.api.model.Address;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentData;
@@ -240,54 +241,95 @@ public final class EntityMapper {
 	}
 
 	/**
-	 * Applies non-null fields from the given {@link PatchContract} onto an existing {@link ContractEntity} in place,
-	 * preserving fields that are not provided in the patch payload. The version is not modified.
+	 * Applies the given {@link PatchContract} onto an existing {@link ContractEntity} in place using JSON Merge Patch
+	 * semantics: a field that is absent from the payload is left unchanged, a field explicitly set to {@code null} is
+	 * cleared, and a field set to a value is updated. The version is not modified.
 	 *
 	 * @param  entity the existing entity to update
 	 * @param  patch  the patch payload
 	 * @return        the updated entity
 	 */
 	public static ContractEntity patchContractEntity(final ContractEntity entity, final PatchContract patch) {
-		setPropertyUnlessNull(patch.getArea(), entity::setArea);
-		setPropertyUnlessNull(patch.getAreaData(), entity::setAreaData);
-		setPropertyUnlessNull(patch.getDescription(), entity::setDescription);
-		setPropertyUnlessNull(patch.getEndDate(), entity::setEndDate);
-		setPropertyUnlessNull(blankToNull(patch.getExternalReferenceId()), entity::setExternalReferenceId);
-		setPropertyUnlessNull(patch.getLeaseType(), entity::setLeaseType);
-		setPropertyUnlessNull(patch.getObjectIdentity(), entity::setObjectIdentity);
-		setPropertyUnlessNull(patch.getSignedByWitness(), entity::setSignedByWitness);
-		setPropertyUnlessNull(patch.getStartDate(), entity::setStartDate);
-		setPropertyUnlessNull(patch.getStatus(), entity::setStatus);
-		setPropertyUnlessNull(patch.getType(), entity::setType);
+		// signedByWitness is a primitive boolean and cannot be cleared, so an explicit null is ignored
+		applyIfPresentNonNull(patch.getSignedByWitness(), entity::setSignedByWitness);
 
-		ofNullable(patch.getExtension()).ifPresent(extension -> {
-			setPropertyUnlessNull(extension.getAutoExtend(), entity::setAutoExtend);
-			setPropertyUnlessNull(extension.getLeaseExtension(), entity::setLeaseExtension);
-			setPropertyUnlessNull(extension.getUnit(), entity::setLeaseExtensionUnit);
+		applyIfPresent(patch.getArea(), entity::setArea);
+		applyIfPresent(patch.getAreaData(), entity::setAreaData);
+		applyIfPresent(patch.getDescription(), entity::setDescription);
+		applyIfPresent(patch.getEndDate(), entity::setEndDate);
+		applyIfPresent(patch.getExternalReferenceId(), value -> entity.setExternalReferenceId(blankToNull(value)));
+		applyIfPresent(patch.getLeaseType(), entity::setLeaseType);
+		applyIfPresent(patch.getObjectIdentity(), entity::setObjectIdentity);
+		applyIfPresent(patch.getStartDate(), entity::setStartDate);
+		applyIfPresent(patch.getStatus(), entity::setStatus);
+		applyIfPresent(patch.getType(), entity::setType);
+
+		// Nested objects: absent keeps, null clears, a value merges/replaces
+		applyIfPresent(patch.getExtension(), extension -> {
+			if (extension == null) {
+				entity.setAutoExtend(null);
+				entity.setLeaseExtension(null);
+				entity.setLeaseExtensionUnit(null);
+			} else {
+				setPropertyUnlessNull(extension.getAutoExtend(), entity::setAutoExtend);
+				setPropertyUnlessNull(extension.getLeaseExtension(), entity::setLeaseExtension);
+				setPropertyUnlessNull(extension.getUnit(), entity::setLeaseExtensionUnit);
+			}
 		});
-		ofNullable(patch.getCurrentPeriod()).ifPresent(period -> {
-			setPropertyUnlessNull(period.getStartDate(), entity::setCurrentPeriodStartDate);
-			setPropertyUnlessNull(period.getEndDate(), entity::setCurrentPeriodEndDate);
+		applyIfPresent(patch.getCurrentPeriod(), period -> {
+			if (period == null) {
+				entity.setCurrentPeriodStartDate(null);
+				entity.setCurrentPeriodEndDate(null);
+			} else {
+				setPropertyUnlessNull(period.getStartDate(), entity::setCurrentPeriodStartDate);
+				setPropertyUnlessNull(period.getEndDate(), entity::setCurrentPeriodEndDate);
+			}
 		});
-		ofNullable(patch.getNotice()).ifPresent(notice -> {
-			setPropertyUnlessNull(notice.getNoticeDate(), entity::setNoticeDate);
-			setPropertyUnlessNull(notice.getNoticeGivenBy(), entity::setNoticeGivenBy);
-			setPropertyUnlessNull(notice.getTerms(), _ -> replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, toNoticeTermEmbeddables(notice)));
+		applyIfPresent(patch.getNotice(), notice -> {
+			if (notice == null) {
+				entity.setNoticeDate(null);
+				entity.setNoticeGivenBy(null);
+				replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, new ArrayList<>());
+			} else {
+				setPropertyUnlessNull(notice.getNoticeDate(), entity::setNoticeDate);
+				setPropertyUnlessNull(notice.getNoticeGivenBy(), entity::setNoticeGivenBy);
+				setPropertyUnlessNull(notice.getTerms(), _ -> replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, toNoticeTermEmbeddables(notice)));
+			}
 		});
 
-		setPropertyUnlessNull(patch.getFees(), fees -> entity.setFees(toFeesEmbeddable(fees)));
-		setPropertyUnlessNull(patch.getInvoicing(), invoicing -> entity.setInvoicing(toInvoicingEntity(invoicing)));
-		setPropertyUnlessNull(patch.getLeasehold(), leasehold -> entity.setLeasehold(toLeaseholdEntity(leasehold)));
-		setPropertyUnlessNull(patch.getPropertyDesignations(), propertyDesignations -> replaceCollection(entity.getPropertyDesignations(), entity::setPropertyDesignations, toPropertyDesignationEmbeddables(propertyDesignations)));
-		setPropertyUnlessNull(patch.getStakeholders(), stakeholders -> replaceCollection(entity.getStakeholders(), entity::setStakeholders, toStakeholderEntities(stakeholders)));
-		setPropertyUnlessNull(patch.getExtraParameters(), extraParameters -> replaceCollection(entity.getExtraParameters(), entity::setExtraParameters, toExtraParameterGroupEntities(extraParameters)));
+		applyIfPresent(patch.getFees(), fees -> entity.setFees(fees == null ? null : toFeesEmbeddable(fees)));
+		applyIfPresent(patch.getInvoicing(), invoicing -> entity.setInvoicing(invoicing == null ? null : toInvoicingEntity(invoicing)));
+		applyIfPresent(patch.getLeasehold(), leasehold -> entity.setLeasehold(leasehold == null ? null : toLeaseholdEntity(leasehold)));
+		applyIfPresent(patch.getPropertyDesignations(), list -> replaceCollection(entity.getPropertyDesignations(), entity::setPropertyDesignations, toPropertyDesignationEmbeddables(list)));
+		applyIfPresent(patch.getStakeholders(), list -> replaceCollection(entity.getStakeholders(), entity::setStakeholders, toStakeholderEntities(list)));
+		applyIfPresent(patch.getExtraParameters(), list -> replaceCollection(entity.getExtraParameters(), entity::setExtraParameters, toExtraParameterGroupEntities(list)));
 
-		if (patch.getIndexTerms() != null || patch.getAdditionalTerms() != null) {
+		// Index and additional terms share one table. For each list: absent keeps that type's groups, otherwise the
+		// type's groups are replaced (an explicit null clears them).
+		if (isPresent(patch.getIndexTerms()) || isPresent(patch.getAdditionalTerms())) {
+			final var indexTerms = isPresent(patch.getIndexTerms()) ? ofNullable(patch.getIndexTerms().get()).orElseGet(ArrayList::new) : null;
+			final var additionalTerms = isPresent(patch.getAdditionalTerms()) ? ofNullable(patch.getAdditionalTerms().get()).orElseGet(ArrayList::new) : null;
 			replaceCollection(entity.getTermGroups(), entity::setTermGroups,
-				mergeTermGroups(entity.getTermGroups(), patch.getIndexTerms(), patch.getAdditionalTerms()));
+				mergeTermGroups(entity.getTermGroups(), indexTerms, additionalTerms));
 		}
 
 		return entity;
+	}
+
+	private static <T> void applyIfPresent(final JsonNullable<T> value, final Consumer<T> setter) {
+		if (value != null && value.isPresent()) {
+			setter.accept(value.get());
+		}
+	}
+
+	private static <T> void applyIfPresentNonNull(final JsonNullable<T> value, final Consumer<T> setter) {
+		if (value != null && value.isPresent() && value.get() != null) {
+			setter.accept(value.get());
+		}
+	}
+
+	private static <T> boolean isPresent(final JsonNullable<T> value) {
+		return value != null && value.isPresent();
 	}
 
 	private static <T> void replaceCollection(final List<T> existing, final Consumer<List<T>> setter, final List<T> replacement) {
@@ -319,25 +361,6 @@ public final class EntityMapper {
 			: existingList.stream().filter(tg -> TYPE_ADDITIONAL.equals(tg.getType())).collect(toCollection(ArrayList::new));
 
 		return Stream.concat(indexEntities.stream(), additionalEntities.stream()).collect(toCollection(ArrayList::new));
-	}
-
-	/**
-	 * Creates a new {@link ContractEntity} as a new version of an existing contract.
-	 *
-	 * @param  municipalityId the municipality ID to set on the entity
-	 * @param  oldContract    the existing contract entity to carry over version and contract ID from
-	 * @param  contract       the contract data for the new version
-	 * @return                the new contract entity with preserved version and contract ID
-	 */
-	public static ContractEntity createNewContractEntity(final String municipalityId, final ContractEntity oldContract, final Contract contract) {
-		final var contractEntity = toContractEntity(municipalityId, contract);
-
-		// Bump the version number by one, based on the existing contract's version.
-		contractEntity.setVersion(oldContract.getVersion() + 1);
-		// Set the contractId since it will be generated otherwise.
-		contractEntity.setContractId(oldContract.getContractId());
-
-		return contractEntity;
 	}
 
 	/**

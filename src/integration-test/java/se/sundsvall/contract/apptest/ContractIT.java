@@ -1,14 +1,12 @@
 package se.sundsvall.contract.apptest;
 
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
@@ -97,25 +95,23 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	/**
-	 * Test verifies the following:
-	 * - Update is performed
-	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
+	 * Patches a contract with a full lease-agreement payload. The contract is updated in place and stays at version 2.
 	 */
 	@Test
-	void test04_updateContractKeepingTypeIntact() {
+	void test04_patchContractKeepingTypeIntact() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 
-		// Update
+		// Patch
 		setupCall()
 			.withServicePath(path)
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
 
-		// Verify update
+		// Verify patch
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
@@ -123,19 +119,6 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
-		// Verify that the previous version is still retrievable and exposes the expected contractId/version
-		setupCall()
-			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
-			.withServicePath(fromPath(PATH + "/{contractId}")
-				.queryParam("version", 1)
-				.build(MUNICIPALITY_ID, CONTRACT_ID)
-				.toString())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse("previous-version-response.json")
-			.sendRequest();
 	}
 
 	@Test
@@ -244,21 +227,26 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Patches a contract where fields present in the payload are set and fields sent as an explicit {@code null} (here
+	 * leaseType, leasehold, notice, currentPeriod and propertyDesignations) are cleared. The patch is applied in place —
+	 * the contract stays at version 2.
+	 */
 	@Test
-	void test09_updateContractWithTypeChange() {
+	void test09_patchClearsFieldsWithNull() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 
-		// Update
+		// Patch
 		setupCall()
 			.withServicePath(path)
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
 
-		// Verify update
+		// Verify patch
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
@@ -266,36 +254,27 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
-		// Verify that the previous version is still retrievable and exposes the expected contractId/version
-		setupCall()
-			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
-			.withServicePath(fromPath(PATH + "/{contractId}")
-				.queryParam("version", 1)
-				.build(MUNICIPALITY_ID, CONTRACT_ID)
-				.toString())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse("previous-version-response.json")
-			.sendRequest();
 	}
 
+	/**
+	 * Patches a contract whose billing cycle is already present in BillingDataCollector: the existing cycle matches the
+	 * patched settings, so no further call to BDC is made. The patch is applied in place — the contract stays at version 2.
+	 */
 	@Test
-	void test10_updateContractWithPresentBillingCycle() {
+	void test10_patchContractWithPresentBillingCycle() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 
-		// Update
+		// Patch
 		setupCall()
 			.withServicePath(path)
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
 
-		// Verify update
+		// Verify patch
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
@@ -517,25 +496,24 @@ class ContractIT extends AbstractAppTest {
 	}
 
 	/**
-	 * Test verifies the following:
-	 * - Update is performed for a contract changed to LAND_LEASE_RESIDENTIAL with YEARLY interval and currentPeriodEndDate June 30
-	 * - BDC billing cycle is updated with billingMonths [6] (June) instead of [12] (December)
+	 * Patches a contract to a YEARLY interval with a current period ending June 30 — the schedule that results in billing
+	 * in June. The patch is applied in place — the contract stays at version 2.
 	 */
 	@Test
-	void test25_updateContractWithJuneBillingSchedule() {
+	void test25_patchContractWithJuneBillingSchedule() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
 
-		// Update
+		// Patch
 		setupCall()
 			.withServicePath(path)
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
 
-		// Verify update
+		// Verify patch
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
@@ -621,4 +599,5 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
 }

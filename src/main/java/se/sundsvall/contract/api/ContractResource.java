@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -133,27 +132,6 @@ class ContractResource {
 		@Parameter(description = "Contract version") @Positive @RequestParam(required = false) final Integer version) {
 
 		return ok(service.getContract(municipalityId, contractId, version));
-	}
-
-	@Operation(
-		summary = "Update a contract",
-		responses = {
-			@ApiResponse(
-				responseCode = "200",
-				description = "Ok"),
-			@ApiResponse(
-				responseCode = "404",
-				description = "Not Found",
-				content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-		})
-	@PutMapping(path = "/{contractId}", consumes = APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> updateContract(
-		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
-		@Parameter(description = "Contract id") @PathVariable final String contractId,
-		@RequestBody @Valid final Contract contract) {
-
-		service.updateContract(municipalityId, contractId, contract);
-		return ok().build();
 	}
 
 	@Operation(

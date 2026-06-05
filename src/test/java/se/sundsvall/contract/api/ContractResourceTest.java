@@ -2,6 +2,8 @@ package se.sundsvall.contract.api;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -245,38 +248,41 @@ class ContractResourceTest {
 	}
 
 	@Test
-	void updateContract() {
-		final var landLeaseContract = createContract();
-
-		doNothing().when(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
-
-		webTestClient.put()
+	void patchContract() {
+		// Send raw JSON (as a real client would) so the server's JsonNullable deserialization is exercised
+		webTestClient.patch()
 			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
-			.bodyValue(landLeaseContract)
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue("""
+				{"description": "a patched description"}
+				""")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).updateContract(MUNICIPALITY_ID, CONTRACT_ID, landLeaseContract);
+		final var captor = ArgumentCaptor.forClass(PatchContract.class);
+		verify(contractServiceMock).patchContract(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), captor.capture());
+		assertThat(captor.getValue().getDescription()).isEqualTo(JsonNullable.of("a patched description"));
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
 	@Test
-	void patchContract() {
-		final var patch = PatchContract.builder()
-			.withDescription("a patched description")
-			.build();
-
-		doNothing().when(contractServiceMock).patchContract(MUNICIPALITY_ID, CONTRACT_ID, patch);
-
+	void patchClearsFieldWithExplicitNull() {
+		// An explicit null deserializes to a present JsonNullable holding null (clear), while an omitted field is undefined
 		webTestClient.patch()
 			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
-			.bodyValue(patch)
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue("""
+				{"objectIdentity": null}
+				""")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody().isEmpty();
 
-		verify(contractServiceMock).patchContract(MUNICIPALITY_ID, CONTRACT_ID, patch);
+		final var captor = ArgumentCaptor.forClass(PatchContract.class);
+		verify(contractServiceMock).patchContract(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), captor.capture());
+		assertThat(captor.getValue().getObjectIdentity()).isEqualTo(JsonNullable.of(null));
+		assertThat(captor.getValue().getDescription()).isEqualTo(JsonNullable.undefined());
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 

@@ -3,9 +3,11 @@ package se.sundsvall.contract.api.model;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.model.ExtraParameterGroup;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
@@ -29,6 +31,9 @@ class PatchContractTest {
 	@BeforeAll
 	static void setup() {
 		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), LocalDate.class);
+		// PatchContract fields are JsonNullable<?>; generate distinct present values so the bean matchers can
+		// exercise getters/setters, equals, hashCode and toString.
+		registerValueGenerator(() -> JsonNullable.of(UUID.randomUUID().toString()), JsonNullable.class);
 	}
 
 	@Test
@@ -68,56 +73,61 @@ class PatchContractTest {
 		final var areaData = new FeatureCollection();
 
 		final var patch = PatchContract.builder()
-			.withDescription(description)
-			.withExternalReferenceId(externalReferenceId)
-			.withLeaseType(leaseType)
-			.withObjectIdentity(objectIdentity)
-			.withStatus(status)
-			.withType(type)
-			.withLeasehold(leasehold)
-			.withAdditionalTerms(additionalTerms)
-			.withExtraParameters(extraParameters)
-			.withIndexTerms(indexTerms)
-			.withPropertyDesignations(propertyDesignations)
-			.withStakeholders(stakeholders)
-			.withExtension(extension)
-			.withFees(fees)
-			.withInvoicing(invoicing)
-			.withStartDate(startDate)
-			.withEndDate(endDate)
-			.withNotice(notice)
-			.withCurrentPeriod(currentPeriod)
-			.withArea(area)
-			.withSignedByWitness(signedByWitness)
-			.withAreaData(areaData)
+			.withDescription(JsonNullable.of(description))
+			.withExternalReferenceId(JsonNullable.of(externalReferenceId))
+			.withLeaseType(JsonNullable.of(leaseType))
+			.withObjectIdentity(JsonNullable.of(objectIdentity))
+			.withStatus(JsonNullable.of(status))
+			.withType(JsonNullable.of(type))
+			.withLeasehold(JsonNullable.of(leasehold))
+			.withAdditionalTerms(JsonNullable.of(additionalTerms))
+			.withExtraParameters(JsonNullable.of(extraParameters))
+			.withIndexTerms(JsonNullable.of(indexTerms))
+			.withPropertyDesignations(JsonNullable.of(propertyDesignations))
+			.withStakeholders(JsonNullable.of(stakeholders))
+			.withExtension(JsonNullable.of(extension))
+			.withFees(JsonNullable.of(fees))
+			.withInvoicing(JsonNullable.of(invoicing))
+			.withStartDate(JsonNullable.of(startDate))
+			.withEndDate(JsonNullable.of(endDate))
+			.withNotice(JsonNullable.of(notice))
+			.withCurrentPeriod(JsonNullable.of(currentPeriod))
+			.withArea(JsonNullable.of(area))
+			.withSignedByWitness(JsonNullable.of(signedByWitness))
+			.withAreaData(JsonNullable.of(areaData))
 			.build();
 
-		assertThat(patch.getDescription()).isEqualTo(description);
-		assertThat(patch.getExternalReferenceId()).isEqualTo(externalReferenceId);
-		assertThat(patch.getLeaseType()).isEqualTo(leaseType);
-		assertThat(patch.getObjectIdentity()).isEqualTo(objectIdentity);
-		assertThat(patch.getStatus()).isEqualTo(status);
-		assertThat(patch.getType()).isEqualTo(type);
-		assertThat(patch.getLeasehold()).isEqualTo(leasehold);
-		assertThat(patch.getAdditionalTerms()).isEqualTo(additionalTerms);
-		assertThat(patch.getExtraParameters()).isEqualTo(extraParameters);
-		assertThat(patch.getIndexTerms()).isEqualTo(indexTerms);
-		assertThat(patch.getPropertyDesignations()).isEqualTo(propertyDesignations);
-		assertThat(patch.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(patch.getExtension()).isEqualTo(extension);
-		assertThat(patch.getFees()).isEqualTo(fees);
-		assertThat(patch.getInvoicing()).isEqualTo(invoicing);
-		assertThat(patch.getStartDate()).isEqualTo(startDate);
-		assertThat(patch.getEndDate()).isEqualTo(endDate);
-		assertThat(patch.getNotice()).isEqualTo(notice);
-		assertThat(patch.getCurrentPeriod()).isEqualTo(currentPeriod);
-		assertThat(patch.getArea()).isEqualTo(area);
-		assertThat(patch.getSignedByWitness()).isEqualTo(signedByWitness);
-		assertThat(patch.getAreaData()).isEqualTo(areaData);
+		assertThat(patch.getDescription()).isEqualTo(JsonNullable.of(description));
+		assertThat(patch.getExternalReferenceId()).isEqualTo(JsonNullable.of(externalReferenceId));
+		assertThat(patch.getLeaseType()).isEqualTo(JsonNullable.of(leaseType));
+		assertThat(patch.getObjectIdentity()).isEqualTo(JsonNullable.of(objectIdentity));
+		assertThat(patch.getStatus()).isEqualTo(JsonNullable.of(status));
+		assertThat(patch.getType()).isEqualTo(JsonNullable.of(type));
+		assertThat(patch.getLeasehold()).isEqualTo(JsonNullable.of(leasehold));
+		assertThat(patch.getAdditionalTerms()).isEqualTo(JsonNullable.of(additionalTerms));
+		assertThat(patch.getExtraParameters()).isEqualTo(JsonNullable.of(extraParameters));
+		assertThat(patch.getIndexTerms()).isEqualTo(JsonNullable.of(indexTerms));
+		assertThat(patch.getPropertyDesignations()).isEqualTo(JsonNullable.of(propertyDesignations));
+		assertThat(patch.getStakeholders()).isEqualTo(JsonNullable.of(stakeholders));
+		assertThat(patch.getExtension()).isEqualTo(JsonNullable.of(extension));
+		assertThat(patch.getFees()).isEqualTo(JsonNullable.of(fees));
+		assertThat(patch.getInvoicing()).isEqualTo(JsonNullable.of(invoicing));
+		assertThat(patch.getStartDate()).isEqualTo(JsonNullable.of(startDate));
+		assertThat(patch.getEndDate()).isEqualTo(JsonNullable.of(endDate));
+		assertThat(patch.getNotice()).isEqualTo(JsonNullable.of(notice));
+		assertThat(patch.getCurrentPeriod()).isEqualTo(JsonNullable.of(currentPeriod));
+		assertThat(patch.getArea()).isEqualTo(JsonNullable.of(area));
+		assertThat(patch.getSignedByWitness()).isEqualTo(JsonNullable.of(signedByWitness));
+		assertThat(patch.getAreaData()).isEqualTo(JsonNullable.of(areaData));
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(PatchContract.builder().build()).hasAllNullFieldsOrProperties();
+		// A freshly built patch has every field "undefined" (absent), i.e. nothing is set and nothing is cleared.
+		final var patch = PatchContract.builder().build();
+		assertThat(patch).hasNoNullFieldsOrProperties();
+		assertThat(patch.getDescription()).isEqualTo(JsonNullable.undefined());
+		assertThat(patch.getFees()).isEqualTo(JsonNullable.undefined());
+		assertThat(patch.getStakeholders()).isEqualTo(JsonNullable.undefined());
 	}
 }

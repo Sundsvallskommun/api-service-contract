@@ -16,6 +16,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -234,34 +235,6 @@ class ContractServiceTest {
 	@ValueSource(booleans = {
 		true, false
 	})
-	void updateContract(boolean match) {
-		// Arrange
-		final var landLeaseContractEntity = createContractEntity();
-		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class))).thenReturn(Optional.of(landLeaseContractEntity));
-		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
-
-		// Act
-		contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract());
-
-		// Assert
-		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
-		verify(businessruleMock).appliesTo(any(ContractEntity.class));
-		if (match) {
-			verify(businessruleMock).apply(businessruleParametersCaptor.capture());
-			assertThat(businessruleParametersCaptor.getValue()).satisfies(businessruleParameters -> {
-				assertThat(businessruleParameters.contractEntity()).isNotNull();
-				assertThat(businessruleParameters.action()).isEqualTo(Action.UPDATE);
-			});
-		}
-		verify(contractRepositoryMock).save(any(ContractEntity.class));
-		verify(outboxRepositoryMock).save(any(OutboxEntity.class));
-		verifyNoMoreInteractions(contractRepositoryMock, businessruleMock, outboxRepositoryMock);
-	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = {
-		true, false
-	})
 	void patchContract(boolean match) {
 		// Arrange
 		final var existingEntity = createContractEntity();
@@ -272,7 +245,7 @@ class ContractServiceTest {
 		when(businessruleMock.appliesTo(any(ContractEntity.class))).thenReturn(match);
 
 		final var patchPayload = PatchContract.builder()
-			.withDescription("a patched description")
+			.withDescription(JsonNullable.of("a patched description"))
 			.build();
 
 		// Act
@@ -299,28 +272,13 @@ class ContractServiceTest {
 	@Test
 	void patchContractShouldThrow404WhenNoMatch() {
 		final var patchPayload = PatchContract.builder()
-			.withDescription("a patched description")
+			.withDescription(JsonNullable.of("a patched description"))
 			.build();
 		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class)))
 			.thenReturn(Optional.empty());
 
 		assertThatExceptionOfType(ThrowableProblem.class)
 			.isThrownBy(() -> contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload))
-			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
-
-		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
-		verifyNoMoreInteractions(contractRepositoryMock);
-		verifyNoInteractions(businessruleMock);
-	}
-
-	@Test
-	void updateContractShouldThrow404WhenNoMatch() {
-		final var contract = TestFactory.createContract();
-		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(any(String.class), any(String.class)))
-			.thenReturn(Optional.empty());
-
-		assertThatExceptionOfType(ThrowableProblem.class)
-			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, contract))
 			.satisfies(thrownProblem -> assertThat(thrownProblem.getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
 
 		verify(contractRepositoryMock).findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID);
@@ -345,24 +303,6 @@ class ContractServiceTest {
 	}
 
 	@Test
-	void updateContractAbortsWhenValidationFails() {
-		// Arrange
-		final var existingEntity = createContractEntity();
-		when(contractRepositoryMock.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(MUNICIPALITY_ID, CONTRACT_ID))
-			.thenReturn(Optional.of(existingEntity));
-		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("fees.indexNumber", "boom"))))
-			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
-
-		// Act & Assert
-		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()));
-
-		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
-		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
-		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
-	}
-
-	@Test
 	void patchContractAbortsWhenValidationFails() {
 		// Arrange
 		final var existingEntity = createContractEntity();
@@ -371,7 +311,7 @@ class ContractServiceTest {
 		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("propertyDesignations", "boom"))))
 			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
 
-		final var patchPayload = PatchContract.builder().withDescription("patched").build();
+		final var patchPayload = PatchContract.builder().withDescription(JsonNullable.of("patched")).build();
 
 		// Act & Assert
 		assertThatExceptionOfType(ConstraintViolationProblem.class)

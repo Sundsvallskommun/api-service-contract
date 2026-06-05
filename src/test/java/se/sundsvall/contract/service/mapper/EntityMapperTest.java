@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
+import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.api.model.Attachment;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
@@ -97,7 +98,7 @@ class EntityMapperTest {
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
 		// Note: version is not mapped here; it is explicitly managed by the service layer
-		// (createContract sets it to 1, createNewContractEntity bumps it).
+		// (createContract sets it to 1).
 	}
 
 	@Test
@@ -264,20 +265,6 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void testCreateNewContractEntity() {
-
-		// Arrange
-		final var oldContractEntity = createContractEntity();
-		final var newContract = createContract();
-
-		// Act
-		final var updatedEntity = EntityMapper.createNewContractEntity(MUNICIPALITY_ID, oldContractEntity, newContract);
-
-		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion() + 1);
-		assertThat(updatedEntity.getContractId()).isEqualTo(oldContractEntity.getContractId());
-	}
-
-	@Test
 	void testPatchContractEntity_updatesOnlyProvidedFields() {
 
 		// Arrange
@@ -288,7 +275,7 @@ class EntityMapperTest {
 		final var originalArea = entity.getArea();
 
 		final var patch = PatchContract.builder()
-			.withDescription("a new description")
+			.withDescription(JsonNullable.of("a new description"))
 			.build();
 
 		// Act
@@ -303,29 +290,56 @@ class EntityMapperTest {
 		assertThat(result.getArea()).isEqualTo(originalArea);
 	}
 
+	@Test
+	void testPatchContractEntity_clearsFieldsWithExplicitNull() {
+
+		// Arrange
+		final var entity = createContractEntity();
+		entity.setExternalReferenceId("some-ref");
+		entity.setObjectIdentity("some-identity");
+		entity.setArea(42);
+		final var originalDescription = entity.getDescription();
+
+		// description is omitted (undefined) and must be kept; the others are explicitly null and must be cleared
+		final var patch = PatchContract.builder()
+			.withExternalReferenceId(JsonNullable.of(null))
+			.withObjectIdentity(JsonNullable.of(null))
+			.withArea(JsonNullable.of(null))
+			.build();
+
+		// Act
+		EntityMapper.patchContractEntity(entity, patch);
+
+		// Assert
+		assertThat(entity.getExternalReferenceId()).isNull();
+		assertThat(entity.getObjectIdentity()).isNull();
+		assertThat(entity.getArea()).isNull();
+		assertThat(entity.getDescription()).isEqualTo(originalDescription);
+	}
+
 	private static PatchContract buildFullPatchFrom(final Contract source) {
 		return PatchContract.builder()
-			.withDescription(source.getDescription())
-			.withArea(source.getArea())
-			.withAreaData(source.getAreaData())
-			.withEndDate(source.getEndDate())
-			.withStartDate(source.getStartDate())
-			.withExternalReferenceId(source.getExternalReferenceId())
-			.withObjectIdentity(source.getObjectIdentity())
-			.withStatus(source.getStatus())
-			.withType(source.getType())
-			.withSignedByWitness(source.isSignedByWitness())
-			.withExtension(source.getExtension())
-			.withCurrentPeriod(source.getCurrentPeriod())
-			.withNotice(source.getNotice())
-			.withFees(source.getFees())
-			.withInvoicing(source.getInvoicing())
-			.withLeasehold(source.getLeasehold())
-			.withPropertyDesignations(source.getPropertyDesignations())
-			.withStakeholders(source.getStakeholders())
-			.withExtraParameters(source.getExtraParameters())
-			.withIndexTerms(source.getIndexTerms())
-			.withAdditionalTerms(source.getAdditionalTerms())
+			.withDescription(JsonNullable.of(source.getDescription()))
+			.withArea(JsonNullable.of(source.getArea()))
+			.withAreaData(JsonNullable.of(source.getAreaData()))
+			.withEndDate(JsonNullable.of(source.getEndDate()))
+			.withStartDate(JsonNullable.of(source.getStartDate()))
+			.withExternalReferenceId(JsonNullable.of(source.getExternalReferenceId()))
+			.withObjectIdentity(JsonNullable.of(source.getObjectIdentity()))
+			.withStatus(JsonNullable.of(source.getStatus()))
+			.withType(JsonNullable.of(source.getType()))
+			.withSignedByWitness(JsonNullable.of(source.isSignedByWitness()))
+			.withExtension(JsonNullable.of(source.getExtension()))
+			.withCurrentPeriod(JsonNullable.of(source.getCurrentPeriod()))
+			.withNotice(JsonNullable.of(source.getNotice()))
+			.withFees(JsonNullable.of(source.getFees()))
+			.withInvoicing(JsonNullable.of(source.getInvoicing()))
+			.withLeasehold(JsonNullable.of(source.getLeasehold()))
+			.withPropertyDesignations(JsonNullable.of(source.getPropertyDesignations()))
+			.withStakeholders(JsonNullable.of(source.getStakeholders()))
+			.withExtraParameters(JsonNullable.of(source.getExtraParameters()))
+			.withIndexTerms(JsonNullable.of(source.getIndexTerms()))
+			.withAdditionalTerms(JsonNullable.of(source.getAdditionalTerms()))
 			.build();
 	}
 
@@ -350,23 +364,23 @@ class EntityMapperTest {
 		EntityMapper.patchContractEntity(entity, patch);
 
 		// Assert — scalar and scalar-inside-nested fields from the patch payload are applied onto the entity
-		assertThat(entity.getDescription()).isEqualTo(patch.getDescription());
-		assertThat(entity.getArea()).isEqualTo(patch.getArea());
-		assertThat(entity.getAreaData()).isEqualTo(patch.getAreaData());
-		assertThat(entity.getEndDate()).isEqualTo(patch.getEndDate());
-		assertThat(entity.getStartDate()).isEqualTo(patch.getStartDate());
-		assertThat(entity.getExternalReferenceId()).isEqualTo(patch.getExternalReferenceId());
-		assertThat(entity.getObjectIdentity()).isEqualTo(patch.getObjectIdentity());
-		assertThat(entity.getStatus()).isEqualTo(patch.getStatus());
-		assertThat(entity.getType()).isEqualTo(patch.getType());
-		assertThat(entity.isSignedByWitness()).isEqualTo(patch.getSignedByWitness());
-		assertThat(entity.getLeaseExtension()).isEqualTo(patch.getExtension().getLeaseExtension());
-		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(patch.getExtension().getUnit());
-		assertThat(entity.getAutoExtend()).isEqualTo(patch.getExtension().getAutoExtend());
-		assertThat(entity.getCurrentPeriodStartDate()).isEqualTo(patch.getCurrentPeriod().getStartDate());
-		assertThat(entity.getCurrentPeriodEndDate()).isEqualTo(patch.getCurrentPeriod().getEndDate());
-		assertThat(entity.getNoticeDate()).isEqualTo(patch.getNotice().getNoticeDate());
-		assertThat(entity.getNoticeGivenBy()).isEqualTo(patch.getNotice().getNoticeGivenBy());
+		assertThat(entity.getDescription()).isEqualTo(patch.getDescription().get());
+		assertThat(entity.getArea()).isEqualTo(patch.getArea().get());
+		assertThat(entity.getAreaData()).isEqualTo(patch.getAreaData().get());
+		assertThat(entity.getEndDate()).isEqualTo(patch.getEndDate().get());
+		assertThat(entity.getStartDate()).isEqualTo(patch.getStartDate().get());
+		assertThat(entity.getExternalReferenceId()).isEqualTo(patch.getExternalReferenceId().get());
+		assertThat(entity.getObjectIdentity()).isEqualTo(patch.getObjectIdentity().get());
+		assertThat(entity.getStatus()).isEqualTo(patch.getStatus().get());
+		assertThat(entity.getType()).isEqualTo(patch.getType().get());
+		assertThat(entity.isSignedByWitness()).isEqualTo(patch.getSignedByWitness().get());
+		assertThat(entity.getLeaseExtension()).isEqualTo(patch.getExtension().get().getLeaseExtension());
+		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(patch.getExtension().get().getUnit());
+		assertThat(entity.getAutoExtend()).isEqualTo(patch.getExtension().get().getAutoExtend());
+		assertThat(entity.getCurrentPeriodStartDate()).isEqualTo(patch.getCurrentPeriod().get().getStartDate());
+		assertThat(entity.getCurrentPeriodEndDate()).isEqualTo(patch.getCurrentPeriod().get().getEndDate());
+		assertThat(entity.getNoticeDate()).isEqualTo(patch.getNotice().get().getNoticeDate());
+		assertThat(entity.getNoticeGivenBy()).isEqualTo(patch.getNotice().get().getNoticeGivenBy());
 	}
 
 	@Test
@@ -380,15 +394,15 @@ class EntityMapperTest {
 		EntityMapper.patchContractEntity(entity, patch);
 
 		// Assert — collections and embedded value objects are replaced
-		assertThat(entity.getNoticeTerms()).hasSameSizeAs(patch.getNotice().getTerms());
+		assertThat(entity.getNoticeTerms()).hasSameSizeAs(patch.getNotice().get().getTerms());
 		assertThat(entity.getFees()).isNotNull();
 		assertThat(entity.getInvoicing()).isNotNull();
 		assertThat(entity.getLeasehold()).isNotNull();
-		assertThat(entity.getPropertyDesignations()).hasSameSizeAs(patch.getPropertyDesignations());
-		assertThat(entity.getStakeholders()).hasSameSizeAs(patch.getStakeholders());
-		assertThat(entity.getExtraParameters()).hasSameSizeAs(patch.getExtraParameters());
+		assertThat(entity.getPropertyDesignations()).hasSameSizeAs(patch.getPropertyDesignations().get());
+		assertThat(entity.getStakeholders()).hasSameSizeAs(patch.getStakeholders().get());
+		assertThat(entity.getExtraParameters()).hasSameSizeAs(patch.getExtraParameters().get());
 		assertThat(entity.getTermGroups())
-			.hasSize(patch.getIndexTerms().size() + patch.getAdditionalTerms().size());
+			.hasSize(patch.getIndexTerms().get().size() + patch.getAdditionalTerms().get().size());
 	}
 
 	@Test
@@ -398,11 +412,11 @@ class EntityMapperTest {
 		final var entity = createContractEntity();
 
 		final var patch = PatchContract.builder()
-			.withPropertyDesignations(List.of(
+			.withPropertyDesignations(JsonNullable.of(List.of(
 				PropertyDesignation.builder()
 					.withName("patchedName")
 					.withDistrict("patchedDistrict")
-					.build()))
+					.build())))
 			.build();
 
 		// Act
@@ -426,12 +440,12 @@ class EntityMapperTest {
 			.toList();
 
 		final var patch = PatchContract.builder()
-			.withIndexTerms(List.of(
+			.withIndexTerms(JsonNullable.of(List.of(
 				TermGroup.builder()
 					.withHeader("replaced index header")
 					.withTerms(List.of(Term.builder()
 						.withName("t1").withDescription("d1").build()))
-					.build()))
+					.build())))
 			.build();
 
 		// Act

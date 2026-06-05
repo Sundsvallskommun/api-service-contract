@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "9.0"
+  version: "10.0"
 servers:
-- url: http://localhost:60349
+- url: http://localhost:41037
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -15,221 +15,6 @@ tags:
 - name: Contracts
   description: Contract resources
 paths:
-  /{municipalityId}/contracts/{contractId}:
-    get:
-      tags:
-      - Contracts
-      summary: Get a contract
-      operationId: getContractById
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      - name: version
-        in: query
-        description: Contract version
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
-      responses:
-        "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Contract"
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    put:
-      tags:
-      - Contracts
-      summary: Update a contract
-      operationId: updateContract
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Contract"
-        required: true
-      responses:
-        "200":
-          description: Ok
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    delete:
-      tags:
-      - Contracts
-      summary: Delete a contract
-      operationId: deleteContract
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          description: No Content
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    patch:
-      tags:
-      - Contracts
-      summary: Patch a contract
-      description: Applies only the non-null fields from the payload onto the existing
-        contract. Does not create a new version.
-      operationId: patchContract
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PatchContract"
-        required: true
-      responses:
-        "200":
-          description: Ok
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/contracts/{contractId}/attachments/{attachmentId}:
     get:
       tags:
@@ -648,6 +433,168 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/contracts/{contractId}:
+    get:
+      tags:
+      - Contracts
+      summary: Get a contract
+      operationId: getContractById
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: version
+        in: query
+        description: Contract version
+        required: false
+        schema:
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contract"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Contracts
+      summary: Delete a contract
+      operationId: deleteContract
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Contracts
+      summary: Patch a contract
+      description: Applies only the non-null fields from the payload onto the existing
+        contract. Does not create a new version.
+      operationId: patchContract
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchContract"
+        required: true
+      responses:
+        "200":
+          description: Ok
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -682,51 +629,35 @@ components:
         status:
           type: integer
           format: int32
-    Address:
+    Attachment:
       type: object
+      description: Attachment
       properties:
-        type:
-          $ref: "#/components/schemas/AddressType"
-          description: Address type
-          examples:
-          - POSTAL_ADDRESS
-        streetAddress:
-          type: string
-          examples:
-          - Testvägen 18
-        careOf:
-          type: string
-          examples:
-          - c/o Test Testorsson
-        postalCode:
-          type: string
-          examples:
-          - 123 45
-        town:
-          type: string
-          examples:
-          - Sundsvall
-        country:
-          type: string
-          examples:
-          - Sverige
-        attention:
-          type: string
-          examples:
-          - Test Testorsson
-    AddressType:
-      type: string
-      description: Address type
-      enum:
-      - POSTAL_ADDRESS
-      - BILLING_ADDRESS
-      - VISITING_ADDRESS
+        attachmentData:
+          $ref: "#/components/schemas/AttachmentData"
+          description: "Attachment data, i.e. the file"
+        metadata:
+          $ref: "#/components/schemas/AttachmentMetadata"
+          description: Attachment metadata
+      required:
+      - attachmentData
+      - metadata
     AttachmentCategory:
       type: string
       description: Attachment category
       enum:
       - CONTRACT
       - OTHER
+    AttachmentData:
+      type: object
+      description: Attachment content
+      properties:
+        content:
+          type: string
+          format: base64
+          description: BASE64-encoded attachment file content
+          examples:
+          - QkFTRTY0LWVuY29kZWQgZGF0YQ==
     AttachmentMetadata:
       type: object
       description: Attachment metadata
@@ -767,6 +698,91 @@ components:
       required:
       - filename
       - mimeType
+    ConstraintViolationProblem:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        status:
+          type: integer
+          format: int32
+        violations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Violation"
+        title:
+          type: string
+        instance:
+          type: string
+          format: uri
+        detail:
+          type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
+    ThrowableProblem:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        causeAsProblem: {}
+    Violation:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    Address:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/AddressType"
+          description: Address type
+          examples:
+          - POSTAL_ADDRESS
+        streetAddress:
+          type: string
+          examples:
+          - Testvägen 18
+        careOf:
+          type: string
+          examples:
+          - c/o Test Testorsson
+        postalCode:
+          type: string
+          examples:
+          - 123 45
+        town:
+          type: string
+          examples:
+          - Sundsvall
+        country:
+          type: string
+          examples:
+          - Sverige
+        attention:
+          type: string
+          examples:
+          - Test Testorsson
+    AddressType:
+      type: string
+      description: Address type
+      enum:
+      - POSTAL_ADDRESS
+      - BILLING_ADDRESS
+      - VISITING_ADDRESS
     Contract:
       type: object
       description: Contract
@@ -1500,75 +1516,6 @@ components:
       - DAYS
       - MONTHS
       - YEARS
-    ConstraintViolationProblem:
-      type: object
-      properties:
-        type:
-          type: string
-          format: uri
-        status:
-          type: integer
-          format: int32
-        violations:
-          type: array
-          items:
-            $ref: "#/components/schemas/Violation"
-        title:
-          type: string
-        instance:
-          type: string
-          format: uri
-        detail:
-          type: string
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
-    ThrowableProblem:
-      type: object
-      properties:
-        type:
-          type: string
-          format: uri
-        title:
-          type: string
-        status:
-          type: integer
-          format: int32
-        detail:
-          type: string
-        instance:
-          type: string
-          format: uri
-        causeAsProblem: {}
-    Violation:
-      type: object
-      properties:
-        field:
-          type: string
-        message:
-          type: string
-    Attachment:
-      type: object
-      description: Attachment
-      properties:
-        attachmentData:
-          $ref: "#/components/schemas/AttachmentData"
-          description: "Attachment data, i.e. the file"
-        metadata:
-          $ref: "#/components/schemas/AttachmentMetadata"
-          description: Attachment metadata
-      required:
-      - attachmentData
-      - metadata
-    AttachmentData:
-      type: object
-      description: Attachment content
-      properties:
-        content:
-          type: string
-          format: base64
-          description: BASE64-encoded attachment file content
-          examples:
-          - QkFTRTY0LWVuY29kZWQgZGF0YQ==
     Change:
       type: object
       properties:
@@ -1617,26 +1564,11 @@ components:
           type: boolean
         container:
           type: boolean
-        string:
-          type: boolean
-        pojo:
-          type: boolean
-        int:
-          type: boolean
-        double:
-          type: boolean
-        long:
-          type: boolean
-        short:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        boolean:
-          type: boolean
-        binary:
-          type: boolean
         number:
+          type: boolean
+        valueNode:
+          type: boolean
+        missingNode:
           type: boolean
         nodeType:
           type: string
@@ -1650,24 +1582,40 @@ components:
           - OBJECT
           - POJO
           - STRING
-        bigDecimal:
-          type: boolean
-        missingNode:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        valueNode:
+        string:
           type: boolean
         integralNumber:
           type: boolean
+        pojo:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        short:
+          type: boolean
+        int:
+          type: boolean
+        long:
+          type: boolean
+        double:
+          type: boolean
+        bigDecimal:
+          type: boolean
         bigInteger:
+          type: boolean
+        textual:
+          type: boolean
+          deprecated: true
+        boolean:
+          type: boolean
+        binary:
           type: boolean
         embeddedValue:
           type: boolean
     PatchContract:
       type: object
-      description: Partial contract payload used for PATCH. Only the fields present
-        in the payload are applied to the existing contract.
+      description: "Partial contract payload used for PATCH (JSON Merge Patch semantics):\
+        \ a field that is omitted is left unchanged, a field set to null is cleared,\
+        \ and a field set to a value is updated."
       properties:
         description:
           type: string
@@ -1765,12 +1713,12 @@ components:
     PageContract:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -1781,17 +1729,17 @@ components:
         number:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -1800,16 +1748,16 @@ components:
         offset:
           type: integer
           format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        paged:
-          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
+        paged:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
     SortObject:

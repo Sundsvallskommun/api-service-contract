@@ -38,7 +38,6 @@ import static se.sundsvall.contract.service.businessrule.model.Action.DELETE;
 import static se.sundsvall.contract.service.businessrule.model.Action.UPDATE;
 import static se.sundsvall.contract.service.mapper.DtoMapper.toBusinessruleParameters;
 import static se.sundsvall.contract.service.mapper.DtoMapper.toContractDto;
-import static se.sundsvall.contract.service.mapper.EntityMapper.createNewContractEntity;
 import static se.sundsvall.contract.service.mapper.EntityMapper.patchContractEntity;
 import static se.sundsvall.contract.service.mapper.EntityMapper.toContractEntity;
 
@@ -164,7 +163,7 @@ public class ContractService {
 
 	/**
 	 * Patches an existing contract in place, applying only the non-null fields from the payload.
-	 * Does not create a new version, but triggers matching business rules the same way as {@link #updateContract}.
+	 * Does not create a new version, but triggers matching business rules the same way as a create.
 	 *
 	 * @param municipalityId the municipality id
 	 * @param contractId     the contract id
@@ -197,39 +196,6 @@ public class ContractService {
 
 		// Save changes on the existing entity — no new version is created
 		contractRepository.save(existingEntity);
-	}
-
-	/**
-	 * Updates a contract by creating a new version and applying matching business rules.
-	 *
-	 * @param municipalityId the municipality id
-	 * @param contractId     the contract id
-	 * @param contract       the updated contract data
-	 */
-	@Transactional
-	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
-		final var oldContractEntity = contractRepository.findFirstByMunicipalityIdAndContractIdOrderByVersionDesc(municipalityId, contractId)
-			.orElseThrow(() -> Problem.builder()
-				.withStatus(NOT_FOUND)
-				.withDetail(CONTRACT_ID_MUNICIPALITY_ID_NOT_FOUND.formatted(contractId, municipalityId))
-				.build());
-
-		// Create a new entity
-		final var newContractEntity = createNewContractEntity(municipalityId, oldContractEntity, contract);
-
-		// Validate billing constraints on the mapped entity; an unchanged (already past) endDate is allowed
-		contractValidator.validate(newContractEntity, oldContractEntity.getEndDate());
-
-		// Apply matching businessrules
-		applyBusinessrules(newContractEntity, UPDATE);
-
-		// Notify billing
-		outboxRepository.save(toOutboxEntity(newContractEntity, ContractUpdatedEvent.of(
-			newContractEntity.getContractId(),
-			newContractEntity.getMunicipalityId())));
-
-		// Save changes
-		contractRepository.save(newContractEntity);
 	}
 
 	/**

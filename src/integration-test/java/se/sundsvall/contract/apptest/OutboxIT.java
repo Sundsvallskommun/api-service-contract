@@ -2,8 +2,8 @@ package se.sundsvall.contract.apptest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -57,13 +57,13 @@ class OutboxIT extends AbstractAppTest {
 	}
 
 	/**
-	 * Verifies that updating a contract writes a CONTRACT_UPDATED entry to the outbox.
+	 * Verifies that patching a contract writes a CONTRACT_UPDATED entry to the outbox.
 	 */
 	@Test
 	void test02_updateContractWritesContractUpdatedToOutbox() {
 		setupCall()
 			.withServicePath(fromPath(PATH + "/{contractId}").build(MUNICIPALITY_ID, CONTRACT_ID).toString())
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
@@ -116,13 +116,13 @@ class OutboxIT extends AbstractAppTest {
 
 	/**
 	 * Verifies the full outbox dispatch flow for an updated contract:
-	 * update contract → CONTRACT_UPDATED in outbox → dispatcher sends to billing → outbox cleared.
+	 * patch contract → CONTRACT_UPDATED in outbox → dispatcher sends to billing → outbox cleared.
 	 */
 	@Test
 	void test05_dispatchSendsUpdatedEventToBilling() {
 		setupCall()
 			.withServicePath(fromPath(PATH + "/{contractId}").build(MUNICIPALITY_ID, CONTRACT_ID).toString())
-			.withHttpMethod(PUT)
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.sendRequest();
