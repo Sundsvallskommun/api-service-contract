@@ -1,5 +1,6 @@
 package se.sundsvall.contract.service.mapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +65,15 @@ public final class EntityMapper {
 	 */
 	private static String blankToNull(final String value) {
 		return (value == null || value.isBlank()) ? null : value;
+	}
+
+	/**
+	 * Normalizes an omitted (null) fee amount to {@link BigDecimal#ZERO} so that a contract that carries fees never
+	 * stores a null yearly/monthly amount. A null amount would otherwise propagate to the billing pipeline
+	 * (BillingDataCollector), where it fails the cost calculation with "missing crucial information".
+	 */
+	private static BigDecimal nullToZero(final BigDecimal value) {
+		return value == null ? BigDecimal.ZERO : value;
 	}
 
 	/**
@@ -377,8 +387,8 @@ public final class EntityMapper {
 		return ofNullable(fees)
 			.map(f -> FeesEmbeddable.builder()
 				.withCurrency(f.getCurrency())
-				.withYearly(f.getYearly())
-				.withMonthly(f.getMonthly())
+				.withYearly(nullToZero(f.getYearly()))
+				.withMonthly(nullToZero(f.getMonthly()))
 				.withTotal(f.getTotal())
 				.withTotalAsText(f.getTotalAsText())
 				.withIndexType(blankToNull(f.getIndexType()))
