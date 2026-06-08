@@ -3,6 +3,7 @@ package se.sundsvall.contract.api.model;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -19,12 +20,15 @@ import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.Status;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
+
 @Data
 @Builder(setterPrefix = "with")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Schema(description = "Partial contract payload used for PATCH (JSON Merge Patch semantics): a field that is omitted is "
-	+ "left unchanged, a field set to null is cleared, and a field set to a value is updated.")
+	+ "left unchanged, a field set to null is cleared, and a field set to a value is updated. A constraint is only "
+	+ "evaluated when the field is present, so a mandatory field may be omitted but may not be set to null.")
 public class PatchContract {
 
 	@Schema(description = "A description of the contract", examples = "A simple description of the contract")
@@ -43,38 +47,43 @@ public class PatchContract {
 	@Builder.Default
 	private JsonNullable<String> objectIdentity = JsonNullable.undefined();
 
-	@Schema(description = "Contract status")
+	@NotNull
+	@Schema(description = "Contract status", requiredMode = NOT_REQUIRED)
 	@Builder.Default
 	private JsonNullable<Status> status = JsonNullable.undefined();
 
-	@Schema(description = "Contract type")
+	@NotNull
+	@Schema(description = "Contract type", requiredMode = NOT_REQUIRED)
 	@Builder.Default
 	private JsonNullable<ContractType> type = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Type of leasehold")
 	@Builder.Default
 	private JsonNullable<Leasehold> leasehold = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
 	@Builder.Default
-	private JsonNullable<List<TermGroup>> additionalTerms = JsonNullable.undefined();
+	private JsonNullable<List<@Valid TermGroup>> additionalTerms = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Extra parameters")
 	@Builder.Default
-	private JsonNullable<List<ExtraParameterGroup>> extraParameters = JsonNullable.undefined();
+	private JsonNullable<List<@Valid ExtraParameterGroup>> extraParameters = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Index terms for the contract"))
 	@Builder.Default
-	private JsonNullable<List<TermGroup>> indexTerms = JsonNullable.undefined();
+	private JsonNullable<List<@Valid TermGroup>> indexTerms = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Property designations"))
 	@Builder.Default
-	private JsonNullable<List<PropertyDesignation>> propertyDesignations = JsonNullable.undefined();
+	private JsonNullable<List<@Valid PropertyDesignation>> propertyDesignations = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "List of stakeholders"))
 	@Builder.Default
-	private JsonNullable<List<Stakeholder>> stakeholders = JsonNullable.undefined();
+	private JsonNullable<List<@Valid Stakeholder>> stakeholders = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Lease extension")
 	@Builder.Default
 	private JsonNullable<Extension> extension = JsonNullable.undefined();
@@ -84,6 +93,7 @@ public class PatchContract {
 	@Builder.Default
 	private JsonNullable<Fees> fees = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Invoicing details")
 	@Builder.Default
 	private JsonNullable<Invoicing> invoicing = JsonNullable.undefined();
@@ -96,10 +106,12 @@ public class PatchContract {
 	@Builder.Default
 	private JsonNullable<LocalDate> endDate = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Notice details")
 	@Builder.Default
 	private JsonNullable<Notice> notice = JsonNullable.undefined();
 
+	@Valid
 	@Schema(description = "Current contract period")
 	@Builder.Default
 	private JsonNullable<Period> currentPeriod = JsonNullable.undefined();

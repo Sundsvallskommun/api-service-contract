@@ -162,6 +162,45 @@ class ContractResourceFailuresTest {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
+	// status / type: @NotNull — a mandatory field may be omitted on a PATCH but may not be set to null
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void patchWithNullStatusIsRejected() {
+		patchExpectingBadRequest("""
+			{
+				"status": null
+			}
+			""");
+	}
+
+	@Test
+	void patchWithNullTypeIsRejected() {
+		patchExpectingBadRequest("""
+			{
+				"type": null
+			}
+			""");
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// stakeholders.partyId: @ValidUuid — nested validation cascades into patched list elements
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void patchWithInvalidStakeholderPartyIdIsRejected() {
+		patchExpectingBadRequest("""
+			{
+				"stakeholders": [
+					{
+						"partyId": "not-a-uuid"
+					}
+				]
+			}
+			""");
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
 	// fees.indexationRate: @DecimalMin(0.0) @DecimalMax(1.0)
 	// ----------------------------------------------------------------------------------------------------------
 

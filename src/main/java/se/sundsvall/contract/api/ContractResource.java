@@ -136,7 +136,7 @@ class ContractResource {
 
 	@Operation(
 		summary = "Patch a contract",
-		description = "Applies only the non-null fields from the payload onto the existing contract. Does not create a new version.",
+		description = "Updates an existing contract in place using JSON Merge Patch semantics: a field that is omitted is left unchanged, a field set to null is cleared, and a field set to a value is updated. Does not create a new version.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",

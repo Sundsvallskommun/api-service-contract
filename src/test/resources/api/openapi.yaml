@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "10.0"
 servers:
-- url: http://localhost:41037
+- url: http://localhost:34855
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -544,8 +544,9 @@ paths:
       tags:
       - Contracts
       summary: Patch a contract
-      description: Applies only the non-null fields from the payload onto the existing
-        contract. Does not create a new version.
+      description: "Updates an existing contract in place using JSON Merge Patch semantics:\
+        \ a field that is omitted is left unchanged, a field set to null is cleared,\
+        \ and a field set to a value is updated. Does not create a new version."
       operationId: patchContract
       parameters:
       - name: municipalityId
@@ -1615,7 +1616,9 @@ components:
       type: object
       description: "Partial contract payload used for PATCH (JSON Merge Patch semantics):\
         \ a field that is omitted is left unchanged, a field set to null is cleared,\
-        \ and a field set to a value is updated."
+        \ and a field set to a value is updated. A constraint is only evaluated when\
+        \ the field is present, so a mandatory field may be omitted but may not be\
+        \ set to null."
       properties:
         description:
           type: string
@@ -1748,14 +1751,14 @@ components:
         offset:
           type: integer
           format: int64
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
         unpaged:
