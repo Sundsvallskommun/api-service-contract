@@ -1,7 +1,6 @@
 package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,8 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import se.sundsvall.contract.model.enums.TimeUnit;
-
-import static java.lang.Boolean.TRUE;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -28,13 +25,4 @@ public class Extension {
 
 	@Schema(description = "The unit of the extension value", examples = "MONTHS")
 	private TimeUnit unit;
-
-	@AssertTrue(message = "If 'autoExtend' is true, both 'leaseExtension' and 'unit' must be provided!")
-	boolean hasValidExtensionProperties() {
-		if (TRUE.equals(autoExtend)) {
-			return leaseExtension != null && unit != null;
-		}
-
-		return true;
-	}
 }

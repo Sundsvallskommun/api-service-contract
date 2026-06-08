@@ -21,6 +21,15 @@ All notable changes to the Contracts API are documented here.
   payload is left unchanged, a field set to **`null`** is now **cleared**, and a field set to a value is updated.
   Previously a `null` was indistinguishable from an omitted field and was ignored, so there was no way to clear a
   value. (`signedByWitness` is a primitive boolean and cannot be cleared; an explicit `null` for it is ignored.)
+- **`PATCH` merges nested objects recursively.** The same omit/null/value rules apply at every level of `fees`,
+  `invoicing`, `leasehold`, `notice`, `extension` and `currentPeriod` — so e.g. `{"fees": {"monthly": 500}}` now
+  updates only `monthly` and **keeps** the other fee fields. Previously these objects were replaced as a whole, so
+  any sub-field left out was cleared. Arrays (e.g. `stakeholders`, `propertyDesignations`, `additionalInformation`)
+  are still replaced as a whole when provided.
+- **Cross-field invariants are now enforced on the resulting contract** rather than on the request model: the fee
+  index trio consistency, the "`autoExtend` requires `leaseExtension` + `unit`" rule, and "invoicing must have both
+  interval and `invoicedIn`". The same requests are accepted/rejected as before, but the rules now hold for the
+  merged result of a `PATCH` as well as for a create.
 - **Contract `type` is now updatable via `PATCH`.** The `type` column was previously mapped non-updatable, so
   the type could only change as a side effect of `PUT` creating a new version. With `PUT` removed, the
   non-updatable mapping was dropped so a `PATCH` that includes `type` changes it in place (and the

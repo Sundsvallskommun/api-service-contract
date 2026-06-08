@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "10.0"
 servers:
-- url: http://localhost:34855
+- url: http://localhost:40689
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -1145,9 +1145,6 @@ components:
           - QUARTERLY
         invoicedIn:
           $ref: "#/components/schemas/InvoicedIn"
-      required:
-      - invoiceInterval
-      - invoicedIn
     LeaseType:
       type: string
       description: Lease type
@@ -1567,10 +1564,6 @@ components:
           type: boolean
         number:
           type: boolean
-        valueNode:
-          type: boolean
-        missingNode:
-          type: boolean
         nodeType:
           type: string
           enum:
@@ -1610,6 +1603,10 @@ components:
           type: boolean
         binary:
           type: boolean
+        valueNode:
+          type: boolean
+        missingNode:
+          type: boolean
         embeddedValue:
           type: boolean
     PatchContract:
@@ -1645,7 +1642,7 @@ components:
           $ref: "#/components/schemas/ContractType"
           description: Contract type
         leasehold:
-          $ref: "#/components/schemas/Leasehold"
+          $ref: "#/components/schemas/PatchLeasehold"
           description: Type of leasehold
         additionalTerms:
           type: array
@@ -1673,13 +1670,13 @@ components:
             $ref: "#/components/schemas/Stakeholder"
             description: List of stakeholders
         extension:
-          $ref: "#/components/schemas/Extension"
+          $ref: "#/components/schemas/PatchExtension"
           description: Lease extension
         fees:
-          $ref: "#/components/schemas/Fees"
+          $ref: "#/components/schemas/PatchFees"
           description: Fee details
         invoicing:
-          $ref: "#/components/schemas/Invoicing"
+          $ref: "#/components/schemas/PatchInvoicing"
           description: Invoicing details
         startDate:
           type: string
@@ -1694,10 +1691,10 @@ components:
           examples:
           - 2022-12-31
         notice:
-          $ref: "#/components/schemas/Notice"
+          $ref: "#/components/schemas/PatchNotice"
           description: Notice details
         currentPeriod:
-          $ref: "#/components/schemas/Period"
+          $ref: "#/components/schemas/PatchPeriod"
           description: Current contract period
         area:
           type: integer
@@ -1712,6 +1709,146 @@ components:
           $ref: "#/components/schemas/FeatureCollection"
           description: Part(s) of property covered by the lease. Described by GeoJSON
             using polygon(s)
+    PatchExtension:
+      type: object
+      description: Partial lease extension details for PATCH
+      properties:
+        autoExtend:
+          type: boolean
+          description: Marker for whether an agreement should be extended automatically
+            or not
+          examples:
+          - "true"
+        leaseExtension:
+          type: integer
+          format: int32
+          description: The lease extension value
+          examples:
+          - 2
+          minimum: 0
+        unit:
+          $ref: "#/components/schemas/TimeUnit"
+          description: The unit of the extension value
+          examples:
+          - MONTHS
+    PatchFees:
+      type: object
+      description: Partial fee details for PATCH
+      properties:
+        currency:
+          type: string
+          description: The currency of the lease fees
+          examples:
+          - SEK
+        yearly:
+          type: number
+          description: Yearly fee
+          examples:
+          - 1000.5
+        monthly:
+          type: number
+          description: Monthly fee
+          examples:
+          - 100.5
+        total:
+          type: number
+          description: Total fee
+          examples:
+          - 1200.5
+        totalAsText:
+          type: string
+          description: Total fee as text
+          examples:
+          - One thousand two hundred
+        indexType:
+          type: string
+          description: Index type
+          example: KPI 80
+        indexYear:
+          type: integer
+          format: int32
+          description: Index year
+          examples:
+          - 2021
+        indexNumber:
+          type: number
+          description: Index number
+          examples:
+          - 1.0
+        indexationRate:
+          type: number
+          description: Specifies what proportion of the consumer price index should
+            be used for invoicing.
+          examples:
+          - 0.5
+          maximum: 1.0
+          minimum: 0.0
+        additionalInformation:
+          type: array
+          description: Additional information. Each entry must be non-blank and between
+            1 and 30 characters (used as invoice row descriptions).
+          items:
+            type: string
+    PatchInvoicing:
+      type: object
+      description: Partial invoicing details for PATCH
+      properties:
+        invoiceInterval:
+          $ref: "#/components/schemas/IntervalType"
+          description: How often the lease is invoiced
+          examples:
+          - QUARTERLY
+        invoicedIn:
+          $ref: "#/components/schemas/InvoicedIn"
+    PatchLeasehold:
+      type: object
+      description: Partial leasehold details for PATCH
+      properties:
+        purpose:
+          $ref: "#/components/schemas/LeaseholdType"
+          description: Type of leasehold
+        description:
+          type: string
+          description: Additional description of the leasehold type
+        additionalInformation:
+          type: array
+          description: Additional information
+          items:
+            type: string
+    PatchNotice:
+      type: object
+      description: Partial notice details for PATCH
+      properties:
+        terms:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoticeTerm"
+            description: Notice terms
+        noticeDate:
+          type: string
+          format: date
+          description: Date when the notice was given
+          examples:
+          - 2023-01-01
+        noticeGivenBy:
+          $ref: "#/components/schemas/Party"
+          description: The party that gave the notice
+    PatchPeriod:
+      type: object
+      description: Partial contract period for PATCH
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: Start date of the period
+          examples:
+          - 2020-01-01
+        endDate:
+          type: string
+          format: date
+          description: End date of the period
+          examples:
+          - 2020-12-31
     SpecificationContractEntity: {}
     PageContract:
       type: object

@@ -1,7 +1,6 @@
 package se.sundsvall.contract.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -52,15 +51,4 @@ public class Fees {
 
 	@Schema(description = "Additional information. Each entry must be non-blank and between 1 and 30 characters (used as invoice row descriptions).")
 	private List<@NotBlank @Size(min = 1, max = 30) String> additionalInformation;
-
-	@AssertTrue(message = "If any fee index field is set, then indexType, indexYear and indexNumber (greater than 0) must all be set")
-	boolean hasConsistentIndexFields() {
-		final var anyIndexSet = (indexType != null && !indexType.isBlank()) || indexNumber != null || indexYear != null;
-		if (!anyIndexSet) {
-			return true;
-		}
-		return indexType != null && !indexType.isBlank()
-			&& indexYear != null
-			&& indexNumber != null && indexNumber.signum() > 0;
-	}
 }

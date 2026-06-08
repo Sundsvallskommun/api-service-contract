@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import org.geojson.FeatureCollection;
 import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.model.ExtraParameterGroup;
-import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.model.enums.ContractType;
 import se.sundsvall.contract.model.enums.LeaseType;
@@ -60,7 +59,7 @@ public class PatchContract {
 	@Valid
 	@Schema(description = "Type of leasehold")
 	@Builder.Default
-	private JsonNullable<Leasehold> leasehold = JsonNullable.undefined();
+	private JsonNullable<PatchLeasehold> leasehold = JsonNullable.undefined();
 
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
 	@Builder.Default
@@ -86,17 +85,17 @@ public class PatchContract {
 	@Valid
 	@Schema(description = "Lease extension")
 	@Builder.Default
-	private JsonNullable<Extension> extension = JsonNullable.undefined();
+	private JsonNullable<PatchExtension> extension = JsonNullable.undefined();
 
 	@Valid
 	@Schema(description = "Fee details")
 	@Builder.Default
-	private JsonNullable<Fees> fees = JsonNullable.undefined();
+	private JsonNullable<PatchFees> fees = JsonNullable.undefined();
 
 	@Valid
 	@Schema(description = "Invoicing details")
 	@Builder.Default
-	private JsonNullable<Invoicing> invoicing = JsonNullable.undefined();
+	private JsonNullable<PatchInvoicing> invoicing = JsonNullable.undefined();
 
 	@Schema(description = "Start date of the contract", examples = "2020-01-01", format = "date")
 	@Builder.Default
@@ -109,12 +108,12 @@ public class PatchContract {
 	@Valid
 	@Schema(description = "Notice details")
 	@Builder.Default
-	private JsonNullable<Notice> notice = JsonNullable.undefined();
+	private JsonNullable<PatchNotice> notice = JsonNullable.undefined();
 
 	@Valid
 	@Schema(description = "Current contract period")
 	@Builder.Default
-	private JsonNullable<Period> currentPeriod = JsonNullable.undefined();
+	private JsonNullable<PatchPeriod> currentPeriod = JsonNullable.undefined();
 
 	@Schema(description = "Leased area (m2)", examples = "150")
 	@Builder.Default

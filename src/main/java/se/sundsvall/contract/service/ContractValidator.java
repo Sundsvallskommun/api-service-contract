@@ -39,6 +39,9 @@ public class ContractValidator {
 	static final String PRIMARY_BILLING_PARTY_NAME_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an organization name, or both a first and last name.";
 	static final String PROPERTY_DESIGNATION_BLANK_MESSAGE = "Property designation name must not be blank.";
 	static final String END_DATE_MESSAGE = "endDate must not be set to a date before today's date";
+	static final String FEE_INDEX_MESSAGE = "If any fee index field is set, then indexType, indexYear and indexNumber (greater than 0) must all be set.";
+	static final String EXTENSION_MESSAGE = "If 'autoExtend' is true, both 'leaseExtension' and 'unit' must be provided.";
+	static final String INVOICING_MESSAGE = "Both invoice interval and invoicedIn must be set when invoicing is provided.";
 
 	private final Clock clock;
 
@@ -65,9 +68,51 @@ public class ContractValidator {
 		validatePrimaryBillingParty(contract, violations);
 		validatePropertyDesignations(contract, violations);
 		validateEndDate(contract, previousEndDate, violations);
+		validateFeeIndexFields(contract, violations);
+		validateExtension(contract, violations);
+		validateInvoicing(contract, violations);
 
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationProblem(BAD_REQUEST, violations);
+		}
+	}
+
+	/**
+	 * Mirrors the single-object rule that used to live on the API model: if any fee index field is set (indexType,
+	 * indexYear or indexNumber), then all of them must be set and indexNumber must be greater than 0. Evaluated on the
+	 * merged entity so a patch that only re-sends part of the index trio is judged against the resulting state.
+	 */
+	private void validateFeeIndexFields(final ContractEntity contract, final List<Violation> violations) {
+		final var fees = contract.getFees();
+		if (fees == null) {
+			return;
+		}
+		final var indexType = fees.getIndexType();
+		final var anyIndexSet = isNotBlank(indexType) || nonNull(fees.getIndexNumber()) || nonNull(fees.getIndexYear());
+		final var allIndexSet = isNotBlank(indexType) && nonNull(fees.getIndexYear()) && nonNull(fees.getIndexNumber()) && fees.getIndexNumber().signum() > 0;
+		if (anyIndexSet && !allIndexSet) {
+			violations.add(new Violation("fees", FEE_INDEX_MESSAGE));
+		}
+	}
+
+	/**
+	 * When auto-extension is enabled, both the extension length and its time unit must be present. Evaluated on the
+	 * merged entity so the rule holds for the resulting state of a patch.
+	 */
+	private void validateExtension(final ContractEntity contract, final List<Violation> violations) {
+		if (Boolean.TRUE.equals(contract.getAutoExtend()) && (contract.getLeaseExtension() == null || contract.getLeaseExtensionUnit() == null)) {
+			violations.add(new Violation("extension", EXTENSION_MESSAGE));
+		}
+	}
+
+	/**
+	 * Invoicing is optional, but when present both the interval and invoicedIn must be set (it is a billing pair).
+	 * Evaluated on the merged entity; to remove invoicing entirely a patch must send {@code "invoicing": null}.
+	 */
+	private void validateInvoicing(final ContractEntity contract, final List<Violation> violations) {
+		final var invoicing = contract.getInvoicing();
+		if (nonNull(invoicing) && (invoicing.getInvoiceInterval() == null || invoicing.getInvoicedIn() == null)) {
+			violations.add(new Violation("invoicing", INVOICING_MESSAGE));
 		}
 	}
 

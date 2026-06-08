@@ -72,56 +72,7 @@ class FeesTest {
 		assertThat(Fees.builder().build()).hasAllNullFieldsOrProperties();
 	}
 
-	// ----------------------------------------------------------------------------------------------------------
-	// Fee index trio consistency (@AssertTrue hasConsistentIndexFields)
-	// ----------------------------------------------------------------------------------------------------------
-
 	private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
-
-	@Test
-	void noIndexFieldsIsValid() {
-		assertThat(VALIDATOR.validate(Fees.builder().build())).isEmpty();
-	}
-
-	@Test
-	void completeIndexTrioIsValid() {
-		final var fees = Fees.builder()
-			.withIndexType("KPI 80")
-			.withIndexYear(2021)
-			.withIndexNumber(new BigDecimal("1.00"))
-			.build();
-
-		assertThat(VALIDATOR.validate(fees)).isEmpty();
-	}
-
-	@Test
-	void partialIndexDataIsRejected() {
-		final var fees = Fees.builder().withIndexType("KPI 80").build();
-
-		assertThat(VALIDATOR.validate(fees)).isNotEmpty();
-	}
-
-	@Test
-	void blankIndexTypeWithOtherIndexFieldsIsRejected() {
-		final var fees = Fees.builder()
-			.withIndexType("   ")
-			.withIndexYear(2021)
-			.withIndexNumber(new BigDecimal("1.00"))
-			.build();
-
-		assertThat(VALIDATOR.validate(fees)).isNotEmpty();
-	}
-
-	@Test
-	void zeroOrNegativeIndexNumberIsRejected() {
-		final var fees = Fees.builder()
-			.withIndexType("KPI 80")
-			.withIndexYear(2021)
-			.withIndexNumber(BigDecimal.ZERO)
-			.build();
-
-		assertThat(VALIDATOR.validate(fees)).isNotEmpty();
-	}
 
 	// ----------------------------------------------------------------------------------------------------------
 	// additionalInformation element constraints (@NotBlank @Size(max = 30))

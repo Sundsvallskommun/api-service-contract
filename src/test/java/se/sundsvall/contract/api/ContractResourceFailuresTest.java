@@ -12,14 +12,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.Extension;
-import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.enums.ContractType;
-import se.sundsvall.contract.model.enums.IntervalType;
-import se.sundsvall.contract.model.enums.InvoicedIn;
 import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.service.ContractService;
 
@@ -125,43 +121,6 @@ class ContractResourceFailuresTest {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
-	// fees index trio: @AssertTrue hasConsistentIndexFields (POST / PATCH)
-	// ----------------------------------------------------------------------------------------------------------
-
-	@Test
-	void postWithPartialFeeIndexIsRejected() {
-		final var contract = validContract()
-			.withFees(Fees.builder().withIndexType("KPI 80").build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
-
-	@Test
-	void postWithNonPositiveIndexNumberIsRejected() {
-		final var contract = validContract()
-			.withFees(Fees.builder()
-				.withIndexType("KPI 80")
-				.withIndexYear(2021)
-				.withIndexNumber(BigDecimal.ZERO)
-				.build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
-
-	@Test
-	void patchWithPartialFeeIndexIsRejected() {
-		patchExpectingBadRequest("""
-			{
-				"fees": {
-					"indexType": "KPI 80"
-				}
-			}
-			""");
-	}
-
-	// ----------------------------------------------------------------------------------------------------------
 	// status / type: @NotNull — a mandatory field may be omitted on a PATCH but may not be set to null
 	// ----------------------------------------------------------------------------------------------------------
 
@@ -226,47 +185,4 @@ class ContractResourceFailuresTest {
 		postExpectingBadRequest(contract);
 	}
 
-	// ----------------------------------------------------------------------------------------------------------
-	// Extension.@AssertTrue: autoExtend = true requires leaseExtension + unit
-	// ----------------------------------------------------------------------------------------------------------
-
-	@Test
-	void postWithInconsistentExtensionIsRejected() {
-		final var contract = validContract()
-			.withExtension(Extension.builder().withAutoExtend(true).build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
-
-	// ----------------------------------------------------------------------------------------------------------
-	// Invoicing.invoiceInterval / Invoicing.invoicedIn: @NotNull when an invoicing object is present (POST / PATCH)
-	// ----------------------------------------------------------------------------------------------------------
-
-	@Test
-	void postWithInvoicingMissingInvoicedInIsRejected() {
-		final var contract = validContract()
-			.withInvoicing(Invoicing.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
-
-	@Test
-	void postWithInvoicingMissingInvoiceIntervalIsRejected() {
-		final var contract = validContract()
-			.withInvoicing(Invoicing.builder().withInvoicedIn(InvoicedIn.ADVANCE).build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
-
-	@Test
-	void postWithEmptyInvoicingIsRejected() {
-		final var contract = validContract()
-			.withInvoicing(Invoicing.builder().build())
-			.build();
-
-		postExpectingBadRequest(contract);
-	}
 }

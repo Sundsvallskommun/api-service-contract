@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import org.openapitools.jackson.nullable.JsonNullable;
 import se.sundsvall.contract.api.model.Address;
@@ -17,6 +16,12 @@ import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
 import se.sundsvall.contract.api.model.PatchContract;
+import se.sundsvall.contract.api.model.PatchExtension;
+import se.sundsvall.contract.api.model.PatchFees;
+import se.sundsvall.contract.api.model.PatchInvoicing;
+import se.sundsvall.contract.api.model.PatchLeasehold;
+import se.sundsvall.contract.api.model.PatchNotice;
+import se.sundsvall.contract.api.model.PatchPeriod;
 import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
@@ -119,9 +124,12 @@ public final class EntityMapper {
 	}
 
 	static List<NoticeTermEmbeddable> toNoticeTermEmbeddables(final Notice notice) {
-		return ofNullable(notice)
-			.map(Notice::getTerms)
-			.map(terms -> terms.stream()
+		return toNoticeTermEmbeddables(ofNullable(notice).map(Notice::getTerms).orElse(null));
+	}
+
+	static List<NoticeTermEmbeddable> toNoticeTermEmbeddables(final List<NoticeTerm> terms) {
+		return ofNullable(terms)
+			.map(termList -> termList.stream()
 				.map(EntityMapper::toNoticeTermEmbeddable)
 				.collect(toCollection(ArrayList::new)))
 			.orElse(new ArrayList<>());
@@ -265,14 +273,13 @@ public final class EntityMapper {
 		applyIfPresent(patch.getStatus(), entity::setStatus);
 		applyIfPresent(patch.getType(), entity::setType);
 
-		// Nested objects and collections: absent keeps, null clears, a value merges/replaces
+		// Nested objects: absent keeps, null clears, a value merges its sub-fields recursively (arrays are replaced as a whole)
 		applyIfPresent(patch.getExtension(), extension -> patchExtension(entity, extension));
 		applyIfPresent(patch.getCurrentPeriod(), period -> patchCurrentPeriod(entity, period));
 		applyIfPresent(patch.getNotice(), notice -> patchNotice(entity, notice));
-
-		applyMappedIfPresent(patch.getFees(), EntityMapper::toFeesEmbeddable, entity::setFees);
-		applyMappedIfPresent(patch.getInvoicing(), EntityMapper::toInvoicingEntity, entity::setInvoicing);
-		applyMappedIfPresent(patch.getLeasehold(), EntityMapper::toLeaseholdEntity, entity::setLeasehold);
+		applyIfPresent(patch.getFees(), fees -> patchFees(entity, fees));
+		applyIfPresent(patch.getInvoicing(), invoicing -> patchInvoicing(entity, invoicing));
+		applyIfPresent(patch.getLeasehold(), leasehold -> patchLeasehold(entity, leasehold));
 		applyIfPresent(patch.getPropertyDesignations(), list -> replaceCollection(entity.getPropertyDesignations(), entity::setPropertyDesignations, toPropertyDesignationEmbeddables(list)));
 		applyIfPresent(patch.getStakeholders(), list -> replaceCollection(entity.getStakeholders(), entity::setStakeholders, toStakeholderEntities(list)));
 		applyIfPresent(patch.getExtraParameters(), list -> replaceCollection(entity.getExtraParameters(), entity::setExtraParameters, toExtraParameterGroupEntities(list)));
@@ -282,38 +289,80 @@ public final class EntityMapper {
 		return entity;
 	}
 
-	private static void patchExtension(final ContractEntity entity, final Extension extension) {
+	private static void patchExtension(final ContractEntity entity, final PatchExtension extension) {
 		if (extension == null) {
 			entity.setAutoExtend(null);
 			entity.setLeaseExtension(null);
 			entity.setLeaseExtensionUnit(null);
-		} else {
-			setPropertyUnlessNull(extension.getAutoExtend(), entity::setAutoExtend);
-			setPropertyUnlessNull(extension.getLeaseExtension(), entity::setLeaseExtension);
-			setPropertyUnlessNull(extension.getUnit(), entity::setLeaseExtensionUnit);
+			return;
 		}
+		applyIfPresent(extension.getAutoExtend(), entity::setAutoExtend);
+		applyIfPresent(extension.getLeaseExtension(), entity::setLeaseExtension);
+		applyIfPresent(extension.getUnit(), entity::setLeaseExtensionUnit);
 	}
 
-	private static void patchCurrentPeriod(final ContractEntity entity, final Period period) {
+	private static void patchCurrentPeriod(final ContractEntity entity, final PatchPeriod period) {
 		if (period == null) {
 			entity.setCurrentPeriodStartDate(null);
 			entity.setCurrentPeriodEndDate(null);
-		} else {
-			setPropertyUnlessNull(period.getStartDate(), entity::setCurrentPeriodStartDate);
-			setPropertyUnlessNull(period.getEndDate(), entity::setCurrentPeriodEndDate);
+			return;
 		}
+		applyIfPresent(period.getStartDate(), entity::setCurrentPeriodStartDate);
+		applyIfPresent(period.getEndDate(), entity::setCurrentPeriodEndDate);
 	}
 
-	private static void patchNotice(final ContractEntity entity, final Notice notice) {
+	private static void patchNotice(final ContractEntity entity, final PatchNotice notice) {
 		if (notice == null) {
 			entity.setNoticeDate(null);
 			entity.setNoticeGivenBy(null);
 			replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, new ArrayList<>());
-		} else {
-			setPropertyUnlessNull(notice.getNoticeDate(), entity::setNoticeDate);
-			setPropertyUnlessNull(notice.getNoticeGivenBy(), entity::setNoticeGivenBy);
-			setPropertyUnlessNull(notice.getTerms(), _ -> replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, toNoticeTermEmbeddables(notice)));
+			return;
 		}
+		applyIfPresent(notice.getNoticeDate(), entity::setNoticeDate);
+		applyIfPresent(notice.getNoticeGivenBy(), entity::setNoticeGivenBy);
+		applyIfPresent(notice.getTerms(), terms -> replaceCollection(entity.getNoticeTerms(), entity::setNoticeTerms, toNoticeTermEmbeddables(terms)));
+	}
+
+	private static void patchFees(final ContractEntity entity, final PatchFees fees) {
+		if (fees == null) {
+			entity.setFees(null);
+			return;
+		}
+		final var embeddable = entity.getFees() != null ? entity.getFees() : FeesEmbeddable.builder().build();
+		applyIfPresent(fees.getCurrency(), embeddable::setCurrency);
+		applyIfPresent(fees.getYearly(), embeddable::setYearly);
+		applyIfPresent(fees.getMonthly(), embeddable::setMonthly);
+		applyIfPresent(fees.getTotal(), embeddable::setTotal);
+		applyIfPresent(fees.getTotalAsText(), embeddable::setTotalAsText);
+		applyIfPresent(fees.getIndexType(), value -> embeddable.setIndexType(blankToNull(value)));
+		applyIfPresent(fees.getIndexYear(), embeddable::setIndexYear);
+		applyIfPresent(fees.getIndexNumber(), embeddable::setIndexNumber);
+		applyIfPresent(fees.getIndexationRate(), embeddable::setIndexationRate);
+		applyIfPresent(fees.getAdditionalInformation(), embeddable::setAdditionalInformation);
+		entity.setFees(embeddable);
+	}
+
+	private static void patchInvoicing(final ContractEntity entity, final PatchInvoicing invoicing) {
+		if (invoicing == null) {
+			entity.setInvoicing(null);
+			return;
+		}
+		final var embeddable = entity.getInvoicing() != null ? entity.getInvoicing() : InvoicingEmbeddable.builder().build();
+		applyIfPresent(invoicing.getInvoiceInterval(), embeddable::setInvoiceInterval);
+		applyIfPresent(invoicing.getInvoicedIn(), embeddable::setInvoicedIn);
+		entity.setInvoicing(embeddable);
+	}
+
+	private static void patchLeasehold(final ContractEntity entity, final PatchLeasehold leasehold) {
+		if (leasehold == null) {
+			entity.setLeasehold(null);
+			return;
+		}
+		final var embeddable = entity.getLeasehold() != null ? entity.getLeasehold() : LeaseholdEmbeddable.builder().build();
+		applyIfPresent(leasehold.getPurpose(), embeddable::setPurpose);
+		applyIfPresent(leasehold.getDescription(), embeddable::setDescription);
+		applyIfPresent(leasehold.getAdditionalInformation(), embeddable::setAdditionalInformation);
+		entity.setLeasehold(embeddable);
 	}
 
 	// Index and additional terms share one table. For each list: absent keeps that type's groups, otherwise the
@@ -338,11 +387,6 @@ public final class EntityMapper {
 		if (value != null && value.isPresent() && value.get() != null) {
 			setter.accept(value.get());
 		}
-	}
-
-	// Sets a value mapped from the patch payload; a present null clears the target.
-	private static <T, R> void applyMappedIfPresent(final JsonNullable<T> value, final Function<T, R> mapper, final Consumer<R> setter) {
-		applyIfPresent(value, source -> setter.accept(source == null ? null : mapper.apply(source)));
 	}
 
 	private static <T> boolean isPresent(final JsonNullable<T> value) {

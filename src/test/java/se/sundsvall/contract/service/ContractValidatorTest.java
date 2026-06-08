@@ -17,6 +17,7 @@ import se.sundsvall.contract.model.enums.IntervalType;
 import se.sundsvall.contract.model.enums.InvoicedIn;
 import se.sundsvall.contract.model.enums.LeaseType;
 import se.sundsvall.contract.model.enums.StakeholderRole;
+import se.sundsvall.contract.model.enums.TimeUnit;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.dept44.problem.violations.Violation;
 
@@ -151,22 +152,128 @@ class ContractValidatorTest {
 	}
 
 	@Test
-	void invoicingIncompleteDoesNotRequirePrimaryBillingParty() {
-		final var contract = ContractEntity.builder()
-			.withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
-			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
-			.build();
-
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
-	}
-
-	@Test
 	void nullInvoicingDoesNotRequirePrimaryBillingParty() {
 		final var contract = ContractEntity.builder()
 			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
 			.build();
 
 		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// Invoicing must have both interval and invoicedIn when present
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void invoicingMissingInvoicedInIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
+			.build();
+
+		assertRejectedWithField(contract, "invoicing");
+	}
+
+	@Test
+	void invoicingMissingIntervalIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(InvoicingEmbeddable.builder().withInvoicedIn(InvoicedIn.ADVANCE).build())
+			.build();
+
+		assertRejectedWithField(contract, "invoicing");
+	}
+
+	@Test
+	void emptyInvoicingIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(InvoicingEmbeddable.builder().build())
+			.build();
+
+		assertRejectedWithField(contract, "invoicing");
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// Fee index trio must be consistent (all set, indexNumber > 0)
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void noFeeIndexFieldsPasses() {
+		final var contract = ContractEntity.builder().withFees(FeesEmbeddable.builder().build()).build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void completeFeeIndexTrioPasses() {
+		final var contract = ContractEntity.builder()
+			.withFees(FeesEmbeddable.builder().withIndexType("KPI 80").withIndexYear(2021).withIndexNumber(new BigDecimal("1.00")).build())
+			.build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void partialFeeIndexIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withFees(FeesEmbeddable.builder().withIndexType("KPI 80").build())
+			.build();
+
+		assertRejectedWithField(contract, "fees");
+	}
+
+	@Test
+	void blankFeeIndexTypeWithOtherIndexFieldsIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withFees(FeesEmbeddable.builder().withIndexType("   ").withIndexYear(2021).withIndexNumber(new BigDecimal("1.00")).build())
+			.build();
+
+		assertRejectedWithField(contract, "fees");
+	}
+
+	@Test
+	void zeroOrNegativeFeeIndexNumberIsRejected() {
+		final var contract = ContractEntity.builder()
+			.withFees(FeesEmbeddable.builder().withIndexType("KPI 80").withIndexYear(2021).withIndexNumber(BigDecimal.ZERO).build())
+			.build();
+
+		assertRejectedWithField(contract, "fees");
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// autoExtend = true requires both leaseExtension and unit
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void autoExtendWithoutLeaseExtensionIsRejected() {
+		final var contract = ContractEntity.builder().withAutoExtend(true).withLeaseExtensionUnit(TimeUnit.MONTHS).build();
+
+		assertRejectedWithField(contract, "extension");
+	}
+
+	@Test
+	void autoExtendWithoutUnitIsRejected() {
+		final var contract = ContractEntity.builder().withAutoExtend(true).withLeaseExtension(3).build();
+
+		assertRejectedWithField(contract, "extension");
+	}
+
+	@Test
+	void autoExtendWithBothPasses() {
+		final var contract = ContractEntity.builder().withAutoExtend(true).withLeaseExtension(3).withLeaseExtensionUnit(TimeUnit.MONTHS).build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void autoExtendFalsePasses() {
+		final var contract = ContractEntity.builder().withAutoExtend(false).build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	private void assertRejectedWithField(final ContractEntity contract, final String field) {
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains(field));
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
