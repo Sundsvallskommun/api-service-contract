@@ -198,6 +198,30 @@ class EntityMapperTest {
 	}
 
 	@Test
+	void testToFeesEmbeddableDefaultsNullYearlyAndMonthlyToZero() {
+		final var fees = createContract().getFees();
+		fees.setYearly(null);
+		fees.setMonthly(null);
+
+		final var entity = EntityMapper.toFeesEmbeddable(fees);
+
+		assertThat(entity.getYearly()).isEqualByComparingTo(java.math.BigDecimal.ZERO);
+		assertThat(entity.getMonthly()).isEqualByComparingTo(java.math.BigDecimal.ZERO);
+	}
+
+	@Test
+	void testToFeesEmbeddableKeepsProvidedYearlyAndMonthly() {
+		final var fees = createContract().getFees();
+		fees.setYearly(new java.math.BigDecimal("1000.50"));
+		fees.setMonthly(new java.math.BigDecimal("100.50"));
+
+		final var entity = EntityMapper.toFeesEmbeddable(fees);
+
+		assertThat(entity.getYearly()).isEqualByComparingTo("1000.50");
+		assertThat(entity.getMonthly()).isEqualByComparingTo("100.50");
+	}
+
+	@Test
 	void testToLeaseholdEntityFiltersBlankAdditionalInformation() {
 		final var leasehold = createContract().getLeasehold();
 		leasehold.setAdditionalInformation(new ArrayList<>(java.util.Arrays.asList("keep", "  ", "", null, "alsoKeep")));
