@@ -1,7 +1,6 @@
 {
 	"content": [
 		{
-			"version": 1,
 			"contractId": "2024-23456",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0002",
@@ -130,7 +129,6 @@
 			"signedByWitness": false
 		},
 		{
-			"version": 2,
 			"contractId": "2024-12345",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0001",
@@ -263,7 +261,6 @@
 			"signedByWitness": true
 		},
 		{
-			"version": 1,
 			"contractId": "2024-34567",
 			"description": "Land lease residential",
 			"externalReferenceId": "MK-TEST0004",
@@ -323,7 +320,6 @@
 			"signedByWitness": false
 		},
 		{
-			"version": 1,
 			"contractId": "2024-45678",
 			"description": "Object lease agreement",
 			"externalReferenceId": "MK-TEST0005",
@@ -363,7 +359,6 @@
 			"signedByWitness": true
 		},
 		{
-			"version": 1,
 			"contractId": "2024-56789",
 			"description": "Minimal purchase agreement",
 			"municipalityId": "1984",

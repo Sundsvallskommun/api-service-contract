@@ -96,8 +96,6 @@ class EntityMapperTest {
 		assertThat(entity.getStartDate()).isEqualTo(dto.getStartDate());
 		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
 		assertThat(entity.getType()).isEqualTo(dto.getType());
-		// Note: version is not mapped here; it is explicitly managed by the service layer
-		// (createContract sets it to 1, createNewContractEntity bumps it).
 	}
 
 	@Test
@@ -288,25 +286,10 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void testCreateNewContractEntity() {
-
-		// Arrange
-		final var oldContractEntity = createContractEntity();
-		final var newContract = createContract();
-
-		// Act
-		final var updatedEntity = EntityMapper.createNewContractEntity(MUNICIPALITY_ID, oldContractEntity, newContract);
-
-		assertThat(updatedEntity.getVersion()).isEqualTo(oldContractEntity.getVersion() + 1);
-		assertThat(updatedEntity.getContractId()).isEqualTo(oldContractEntity.getContractId());
-	}
-
-	@Test
 	void testPatchContractEntity_updatesOnlyProvidedFields() {
 
 		// Arrange
 		final var entity = createContractEntity();
-		final var originalVersion = entity.getVersion();
 		final var originalStatus = entity.getStatus();
 		final var originalType = entity.getType();
 		final var originalArea = entity.getArea();
@@ -321,7 +304,6 @@ class EntityMapperTest {
 		// Assert
 		assertThat(result).isSameAs(entity);
 		assertThat(result.getDescription()).isEqualTo("a new description");
-		assertThat(result.getVersion()).isEqualTo(originalVersion);
 		assertThat(result.getStatus()).isEqualTo(originalStatus);
 		assertThat(result.getType()).isEqualTo(originalType);
 		assertThat(result.getArea()).isEqualTo(originalArea);
@@ -470,6 +452,73 @@ class EntityMapperTest {
 		assertThat(entity.getTermGroups())
 			.filteredOn(tg -> TermGroupEntity.TYPE_ADDITIONAL.equals(tg.getType()))
 			.hasSameSizeAs(originalAdditional);
+	}
+
+	@Test
+	void testUpdateContractEntity_overwritesScalarsAndPreservesIdentity() {
+
+		// Arrange — existing managed entity with a known identity and optimistic lock version
+		final var existing = createMutableContractEntity();
+		existing.setId(99L);
+		existing.setContractId("2024-99999");
+		existing.setMunicipalityId(MUNICIPALITY_ID);
+		existing.setLockVersion(7L);
+
+		final var incoming = createContract();
+
+		// Act
+		final var result = EntityMapper.updateContractEntity(existing, incoming);
+
+		// Assert — updated in place; identity and lock version are preserved (not taken from the payload)
+		assertThat(result).isSameAs(existing);
+		assertThat(result.getId()).isEqualTo(99L);
+		assertThat(result.getContractId()).isEqualTo("2024-99999");
+		assertThat(result.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(result.getLockVersion()).isEqualTo(7L);
+
+		// Assert — every scalar (including the now-mutable type) is overwritten from the payload
+		assertThat(result.getDescription()).isEqualTo(incoming.getDescription());
+		assertThat(result.getStatus()).isEqualTo(incoming.getStatus());
+		assertThat(result.getType()).isEqualTo(incoming.getType());
+		assertThat(result.getArea()).isEqualTo(incoming.getArea());
+		assertThat(result.getStartDate()).isEqualTo(incoming.getStartDate());
+		assertThat(result.getEndDate()).isEqualTo(incoming.getEndDate());
+		assertThat(result.getLeaseType()).isEqualTo(incoming.getLeaseType());
+		assertThat(result.getObjectIdentity()).isEqualTo(incoming.getObjectIdentity());
+	}
+
+	@Test
+	void testUpdateContractEntity_replacesCollectionsAndNullsOmittedFields() {
+
+		// Arrange — existing has two property designations and non-null optional fields
+		final var existing = createMutableContractEntity();
+		existing.setPropertyDesignations(new ArrayList<>(List.of(
+			PropertyDesignationEmbeddable.builder().withName("old-one").build(),
+			PropertyDesignationEmbeddable.builder().withName("old-two").build())));
+		existing.setExternalReferenceId("OLD-REF");
+		existing.setObjectIdentity("OLD-OBJ");
+
+		// Incoming full-replace payload sends a single designation and omits externalReferenceId/objectIdentity
+		final var incoming = Contract.builder()
+			.withStatus(Status.ACTIVE)
+			.withType(ContractType.PURCHASE_AGREEMENT)
+			.withDescription("replaced description")
+			.withPropertyDesignations(List.of(PropertyDesignation.builder().withName("only-new").build()))
+			.build();
+
+		// Act
+		EntityMapper.updateContractEntity(existing, incoming);
+
+		// Assert — the owned collection is replaced (shrunk), not appended
+		assertThat(existing.getPropertyDesignations())
+			.extracting(PropertyDesignationEmbeddable::getName)
+			.containsExactly("only-new");
+
+		// Assert — fields absent from the payload are nulled out (full replace, unlike patch)
+		assertThat(existing.getExternalReferenceId()).isNull();
+		assertThat(existing.getObjectIdentity()).isNull();
+		assertThat(existing.getType()).isEqualTo(ContractType.PURCHASE_AGREEMENT);
+		assertThat(existing.getDescription()).isEqualTo("replaced description");
 	}
 
 	@Test

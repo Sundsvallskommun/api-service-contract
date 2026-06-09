@@ -86,7 +86,6 @@ public final class DtoMapper {
 			.withStartDate(contractEntity.getStartDate())
 			.withStatus(contractEntity.getStatus())
 			.withType(contractEntity.getType())
-			.withVersion(contractEntity.getVersion())
 			.build();
 	}
 

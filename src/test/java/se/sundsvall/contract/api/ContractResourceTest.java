@@ -15,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.Contract;
-import se.sundsvall.contract.api.model.Diff;
 import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.PropertyDesignation;
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -55,7 +53,7 @@ class ContractResourceTest {
 
 	@Test
 	void getContractByMunicipalityAndContractId() {
-		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, null)).thenReturn(Contract.builder().build());
+		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(Contract.builder().build());
 
 		final var response = webTestClient.get()
 			.uri("/{municipalityId}/contracts/{contractId}", MUNICIPALITY_ID, CONTRACT_ID)
@@ -68,28 +66,7 @@ class ContractResourceTest {
 
 		assertThat(response).isNotNull();
 
-		verify(contractServiceMock).getContract(MUNICIPALITY_ID, CONTRACT_ID, null);
-		verifyNoMoreInteractions(contractServiceMock);
-	}
-
-	@Test
-	void getContractByMunicipalityAndContractIdAndVersion() {
-		when(contractServiceMock.getContract(MUNICIPALITY_ID, CONTRACT_ID, 2)).thenReturn(Contract.builder().build());
-
-		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}")
-				.queryParam("version", 2)
-				.build(MUNICIPALITY_ID, CONTRACT_ID))
-			.exchange()
-			.expectStatus().isOk()
-			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(Contract.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull();
-
-		verify(contractServiceMock).getContract(MUNICIPALITY_ID, CONTRACT_ID, 2);
+		verify(contractServiceMock).getContract(MUNICIPALITY_ID, CONTRACT_ID);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
@@ -201,46 +178,6 @@ class ContractResourceTest {
 			.expectBody().isEmpty();
 
 		verify(contractServiceMock).createContract(MUNICIPALITY_ID, contract);
-		verifyNoMoreInteractions(contractServiceMock);
-	}
-
-	@Test
-	void diffContractWithOnlyOneVersionSet() {
-		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}/diff")
-				.queryParam("oldVersion", 2)
-				.build(MUNICIPALITY_ID, CONTRACT_ID))
-			.exchange()
-			.expectStatus().isBadRequest();
-
-		verifyNoInteractions(contractServiceMock);
-	}
-
-	@Test
-	void diffContract() {
-		final var diff = new Diff(2, 3, List.of(), List.of(1, 2, 3));
-
-		when(contractServiceMock.diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3)).thenReturn(diff);
-
-		final var result = webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/contracts/{contractId}/diff")
-				.queryParam("oldVersion", 2)
-				.queryParam("newVersion", 3)
-				.build(MUNICIPALITY_ID, CONTRACT_ID))
-			.exchange()
-			.expectStatus().isOk()
-			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(Diff.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(result).isNotNull();
-		assertThat(result.oldVersion()).isEqualTo(diff.oldVersion());
-		assertThat(result.newVersion()).isEqualTo(diff.newVersion());
-		assertThat(result.availableVersions()).isEqualTo(diff.availableVersions());
-		assertThat(result.changes()).isEqualTo(diff.changes());
-
-		verify(contractServiceMock).diffContract(MUNICIPALITY_ID, CONTRACT_ID, 2, 3);
 		verifyNoMoreInteractions(contractServiceMock);
 	}
 
