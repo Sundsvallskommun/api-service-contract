@@ -44,7 +44,6 @@ class ContractTest {
 	@Test
 	void testSetAndGetAllFields() {
 
-		final var version = 1;
 		final var contractId = "2024-12345";
 		final var description = "A simple description of the contract";
 		final var externalReferenceId = "123";
@@ -73,7 +72,6 @@ class ContractTest {
 
 		// Create a new Contract object
 		final var contract = Contract.builder()
-			.withVersion(version)
 			.withContractId(contractId)
 			.withDescription(description)
 			.withExternalReferenceId(externalReferenceId)
@@ -102,7 +100,6 @@ class ContractTest {
 			.build();
 
 		// Verify all fields
-		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getContractId()).isEqualTo(contractId);
 		assertThat(contract.getDescription()).isEqualTo(description);
 		assertThat(contract.getExternalReferenceId()).isEqualTo(externalReferenceId);
@@ -132,6 +129,6 @@ class ContractTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Contract.builder().build()).hasAllNullFieldsOrPropertiesExcept("version", "signedByWitness");
+		assertThat(Contract.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness");
 	}
 }

@@ -85,7 +85,6 @@ class DtoMapperTest {
 		assertThat(dto.getStartDate()).isEqualTo(contractEntity.getStartDate());
 		assertThat(dto.getStatus()).isEqualTo(contractEntity.getStatus());
 		assertThat(dto.getType()).isEqualTo(contractEntity.getType());
-		assertThat(dto.getVersion()).isEqualTo(contractEntity.getVersion());
 		assertThat(dto.getPropertyDesignations())
 			.flatExtracting(PropertyDesignation::getName, PropertyDesignation::getDistrict)
 			.containsExactlyElementsOf(

@@ -29,9 +29,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIR
 @Schema(description = "Contract")
 public class Contract {
 
-	@Schema(description = "Version for contract", examples = "1", accessMode = READ_ONLY)
-	private int version;
-
 	@Schema(description = "Contract id", examples = "2024-12345", accessMode = READ_ONLY)
 	private String contractId;
 

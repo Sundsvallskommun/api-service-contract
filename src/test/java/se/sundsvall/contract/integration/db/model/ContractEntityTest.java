@@ -49,7 +49,6 @@ class ContractEntityTest {
 	@Test
 	void testBuilderMethods() {
 		var type = ContractType.LEASE_AGREEMENT;
-		var version = 1;
 		var status = TERMINATED;
 		var municipalityId = "1984";
 		var contractId = "2024-12345";
@@ -125,7 +124,6 @@ class ContractEntityTest {
 			.withId(id)
 			.withContractId(contractId)
 			.withType(type)
-			.withVersion(version)
 			.withLockVersion(lockVersion)
 			.withStatus(status)
 			.withMunicipalityId(municipalityId)
@@ -161,7 +159,6 @@ class ContractEntityTest {
 		assertThat(contract.getId()).isEqualTo(id);
 		assertThat(contract.getContractId()).isEqualTo(contractId);
 		assertThat(contract.getType()).isEqualTo(type);
-		assertThat(contract.getVersion()).isEqualTo(version);
 		assertThat(contract.getStatus()).isEqualTo(status);
 		assertThat(contract.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(contract.getTermGroups()).isEqualTo(termGroups);
@@ -193,6 +190,6 @@ class ContractEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(ContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "version", "lockVersion");
+		assertThat(ContractEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("signedByWitness", "lockVersion");
 	}
 }

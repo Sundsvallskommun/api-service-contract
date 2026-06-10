@@ -1,12 +1,20 @@
 {
-	"version": 3,
 	"contractId": "2024-12345",
 	"description": "some other description",
 	"externalReferenceId": "MK-TEST0009",
+	"leaseType": "LAND_LEASE_RESIDENTIAL",
 	"municipalityId": "1984",
 	"objectIdentity": "anotherObjectIdentity",
 	"status": "DRAFT",
-	"type": "PURCHASE_AGREEMENT",
+	"type": "LEASE_AGREEMENT",
+	"leasehold": {
+		"purpose": "APARTMENT",
+		"description": "anotherLeaseholdDescription",
+		"additionalInformation": [
+			"another additional information when posting",
+			"More other information when posting"
+		]
+	},
 	"attachmentMetaData": [
 		{
 			"id": 1,
@@ -48,7 +56,16 @@
 			]
 		}
 	],
-	"propertyDesignations": [],
+	"propertyDesignations": [
+		{
+			"district": "District a",
+			"name": "SUNDSVALL NORRMALM 987:1"
+		},
+		{
+			"district": "District b",
+			"name": "SUNDSVALL NORRMALM 678:1"
+		}
+	],
 	"stakeholders": [
 		{
 			"type": "ORGANIZATION",
@@ -74,6 +91,11 @@
 			"parameters": []
 		}
 	],
+	"extension": {
+		"autoExtend": true,
+		"leaseExtension": 1,
+		"unit": "MONTHS"
+	},
 	"fees": {
 		"currency": "SEK",
 		"yearly": 2814.72,
@@ -95,6 +117,26 @@
 	},
 	"startDate": "2024-05-02",
 	"endDate": "2099-12-31",
+	"notice": {
+		"terms": [
+			{
+				"party": "LESSOR",
+				"periodOfNotice": 1,
+				"unit": "MONTHS"
+			},
+			{
+				"party": "LESSEE",
+				"periodOfNotice": 2,
+				"unit": "MONTHS"
+			}
+		],
+		"noticeDate": "2025-06-01",
+		"noticeGivenBy": "LESSOR"
+	},
+	"currentPeriod": {
+		"startDate": "2024-05-02",
+		"endDate": "2025-05-02"
+	},
 	"area": 12,
 	"signedByWitness": true
 }

@@ -1,7 +1,6 @@
 {
 	"content": [
 		{
-			"version": 1,
 			"contractId": "2024-34567",
 			"description": "Land lease residential",
 			"externalReferenceId": "MK-TEST0004",
@@ -61,7 +60,6 @@
 			"signedByWitness": false
 		},
 		{
-			"version": 1,
 			"contractId": "2024-23456",
 			"description": "someDescription",
 			"externalReferenceId": "MK-TEST0002",

@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "9.0"
+  version: "10.0"
 servers:
-- url: http://localhost:60349
+- url: http://localhost:39725
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -34,14 +34,6 @@ paths:
         required: true
         schema:
           type: string
-      - name: version
-        in: query
-        description: Contract version
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
       responses:
         "200":
           description: Ok
@@ -180,7 +172,7 @@ paths:
       - Contracts
       summary: Patch a contract
       description: Applies only the non-null fields from the payload onto the existing
-        contract. Does not create a new version.
+        contract.
       operationId: patchContract
       parameters:
       - name: municipalityId
@@ -520,74 +512,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/contracts/{contractId}/diff:
-    post:
-      tags:
-      - Contracts
-      summary: Diff two versions of a contract
-      operationId: diffContract
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      - name: oldVersion
-        in: query
-        description: Old version
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
-      - name: newVersion
-        in: query
-        description: New version
-        required: false
-        schema:
-          type: integer
-          format: int32
-          exclusiveMinimum: 0
-      responses:
-        "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Diff"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/contracts/{contractId}/attachments:
     post:
       tags:
@@ -771,13 +695,6 @@ components:
       type: object
       description: Contract
       properties:
-        version:
-          type: integer
-          format: int32
-          description: Version for contract
-          examples:
-          - 1
-          readOnly: true
         contractId:
           type: string
           description: Contract id
@@ -1569,101 +1486,6 @@ components:
           description: BASE64-encoded attachment file content
           examples:
           - QkFTRTY0LWVuY29kZWQgZGF0YQ==
-    Change:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - ADDITION
-          - REMOVAL
-          - MODIFICATION
-        path:
-          type: string
-        oldValue:
-          $ref: "#/components/schemas/JsonNode"
-        newValue:
-          $ref: "#/components/schemas/JsonNode"
-    Diff:
-      type: object
-      properties:
-        oldVersion:
-          type: integer
-          format: int32
-        newVersion:
-          type: integer
-          format: int32
-        changes:
-          type: array
-          items:
-            $ref: "#/components/schemas/Change"
-        availableVersions:
-          type: array
-          items:
-            type: integer
-            format: int32
-    JsonNode:
-      type: object
-      properties:
-        empty:
-          type: boolean
-        array:
-          type: boolean
-        "null":
-          type: boolean
-        object:
-          type: boolean
-        float:
-          type: boolean
-        container:
-          type: boolean
-        string:
-          type: boolean
-        pojo:
-          type: boolean
-        int:
-          type: boolean
-        double:
-          type: boolean
-        long:
-          type: boolean
-        short:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        boolean:
-          type: boolean
-        binary:
-          type: boolean
-        number:
-          type: boolean
-        nodeType:
-          type: string
-          enum:
-          - ARRAY
-          - BINARY
-          - BOOLEAN
-          - MISSING
-          - "NULL"
-          - NUMBER
-          - OBJECT
-          - POJO
-          - STRING
-        bigDecimal:
-          type: boolean
-        missingNode:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        valueNode:
-          type: boolean
-        integralNumber:
-          type: boolean
-        bigInteger:
-          type: boolean
-        embeddedValue:
-          type: boolean
     PatchContract:
       type: object
       description: Partial contract payload used for PATCH. Only the fields present
@@ -1765,12 +1587,12 @@ components:
     PageContract:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -1781,17 +1603,17 @@ components:
         number:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         sort:
           $ref: "#/components/schemas/SortObject"
-        numberOfElements:
-          type: integer
-          format: int32
         first:
           type: boolean
         last:
           type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
         empty:
           type: boolean
     PageableObject:
@@ -1800,8 +1622,6 @@ components:
         offset:
           type: integer
           format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
         pageNumber:
@@ -1810,6 +1630,8 @@ components:
         pageSize:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
     SortObject:

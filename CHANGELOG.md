@@ -2,6 +2,31 @@
 
 All notable changes to the Contracts API are documented here.
 
+## 10.0 — 2026-06-08
+
+### Breaking changes (contract versioning removed)
+
+Contracts are no longer versioned — each contract is now a single, mutable record instead of an append-only chain of
+versions. The endpoints for creating, reading, updating, patching and deleting a contract are otherwise unchanged.
+
+- **`version` removed from responses** — the read-only `version` field is gone from every contract payload
+  (`GET /{municipalityId}/contracts` and `GET /{municipalityId}/contracts/{contractId}`).
+- **`?version=` query parameter removed** — `GET /{municipalityId}/contracts/{contractId}` no longer accepts a
+  `version` parameter; it always returns the current contract. (Previous versions are no longer retained.)
+- **`POST /{municipalityId}/contracts/{contractId}/diff` removed** — version comparison no longer exists.
+- **`PUT` updates in place** — `PUT /{municipalityId}/contracts/{contractId}` now replaces the existing contract
+  instead of creating a new version. `PATCH` continues to apply a partial update in place. Both keep the same
+  `contractId`.
+- **Contract `type` is now mutable** — both `PUT` and `PATCH` can change a contract's `type`. Previously the type was
+  fixed after creation (a `PATCH` carrying a new `type` was silently ignored). Changing the type re-runs the
+  type-specific business rules, which may remove attributes not applicable to the new type.
+
+### Data / operations
+
+- Migration `V1_17` collapses each contract to its latest version (older versions and their child rows are deleted —
+  **irreversible**), drops the `version` column and the `(contract_id, version)` unique constraint, and adds a
+  `(municipality_id, contract_id)` unique constraint.
+
 ## 9.0 — 2026-06-01
 
 ### Breaking changes (request validation tightened)
