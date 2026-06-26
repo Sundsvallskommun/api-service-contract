@@ -1,6 +1,10 @@
 spring:
   application:
     name: api-contract
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: -1
   flyway:
     enabled: false
   jpa:
