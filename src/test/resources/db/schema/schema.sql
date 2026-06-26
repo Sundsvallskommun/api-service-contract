@@ -34,7 +34,6 @@
         notice_date date,
         signed_by_witness bit,
         start_date date,
-        version integer,
         id bigint not null auto_increment,
         lock_version bigint default 0 not null,
         contract_id varchar(11) not null,
@@ -161,15 +160,15 @@
        on contract (municipality_id, contract_id);
 
     alter table if exists contract 
-       add constraint uq_contract_contract_id_version unique (contract_id, version);
+       add constraint uq_contract_municipality_id_contract_id unique (municipality_id, contract_id);
 
     alter table if exists contract_stakeholder 
        add constraint uq_contract_stakeholder_stakeholder_id unique (stakeholder_id);
 
-    create index idx_outbox_retries
+    create index idx_outbox_retries 
        on outbox (retries);
 
-    create index idx_contract_property_designation_contract_id
+    create index idx_contract_property_designation_contract_id 
        on property_designation (contract_id);
 
     alter table if exists additional_information 
@@ -227,7 +226,7 @@
        foreign key (contract_id) 
        references contract (id);
 
-    alter table if exists term_group_term
-       add constraint fk_term_group_term_term_group_id
-       foreign key (term_group_id)
+    alter table if exists term_group_term 
+       add constraint fk_term_group_term_term_group_id 
+       foreign key (term_group_id) 
        references term_group (id);

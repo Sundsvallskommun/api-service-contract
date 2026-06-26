@@ -1,17 +1,20 @@
 package se.sundsvall.contract.integration.db;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.contract.integration.db.model.ContractEntity;
+import se.sundsvall.contract.model.enums.ContractType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
 import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withMunicipalityId;
-import static se.sundsvall.contract.integration.db.specification.ContractSpecifications.withOnlyLatestVersion;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
@@ -28,6 +31,9 @@ class ContractRepositoryTest {
 	@Autowired
 	private AttachmentRepository attachmentRepository;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	@Test
 	void createContract() {
 		var entity = createContractEntity();
@@ -39,8 +45,8 @@ class ContractRepositoryTest {
 	}
 
 	@Test
-	void testFindWithMunicipalityIdAndLatestVersion() {
-		var specification = withOnlyLatestVersion().and(withMunicipalityId("1984"));
+	void testFindWithMunicipalityId() {
+		var specification = withMunicipalityId("1984");
 
 		var result = contractRepository.findAll(specification);
 
@@ -48,23 +54,39 @@ class ContractRepositoryTest {
 	}
 
 	@Test
-	void findByMunicipalityIdAndIdAndVersion() {
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isPresent();
+	void findByMunicipalityIdAndContractId() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
 	}
 
 	@Test
-	void findByMunicipalityIdAndIdAndVersionNotFound() {
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 12345)).isNotPresent();
+	void findByMunicipalityIdAndContractIdNotFound() {
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "9999-99999")).isNotPresent();
 	}
 
 	@Test
 	void testDeleteAllByMunicipalityIdAndContractId() {
 		attachmentRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
 
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isPresent();
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 2)).isPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isPresent();
 		contractRepository.deleteAllByMunicipalityIdAndContractId("1984", "2024-12345");
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 1)).isNotPresent();
-		assertThat(contractRepository.findByMunicipalityIdAndContractIdAndVersion("1984", "2024-12345", 2)).isNotPresent();
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345")).isNotPresent();
+	}
+
+	@Test
+	void updatePersistsChangedType() {
+		final var contract = contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345").orElseThrow();
+		assertThat(contract.getType()).isEqualTo(ContractType.PURCHASE_AGREEMENT);
+
+		contract.setType(ContractType.LEASE_AGREEMENT);
+		contractRepository.save(contract);
+
+		// Force a round-trip to the database so a regression to a non-updatable `type` column would be caught
+		entityManager.flush();
+		entityManager.clear();
+
+		assertThat(contractRepository.findByMunicipalityIdAndContractId("1984", "2024-12345"))
+			.get()
+			.extracting(ContractEntity::getType)
+			.isEqualTo(ContractType.LEASE_AGREEMENT);
 	}
 }

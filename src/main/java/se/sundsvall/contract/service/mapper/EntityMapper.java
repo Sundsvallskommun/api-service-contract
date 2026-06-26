@@ -1,5 +1,6 @@
 package se.sundsvall.contract.service.mapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +65,15 @@ public final class EntityMapper {
 	 */
 	private static String blankToNull(final String value) {
 		return (value == null || value.isBlank()) ? null : value;
+	}
+
+	/**
+	 * Normalizes an omitted (null) fee amount to {@link BigDecimal#ZERO} so that a contract that carries fees never
+	 * stores a null yearly/monthly amount. A null amount would otherwise propagate to the billing pipeline
+	 * (BillingDataCollector), where it fails the cost calculation with "missing crucial information".
+	 */
+	private static BigDecimal nullToZero(final BigDecimal value) {
+		return value == null ? BigDecimal.ZERO : value;
 	}
 
 	/**
@@ -241,7 +251,7 @@ public final class EntityMapper {
 
 	/**
 	 * Applies non-null fields from the given {@link PatchContract} onto an existing {@link ContractEntity} in place,
-	 * preserving fields that are not provided in the patch payload. The version is not modified.
+	 * preserving fields that are not provided in the patch payload. The optimistic {@code lockVersion} is not modified.
 	 *
 	 * @param  entity the existing entity to update
 	 * @param  patch  the patch payload
@@ -322,22 +332,47 @@ public final class EntityMapper {
 	}
 
 	/**
-	 * Creates a new {@link ContractEntity} as a new version of an existing contract.
+	 * Replaces the data of an existing {@link ContractEntity} in place with the given {@link Contract} (a full PUT-style
+	 * update). The entity's identity ({@code id}, {@code contractId}, {@code municipalityId}) and optimistic
+	 * {@code lockVersion} are preserved; every other scalar field is overwritten and every owned collection is replaced
+	 * (orphan-removal-safe). Reuses {@link #toContractEntity} to map the payload, then copies it onto the managed entity.
 	 *
-	 * @param  municipalityId the municipality ID to set on the entity
-	 * @param  oldContract    the existing contract entity to carry over version and contract ID from
-	 * @param  contract       the contract data for the new version
-	 * @return                the new contract entity with preserved version and contract ID
+	 * @param  existing the managed entity to update
+	 * @param  contract the contract data to apply
+	 * @return          the updated entity
 	 */
-	public static ContractEntity createNewContractEntity(final String municipalityId, final ContractEntity oldContract, final Contract contract) {
-		final var contractEntity = toContractEntity(municipalityId, contract);
+	public static ContractEntity updateContractEntity(final ContractEntity existing, final Contract contract) {
+		final var mapped = toContractEntity(existing.getMunicipalityId(), contract);
 
-		// Bump the version number by one, based on the existing contract's version.
-		contractEntity.setVersion(oldContract.getVersion() + 1);
-		// Set the contractId since it will be generated otherwise.
-		contractEntity.setContractId(oldContract.getContractId());
+		existing.setArea(mapped.getArea());
+		existing.setAreaData(mapped.getAreaData());
+		existing.setAutoExtend(mapped.getAutoExtend());
+		existing.setCurrentPeriodStartDate(mapped.getCurrentPeriodStartDate());
+		existing.setCurrentPeriodEndDate(mapped.getCurrentPeriodEndDate());
+		existing.setDescription(mapped.getDescription());
+		existing.setEndDate(mapped.getEndDate());
+		existing.setExternalReferenceId(mapped.getExternalReferenceId());
+		existing.setFees(mapped.getFees());
+		existing.setInvoicing(mapped.getInvoicing());
+		existing.setLeaseExtension(mapped.getLeaseExtension());
+		existing.setLeaseExtensionUnit(mapped.getLeaseExtensionUnit());
+		existing.setLeaseType(mapped.getLeaseType());
+		existing.setLeasehold(mapped.getLeasehold());
+		existing.setNoticeDate(mapped.getNoticeDate());
+		existing.setNoticeGivenBy(mapped.getNoticeGivenBy());
+		existing.setObjectIdentity(mapped.getObjectIdentity());
+		existing.setSignedByWitness(mapped.isSignedByWitness());
+		existing.setStartDate(mapped.getStartDate());
+		existing.setStatus(mapped.getStatus());
+		existing.setType(mapped.getType());
 
-		return contractEntity;
+		replaceCollection(existing.getTermGroups(), existing::setTermGroups, mapped.getTermGroups());
+		replaceCollection(existing.getStakeholders(), existing::setStakeholders, mapped.getStakeholders());
+		replaceCollection(existing.getExtraParameters(), existing::setExtraParameters, mapped.getExtraParameters());
+		replaceCollection(existing.getPropertyDesignations(), existing::setPropertyDesignations, mapped.getPropertyDesignations());
+		replaceCollection(existing.getNoticeTerms(), existing::setNoticeTerms, mapped.getNoticeTerms());
+
+		return existing;
 	}
 
 	/**
@@ -377,8 +412,8 @@ public final class EntityMapper {
 		return ofNullable(fees)
 			.map(f -> FeesEmbeddable.builder()
 				.withCurrency(f.getCurrency())
-				.withYearly(f.getYearly())
-				.withMonthly(f.getMonthly())
+				.withYearly(nullToZero(f.getYearly()))
+				.withMonthly(nullToZero(f.getMonthly()))
 				.withTotal(f.getTotal())
 				.withTotalAsText(f.getTotalAsText())
 				.withIndexType(blankToNull(f.getIndexType()))

@@ -1,5 +1,4 @@
 {
-	"version": 1,
 	"contractId": "${json-unit.regex}^\\d{4}-\\d{6}$",
 	"description": "Land lease residential with June billing",
 	"externalReferenceId": "MK-TEST0024",

@@ -1,7 +1,5 @@
 package se.sundsvall.contract.apptest;
 
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -98,11 +96,12 @@ class ContractIT extends AbstractAppTest {
 
 	/**
 	 * Test verifies the following:
-	 * - Update is performed
-	 * - Rule for contracts of type PURCHASE_AGREEMENT is executed and removes attributes not applicable for the type
+	 * - Update is performed in place (same contract, no new record)
+	 * - The contract type is changed from PURCHASE_AGREEMENT to LEASE_AGREEMENT; the PURCHASE_AGREEMENT rule no
+	 * longer applies, so lease attributes are retained
 	 */
 	@Test
-	void test04_updateContractKeepingTypeIntact() {
+	void test04_updateContractWithTypeChange() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
@@ -123,19 +122,6 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
-		// Verify that the previous version is still retrievable and exposes the expected contractId/version
-		setupCall()
-			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
-			.withServicePath(fromPath(PATH + "/{contractId}")
-				.queryParam("version", 1)
-				.build(MUNICIPALITY_ID, CONTRACT_ID)
-				.toString())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse("previous-version-response.json")
-			.sendRequest();
 	}
 
 	@Test
@@ -178,24 +164,6 @@ class ContractIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PROBLEM_JSON_VALUE))
-			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test06_diffContract() {
-		final var path = fromPath(PATH + "/{contractId}/diff")
-			.queryParam("oldVersion", 1)
-			.queryParam("newVersion", 2)
-			.build(MUNICIPALITY_ID, CONTRACT_ID)
-			.toString();
-
-		setupCall()
-			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER))
-			.withServicePath(path)
-			.withHttpMethod(POST)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -244,8 +212,14 @@ class ContractIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Test verifies the following:
+	 * - Update is performed in place (same contract, no new record)
+	 * - The type stays PURCHASE_AGREEMENT; the PURCHASE_AGREEMENT rule runs and removes attributes not
+	 * applicable for the type
+	 */
 	@Test
-	void test09_updateContractWithTypeChange() {
+	void test09_updateContractKeepingTypeIntact() {
 		final var path = fromPath(PATH + "/{contractId}")
 			.build(MUNICIPALITY_ID, CONTRACT_ID)
 			.toString();
@@ -266,19 +240,6 @@ class ContractIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
-		// Verify that the previous version is still retrievable and exposes the expected contractId/version
-		setupCall()
-			.withJsonAssertOptions(List.of(IGNORING_EXTRA_FIELDS))
-			.withServicePath(fromPath(PATH + "/{contractId}")
-				.queryParam("version", 1)
-				.build(MUNICIPALITY_ID, CONTRACT_ID)
-				.toString())
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse("previous-version-response.json")
-			.sendRequest();
 	}
 
 	@Test
@@ -547,8 +508,7 @@ class ContractIT extends AbstractAppTest {
 
 	/**
 	 * Test verifies the following:
-	 * - Patch is performed on the existing contract without creating a new version
-	 *   (the expected response asserts that the returned version is still 2 — same as before the patch)
+	 * - Patch is applied in place on the existing contract
 	 * - Only the fields sent in the patch payload (description, area, startDate, endDate and currentPeriod) are updated;
 	 *   all other fields remain as before
 	 * - Business rule for invoicing is executed (UPDATE action); GET of the existing BDC cycle returns matching
@@ -575,7 +535,7 @@ class ContractIT extends AbstractAppTest {
 		assertThat(outboxEntries26.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(outboxEntries26.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 
-		// Verify patch by performing a GET: version remains at 2, only patched fields changed.
+		// Verify patch by performing a GET: only patched fields changed.
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)
@@ -589,7 +549,7 @@ class ContractIT extends AbstractAppTest {
 	 * Test verifies the following:
 	 * - Patching indexTerms replaces the existing index term groups in place
 	 * - additionalTerms (not sent in the payload) are preserved
-	 * - The contract version is not bumped (still 2)
+	 * - The contract is updated in place
 	 */
 	@Test
 	void test27_patchContractTermGroups() {
@@ -612,7 +572,7 @@ class ContractIT extends AbstractAppTest {
 		assertThat(outboxEntries27.getFirst().getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(outboxEntries27.getFirst().getPayload()).contains("\"id\":\"" + CONTRACT_ID + "\"");
 
-		// Verify: indexTerms replaced, additionalTerms intact, version still 2
+		// Verify: indexTerms replaced, additionalTerms intact
 		setupCall()
 			.withServicePath(path)
 			.withHttpMethod(GET)

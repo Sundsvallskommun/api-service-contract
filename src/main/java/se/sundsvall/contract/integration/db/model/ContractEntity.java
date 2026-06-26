@@ -41,8 +41,8 @@ import se.sundsvall.contract.model.enums.TimeUnit;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
 @Table(name = "contract",
-	uniqueConstraints = @UniqueConstraint(name = "uq_contract_contract_id_version", columnNames = {
-		"contract_id", "version"
+	uniqueConstraints = @UniqueConstraint(name = "uq_contract_municipality_id_contract_id", columnNames = {
+		"municipality_id", "contract_id"
 	}),
 	indexes = @Index(name = "idx_contract_municipality_id_contract_id", columnList = "municipality_id, contract_id"))
 public class ContractEntity {
@@ -55,15 +55,12 @@ public class ContractEntity {
 	@Column(name = "contract_id", length = 11, nullable = false)
 	private String contractId;
 
-	@Column(name = "version")
-	private int version;
-
 	@Version
 	@Column(name = "lock_version", nullable = false)
 	@ColumnDefault("0")
 	private long lockVersion;
 
-	@Column(name = "type", length = 64, updatable = false)
+	@Column(name = "type", length = 64)
 	private ContractType type;
 
 	@Column(name = "status", length = 64)

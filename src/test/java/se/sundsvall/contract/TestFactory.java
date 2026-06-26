@@ -127,7 +127,6 @@ public final class TestFactory {
 					.build()))
 			.withArea(123)
 			.withAreaData(new FeatureCollection())
-			.withVersion(1)
 			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
 			.withTermGroups(List.of(
@@ -183,7 +182,6 @@ public final class TestFactory {
 	public static Contract createContract() {
 		return Contract.builder()
 			.withType(LEASE_AGREEMENT)
-			.withVersion(1)
 			.withStatus(ACTIVE)
 			.withMunicipalityId("1984")
 			.withContractId("2024-12345")
