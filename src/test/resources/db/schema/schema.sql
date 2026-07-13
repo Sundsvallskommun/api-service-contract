@@ -126,7 +126,7 @@
     ) engine=InnoDB;
 
     create table stakeholder_parameter (
-        parameter_order integer default 0 not null,
+        parameter_order integer default 0 not null check ((parameter_order>=0)),
         id bigint not null auto_increment,
         stakeholder_id bigint not null,
         display_name varchar(255),
