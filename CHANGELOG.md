@@ -2,6 +2,37 @@
 
 All notable changes to the Contracts API are documented here.
 
+## Unreleased
+
+### Breaking changes (billing party validation tightened)
+
+Requests that were previously accepted may now be rejected with **HTTP 400 Bad Request**. The request/response
+**schema is unchanged** — only the set of accepted values has been narrowed. Contract-sourced billing records are
+always created as type `EXTERNAL` by BillingDataCollector, so the full set of "mandatory for EXTERNAL billing
+record" constraints applies to every contract we send. The affected contracts were failing downstream
+(BillingPreprocessor `400`, or a BillingDataCollector `500` when the address was missing entirely); they are now
+rejected at creation, update and patch instead.
+
+New constraints on `POST`, `PUT` and `PATCH /{municipalityId}/contracts`, applying when both
+`invoicing.invoiceInterval` and `invoicing.invoicedIn` are set (the same condition that already governs the
+`PRIMARY_BILLING_PARTY` name rule):
+
+- **`stakeholders[].partyId`** — the `PRIMARY_BILLING_PARTY` stakeholder must have a non-blank `partyId`.
+  BillingDataCollector never populates `recipient.legalId`, so `partyId` is the only identifier that can satisfy
+  billing's "mandatory for EXTERNAL billing record if legalId is null".
+- **`stakeholders[].address`** — the `PRIMARY_BILLING_PARTY` stakeholder must have an `address` carrying non-blank
+  `streetAddress`, `postalCode` and `town`. These become `addressDetails.street`, `.postalCode` and `.city` on the
+  billing record; without them billing rejects it with "Street, postal code and city must all be present in
+  recipient.addressDetails for EXTERNAL billing record". `careOf`, `country`, `attention` and `type` remain optional.
+
+### Other behavioural changes
+
+- **Only the first `PRIMARY_BILLING_PARTY` is validated.** All billing party rules — including the pre-existing name
+  rule — are now evaluated against the *first* stakeholder carrying the role, since that is the one
+  BillingDataCollector maps to `recipient`. Previously a contract passed if *any* billing party had a usable name, so
+  a contract with several billing parties whose first one was unusable was accepted and then rejected downstream.
+  Contracts with a single `PRIMARY_BILLING_PARTY` (the normal case) are unaffected.
+
 ## 10.0 — 2026-06-08
 
 ### Breaking changes (contract versioning removed)

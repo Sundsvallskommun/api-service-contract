@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.FeesEmbeddable;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
@@ -28,6 +31,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 class ContractValidatorTest {
 
 	private static final LocalDate TODAY = LocalDate.of(2026, 6, 1);
+	private static final String PARTY_ID = "40f14de9-815d-44a5-a34d-b1d38b628e07";
 	private final ContractValidator validator = new ContractValidator(Clock.fixed(TODAY.atStartOfDay(ZoneOffset.UTC).toInstant(), ZoneOffset.UTC));
 
 	private static InvoicingEmbeddable completeInvoicing() {
@@ -43,11 +47,28 @@ class ContractValidatorTest {
 			.build();
 	}
 
-	private static StakeholderEntity namedBillingParty() {
+	private static AddressEmbeddable completeAddress() {
+		return AddressEmbeddable.builder()
+			.withStreetAddress("Testvägen 18")
+			.withPostalCode("123 45")
+			.withTown("Sundsvall")
+			.build();
+	}
+
+	/**
+	 * A billing party that satisfies every requirement, so that tests can strip out exactly the one thing they are
+	 * about.
+	 */
+	private static StakeholderEntity.StakeholderEntityBuilder validBillingPartyBuilder() {
 		return StakeholderEntity.builder()
 			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
 			.withOrganizationName("Sundsvalls kommun")
-			.build();
+			.withPartyId(PARTY_ID)
+			.withAddress(completeAddress());
+	}
+
+	private static StakeholderEntity namedBillingParty() {
+		return validBillingPartyBuilder().build();
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -107,9 +128,10 @@ class ContractValidatorTest {
 
 	@Test
 	void billingPartyWithoutUsableNameIsRejected() {
+		final var billingParty = validBillingPartyBuilder().withOrganizationName(null).build();
 		final var contract = ContractEntity.builder()
 			.withInvoicing(completeInvoicing())
-			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.PRIMARY_BILLING_PARTY)))
+			.withStakeholders(List.of(billingParty))
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
@@ -120,8 +142,8 @@ class ContractValidatorTest {
 
 	@Test
 	void billingPartyWithFirstAndLastNamePasses() {
-		final var billingParty = StakeholderEntity.builder()
-			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+		final var billingParty = validBillingPartyBuilder()
+			.withOrganizationName(null)
 			.withFirstName("Test")
 			.withLastName("Testorsson")
 			.build();
@@ -135,8 +157,8 @@ class ContractValidatorTest {
 
 	@Test
 	void billingPartyWithOnlyFirstNameIsRejected() {
-		final var billingParty = StakeholderEntity.builder()
-			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+		final var billingParty = validBillingPartyBuilder()
+			.withOrganizationName(null)
 			.withFirstName("Test")
 			.build();
 		final var contract = ContractEntity.builder()
@@ -148,6 +170,154 @@ class ContractValidatorTest {
 			.isThrownBy(() -> validator.validate(contract, null))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
 				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+	}
+
+	/**
+	 * BillingDataCollector reads the recipient off the first stakeholder carrying the role, so that is the one every
+	 * requirement is evaluated against — a valid stakeholder further down the list must not mask an unusable first one.
+	 */
+	@Test
+	void onlyTheFirstBillingPartyIsValidated() {
+		final var unusable = validBillingPartyBuilder().withOrganizationName(null).build();
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(unusable, namedBillingParty()))
+			.build();
+
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
+				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// PRIMARY_BILLING_PARTY partyId — BillingDataCollector never populates recipient.legalId, so partyId is the only
+	// identifier that can satisfy billing's "mandatory for EXTERNAL billing record if legalId is null"
+	// ----------------------------------------------------------------------------------------------------------
+
+	private void assertRejectedWith(final StakeholderEntity billingParty, final String expectedMessage) {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(billingParty))
+			.build();
+
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> {
+				assertThat(problem.getStatus()).isEqualTo(BAD_REQUEST);
+				assertThat(problem.getViolations()).extracting(Violation::field).contains("stakeholders");
+				assertThat(problem.getViolations()).extracting(Violation::message).contains(expectedMessage);
+			});
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {
+		"", "   "
+	})
+	void billingPartyWithoutPartyIdIsRejected(final String partyId) {
+		assertRejectedWith(validBillingPartyBuilder().withPartyId(partyId).build(), ContractValidator.PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE);
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// PRIMARY_BILLING_PARTY address — streetAddress, postalCode and town become addressDetails.street/.postalCode/
+	// /.city on the EXTERNAL billing record and are all mandatory there
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void billingPartyWithoutAddressIsRejected() {
+		assertRejectedWith(validBillingPartyBuilder().withAddress(null).build(), ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE);
+	}
+
+	@Test
+	void billingPartyWithEmptyAddressIsRejected() {
+		assertRejectedWith(validBillingPartyBuilder().withAddress(AddressEmbeddable.builder().build()).build(),
+			ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {
+		"", "   "
+	})
+	void billingPartyWithoutStreetAddressIsRejected(final String streetAddress) {
+		final var address = completeAddress();
+		address.setStreetAddress(streetAddress);
+
+		assertRejectedWith(validBillingPartyBuilder().withAddress(address).build(), ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {
+		"", "   "
+	})
+	void billingPartyWithoutPostalCodeIsRejected(final String postalCode) {
+		final var address = completeAddress();
+		address.setPostalCode(postalCode);
+
+		assertRejectedWith(validBillingPartyBuilder().withAddress(address).build(), ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {
+		"", "   "
+	})
+	void billingPartyWithoutTownIsRejected(final String town) {
+		final var address = completeAddress();
+		address.setTown(town);
+
+		assertRejectedWith(validBillingPartyBuilder().withAddress(address).build(), ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE);
+	}
+
+	/**
+	 * careOf, country, attention and type are not part of the billing constraints and must stay optional.
+	 */
+	@Test
+	void billingPartyWithOnlyTheThreeMandatoryAddressFieldsPasses() {
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(validBillingPartyBuilder().withAddress(completeAddress()).build()))
+			.build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+	}
+
+	@Test
+	void allBillingPartyViolationsAreReportedTogether() {
+		final var billingParty = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.build();
+		final var contract = ContractEntity.builder()
+			.withInvoicing(completeInvoicing())
+			.withStakeholders(List.of(billingParty))
+			.build();
+
+		assertThatExceptionOfType(ConstraintViolationProblem.class)
+			.isThrownBy(() -> validator.validate(contract, null))
+			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message).contains(
+				ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE,
+				ContractValidator.PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE,
+				ContractValidator.PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE));
+	}
+
+	/**
+	 * The new requirements are gated on the same complete-invoicing condition as the rest of the billing party rules —
+	 * a contract that is not set up for invoicing is never sent to billing and must stay unaffected.
+	 */
+	@Test
+	void incompleteInvoicingDoesNotRequirePartyIdOrAddress() {
+		final var billingParty = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.PRIMARY_BILLING_PARTY))
+			.withOrganizationName("Sundsvalls kommun")
+			.build();
+		final var contract = ContractEntity.builder()
+			.withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
+			.withStakeholders(List.of(billingParty))
+			.build();
+
+		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
 	}
 
 	@Test
