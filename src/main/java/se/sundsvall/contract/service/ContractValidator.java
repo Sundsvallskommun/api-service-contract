@@ -42,6 +42,10 @@ public class ContractValidator {
 	static final String PROPERTY_DESIGNATION_BLANK_MESSAGE = "Property designation name must not be blank.";
 	static final String END_DATE_MESSAGE = "endDate must not be set to a date before today's date";
 
+	private static final String FIELD_STAKEHOLDERS = "stakeholders";
+	private static final String FIELD_PROPERTY_DESIGNATIONS = "propertyDesignations";
+	private static final String FIELD_END_DATE = "endDate";
+
 	private final Clock clock;
 
 	public ContractValidator() {
@@ -82,7 +86,7 @@ public class ContractValidator {
 		final var endDate = contract.getEndDate();
 		final var changed = !Objects.equals(endDate, previousEndDate);
 		if (endDate != null && changed && endDate.isBefore(LocalDate.now(clock))) {
-			violations.add(new Violation("endDate", END_DATE_MESSAGE));
+			violations.add(new Violation(FIELD_END_DATE, END_DATE_MESSAGE));
 		}
 	}
 
@@ -121,19 +125,19 @@ public class ContractValidator {
 			.findFirst();
 
 		if (billingParty.isEmpty()) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_MESSAGE));
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_MESSAGE));
 			return;
 		}
 
 		final var stakeholder = billingParty.get();
 		if (!hasUsableRecipientName(stakeholder)) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 		}
 		if (!isNotBlank(stakeholder.getPartyId())) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE));
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE));
 		}
 		if (!hasUsableRecipientAddress(stakeholder)) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE));
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE));
 		}
 	}
 
@@ -172,7 +176,7 @@ public class ContractValidator {
 			.anyMatch(name -> nonNull(name) && name.isBlank());
 
 		if (hasBlankName) {
-			violations.add(new Violation("propertyDesignations", PROPERTY_DESIGNATION_BLANK_MESSAGE));
+			violations.add(new Violation(FIELD_PROPERTY_DESIGNATIONS, PROPERTY_DESIGNATION_BLANK_MESSAGE));
 		}
 	}
 }
