@@ -37,8 +37,14 @@ public class ContractValidator {
 
 	static final String PRIMARY_BILLING_PARTY_MESSAGE = "A stakeholder with role PRIMARY_BILLING_PARTY is required when both invoicing interval and invoicedIn are set.";
 	static final String PRIMARY_BILLING_PARTY_NAME_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an organization name, or both a first and last name.";
+	static final String PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have a partyId.";
+	static final String PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an address with streetAddress, postalCode and town.";
 	static final String PROPERTY_DESIGNATION_BLANK_MESSAGE = "Property designation name must not be blank.";
 	static final String END_DATE_MESSAGE = "endDate must not be set to a date before today's date";
+
+	private static final String FIELD_STAKEHOLDERS = "stakeholders";
+	private static final String FIELD_PROPERTY_DESIGNATIONS = "propertyDesignations";
+	private static final String FIELD_END_DATE = "endDate";
 
 	private final Clock clock;
 
@@ -80,16 +86,32 @@ public class ContractValidator {
 		final var endDate = contract.getEndDate();
 		final var changed = !Objects.equals(endDate, previousEndDate);
 		if (endDate != null && changed && endDate.isBefore(LocalDate.now(clock))) {
-			violations.add(new Violation("endDate", END_DATE_MESSAGE));
+			violations.add(new Violation(FIELD_END_DATE, END_DATE_MESSAGE));
 		}
 	}
 
 	/**
 	 * When a contract is set up for invoicing (both interval and invoicedIn present), it must have a stakeholder with
-	 * the {@link StakeholderRole#PRIMARY_BILLING_PARTY} role — otherwise billing has no recipient. That billing party
-	 * must also carry a usable recipient name (an organization name, or both a first and last name), since the billing
-	 * pipeline otherwise rejects the record with "recipient must either have an organization name or a first and last
-	 * name defined".
+	 * the {@link StakeholderRole#PRIMARY_BILLING_PARTY} role — otherwise billing has no recipient. Everything
+	 * BillingDataCollector puts on the billing record's {@code recipient} is read off that single stakeholder, and
+	 * since contract-sourced billing records are always of type {@code EXTERNAL} the whole set of
+	 * "mandatory for EXTERNAL billing record" constraints applies to it:
+	 * <ul>
+	 * <li>a usable recipient name — an organization name, or both a first and last name — otherwise the record is
+	 * rejected with "recipient must either have an organization name or a first and last name defined"</li>
+	 * <li>a {@code partyId}; BillingDataCollector never populates {@code recipient.legalId}, so partyId is the only
+	 * identifier that can satisfy "mandatory for EXTERNAL billing record if legalId is null"</li>
+	 * <li>an address carrying streetAddress, postalCode and town, which become {@code addressDetails.street},
+	 * {@code .postalCode} and {@code .city} — rejected with "Street, postal code and city must all be present in
+	 * recipient.addressDetails for EXTERNAL billing record". A stakeholder with no address at all is worse still: it
+	 * makes BillingDataCollector fail with a 500 before the record is even sent.</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * All aspects are evaluated against the <em>first</em> stakeholder carrying the role, because that is the one
+	 * BillingDataCollector picks (its mapper does a {@code findFirst} over the roles). Validating any other
+	 * stakeholder would let through contracts that billing then rejects.
+	 * </p>
 	 */
 	private void validatePrimaryBillingParty(final ContractEntity contract, final List<Violation> violations) {
 		final var invoicing = contract.getInvoicing();
@@ -98,14 +120,24 @@ public class ContractValidator {
 			return;
 		}
 
-		final var billingParties = ofNullable(contract.getStakeholders()).orElse(List.of()).stream()
+		final var billingParty = ofNullable(contract.getStakeholders()).orElse(List.of()).stream()
 			.filter(stakeholder -> nonNull(stakeholder.getRoles()) && stakeholder.getRoles().contains(StakeholderRole.PRIMARY_BILLING_PARTY))
-			.toList();
+			.findFirst();
 
-		if (billingParties.isEmpty()) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_MESSAGE));
-		} else if (billingParties.stream().noneMatch(ContractValidator::hasUsableRecipientName)) {
-			violations.add(new Violation("stakeholders", PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+		if (billingParty.isEmpty()) {
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_MESSAGE));
+			return;
+		}
+
+		final var stakeholder = billingParty.get();
+		if (!hasUsableRecipientName(stakeholder)) {
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_NAME_MESSAGE));
+		}
+		if (!isNotBlank(stakeholder.getPartyId())) {
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE));
+		}
+		if (!hasUsableRecipientAddress(stakeholder)) {
+			violations.add(new Violation(FIELD_STAKEHOLDERS, PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE));
 		}
 	}
 
@@ -113,6 +145,19 @@ public class ContractValidator {
 		final var hasOrganizationName = isNotBlank(stakeholder.getOrganizationName());
 		final var hasFullName = isNotBlank(stakeholder.getFirstName()) && isNotBlank(stakeholder.getLastName());
 		return hasOrganizationName || hasFullName;
+	}
+
+	/**
+	 * A missing address and an address missing any of the three mandatory fields are reported identically — from the
+	 * caller's point of view the remedy is the same, and the {@code careOf}, {@code country}, {@code attention} and
+	 * {@code type} fields are not required by billing.
+	 */
+	private static boolean hasUsableRecipientAddress(final StakeholderEntity stakeholder) {
+		return ofNullable(stakeholder.getAddress())
+			.filter(address -> isNotBlank(address.getStreetAddress()))
+			.filter(address -> isNotBlank(address.getPostalCode()))
+			.filter(address -> isNotBlank(address.getTown()))
+			.isPresent();
 	}
 
 	private static boolean isNotBlank(final String value) {
@@ -131,7 +176,7 @@ public class ContractValidator {
 			.anyMatch(name -> nonNull(name) && name.isBlank());
 
 		if (hasBlankName) {
-			violations.add(new Violation("propertyDesignations", PROPERTY_DESIGNATION_BLANK_MESSAGE));
+			violations.add(new Violation(FIELD_PROPERTY_DESIGNATIONS, PROPERTY_DESIGNATION_BLANK_MESSAGE));
 		}
 	}
 }
