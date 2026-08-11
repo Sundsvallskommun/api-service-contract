@@ -1,6 +1,5 @@
 package se.sundsvall.contract.service.mapper;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
@@ -319,24 +318,6 @@ class DtoMapperTest {
 		assertThat(address.getType()).isEqualTo(entity.getType());
 		assertThat(address.getAttention()).isEqualTo(entity.getAttention());
 		assertThat(address.getTown()).isEqualTo(entity.getTown());
-	}
-
-	@Test
-	void testToAttachmentDto() {
-		// Arrange
-		final var entity = createAttachmentEntity();
-
-		// Act
-		final var attachment = DtoMapper.toAttachmentDto(entity);
-
-		// Assert
-		assertThat(attachment.getAttachmentData().getContent()).isEqualTo(new String(entity.getContent(), StandardCharsets.UTF_8));
-		assertThat(attachment.getMetadata().getCategory()).isEqualTo(entity.getCategory());
-		assertThat(attachment.getMetadata().getFilename()).isEqualTo(entity.getFilename());
-		assertThat(attachment.getMetadata().getId()).isEqualTo(entity.getId());
-		assertThat(attachment.getMetadata().getMimeType()).isEqualTo(entity.getMimeType());
-		assertThat(attachment.getMetadata().getNote()).isEqualTo(entity.getNote());
-		assertThat(attachment.getMetadata().getCreated()).isEqualTo(entity.getCreated());
 	}
 
 	@Test

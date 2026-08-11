@@ -12,7 +12,7 @@ class ExceptionHandlerConfigTest {
 
 	@Test
 	void handleInvalidSyntaxException() {
-		final var exception = new InvalidSyntaxException("Invalid filter: unexpected token");
+		final var exception = new InvalidSyntaxException("Invalid filter: unexpected token", 0, 0, null, null);
 
 		final var response = exceptionHandlerConfig.handleInvalidSyntaxException(exception);
 

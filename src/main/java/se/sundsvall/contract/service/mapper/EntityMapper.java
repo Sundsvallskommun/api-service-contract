@@ -7,8 +7,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
+import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Extension;
 import se.sundsvall.contract.api.model.Invoicing;
@@ -36,7 +35,6 @@ import se.sundsvall.contract.model.Fees;
 import se.sundsvall.contract.model.Term;
 import se.sundsvall.contract.model.TermGroup;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -208,43 +206,44 @@ public final class EntityMapper {
 	}
 
 	/**
-	 * Converts an {@link Attachment} to an {@link AttachmentEntity}.
+	 * Converts an {@link AttachmentMetadata} to an {@link AttachmentEntity}. The binary content and its hash are not part
+	 * of the metadata and are set separately by the caller.
 	 *
 	 * @param  municipalityId the municipality ID to set on the entity
 	 * @param  contractId     the contract ID to set on the entity
-	 * @param  attachment     the attachment to convert
+	 * @param  metadata       the attachment metadata to convert
 	 * @return                the converted entity
 	 */
-	public static AttachmentEntity toAttachmentEntity(final String municipalityId, final String contractId, final Attachment attachment) {
+	public static AttachmentEntity toAttachmentEntity(final String municipalityId, final String contractId, final AttachmentMetadata metadata) {
 		return AttachmentEntity.builder()
-			.withCategory(attachment.getMetadata().getCategory())
-			.withContent(attachment.getAttachmentData().getContent().getBytes(UTF_8))
+			.withCategory(metadata.getCategory())
 			.withContractId(contractId)
-			.withFilename(attachment.getMetadata().getFilename())
-			.withMimeType(attachment.getMetadata().getMimeType())
+			.withFilename(metadata.getFilename())
+			.withMimeType(metadata.getMimeType())
 			.withMunicipalityId(municipalityId)
-			.withNote(attachment.getMetadata().getNote())
+			.withNote(metadata.getNote())
 			.build();
 	}
 
 	/**
-	 * Updates an existing {@link AttachmentEntity} with non-null values from the given {@link Attachment}.
+	 * Applies non-null values from the given {@link AttachmentMetadata} onto an existing {@link AttachmentEntity}.
 	 *
-	 * @param  entity     the entity to update
-	 * @param  attachment the attachment containing updated values
-	 * @return            the updated entity
+	 * <p>
+	 * The binary content is immutable once uploaded - to replace it, the attachment is deleted and recreated - so neither
+	 * the content nor its hash is touched here. Blank strings are normalized to null and therefore ignored, so a patch
+	 * cannot blank out a filename or mime type that the API requires to be present.
+	 *
+	 * @param  entity   the entity to update
+	 * @param  metadata the metadata containing updated values
+	 * @return          the updated entity
 	 */
-	public static AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final Attachment attachment) {
-		ofNullable(attachment.getMetadata()).ifPresent(metadata -> {
-			setPropertyUnlessNull(metadata.getCategory(), entity::setCategory);
-			setPropertyUnlessNull(metadata.getFilename(), entity::setFilename);
-			setPropertyUnlessNull(metadata.getMimeType(), entity::setMimeType);
-			setPropertyUnlessNull(metadata.getNote(), entity::setNote);
+	public static AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final AttachmentMetadata metadata) {
+		ofNullable(metadata).ifPresent(patch -> {
+			setPropertyUnlessNull(patch.getCategory(), entity::setCategory);
+			setPropertyUnlessNull(blankToNull(patch.getFilename()), entity::setFilename);
+			setPropertyUnlessNull(blankToNull(patch.getMimeType()), entity::setMimeType);
+			setPropertyUnlessNull(patch.getNote(), entity::setNote);
 		});
-		ofNullable(attachment.getAttachmentData())
-			.map(AttachmentData::getContent)
-			.map(content -> content.getBytes(UTF_8))
-			.ifPresent(entity::setContent);
 
 		return entity;
 	}
