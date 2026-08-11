@@ -425,7 +425,6 @@ paths:
               properties:
                 attachment:
                   $ref: "#/components/schemas/AttachmentMetadata"
-                  description: Attachment metadata
                 file:
                   type: string
                   format: binary

@@ -155,12 +155,13 @@ class ContractAttachmentResourceTest {
 		webTestClient.post()
 			.uri(BASE_URL)
 			.contentType(MULTIPART_FORM_DATA)
-			.bodyValue(multipartBody("{ this is not json", FILE_CONTENT))
+			.bodyValue(multipartBody("{ this is not json, secretPayloadMarker", FILE_CONTENT))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
 			.expectBody()
-			.jsonPath("$.detail").isEqualTo("The 'attachment' part must be valid JSON");
+			.jsonPath("$.detail").isEqualTo("Failed to read request")
+			.jsonPath("$").value((Object body) -> assertThat(body.toString()).doesNotContain("secretPayloadMarker"));
 
 		// Assert
 		verifyNoInteractions(attachmentService);
@@ -168,7 +169,7 @@ class ContractAttachmentResourceTest {
 
 	@Test
 	void testCreateAttachmentWithoutRequiredMetadataIsRejected() {
-		// Act - bean validation is not applied to a @RequestPart String, so this proves the explicit validation runs
+		// Act - proves Spring applies bean validation to the deserialized @RequestPart
 		webTestClient.post()
 			.uri(BASE_URL)
 			.contentType(MULTIPART_FORM_DATA)

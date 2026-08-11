@@ -1,6 +1,5 @@
 package se.sundsvall.contract.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -9,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Validator;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
-import se.sundsvall.contract.api.util.AttachmentMetadataParts;
 import se.sundsvall.contract.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.problem.Problem;
@@ -68,13 +66,9 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 class ContractAttachmentResource {
 
 	private final AttachmentService attachmentService;
-	private final ObjectMapper objectMapper;
-	private final Validator validator;
 
-	ContractAttachmentResource(final AttachmentService attachmentService, final ObjectMapper objectMapper, final Validator validator) {
+	ContractAttachmentResource(final AttachmentService attachmentService) {
 		this.attachmentService = attachmentService;
-		this.objectMapper = objectMapper;
-		this.validator = validator;
 	}
 
 	@Operation(
@@ -124,17 +118,14 @@ class ContractAttachmentResource {
 	ResponseEntity<Void> createAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
-		@RequestPart("attachment") @Schema(description = "Attachment metadata", implementation = AttachmentMetadata.class) final String attachment,
+		@Valid @RequestPart("attachment") final AttachmentMetadata attachment,
 		@NotNull @RequestPart("file") final MultipartFile file) {
 
 		if (file.isEmpty()) {
 			throw Problem.valueOf(BAD_REQUEST, "The 'file' part must not be empty");
 		}
 
-		final var metadata = AttachmentMetadataParts.parse(objectMapper, attachment);
-		AttachmentMetadataParts.validate(validator, metadata);
-
-		final var id = attachmentService.createAttachment(municipalityId, contractId, metadata, file);
+		final var id = attachmentService.createAttachment(municipalityId, contractId, attachment, file);
 		return created(fromPath("/{municipalityId}/contracts/{contractId}/attachments/{attachmentId}").buildAndExpand(municipalityId, contractId, id).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
