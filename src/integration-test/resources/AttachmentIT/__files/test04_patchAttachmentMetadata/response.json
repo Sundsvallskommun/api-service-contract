@@ -1,0 +1,10 @@
+[
+	{
+		"id": 1,
+		"category": "OTHER",
+		"filename": "someFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "Re-categorized after review",
+		"created": "2024-01-15T10:30:00Z"
+	}
+]

@@ -49,6 +49,7 @@ class AttachmentMetadataTest {
 		final var category = AttachmentCategory.CONTRACT;
 		final var mimeType = "mimeType";
 		final var note = "note";
+		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var created = OffsetDateTime.now();
 
 		final var attachment = AttachmentMetadata.builder()
@@ -56,6 +57,7 @@ class AttachmentMetadataTest {
 			.withCategory(category)
 			.withMimeType(mimeType)
 			.withNote(note)
+			.withHash(hash)
 			.withCreated(created)
 			.build();
 
@@ -64,6 +66,7 @@ class AttachmentMetadataTest {
 		assertThat(attachment.getCategory()).isEqualTo(category);
 		assertThat(attachment.getMimeType()).isEqualTo(mimeType);
 		assertThat(attachment.getNote()).isEqualTo(note);
+		assertThat(attachment.getHash()).isEqualTo(hash);
 		assertThat(attachment.getCreated()).isEqualTo(created);
 	}
 

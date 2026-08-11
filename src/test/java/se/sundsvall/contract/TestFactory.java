@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import org.geojson.FeatureCollection;
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Extension;
@@ -289,17 +287,12 @@ public final class TestFactory {
 			.build();
 	}
 
-	public static Attachment createAttachment() {
-		return Attachment.builder()
-			.withAttachmentData(AttachmentData.builder()
-				.withContent("someContent")
-				.build())
-			.withMetadata(AttachmentMetadata.builder()
-				.withNote("aNote")
-				.withCategory(CONTRACT)
-				.withMimeType("mimeType")
-				.withFilename("file.pdf")
-				.build())
+	public static AttachmentMetadata createAttachmentMetadata() {
+		return AttachmentMetadata.builder()
+			.withNote("aNote")
+			.withCategory(CONTRACT)
+			.withMimeType("mimeType")
+			.withFilename("file.pdf")
 			.build();
 	}
 

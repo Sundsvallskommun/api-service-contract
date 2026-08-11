@@ -37,6 +37,13 @@ public class AttachmentMetadata {
 	@Schema(description = "Notes on the attachment", examples = "The contract was a little wrinkled when scanned")
 	private String note;
 
+	@Schema(
+		description = "SHA-256 hash, lower-case hex encoded, of the attachment's raw binary content. Identical to what "
+			+ "the database produces with lower(sha2(content, 256)), and to the hash the same file is given in other services.",
+		examples = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+		accessMode = READ_ONLY)
+	private String hash;
+
 	@Schema(description = "Date when the attachment was created", examples = "2023-01-01T00:00:00.000Z", accessMode = READ_ONLY)
 	private OffsetDateTime created;
 }

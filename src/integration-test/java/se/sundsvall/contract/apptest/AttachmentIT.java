@@ -1,17 +1,19 @@
 package se.sundsvall.contract.apptest;
 
+import static org.apache.hc.core5.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.apache.hc.core5.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
 import java.util.List;
 
@@ -33,52 +35,63 @@ class AttachmentIT extends AbstractAppTest {
 	private static final String PATH = "/1984/contracts/2024-12345/attachments";
 
 	@Test
-	void test01_testGetAttachment() {
+	void test01_getAttachmentMetadataList() {
+		setupCall()
+			.withServicePath(PATH)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test02_getAttachmentBinary() throws Exception {
 		setupCall()
 			.withServicePath(PATH + "/1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PDF_VALUE))
+			.withExpectedResponseHeader(CONTENT_DISPOSITION, List.of("attachment; filename=\"someFile.pdf\""))
+			.withExpectedBinaryResponse("someFile.pdf")
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test02_testPostAndGetNewAttachment() {
+	void test03_postAndGetNewAttachment() throws Exception {
 		var test = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
-			.withRequest(REQUEST_FILE)
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("attachment", "attachment.json")
+			.withRequestFile("file", "LeaseContract12.pdf")
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.sendRequestAndVerifyResponse();
 
 		var location = test.getResponseHeaders().getLocation().getPath();
 
-		//Verify it's there
+		// Verify the uploaded bytes come back byte-identical
 		setupCall()
 			.withServicePath(location)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(RESPONSE_FILE)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PDF_VALUE))
+			.withExpectedBinaryResponse("LeaseContract12.pdf")
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test03_testReplaceAttachment() {
-		var servicePath = PATH + "/1";
+	void test04_patchAttachmentMetadata() {
 		setupCall()
-			.withServicePath(servicePath)
-			.withHttpMethod(PUT)
+			.withServicePath(PATH + "/1")
+			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
-		//Verify the attachment has been updated
+		// Verify the metadata was updated
 		setupCall()
-			.withServicePath(servicePath)
+			.withServicePath(PATH)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -87,24 +100,23 @@ class AttachmentIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_deleteAttachment() {
+	void test05_deleteAttachment() {
 		var servicePath = PATH + "/1";
-		//Verify the attachment exists since the delete doesn't care if it actually deletes something
+		// Verify the attachment exists since the delete doesn't care if it actually deletes something
 		setupCall()
 			.withServicePath(servicePath)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.sendRequestAndVerifyResponse();
 
-		//Delete it
+		// Delete it
 		setupCall()
 			.withServicePath(servicePath)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
-		//Verify it's gone i.e. a 404
+		// Verify it's gone i.e. a 404
 		setupCall()
 			.withServicePath(servicePath)
 			.withHttpMethod(GET)

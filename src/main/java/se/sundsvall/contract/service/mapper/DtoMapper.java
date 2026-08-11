@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Extension;
@@ -33,7 +31,6 @@ import se.sundsvall.contract.model.TermGroup;
 import se.sundsvall.contract.service.businessrule.model.Action;
 import se.sundsvall.contract.service.businessrule.model.BusinessruleParameters;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
@@ -169,7 +166,13 @@ public final class DtoMapper {
 			.orElse(null);
 	}
 
-	static List<AttachmentMetadata> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
+	/**
+	 * Converts {@link AttachmentEntity} instances to {@link AttachmentMetadata} DTOs.
+	 *
+	 * @param  attachmentEntities the entities to convert
+	 * @return                    the converted metadata DTOs, or an empty list if input is null
+	 */
+	public static List<AttachmentMetadata> toAttachmentMetadataDtos(final List<AttachmentEntity> attachmentEntities) {
 		return ofNullable(attachmentEntities)
 			.map(attachments -> attachments.stream()
 				.map(DtoMapper::toAttachmentMetaDataDto)
@@ -179,6 +182,9 @@ public final class DtoMapper {
 
 	/**
 	 * Converts an {@link AttachmentEntity} to an {@link AttachmentMetadata} DTO.
+	 *
+	 * <p>
+	 * The content hash is not populated yet - the column that carries it is introduced together with binary storage.
 	 *
 	 * @param  attachmentEntity the entity to convert
 	 * @return                  the converted metadata DTO, or null if input is null
@@ -243,30 +249,6 @@ public final class DtoMapper {
 				.withCareOf(address.getCareOf())
 				.withTown(address.getTown())
 				.withType(address.getType())
-				.build())
-			.orElse(null);
-	}
-
-	/**
-	 * Converts an {@link AttachmentEntity} to an {@link Attachment} DTO, including content data.
-	 *
-	 * @param  attachmentEntity the entity to convert
-	 * @return                  the converted DTO with attachment data and metadata, or null if input is null
-	 */
-	public static Attachment toAttachmentDto(final AttachmentEntity attachmentEntity) {
-		return ofNullable(attachmentEntity)
-			.map(attachment -> Attachment.builder()
-				.withAttachmentData(AttachmentData.builder()
-					.withContent(new String(attachment.getContent(), UTF_8))
-					.build())
-				.withMetadata(AttachmentMetadata.builder()
-					.withCategory(attachment.getCategory())
-					.withCreated(attachment.getCreated())
-					.withFilename(attachment.getFilename())
-					.withId(attachment.getId())
-					.withMimeType(attachment.getMimeType())
-					.withNote(attachment.getNote())
-					.build())
 				.build())
 			.orElse(null);
 	}

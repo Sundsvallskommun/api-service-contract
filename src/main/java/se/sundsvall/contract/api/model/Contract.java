@@ -62,7 +62,6 @@ public class Contract {
 	@ArraySchema(schema = @Schema(description = "Additional terms for the contract"))
 	private List<@Valid TermGroup> additionalTerms;
 
-	@Valid
 	@Schema(description = "Extra parameters")
 	private List<@Valid ExtraParameterGroup> extraParameters;
 
