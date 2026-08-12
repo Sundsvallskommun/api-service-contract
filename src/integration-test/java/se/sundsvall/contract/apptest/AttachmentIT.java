@@ -52,7 +52,9 @@ class AttachmentIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_PDF_VALUE))
-			.withExpectedResponseHeader(CONTENT_DISPOSITION, List.of("attachment; filename=\"someFile.pdf\""))
+			// RFC 6266: an escaped, ISO-8859-1 transliterated 'filename' for old clients, plus a percent-encoded
+			// 'filename*' carrying the real UTF-8 name
+			.withExpectedResponseHeader(CONTENT_DISPOSITION, List.of("attachment; filename=\"someFile.pdf\"; filename*=UTF-8''someFile.pdf"))
 			.withExpectedBinaryResponse("someFile.pdf")
 			.sendRequestAndVerifyResponse();
 	}
@@ -102,7 +104,7 @@ class AttachmentIT extends AbstractAppTest {
 	@Test
 	void test05_deleteAttachment() {
 		var servicePath = PATH + "/1";
-		// Verify the attachment exists since the delete doesn't care if it actually deletes something
+		// Establish that the attachment is there to begin with, so the 404 at the end proves the delete did the work
 		setupCall()
 			.withServicePath(servicePath)
 			.withHttpMethod(GET)

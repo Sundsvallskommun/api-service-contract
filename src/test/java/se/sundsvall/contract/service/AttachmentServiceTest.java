@@ -33,6 +33,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static se.sundsvall.contract.TestFactory.bytesOf;
+import static se.sundsvall.dept44.util.HashUtils.sha256Hex;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -82,7 +84,9 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getMimeType()).isEqualTo("mimeType");
 		assertThat(savedEntity.getNote()).isEqualTo("aNote");
 		// The raw upload bytes are stored, not a base64 rendering of them
-		assertThat(savedEntity.getContent()).isEqualTo(FILE_CONTENT);
+		assertThat(bytesOf(savedEntity.getAttachmentData().getFile())).isEqualTo(FILE_CONTENT);
+		// The hash is derived from those same bytes, by dept44's HashUtils
+		assertThat(savedEntity.getHash()).isEqualTo(sha256Hex(FILE_CONTENT));
 
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockAttachmentRepository);
@@ -168,7 +172,7 @@ class AttachmentServiceTest {
 
 		// Assert
 		assertThat(response.getHeader(CONTENT_TYPE)).isEqualTo("application/pdf");
-		assertThat(response.getHeader(CONTENT_DISPOSITION)).isEqualTo("attachment; filename=\"mycontract.pdf\"");
+		assertThat(response.getHeader(CONTENT_DISPOSITION)).isEqualTo("attachment; filename=\"mycontract.pdf\"; filename*=UTF-8''mycontract.pdf");
 		// A client-supplied mime type must never be sniffed and rendered in the API's origin
 		assertThat(response.getHeader("X-Content-Type-Options")).isEqualTo("nosniff");
 		assertThat(response.getContentAsByteArray()).isEqualTo("data".getBytes(UTF_8));
@@ -176,6 +180,60 @@ class AttachmentServiceTest {
 		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockAttachmentRepository);
+	}
+
+	/**
+	 * The filename is client-supplied and goes straight into a response header. A quote must not break out of the
+	 * quoted-string, and a non-ASCII name - ordinary in Swedish - must survive the ISO-8859-1 encoding headers use.
+	 */
+	@Test
+	void testStreamAttachmentEncodesFilenamesNeedingEscapingOrNonAscii() {
+		// Arrange - a quote, a Latin-1 character and one outside Latin-1 (an en dash)
+		final var response = new MockHttpServletResponse();
+		final var entity = TestFactory.createAttachmentEntity();
+		entity.setFilename("räkning \"2024\" – avtal.pdf");
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.thenReturn(Optional.of(entity));
+
+		// Act
+		attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response);
+
+		// Assert - quotes escaped and the en dash transliterated in the fallback, the real name intact in filename*
+		assertThat(response.getHeader(CONTENT_DISPOSITION)).isEqualTo(
+			"attachment; filename=\"räkning \\\"2024\\\" _ avtal.pdf\"; filename*=UTF-8''r%C3%A4kning%20%222024%22%20%E2%80%93%20avtal.pdf");
+	}
+
+	@Test
+	void testStreamAttachmentShouldThrow500WhenContentIsMissing() {
+		// Arrange - the mapping and the schema both forbid this, but a malformed row must still be diagnosable rather
+		// than surface as an NPE
+		final var response = new MockHttpServletResponse();
+		final var entity = TestFactory.createAttachmentEntity();
+		entity.setAttachmentData(null);
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.thenReturn(Optional.of(entity));
+
+		// Act & Assert
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response))
+			.matches(problem -> problem.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR)
+			.withMessageContaining("Attachment with id '1' has no stored content");
+	}
+
+	@Test
+	void testStreamAttachmentShouldThrow500WhenStoredFileIsMissing() {
+		// Arrange - same for a data row that exists but carries no file
+		final var response = new MockHttpServletResponse();
+		final var entity = TestFactory.createAttachmentEntity();
+		entity.getAttachmentData().setFile(null);
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.thenReturn(Optional.of(entity));
+
+		// Act & Assert
+		assertThatExceptionOfType(ThrowableProblem.class)
+			.isThrownBy(() -> attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response))
+			.matches(problem -> problem.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR)
+			.withMessageContaining("Attachment with id '1' has no stored content");
 	}
 
 	@Test
@@ -255,7 +313,7 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getNote()).isEqualTo("aNote");
 		assertThat(savedEntity.getContractId()).isEqualTo("2024-12345");
 		// The binary content is immutable - a metadata patch must leave it alone
-		assertThat(savedEntity.getContent()).isEqualTo("data".getBytes(UTF_8));
+		assertThat(bytesOf(savedEntity.getAttachmentData().getFile())).isEqualTo("data".getBytes(UTF_8));
 
 		verifyNoMoreInteractions(mockContractRepository);
 		verifyNoMoreInteractions(mockAttachmentRepository);

@@ -4,6 +4,32 @@ All notable changes to the Contracts API are documented here.
 
 ## Unreleased
 
+### Breaking changes (attachments are now binary)
+
+Attachment content used to travel as a string inside a JSON envelope, which meant every byte was carried as text, and
+that reading a contract's metadata dragged the file content along with it. Content is now uploaded and downloaded as
+raw binary, and metadata is a separate concern from the bytes. **Every attachment endpoint changed shape.**
+
+|                           Before                            |                                                  After                                                   |
+|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `POST /attachments` — `application/json`, `Attachment` body | `POST /attachments` — `multipart/form-data` with an `attachment` JSON part and a `file` binary part      |
+| `PUT /attachments/{id}` — replaces metadata *and* content   | `PATCH /attachments/{id}` — `application/json`, metadata only; returns `204`                             |
+| `GET /attachments/{id}` — JSON, content as a string         | `GET /attachments/{id}` — the raw bytes, with `Content-Type`, `Content-Disposition` and `Content-Length` |
+| *(no equivalent)*                                           | `GET /attachments` — the metadata of every attachment on the contract                                    |
+
+- **The `Attachment` and `AttachmentData` schemas are gone.** `AttachmentMetadata` is now the only attachment schema.
+- **Content is immutable once uploaded.** There is no longer any way to replace the bytes of an existing attachment;
+  delete it and create a new one. `PATCH` only touches `category`, `filename`, `mimeType` and `note`, and ignores
+  blank values so that a patch cannot blank out a required field.
+- **New read-only `hash` field on `AttachmentMetadata`** — the lower-case hex encoded SHA-256 of the raw content. It
+  lets a client confirm an upload round-tripped intact, and lets other services recognize the same file without
+  transferring it.
+- **Downloads are never rendered in the browser.** The response carries `Content-Disposition: attachment` and
+  `X-Content-Type-Options: nosniff`, since the mime type is client-supplied.
+
+There are no attachments in any environment, so nothing is migrated or converted — any attachment stored through the
+previous API would have to be uploaded again.
+
 ### Breaking changes (billing party validation tightened)
 
 Requests that were previously accepted may now be rejected with **HTTP 400 Bad Request**. The request/response

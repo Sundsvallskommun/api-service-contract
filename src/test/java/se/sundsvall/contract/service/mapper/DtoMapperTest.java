@@ -164,11 +164,13 @@ class DtoMapperTest {
 			.withCategory(attachmentEntity.getCategory())
 			.withCreated(attachmentEntity.getCreated())
 			.withFilename(attachmentEntity.getFilename())
+			.withHash(attachmentEntity.getHash())
 			.withMimeType(attachmentEntity.getMimeType())
 			.withNote(attachmentEntity.getNote())
 			.build();
 
 		assertThat(metadata).isEqualTo(attachmentMetaData);
+		assertThat(metadata.getHash()).isEqualTo("3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7");
 	}
 
 	@Test

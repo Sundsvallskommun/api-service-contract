@@ -183,9 +183,6 @@ public final class DtoMapper {
 	/**
 	 * Converts an {@link AttachmentEntity} to an {@link AttachmentMetadata} DTO.
 	 *
-	 * <p>
-	 * The content hash is not populated yet - the column that carries it is introduced together with binary storage.
-	 *
 	 * @param  attachmentEntity the entity to convert
 	 * @return                  the converted metadata DTO, or null if input is null
 	 */
@@ -195,6 +192,7 @@ public final class DtoMapper {
 				.withCategory(attachment.getCategory())
 				.withCreated(attachment.getCreated())
 				.withFilename(attachment.getFilename())
+				.withHash(attachment.getHash())
 				.withId(attachment.getId())
 				.withMimeType(attachment.getMimeType())
 				.withNote(attachment.getNote())
