@@ -10,15 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.AttachmentDataEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
+import se.sundsvall.contract.model.MimeTypes;
 import se.sundsvall.dept44.problem.Problem;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -132,7 +133,7 @@ public class AttachmentService {
 	 * @param attachmentId   the attachment id
 	 * @param metadata       the metadata to apply
 	 */
-	public void updateAttachment(final String municipalityId, final String contractId, final Long attachmentId, final AttachmentMetadata metadata) {
+	public void updateAttachment(final String municipalityId, final String contractId, final Long attachmentId, final PatchAttachmentMetadata metadata) {
 		final var attachment = findAttachment(municipalityId, contractId, attachmentId);
 
 		attachmentRepository.save(updateAttachmentEntity(attachment, metadata));
@@ -174,7 +175,9 @@ public class AttachmentService {
 
 	/**
 	 * The mime type is client-supplied, so the content is always served as a download and browsers are told not to sniff
-	 * the type - an uploaded HTML file must never be rendered in the API's origin.
+	 * the type - an uploaded HTML file must never be rendered in the API's origin. New attachments are validated on the
+	 * way in, but rows stored before that check existed can hold anything at all, so the value is checked again here and
+	 * falls back to {@code application/octet-stream} rather than being echoed into the header unexamined.
 	 *
 	 * <p>
 	 * This is the only place the lazy content association is read. Note that "streamed" here means the bytes are not
@@ -190,7 +193,7 @@ public class AttachmentService {
 			.map(AttachmentDataEntity::getFile)
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Attachment with id '%s' has no stored content".formatted(attachmentId)));
 
-		response.addHeader(CONTENT_TYPE, isBlank(attachment.getMimeType()) ? APPLICATION_OCTET_STREAM_VALUE : attachment.getMimeType());
+		response.addHeader(CONTENT_TYPE, MimeTypes.isValid(attachment.getMimeType()) ? attachment.getMimeType() : APPLICATION_OCTET_STREAM_VALUE);
 		// Built rather than concatenated: the filename is client-supplied, and a quote in it would otherwise break out of
 		// the quoted-string, while a non-ASCII one (ordinary in Swedish filenames) would be mangled by the ISO-8859-1
 		// encoding headers use. This emits the RFC 6266 pair - an escaped, transliterated 'filename' for old clients and

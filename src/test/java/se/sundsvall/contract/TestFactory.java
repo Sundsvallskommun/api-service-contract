@@ -17,6 +17,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
@@ -318,7 +319,16 @@ public final class TestFactory {
 		return AttachmentMetadata.builder()
 			.withNote("aNote")
 			.withCategory(CONTRACT)
-			.withMimeType("mimeType")
+			.withMimeType("application/pdf")
+			.withFilename("file.pdf")
+			.build();
+	}
+
+	public static PatchAttachmentMetadata createPatchAttachmentMetadata() {
+		return PatchAttachmentMetadata.builder()
+			.withNote("aNote")
+			.withCategory(CONTRACT)
+			.withMimeType("application/pdf")
 			.withFilename("file.pdf")
 			.build();
 	}

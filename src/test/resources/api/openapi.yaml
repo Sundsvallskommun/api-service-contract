@@ -609,7 +609,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AttachmentMetadata"
+              $ref: "#/components/schemas/PatchAttachmentMetadata"
         required: true
       responses:
         "204":
@@ -737,18 +737,23 @@ components:
           description: The attachment filename
           examples:
           - LeaseContract12.pdf
+          maxLength: 255
           minLength: 1
         mimeType:
           type: string
-          description: The attachment mime-type
+          description: "The attachment mime-type, on the form 'type/subtype'. Parameters\
+            \ (e.g. ';charset=utf-8') are not accepted."
           examples:
           - application/pdf
+          maxLength: 255
           minLength: 1
         note:
           type: string
           description: Notes on the attachment
           examples:
           - The contract was a little wrinkled when scanned
+          maxLength: 255
+          minLength: 0
         hash:
           type: string
           description: "SHA-256 hash, lower-case hex encoded, of the attachment's\
@@ -1636,6 +1641,36 @@ components:
           $ref: "#/components/schemas/FeatureCollection"
           description: Part(s) of property covered by the lease. Described by GeoJSON
             using polygon(s)
+    PatchAttachmentMetadata:
+      type: object
+      description: Partial attachment metadata payload used for PATCH. Only the fields
+        present in the payload are applied to the existing attachment. The binary
+        content cannot be patched.
+      properties:
+        category:
+          $ref: "#/components/schemas/AttachmentCategory"
+        filename:
+          type: string
+          description: The attachment filename
+          examples:
+          - LeaseContract12.pdf
+          maxLength: 255
+          minLength: 0
+        mimeType:
+          type: string
+          description: "The attachment mime-type, on the form 'type/subtype'. Parameters\
+            \ (e.g. ';charset=utf-8') are not accepted."
+          examples:
+          - application/pdf
+          maxLength: 255
+          minLength: 0
+        note:
+          type: string
+          description: Notes on the attachment
+          examples:
+          - The contract was a little wrinkled when scanned
+          maxLength: 255
+          minLength: 0
     SpecificationContractEntity: {}
     PageContract:
       type: object

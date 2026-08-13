@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.contract.TestFactory;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.integration.db.AttachmentRepository;
 import se.sundsvall.contract.integration.db.ContractRepository;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
@@ -81,7 +84,7 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getContractId()).isEqualTo(CONTRACT_ID);
 		assertThat(savedEntity.getCategory()).isEqualTo(AttachmentCategory.CONTRACT);
 		assertThat(savedEntity.getFilename()).isEqualTo("file.pdf");
-		assertThat(savedEntity.getMimeType()).isEqualTo("mimeType");
+		assertThat(savedEntity.getMimeType()).isEqualTo("application/pdf");
 		assertThat(savedEntity.getNote()).isEqualTo("aNote");
 		// The raw upload bytes are stored, not a base64 rendering of them
 		assertThat(bytesOf(savedEntity.getAttachmentData().getFile())).isEqualTo(FILE_CONTENT);
@@ -252,6 +255,35 @@ class AttachmentServiceTest {
 		assertThat(response.getHeader(CONTENT_TYPE)).isEqualTo("application/octet-stream");
 	}
 
+	/**
+	 * The mime type is validated on the way in, but rows predating that check can hold anything, so the value is never
+	 * echoed into the header without being looked at.
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"",
+		"   ",
+		"not-a-mime-type",
+		"application/pdf\r\nX-Injected: yes",
+		"application/pdf\r\n",
+		"text/plain;charset=\"\r\nX-Injected: yes\"",
+		"*/*"
+	})
+	void testStreamAttachmentFallsBackToOctetStreamWhenMimeTypeIsMalformed(final String mimeType) {
+		// Arrange
+		final var response = new MockHttpServletResponse();
+		final var entity = TestFactory.createAttachmentEntity();
+		entity.setMimeType(mimeType);
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.thenReturn(Optional.of(entity));
+
+		// Act
+		attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response);
+
+		// Assert
+		assertThat(response.getHeader(CONTENT_TYPE)).isEqualTo("application/octet-stream");
+	}
+
 	@Test
 	void testStreamAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
@@ -293,7 +325,7 @@ class AttachmentServiceTest {
 		// Set up a captor since we want to verify what's being saved, not what comes back.
 		final var argumentCaptor = ArgumentCaptor.forClass(AttachmentEntity.class);
 
-		final var incomingMetadata = TestFactory.createAttachmentMetadata();
+		final var incomingMetadata = TestFactory.createPatchAttachmentMetadata();
 		final var oldAttachmentEntity = TestFactory.createAttachmentEntity();
 		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.of(oldAttachmentEntity));
 		when(mockAttachmentRepository.save(any(AttachmentEntity.class))).thenReturn(oldAttachmentEntity);
@@ -309,7 +341,7 @@ class AttachmentServiceTest {
 		assertThat(savedEntity.getCategory()).isEqualTo(AttachmentCategory.CONTRACT);
 		assertThat(savedEntity.getId()).isEqualTo(123L);
 		assertThat(savedEntity.getFilename()).isEqualTo("file.pdf");
-		assertThat(savedEntity.getMimeType()).isEqualTo("mimeType");
+		assertThat(savedEntity.getMimeType()).isEqualTo("application/pdf");
 		assertThat(savedEntity.getNote()).isEqualTo("aNote");
 		assertThat(savedEntity.getContractId()).isEqualTo("2024-12345");
 		// The binary content is immutable - a metadata patch must leave it alone
@@ -322,7 +354,7 @@ class AttachmentServiceTest {
 	@Test
 	void testUpdateAttachmentShouldThrow404WhenNotFound() {
 		// Arrange
-		final var metadata = AttachmentMetadata.builder().build();
+		final var metadata = PatchAttachmentMetadata.builder().build();
 		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID)).thenReturn(Optional.empty());
 
 		// Act & Assert

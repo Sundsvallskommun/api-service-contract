@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.problem.Problem;
@@ -143,7 +144,7 @@ class ContractAttachmentResource {
 		@Parameter(name = "municipalityId", description = "Municipality id") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "contractId", description = "Contract id") @PathVariable final String contractId,
 		@Parameter(name = "attachmentId", description = "Attachment id") @PathVariable final Long attachmentId,
-		@RequestBody final AttachmentMetadata attachment) {
+		@RequestBody @Valid final PatchAttachmentMetadata attachment) {
 
 		attachmentService.updateAttachment(municipalityId, contractId, attachmentId, attachment);
 		return noContent()
