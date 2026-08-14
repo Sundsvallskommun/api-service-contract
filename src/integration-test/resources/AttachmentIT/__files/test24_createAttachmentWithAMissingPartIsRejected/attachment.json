@@ -1,0 +1,6 @@
+{
+	"category": "CONTRACT",
+	"filename": "someFile.pdf",
+	"mimeType": "application/pdf",
+	"note": "Valid metadata, but the file part is missing"
+}
