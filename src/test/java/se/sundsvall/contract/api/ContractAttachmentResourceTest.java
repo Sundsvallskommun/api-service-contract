@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.contract.Application;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 import se.sundsvall.contract.service.AttachmentService;
 
@@ -58,7 +59,7 @@ class ContractAttachmentResourceTest {
 			.withId(1L)
 			.withCategory(AttachmentCategory.CONTRACT)
 			.withFilename("aFilename")
-			.withMimeType("aMimeType")
+			.withMimeType("application/pdf")
 			.withHash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
 			.build();
 		when(attachmentService.getAttachments(MUNICIPALITY_ID, CONTRACT_ID)).thenReturn(List.of(metadata));
@@ -115,7 +116,7 @@ class ContractAttachmentResourceTest {
 			.uri(BASE_URL)
 			.contentType(MULTIPART_FORM_DATA)
 			.bodyValue(multipartBody("""
-				{"category":"OTHER","filename":"aFilename","mimeType":"aMimeType","note":"aNote"}""", FILE_CONTENT))
+				{"category":"OTHER","filename":"aFilename","mimeType":"application/pdf","note":"aNote"}""", FILE_CONTENT))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().valueEquals("Location", BASE_URL + "/1");
@@ -124,7 +125,7 @@ class ContractAttachmentResourceTest {
 		final var expectedMetadata = AttachmentMetadata.builder()
 			.withCategory(AttachmentCategory.OTHER)
 			.withFilename("aFilename")
-			.withMimeType("aMimeType")
+			.withMimeType("application/pdf")
 			.withNote("aNote")
 			.build();
 		verify(attachmentService).createAttachment(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), eq(expectedMetadata), any(MultipartFile.class));
@@ -138,7 +139,7 @@ class ContractAttachmentResourceTest {
 			.uri(BASE_URL)
 			.contentType(MULTIPART_FORM_DATA)
 			.bodyValue(multipartBody("""
-				{"filename":"aFilename","mimeType":"aMimeType"}""", new byte[0]))
+				{"filename":"aFilename","mimeType":"application/pdf"}""", new byte[0]))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -188,7 +189,7 @@ class ContractAttachmentResourceTest {
 	@Test
 	void testPatchAttachment() {
 		// Arrange
-		final var metadata = AttachmentMetadata.builder()
+		final var metadata = PatchAttachmentMetadata.builder()
 			.withNote("aNewNote")
 			.withCategory(AttachmentCategory.OTHER)
 			.build();
@@ -199,6 +200,54 @@ class ContractAttachmentResourceTest {
 			.uri(BASE_URL + "/1")
 			.contentType(APPLICATION_JSON)
 			.bodyValue(metadata)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		// Assert
+		verify(attachmentService).updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, metadata);
+		verifyNoMoreInteractions(attachmentService);
+	}
+
+	/**
+	 * The patch payload is validated too - the mime type would otherwise reach the Content-Type response header on the
+	 * way back out without ever having been looked at.
+	 */
+	@Test
+	void testPatchAttachmentWithMalformedMimeTypeIsRejected() {
+		// Act
+		webTestClient.patch()
+			.uri(BASE_URL + "/1")
+			.contentType(APPLICATION_JSON)
+			.bodyValue("""
+				{"mimeType":"application/pdf\\r\\nX-Injected: yes"}""")
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.violations[0].field").isEqualTo("mimeType")
+			.jsonPath("$.violations[0].message").isEqualTo("must be a valid mime type on the form 'type/subtype', without parameters");
+
+		// Assert
+		verifyNoInteractions(attachmentService);
+	}
+
+	/**
+	 * A patch leaves out what it does not change, so a field that is simply absent must not be treated as a violation.
+	 */
+	@Test
+	void testPatchAttachmentWithOnlyANoteIsAccepted() {
+		// Arrange
+		final var metadata = PatchAttachmentMetadata.builder()
+			.withNote("aNewNote")
+			.build();
+		doNothing().when(attachmentService).updateAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L, metadata);
+
+		// Act
+		webTestClient.patch()
+			.uri(BASE_URL + "/1")
+			.contentType(APPLICATION_JSON)
+			.bodyValue("""
+				{"note":"aNewNote"}""")
 			.exchange()
 			.expectStatus().isNoContent();
 

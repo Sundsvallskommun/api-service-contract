@@ -14,6 +14,7 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
@@ -226,7 +227,7 @@ public final class EntityMapper {
 	}
 
 	/**
-	 * Applies non-null values from the given {@link AttachmentMetadata} onto an existing {@link AttachmentEntity}.
+	 * Applies non-null values from the given {@link PatchAttachmentMetadata} onto an existing {@link AttachmentEntity}.
 	 *
 	 * <p>
 	 * The binary content is immutable once uploaded - to replace it, the attachment is deleted and recreated - so neither
@@ -237,7 +238,7 @@ public final class EntityMapper {
 	 * @param  metadata the metadata containing updated values
 	 * @return          the updated entity
 	 */
-	public static AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final AttachmentMetadata metadata) {
+	public static AttachmentEntity updateAttachmentEntity(final AttachmentEntity entity, final PatchAttachmentMetadata metadata) {
 		ofNullable(metadata).ifPresent(patch -> {
 			setPropertyUnlessNull(patch.getCategory(), entity::setCategory);
 			setPropertyUnlessNull(blankToNull(patch.getFilename()), entity::setFilename);

@@ -2,12 +2,14 @@ package se.sundsvall.contract.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.contract.api.validation.ValidMimeType;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
@@ -26,20 +28,28 @@ public class AttachmentMetadata {
 
 	private AttachmentCategory category;
 
+	// The lower bound is @NotBlank's job, and is spelled out here only so that the generated spec keeps its minLength
 	@NotBlank
+	@Size(min = 1, max = 255)
 	@Schema(description = "The attachment filename", examples = "LeaseContract12.pdf", requiredMode = REQUIRED)
 	private String filename;
 
 	@NotBlank
-	@Schema(description = "The attachment mime-type", examples = "application/pdf", requiredMode = REQUIRED)
+	@Size(min = 1, max = 255)
+	@ValidMimeType
+	@Schema(
+		description = "The attachment mime-type, on the form 'type/subtype'. Parameters (e.g. ';charset=utf-8') are not accepted.",
+		examples = "application/pdf",
+		requiredMode = REQUIRED)
 	private String mimeType;
 
+	@Size(max = 255)
 	@Schema(description = "Notes on the attachment", examples = "The contract was a little wrinkled when scanned")
 	private String note;
 
 	@Schema(
 		description = "SHA-256 hash, lower-case hex encoded, of the attachment's raw binary content. Identical to what "
-			+ "the database produces with lower(sha2(content, 256)), and to the hash the same file is given in other services.",
+			+ "the database produces with lower(sha2(file, 256)), and to the hash the same file is given in other services.",
 		examples = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
 		accessMode = READ_ONLY)
 	private String hash;

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.contract.model.enums.AttachmentCategory;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
@@ -115,6 +116,64 @@ class AttachmentMetadataTest {
 		final var violations = VALIDATOR.validate(metadata);
 
 		assertThat(violations).isEmpty();
+	}
+
+	/**
+	 * The mime type ends up in the Content-Type response header when the attachment is fetched, so it is caught here
+	 * rather than left for the servlet container to deal with.
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"not-a-mime-type",
+		"application/pdf\r\nX-Injected: yes",
+		"application/pdf ",
+		"application/pdf@evil",
+		"text/plain;charset=utf-8",
+		"*/*"
+	})
+	void testMimeTypeMustBeAWellFormedMimeType(final String invalidValue) {
+		final var metadata = AttachmentMetadata.builder()
+			.withFilename("file.pdf")
+			.withMimeType(invalidValue)
+			.build();
+
+		final var violations = VALIDATOR.validate(metadata);
+
+		assertThat(violations)
+			.isNotEmpty()
+			.anySatisfy(violation -> {
+				assertThat(violation.getPropertyPath()).hasToString("mimeType");
+				assertThat(violation.getMessage()).isEqualTo("must be a valid mime type on the form 'type/subtype', without parameters");
+			});
+	}
+
+	/**
+	 * The columns are varchar(255), so anything longer would pass validation only to fail as a 500 on insert.
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"filename", "mimeType", "note"
+	})
+	void testStringFieldsAreCappedAtTheColumnLength(final String field) {
+		final var tooLong = "x".repeat(256);
+		final var metadata = AttachmentMetadata.builder()
+			.withFilename("filename".equals(field) ? tooLong : "file.pdf")
+			// A too-long mime type must still be a well-formed one, or the @ValidMimeType violation would carry the test
+			.withMimeType("mimeType".equals(field) ? "application/" + "x".repeat(244) : "application/pdf")
+			.withNote("note".equals(field) ? tooLong : null)
+			.build();
+
+		final var violations = VALIDATOR.validate(metadata);
+
+		// The required fields also carry a lower bound, the optional one does not
+		final var expectedMessage = "note".equals(field) ? "size must be between 0 and 255" : "size must be between 1 and 255";
+
+		assertThat(violations)
+			.singleElement()
+			.satisfies(violation -> {
+				assertThat(violation.getPropertyPath()).hasToString(field);
+				assertThat(violation.getMessage()).isEqualTo(expectedMessage);
+			});
 	}
 
 	private static Stream<Arguments> blankStringArgumentProvider() {

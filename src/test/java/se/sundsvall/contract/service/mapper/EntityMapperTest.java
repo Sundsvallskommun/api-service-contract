@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -27,6 +27,7 @@ import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
 import static se.sundsvall.contract.TestFactory.createAttachmentMetadata;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
+import static se.sundsvall.contract.TestFactory.createPatchAttachmentMetadata;
 
 class EntityMapperTest {
 
@@ -264,7 +265,7 @@ class EntityMapperTest {
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getNote()).isEqualTo(dto.getNote());
 		// The content is supplied separately by the caller, from the uploaded file
-		assertThat(entity.getContent()).isNull();
+		assertThat(entity.getAttachmentData()).isNull();
 	}
 
 	@Test
@@ -272,8 +273,8 @@ class EntityMapperTest {
 
 		// Arrange
 		final var entity = createAttachmentEntity();
-		final var originalContent = entity.getContent();
-		final var dto = createAttachmentMetadata();
+		final var originalData = entity.getAttachmentData();
+		final var dto = createPatchAttachmentMetadata();
 
 		// Act
 		final var updatedEntity = EntityMapper.updateAttachmentEntity(entity, dto);
@@ -284,7 +285,7 @@ class EntityMapperTest {
 		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMimeType());
 		assertThat(updatedEntity.getNote()).isEqualTo(dto.getNote());
 		// The binary content is immutable - patching metadata must not touch it
-		assertThat(updatedEntity.getContent()).isEqualTo(originalContent);
+		assertThat(updatedEntity.getAttachmentData()).isSameAs(originalData);
 	}
 
 	@Test
@@ -295,7 +296,7 @@ class EntityMapperTest {
 		final var originalFilename = entity.getFilename();
 		final var originalMimeType = entity.getMimeType();
 
-		final var dto = AttachmentMetadata.builder()
+		final var dto = PatchAttachmentMetadata.builder()
 			.withFilename("   ")
 			.withMimeType("")
 			.build();
@@ -592,7 +593,7 @@ class EntityMapperTest {
 		final var originalFilename = entity.getFilename();
 
 		// Attachment metadata where all fields are null — setPropertyUnlessNull should skip the setters
-		final var metadata = AttachmentMetadata.builder().build();
+		final var metadata = PatchAttachmentMetadata.builder().build();
 
 		// Act
 		final var updated = EntityMapper.updateAttachmentEntity(entity, metadata);
