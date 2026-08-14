@@ -1,0 +1,8 @@
+{
+	"id": 999,
+	"category": "CONTRACT",
+	"filename": "someFile.pdf",
+	"mimeType": "application/pdf",
+	"note": "The id and hash below are read-only and must be ignored",
+	"hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+}
