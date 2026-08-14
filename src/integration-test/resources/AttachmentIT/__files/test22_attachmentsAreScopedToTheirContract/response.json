@@ -1,0 +1,11 @@
+[
+	{
+		"id": "${json-unit.any-number}",
+		"category": "OTHER",
+		"filename": "otherContractFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "Belongs to contract 2024-23456 only",
+		"hash": "5c9e50d35ba81e923e013a2f9629f744d6bf50390839c40cc5873dba54c7240e",
+		"created": "${json-unit.any-string}"
+	}
+]

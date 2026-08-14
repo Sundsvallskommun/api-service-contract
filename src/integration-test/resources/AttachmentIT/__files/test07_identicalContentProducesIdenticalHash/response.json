@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"category": "CONTRACT",
+		"filename": "someFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "someNote",
+		"hash": "5c9e50d35ba81e923e013a2f9629f744d6bf50390839c40cc5873dba54c7240e",
+		"created": "2024-01-15T10:30:00Z"
+	},
+	{
+		"id": "${json-unit.any-number}",
+		"category": "CONTRACT",
+		"filename": "first.bin",
+		"mimeType": "application/octet-stream",
+		"note": "First upload of the shared content",
+		"hash": "ca8bc3c43b6c03c311ddb6c5122528d6f764073902a8d768229dc8a1ff362519",
+		"created": "${json-unit.any-string}"
+	},
+	{
+		"id": "${json-unit.any-number}",
+		"category": "OTHER",
+		"filename": "second.bin",
+		"mimeType": "application/pdf",
+		"note": "Second upload of the shared content, under different metadata",
+		"hash": "ca8bc3c43b6c03c311ddb6c5122528d6f764073902a8d768229dc8a1ff362519",
+		"created": "${json-unit.any-string}"
+	},
+	{
+		"id": "${json-unit.any-number}",
+		"category": "OTHER",
+		"filename": "other.bin",
+		"mimeType": "application/octet-stream",
+		"note": "Content that differs from the other two",
+		"hash": "780ba5f4122fe610e836890f1c0fc5c07a4dadc54d3bfb98c6066e69d7835c7c",
+		"created": "${json-unit.any-string}"
+	}
+]

@@ -1,0 +1,20 @@
+[
+	{
+		"id": 1,
+		"category": "CONTRACT",
+		"filename": "someFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "someNote",
+		"hash": "5c9e50d35ba81e923e013a2f9629f744d6bf50390839c40cc5873dba54c7240e",
+		"created": "2024-01-15T10:30:00Z"
+	},
+	{
+		"id": "${json-unit.any-number}",
+		"category": "OTHER",
+		"filename": "binaryContent.bin",
+		"mimeType": "application/octet-stream",
+		"note": "64 KiB spanning every byte value",
+		"hash": "ef4636928161808e87035fa51983821677527ccd9661991c5d0126a778b2268a",
+		"created": "${json-unit.any-string}"
+	}
+]

@@ -1,0 +1,5 @@
+# Attachment integration-test fixtures are uploaded, compared byte-for-byte and hashed
+# against SHA-256 values pinned in the expected responses. Line-ending conversion would
+# silently change both the bytes and the hash, so keep them verbatim.
+src/integration-test/resources/AttachmentIT/**/*.bin binary
+src/integration-test/resources/AttachmentIT/**/*.pdf binary
