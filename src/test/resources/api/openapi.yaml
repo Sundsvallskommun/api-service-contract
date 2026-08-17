@@ -856,7 +856,7 @@ components:
           description: Marker for whether an agreement should be extended automatically
             or not
           examples:
-          - "true"
+          - true
         leaseExtension:
           type: integer
           format: int32
