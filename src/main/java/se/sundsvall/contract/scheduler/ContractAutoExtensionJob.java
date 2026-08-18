@@ -1,6 +1,7 @@
 package se.sundsvall.contract.scheduler;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class ContractAutoExtensionJob {
 		cron = "${scheduler.contract-auto-extension.cron}",
 		lockAtMostFor = "${scheduler.contract-auto-extension.lock-at-most-for}")
 	public void run() {
-		final var contracts = contractRepository.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
+		final var contracts = contractRepository.findByStatusAndAutoExtendTrueAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now(ZoneId.systemDefault()));
 		LOG.info("Found {} contract(s) to auto-extend", contracts.size());
 
 		final var failures = new AtomicInteger();

@@ -3,6 +3,7 @@ package se.sundsvall.contract.scheduler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class ContractAutoExtensionWorker {
 			if (contract.getEndDate() != null && contract.getEndDate().isBefore(newEnd)) {
 				newEnd = contract.getEndDate();
 			}
-			if (!newEnd.isBefore(LocalDate.now())) {
+			if (!newEnd.isBefore(LocalDate.now(ZoneId.systemDefault()))) {
 				break;
 			}
 			if (contract.getEndDate() != null && !newEnd.isBefore(contract.getEndDate())) {
