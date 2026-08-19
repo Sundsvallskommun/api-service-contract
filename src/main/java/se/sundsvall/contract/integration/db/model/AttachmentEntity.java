@@ -12,6 +12,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -90,7 +91,7 @@ public class AttachmentEntity {
 
 	@PrePersist
 	public void prePersist() {
-		created = now();
+		created = now(ZoneId.systemDefault());
 	}
 
 	/**

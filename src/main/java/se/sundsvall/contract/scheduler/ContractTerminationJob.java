@@ -1,6 +1,7 @@
 package se.sundsvall.contract.scheduler;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,11 +29,11 @@ public class ContractTerminationJob {
 		cron = "${scheduler.contract-termination.cron}",
 		lockAtMostFor = "${scheduler.contract-termination.lock-at-most-for}")
 	public void run() {
-		final var expiredContracts = contractRepository.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now());
+		final var expiredContracts = contractRepository.findByStatusAndEndDateBefore(Status.ACTIVE, LocalDate.now(ZoneId.systemDefault()));
 		LOG.info("Found {} contract(s) to terminate", expiredContracts.size());
 		expiredContracts.forEach(contractTerminationWorker::terminate);
 
-		final var expiredPeriodContracts = contractRepository.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now());
+		final var expiredPeriodContracts = contractRepository.findByStatusAndAutoExtendFalseAndCurrentPeriodEndDateLessThanEqual(Status.ACTIVE, LocalDate.now(ZoneId.systemDefault()));
 		LOG.info("Found {} non-auto-extending contract(s) with expired period to terminate", expiredPeriodContracts.size());
 		expiredPeriodContracts.forEach(contractTerminationWorker::terminate);
 	}
