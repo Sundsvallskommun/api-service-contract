@@ -1,0 +1,11 @@
+[
+	{
+		"id": 1,
+		"category": "OTHER",
+		"filename": "someFile.pdf",
+		"mimeType": "application/pdf",
+		"note": "Re-categorized after review",
+		"hash": "5c9e50d35ba81e923e013a2f9629f744d6bf50390839c40cc5873dba54c7240e",
+		"created": "2024-01-15T10:30:00Z"
+	}
+]

@@ -15,6 +15,10 @@ public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Lo
 	/**
 	 * Finds all attachments matching the given municipality and contract.
 	 *
+	 * <p>
+	 * The binary content hangs off a lazily fetched association, so it is not loaded by this query - only by the endpoint
+	 * that streams the file.
+	 *
 	 * @param  municipalityId the municipality id
 	 * @param  contractId     the contract id
 	 * @return                list of matching attachment entities
@@ -42,7 +46,11 @@ public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Lo
 	boolean existsByMunicipalityIdAndContractIdAndId(String municipalityId, String contractId, Long id);
 
 	/**
-	 * Deletes all attachments matching the given municipality and contract.
+	 * Deletes all attachments matching the given municipality and contract, along with their stored content.
+	 *
+	 * <p>
+	 * The content rows go with them by cascade, not by any database constraint - the foreign key points the other way, so
+	 * nothing would complain if they were left behind. {@code AttachmentRepositoryTest} pins this down.
 	 *
 	 * @param municipalityId the municipality id
 	 * @param contractId     the contract id
@@ -50,7 +58,7 @@ public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Lo
 	void deleteAllByMunicipalityIdAndContractId(String municipalityId, String contractId);
 
 	/**
-	 * Deletes an attachment matching the given municipality, contract and attachment id.
+	 * Deletes an attachment matching the given municipality, contract and attachment id, along with its stored content.
 	 *
 	 * @param municipalityId the municipality id
 	 * @param contractId     the contract id

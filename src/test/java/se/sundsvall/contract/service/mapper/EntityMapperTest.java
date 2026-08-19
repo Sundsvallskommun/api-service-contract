@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.api.model.PatchContract;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
@@ -24,10 +23,11 @@ import se.sundsvall.contract.model.enums.Status;
 import se.sundsvall.contract.model.enums.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.contract.TestFactory.createAttachment;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
+import static se.sundsvall.contract.TestFactory.createAttachmentMetadata;
 import static se.sundsvall.contract.TestFactory.createContract;
 import static se.sundsvall.contract.TestFactory.createContractEntity;
+import static se.sundsvall.contract.TestFactory.createPatchAttachmentMetadata;
 
 class EntityMapperTest {
 
@@ -252,19 +252,20 @@ class EntityMapperTest {
 	void testToAttachmentEntity() {
 
 		// Arrange
-		final var dto = createAttachment();
+		final var dto = createAttachmentMetadata();
 
 		// Act
 		final var entity = EntityMapper.toAttachmentEntity(MUNICIPALITY_ID, "2024-12345", dto);
 
 		// Assert
-		assertThat(entity.getCategory()).isEqualTo(dto.getMetadata().getCategory());
-		assertThat(entity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
+		assertThat(entity.getCategory()).isEqualTo(dto.getCategory());
 		assertThat(entity.getContractId()).isEqualTo("2024-12345");
-		assertThat(entity.getFilename()).isEqualTo(dto.getMetadata().getFilename());
-		assertThat(entity.getMimeType()).isEqualTo(dto.getMetadata().getMimeType());
+		assertThat(entity.getFilename()).isEqualTo(dto.getFilename());
+		assertThat(entity.getMimeType()).isEqualTo(dto.getMimeType());
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-		assertThat(entity.getNote()).isEqualTo(dto.getMetadata().getNote());
+		assertThat(entity.getNote()).isEqualTo(dto.getNote());
+		// The content is supplied separately by the caller, from the uploaded file
+		assertThat(entity.getAttachmentData()).isNull();
 	}
 
 	@Test
@@ -272,17 +273,40 @@ class EntityMapperTest {
 
 		// Arrange
 		final var entity = createAttachmentEntity();
-		final var dto = createAttachment();
+		final var originalData = entity.getAttachmentData();
+		final var dto = createPatchAttachmentMetadata();
 
 		// Act
 		final var updatedEntity = EntityMapper.updateAttachmentEntity(entity, dto);
 
 		// Assert
-		assertThat(updatedEntity.getCategory()).isEqualTo(dto.getMetadata().getCategory());
-		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getMetadata().getFilename());
-		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMetadata().getMimeType());
-		assertThat(updatedEntity.getNote()).isEqualTo(dto.getMetadata().getNote());
-		assertThat(updatedEntity.getContent()).isEqualTo(dto.getAttachmentData().getContent().getBytes());
+		assertThat(updatedEntity.getCategory()).isEqualTo(dto.getCategory());
+		assertThat(updatedEntity.getFilename()).isEqualTo(dto.getFilename());
+		assertThat(updatedEntity.getMimeType()).isEqualTo(dto.getMimeType());
+		assertThat(updatedEntity.getNote()).isEqualTo(dto.getNote());
+		// The binary content is immutable - patching metadata must not touch it
+		assertThat(updatedEntity.getAttachmentData()).isSameAs(originalData);
+	}
+
+	@Test
+	void testUpdateAttachmentEntityIgnoresBlankFilenameAndMimeType() {
+
+		// Arrange - blanks are normalized to null, so a patch cannot blank out a field the API requires
+		final var entity = createAttachmentEntity();
+		final var originalFilename = entity.getFilename();
+		final var originalMimeType = entity.getMimeType();
+
+		final var dto = PatchAttachmentMetadata.builder()
+			.withFilename("   ")
+			.withMimeType("")
+			.build();
+
+		// Act
+		final var updatedEntity = EntityMapper.updateAttachmentEntity(entity, dto);
+
+		// Assert
+		assertThat(updatedEntity.getFilename()).isEqualTo(originalFilename);
+		assertThat(updatedEntity.getMimeType()).isEqualTo(originalMimeType);
 	}
 
 	@Test
@@ -569,12 +593,10 @@ class EntityMapperTest {
 		final var originalFilename = entity.getFilename();
 
 		// Attachment metadata where all fields are null — setPropertyUnlessNull should skip the setters
-		final var attachment = Attachment.builder()
-			.withMetadata(AttachmentMetadata.builder().build())
-			.build();
+		final var metadata = PatchAttachmentMetadata.builder().build();
 
 		// Act
-		final var updated = EntityMapper.updateAttachmentEntity(entity, attachment);
+		final var updated = EntityMapper.updateAttachmentEntity(entity, metadata);
 
 		// Assert - original values preserved since null was not propagated
 		assertThat(updated.getCategory()).isEqualTo(originalCategory);

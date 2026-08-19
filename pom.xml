@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-contract</artifactId>
-	<version>10.0</version>
+	<version>11.0</version>
 	<name>api-service-contract</name>
 	<properties>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
@@ -127,6 +127,8 @@
 							<configOptions>
 								<useSpringBoot4>true</useSpringBoot4>
 								<useJackson3>true</useJackson3>
+								<!-- Emit org.jspecify.annotations.Nullable; org.springframework.lang.Nullable is deprecated as of Spring 7 -->
+								<useJspecify>true</useJspecify>
 								<sourceFolder>models</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>

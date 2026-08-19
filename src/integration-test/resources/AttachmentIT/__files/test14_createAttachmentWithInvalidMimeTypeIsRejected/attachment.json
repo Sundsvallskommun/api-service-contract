@@ -1,0 +1,6 @@
+{
+	"category": "CONTRACT",
+	"filename": "someFile.pdf",
+	"mimeType": "application/pdf; charset=utf-8",
+	"note": "Parameterised mime types are not accepted"
+}

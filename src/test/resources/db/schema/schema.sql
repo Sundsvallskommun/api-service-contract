@@ -6,14 +6,21 @@
 
     create table attachment (
         municipality_id varchar(4),
+        attachment_data_id bigint not null,
         created datetime(6),
         id bigint not null auto_increment,
         contract_id varchar(11) not null,
         category varchar(64) check ((category in ('OTHER','CONTRACT'))),
+        hash varchar(64),
         filename varchar(255),
         mime_type varchar(255),
         note varchar(255),
-        content LONGBLOB,
+        primary key (id)
+    ) engine=InnoDB;
+
+    create table attachment_data (
+        id bigint not null auto_increment,
+        file LONGBLOB not null,
         primary key (id)
     ) engine=InnoDB;
 
@@ -156,6 +163,9 @@
     create index idx_attachment_municipality_id_contract_id 
        on attachment (municipality_id, contract_id);
 
+    alter table if exists attachment 
+       add constraint uk_attachment_attachment_data_id unique (attachment_data_id);
+
     create index idx_contract_municipality_id_contract_id 
        on contract (municipality_id, contract_id);
 
@@ -175,6 +185,11 @@
        add constraint fk_additional_information_contract_id 
        foreign key (contract_id) 
        references contract (id);
+
+    alter table if exists attachment 
+       add constraint fk_attachment_data_attachment 
+       foreign key (attachment_data_id) 
+       references attachment_data (id);
 
     alter table if exists contract_notice 
        add constraint fk_contract_notice_contract_id 

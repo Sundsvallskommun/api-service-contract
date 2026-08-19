@@ -87,8 +87,15 @@ INSERT INTO additional_information (contract_id, additional_information)
 VALUES (2, 'More additional information'),
        (3, 'Even more additional information');
 
-INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, content, created)
-VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 'someBase64Content', '2024-01-15 10:30:00');
+-- The content row deliberately does NOT share its id with the attachment that owns it. Were the two equal, a lookup
+-- that used the attachment id where it meant the content id would return the right bytes in every test and the wrong
+-- ones in production, where the two sequences have long since drifted apart.
+INSERT INTO attachment_data (id, file)
+VALUES (7, 'someBase64Content');
+
+INSERT INTO attachment (id, contract_id, municipality_id, category, filename, mime_type, note, attachment_data_id, hash, created)
+VALUES (1, '2024-12345', '1984', 'CONTRACT', 'someFile.pdf', 'application/pdf', 'someNote', 7,
+        '5c9e50d35ba81e923e013a2f9629f744d6bf50390839c40cc5873dba54c7240e', '2024-01-15 10:30:00');
 
 INSERT INTO stakeholder (id, address_type, attention, country, email_address, first_name,
                          last_name, organization_name, organization_number, party_id, phone_number,

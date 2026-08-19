@@ -1,13 +1,15 @@
 package se.sundsvall.contract;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.geojson.FeatureCollection;
+import org.hibernate.Hibernate;
 import se.sundsvall.contract.api.model.Address;
-import se.sundsvall.contract.api.model.Attachment;
-import se.sundsvall.contract.api.model.AttachmentData;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.Extension;
@@ -15,10 +17,12 @@ import se.sundsvall.contract.api.model.Invoicing;
 import se.sundsvall.contract.api.model.Leasehold;
 import se.sundsvall.contract.api.model.Notice;
 import se.sundsvall.contract.api.model.NoticeTerm;
+import se.sundsvall.contract.api.model.PatchAttachmentMetadata;
 import se.sundsvall.contract.api.model.Period;
 import se.sundsvall.contract.api.model.PropertyDesignation;
 import se.sundsvall.contract.api.model.Stakeholder;
 import se.sundsvall.contract.integration.db.model.AddressEmbeddable;
+import se.sundsvall.contract.integration.db.model.AttachmentDataEntity;
 import se.sundsvall.contract.integration.db.model.AttachmentEntity;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.ExtraParameterGroupEntity;
@@ -62,8 +66,30 @@ public final class TestFactory {
 			.withFilename("mycontract.pdf")
 			.withMimeType("application/pdf")
 			.withNote("some info goes here")
-			.withContent("data".getBytes(UTF_8))
+			.withAttachmentData(AttachmentDataEntity.builder()
+				.withFile(toBlob("data".getBytes(UTF_8)))
+				.build())
+			// The SHA-256 of the content above, as the service derives it on upload
+			.withHash("3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7")
 			.build();
+	}
+
+	/**
+	 * Wraps raw bytes in a {@link Blob}, the way the service does when storing an upload.
+	 */
+	public static Blob toBlob(final byte[] content) {
+		return Hibernate.getLobHelper().createBlob(content);
+	}
+
+	/**
+	 * Reads a {@link Blob} back into raw bytes, so tests can assert on stored content.
+	 */
+	public static byte[] bytesOf(final Blob blob) {
+		try (final var content = blob.getBinaryStream()) {
+			return content.readAllBytes();
+		} catch (final IOException | SQLException e) {
+			throw new IllegalStateException("Unable to read blob", e);
+		}
 	}
 
 	public static ContractEntity createContractEntity() {
@@ -289,17 +315,21 @@ public final class TestFactory {
 			.build();
 	}
 
-	public static Attachment createAttachment() {
-		return Attachment.builder()
-			.withAttachmentData(AttachmentData.builder()
-				.withContent("someContent")
-				.build())
-			.withMetadata(AttachmentMetadata.builder()
-				.withNote("aNote")
-				.withCategory(CONTRACT)
-				.withMimeType("mimeType")
-				.withFilename("file.pdf")
-				.build())
+	public static AttachmentMetadata createAttachmentMetadata() {
+		return AttachmentMetadata.builder()
+			.withNote("aNote")
+			.withCategory(CONTRACT)
+			.withMimeType("application/pdf")
+			.withFilename("file.pdf")
+			.build();
+	}
+
+	public static PatchAttachmentMetadata createPatchAttachmentMetadata() {
+		return PatchAttachmentMetadata.builder()
+			.withNote("aNote")
+			.withCategory(CONTRACT)
+			.withMimeType("application/pdf")
+			.withFilename("file.pdf")
 			.build();
 	}
 

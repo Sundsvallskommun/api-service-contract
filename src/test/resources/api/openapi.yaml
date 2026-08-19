@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "10.0"
+  version: "11.0"
 servers:
-- url: http://localhost:39725
+- url: http://localhost:53417
   description: Generated server url
 tags:
 - name: Contract attachments
@@ -222,177 +222,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/contracts/{contractId}/attachments/{attachmentId}:
-    get:
-      tags:
-      - Contract attachments
-      summary: Get a contracts attachment(s) and its metadata
-      operationId: getAttachmentById
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      - name: attachmentId
-        in: path
-        description: Attachment id
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Attachment"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    put:
-      tags:
-      - Contract attachments
-      summary: Update a contract attachment
-      operationId: updateAttachment
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      - name: attachmentId
-        in: path
-        description: Attachment id
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Attachment"
-        required: true
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AttachmentMetadata"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    delete:
-      tags:
-      - Contract attachments
-      summary: Delete a contract attachment
-      operationId: deleteAttachment
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-      - name: contractId
-        in: path
-        description: Contract id
-        required: true
-        schema:
-          type: string
-      - name: attachmentId
-        in: path
-        description: Attachment id
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "204":
-          description: No content
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/contracts:
     get:
       tags:
@@ -513,10 +342,67 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
   /{municipalityId}/contracts/{contractId}/attachments:
+    get:
+      tags:
+      - Contract attachments
+      summary: Get the metadata of a contract's attachments
+      description: "Fetches the metadata of every attachment belonging to the contract.\
+        \ The binary content is fetched separately, one attachment at a time."
+      operationId: getAttachments
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttachmentMetadata"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     post:
       tags:
       - Contract attachments
       summary: Create a contract attachment
+      description: The metadata is supplied as a JSON part named 'attachment' and
+        the binary content as a file part named 'file'.
       operationId: createAttachment
       parameters:
       - name: municipalityId
@@ -533,9 +419,18 @@ paths:
           type: string
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Attachment"
+              type: object
+              properties:
+                attachment:
+                  $ref: "#/components/schemas/AttachmentMetadata"
+                file:
+                  type: string
+                  format: binary
+              required:
+              - attachment
+              - file
         required: true
       responses:
         "201":
@@ -546,12 +441,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -560,6 +449,185 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/contracts/{contractId}/attachments/{attachmentId}:
+    get:
+      tags:
+      - Contract attachments
+      summary: Get a streamed contract attachment
+      description: Fetches the binary content of the attachment that matches the provided
+        id in a streamed manner.
+      operationId: getAttachmentById
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Ok
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Contract attachments
+      summary: Delete a contract attachment
+      operationId: deleteAttachment
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Contract attachments
+      summary: Update the metadata of a contract attachment
+      description: The binary content cannot be updated; replace it by deleting and
+        recreating the attachment.
+      operationId: patchAttachment
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        description: Contract id
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: Attachment id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchAttachmentMetadata"
+        required: true
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server Error
           content:
@@ -669,18 +737,31 @@ components:
           description: The attachment filename
           examples:
           - LeaseContract12.pdf
+          maxLength: 255
           minLength: 1
         mimeType:
           type: string
-          description: The attachment mime-type
+          description: "The attachment mime-type, on the form 'type/subtype'. Parameters\
+            \ (e.g. ';charset=utf-8') are not accepted."
           examples:
           - application/pdf
+          maxLength: 255
           minLength: 1
         note:
           type: string
           description: Notes on the attachment
           examples:
           - The contract was a little wrinkled when scanned
+          maxLength: 255
+          minLength: 0
+        hash:
+          type: string
+          description: "SHA-256 hash, lower-case hex encoded, of the attachment's\
+            \ raw binary content. Identical to what the database produces with lower(sha2(file,\
+            \ 256)), and to the hash the same file is given in other services."
+          examples:
+          - 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+          readOnly: true
         created:
           type: string
           format: date-time
@@ -1435,10 +1516,10 @@ components:
         instance:
           type: string
           format: uri
-        detail:
-          type: string
         causeAsProblem:
           $ref: "#/components/schemas/ThrowableProblem"
+        detail:
+          type: string
     ThrowableProblem:
       type: object
       properties:
@@ -1463,29 +1544,6 @@ components:
           type: string
         message:
           type: string
-    Attachment:
-      type: object
-      description: Attachment
-      properties:
-        attachmentData:
-          $ref: "#/components/schemas/AttachmentData"
-          description: "Attachment data, i.e. the file"
-        metadata:
-          $ref: "#/components/schemas/AttachmentMetadata"
-          description: Attachment metadata
-      required:
-      - attachmentData
-      - metadata
-    AttachmentData:
-      type: object
-      description: Attachment content
-      properties:
-        content:
-          type: string
-          format: base64
-          description: BASE64-encoded attachment file content
-          examples:
-          - QkFTRTY0LWVuY29kZWQgZGF0YQ==
     PatchContract:
       type: object
       description: Partial contract payload used for PATCH. Only the fields present
@@ -1583,6 +1641,36 @@ components:
           $ref: "#/components/schemas/FeatureCollection"
           description: Part(s) of property covered by the lease. Described by GeoJSON
             using polygon(s)
+    PatchAttachmentMetadata:
+      type: object
+      description: Partial attachment metadata payload used for PATCH. Only the fields
+        present in the payload are applied to the existing attachment. The binary
+        content cannot be patched.
+      properties:
+        category:
+          $ref: "#/components/schemas/AttachmentCategory"
+        filename:
+          type: string
+          description: The attachment filename
+          examples:
+          - LeaseContract12.pdf
+          maxLength: 255
+          minLength: 0
+        mimeType:
+          type: string
+          description: "The attachment mime-type, on the form 'type/subtype'. Parameters\
+            \ (e.g. ';charset=utf-8') are not accepted."
+          examples:
+          - application/pdf
+          maxLength: 255
+          minLength: 0
+        note:
+          type: string
+          description: Notes on the attachment
+          examples:
+          - The contract was a little wrinkled when scanned
+          maxLength: 255
+          minLength: 0
     SpecificationContractEntity: {}
     PageContract:
       type: object
@@ -1603,17 +1691,17 @@ components:
         number:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         sort:
           $ref: "#/components/schemas/SortObject"
+        numberOfElements:
+          type: integer
+          format: int32
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -1622,25 +1710,25 @@ components:
         offset:
           type: integer
           format: int64
-        paged:
-          type: boolean
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
+        paged:
+          type: boolean
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
     SortObject:
       type: object
       properties:
         empty:
           type: boolean
-        sorted:
-          type: boolean
         unsorted:
+          type: boolean
+        sorted:
           type: boolean
   securitySchemes: {}
