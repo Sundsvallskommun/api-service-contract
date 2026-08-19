@@ -4,6 +4,7 @@ import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Year;
+import java.time.ZoneId;
 import java.util.EnumSet;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -44,7 +45,7 @@ public final class ContractIdGenerator implements BeforeExecutionGenerator {
 			return currentValue;
 		}
 
-		final var year = Year.now().getValue();
+		final var year = Year.now(ZoneId.systemDefault()).getValue();
 		final var statementPreparer = session.getJdbcCoordinator().getStatementPreparer();
 
 		// Single-roundtrip allocation: the UPSERT publishes the new counter

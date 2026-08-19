@@ -8,6 +8,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +52,6 @@ public class OutboxEntity {
 
 	@PrePersist
 	public void prePersist() {
-		createdAt = now();
+		createdAt = now(ZoneId.systemDefault());
 	}
 }

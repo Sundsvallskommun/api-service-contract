@@ -9,6 +9,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -61,7 +62,7 @@ public class AttachmentEntity {
 
 	@PrePersist
 	public void prePersist() {
-		created = now();
+		created = now(ZoneId.systemDefault());
 	}
 
 	@Override
