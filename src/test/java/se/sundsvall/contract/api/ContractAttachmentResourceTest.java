@@ -3,12 +3,17 @@ package se.sundsvall.contract.api;
 import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -45,6 +50,7 @@ class ContractAttachmentResourceTest {
 	private static final String MUNICIPALITY_ID = "1984";
 	private static final String BASE_URL = "/" + MUNICIPALITY_ID + "/contracts/" + CONTRACT_ID + "/attachments";
 	private static final byte[] FILE_CONTENT = "someContent".getBytes(StandardCharsets.UTF_8);
+	private static final String BOUNDARY = "aMultipartBoundary";
 
 	@MockitoBean
 	private AttachmentService attachmentService;
@@ -270,6 +276,84 @@ class ContractAttachmentResourceTest {
 		// Assert
 		verify(attachmentService).deleteAttachment(MUNICIPALITY_ID, CONTRACT_ID, 1L);
 		verifyNoMoreInteractions(attachmentService);
+	}
+
+	/**
+	 * The metadata part is JSON, but nothing makes a client say so: a browser, curl's {@code -F 'name={...}'} and the
+	 * Swagger UI that API portals are built on all send a form field with no content type of its own, or with a generic
+	 * one. Spring reads a body without a content type as application/octet-stream, so every one of these was answered
+	 * with 415 before the request ever reached the controller.
+	 */
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {
+		"application/octet-stream", "text/plain", "text/plain;charset=UTF-8"
+	})
+	void testCreateAttachmentWithAnUnlabelledMetadataPart(final String metadataContentType) {
+		// Arrange
+		when(attachmentService.createAttachment(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), any(), any())).thenReturn(1L);
+
+		// Act
+		webTestClient.post()
+			.uri(BASE_URL)
+			.contentType(new MediaType(MULTIPART_FORM_DATA, Map.of("boundary", BOUNDARY)))
+			.bodyValue(rawMultipartBody("""
+				{"category":"OTHER","filename":"aFilename","mimeType":"application/pdf","note":"aNote"}""", metadataContentType))
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().valueEquals("Location", BASE_URL + "/1");
+
+		// Assert
+		final var expectedMetadata = AttachmentMetadata.builder()
+			.withCategory(AttachmentCategory.OTHER)
+			.withFilename("aFilename")
+			.withMimeType("application/pdf")
+			.withNote("aNote")
+			.build();
+		verify(attachmentService).createAttachment(eq(MUNICIPALITY_ID), eq(CONTRACT_ID), eq(expectedMetadata), any(MultipartFile.class));
+		verifyNoMoreInteractions(attachmentService);
+	}
+
+	/**
+	 * An unlabelled part takes the same route through the JSON converter as a labelled one, so what it contains is held
+	 * to the same rules rather than waved through.
+	 */
+	@Test
+	void testCreateAttachmentWithAnUnlabelledAndInvalidMetadataPartIsRejected() {
+		// Act
+		webTestClient.post()
+			.uri(BASE_URL)
+			.contentType(new MediaType(MULTIPART_FORM_DATA, Map.of("boundary", BOUNDARY)))
+			.bodyValue(rawMultipartBody("""
+				{"note":"aNote"}""", null))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.violations[*].field").value((List<String> fields) -> assertThat(fields).containsExactlyInAnyOrder("filename", "mimeType"));
+
+		// Assert
+		verifyNoInteractions(attachmentService);
+	}
+
+	/**
+	 * A multipart body written out by hand, since the point of these tests is the one thing a body builder always fills
+	 * in for you: the metadata part is sent with the content type given here, or with none at all when it is null.
+	 */
+	private static byte[] rawMultipartBody(final String metadata, final String metadataContentType) {
+		final var metadataPartContentType = (metadataContentType != null) ? "Content-Type: " + metadataContentType + "\r\n" : "";
+
+		return ("--" + BOUNDARY + "\r\n"
+			+ "Content-Disposition: form-data; name=\"attachment\"\r\n"
+			+ metadataPartContentType
+			+ "\r\n"
+			+ metadata + "\r\n"
+			+ "--" + BOUNDARY + "\r\n"
+			+ "Content-Disposition: form-data; name=\"file\"; filename=\"aFilename\"\r\n"
+			+ "Content-Type: application/pdf\r\n"
+			+ "\r\n"
+			+ new String(FILE_CONTENT, StandardCharsets.UTF_8) + "\r\n"
+			+ "--" + BOUNDARY + "--\r\n").getBytes(StandardCharsets.UTF_8);
 	}
 
 	private static MultiValueMap<String, HttpEntity<?>> multipartBody(final String metadata, final byte[] content) {
