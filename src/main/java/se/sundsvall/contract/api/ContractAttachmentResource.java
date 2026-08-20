@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -107,6 +108,10 @@ class ContractAttachmentResource {
 	@Operation(
 		summary = "Create a contract attachment",
 		description = "The metadata is supplied as a JSON part named 'attachment' and the binary content as a file part named 'file'.",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+			content = @Content(
+				mediaType = MULTIPART_FORM_DATA_VALUE,
+				encoding = @Encoding(name = "attachment", contentType = APPLICATION_JSON_VALUE))),
 		responses = @ApiResponse(
 			responseCode = "201",
 			description = "Successful operation",

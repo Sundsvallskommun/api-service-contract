@@ -431,6 +431,9 @@ paths:
               required:
               - attachment
               - file
+            encoding:
+              attachment:
+                contentType: application/json
         required: true
       responses:
         "201":
