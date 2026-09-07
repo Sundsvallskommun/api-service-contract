@@ -58,6 +58,9 @@ New constraints on `POST`, `PUT` and `PATCH /{municipalityId}/contracts`, applyi
   BillingDataCollector maps to `recipient`. Previously a contract passed if *any* billing party had a usable name, so
   a contract with several billing parties whose first one was unusable was accepted and then rejected downstream.
   Contracts with a single `PRIMARY_BILLING_PARTY` (the normal case) are unaffected.
+- **`endDate` may now be set or changed to a date in the past.** The rule introduced in 9.0 that rejected a new or
+  changed `endDate` before today's date is removed, so that a contract termination (e.g. from a MEX
+  uppsägningsärende) can be backdated on `POST`, `PUT` and `PATCH /{municipalityId}/contracts`.
 
 ## 10.0 — 2026-06-08
 

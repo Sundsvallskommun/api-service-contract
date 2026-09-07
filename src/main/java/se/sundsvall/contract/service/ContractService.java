@@ -2,7 +2,6 @@ package se.sundsvall.contract.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,8 +76,8 @@ public class ContractService {
 	public String createContract(final String municipalityId, final Contract contract) {
 		final var contractEntity = toContractEntity(municipalityId, contract);
 
-		// Validate billing constraints on the mapped entity before persisting (no previous endDate for a new contract)
-		contractValidator.validate(contractEntity, null);
+		// Validate billing constraints on the mapped entity before persisting
+		contractValidator.validate(contractEntity);
 
 		// Save the entity based on the incoming request
 		contractRepository.save(contractEntity);
@@ -146,13 +145,10 @@ public class ContractService {
 	public void patchContract(final String municipalityId, final String contractId, final PatchContract patch) {
 		final var existingEntity = findContract(municipalityId, contractId);
 
-		// Capture the previously stored endDate before the patch mutates the entity in place
-		final var previousEndDate = existingEntity.getEndDate();
-
 		// Apply the patch payload in place on the existing entity
 		patchContractEntity(existingEntity, patch);
 
-		validateApplyRulesAndNotify(existingEntity, previousEndDate);
+		validateApplyRulesAndNotify(existingEntity);
 	}
 
 	/**
@@ -166,13 +162,10 @@ public class ContractService {
 	public void updateContract(final String municipalityId, final String contractId, final Contract contract) {
 		final var existingEntity = findContract(municipalityId, contractId);
 
-		// Capture the previously stored endDate before the update overwrites the entity in place
-		final var previousEndDate = existingEntity.getEndDate();
-
 		// Replace the existing entity's fields with the incoming contract data (in place — same row)
 		updateContractEntity(existingEntity, contract);
 
-		validateApplyRulesAndNotify(existingEntity, previousEndDate);
+		validateApplyRulesAndNotify(existingEntity);
 	}
 
 	/**
@@ -201,8 +194,8 @@ public class ContractService {
 	 * Shared tail of {@link #patchContract} and {@link #updateContract}: validate the mutated entity, apply UPDATE
 	 * business rules, write the billing outbox event and persist the changes in place.
 	 */
-	private void validateApplyRulesAndNotify(final ContractEntity entity, final LocalDate previousEndDate) {
-		contractValidator.validate(entity, previousEndDate);
+	private void validateApplyRulesAndNotify(final ContractEntity entity) {
+		contractValidator.validate(entity);
 		applyBusinessrules(entity, UPDATE);
 		outboxRepository.save(toOutboxEntity(entity, ContractUpdatedEvent.of(entity.getContractId(), entity.getMunicipalityId())));
 		contractRepository.save(entity);
