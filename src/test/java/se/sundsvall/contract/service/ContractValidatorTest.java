@@ -1,9 +1,7 @@
 package se.sundsvall.contract.service;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,9 +28,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 class ContractValidatorTest {
 
-	private static final LocalDate TODAY = LocalDate.of(2026, 6, 1);
 	private static final String PARTY_ID = "40f14de9-815d-44a5-a34d-b1d38b628e07";
-	private final ContractValidator validator = new ContractValidator(Clock.fixed(TODAY.atStartOfDay(ZoneOffset.UTC).toInstant(), ZoneOffset.UTC));
+	private final ContractValidator validator = new ContractValidator();
 
 	private static InvoicingEmbeddable completeInvoicing() {
 		return InvoicingEmbeddable.builder()
@@ -77,7 +74,7 @@ class ContractValidatorTest {
 
 	@Test
 	void emptyContractPasses() {
-		assertThatCode(() -> validator.validate(ContractEntity.builder().build(), null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(ContractEntity.builder().build())).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -94,7 +91,7 @@ class ContractValidatorTest {
 				.build())
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -109,7 +106,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> {
 				assertThat(problem.getStatus()).isEqualTo(BAD_REQUEST);
 				assertThat(problem.getViolations()).extracting(Violation::field).contains("stakeholders");
@@ -123,7 +120,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(namedBillingParty()))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -135,7 +132,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
 				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 	}
@@ -152,7 +149,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(billingParty))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -167,7 +164,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
 				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 	}
@@ -185,7 +182,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message)
 				.contains(ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE));
 	}
@@ -202,7 +199,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> {
 				assertThat(problem.getStatus()).isEqualTo(BAD_REQUEST);
 				assertThat(problem.getViolations()).extracting(Violation::field).contains("stakeholders");
@@ -281,7 +278,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(validBillingPartyBuilder().withAddress(completeAddress()).build()))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -295,7 +292,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::message).contains(
 				ContractValidator.PRIMARY_BILLING_PARTY_NAME_MESSAGE,
 				ContractValidator.PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE,
@@ -317,7 +314,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(billingParty))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -327,7 +324,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -336,7 +333,7 @@ class ContractValidatorTest {
 			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -350,7 +347,7 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> {
 				assertThat(problem.getStatus()).isEqualTo(BAD_REQUEST);
 				assertThat(problem.getViolations()).extracting(Violation::field).contains("propertyDesignations");
@@ -364,7 +361,7 @@ class ContractValidatorTest {
 			.withPropertyDesignations(List.of(PropertyDesignationEmbeddable.builder().withName("SUNDSVALL BALDER 5:1").build()))
 			.build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	@ParameterizedTest
@@ -372,7 +369,7 @@ class ContractValidatorTest {
 	void designationsAreNeverRequiredRegardlessOfLeaseType(final LeaseType leaseType) {
 		final var contract = ContractEntity.builder().withLeaseType(leaseType).build();
 
-		assertThatCode(() -> validator.validate(contract, null)).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
@@ -388,13 +385,13 @@ class ContractValidatorTest {
 			.build();
 
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contract, null))
+			.isThrownBy(() -> validator.validate(contract))
 			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field)
 				.contains("stakeholders", "propertyDesignations"));
 	}
 
 	// ----------------------------------------------------------------------------------------------------------
-	// endDate must not be set/changed to a date before today (unchanged past endDate is allowed)
+	// endDate may be set or changed to any date, including one before today (e.g. a backdated MEX termination)
 	// ----------------------------------------------------------------------------------------------------------
 
 	private static ContractEntity contractWithEndDate(final LocalDate endDate) {
@@ -402,50 +399,17 @@ class ContractValidatorTest {
 	}
 
 	@Test
-	void newContractWithPastEndDateIsRejected() {
-		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contractWithEndDate(TODAY.minusDays(1)), null))
-			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains("endDate"));
+	void pastEndDateIsAccepted() {
+		assertThatCode(() -> validator.validate(contractWithEndDate(LocalDate.now().minusYears(1)))).doesNotThrowAnyException();
 	}
 
 	@Test
-	void newContractWithTodayEndDateIsAccepted() {
-		assertThatCode(() -> validator.validate(contractWithEndDate(TODAY), null)).doesNotThrowAnyException();
-	}
-
-	@Test
-	void newContractWithFutureEndDateIsAccepted() {
-		assertThatCode(() -> validator.validate(contractWithEndDate(TODAY.plusYears(1)), null)).doesNotThrowAnyException();
+	void futureEndDateIsAccepted() {
+		assertThatCode(() -> validator.validate(contractWithEndDate(LocalDate.now().plusYears(1)))).doesNotThrowAnyException();
 	}
 
 	@Test
 	void nullEndDateIsAccepted() {
-		assertThatCode(() -> validator.validate(contractWithEndDate(null), null)).doesNotThrowAnyException();
-	}
-
-	@Test
-	void unchangedPastEndDateIsAccepted() {
-		final var pastEndDate = TODAY.minusYears(1);
-
-		assertThatCode(() -> validator.validate(contractWithEndDate(pastEndDate), pastEndDate)).doesNotThrowAnyException();
-	}
-
-	@Test
-	void changingEndDateToThePastIsRejected() {
-		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contractWithEndDate(TODAY.minusDays(1)), TODAY.plusYears(1)))
-			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains("endDate"));
-	}
-
-	@Test
-	void changingEndDateToADifferentPastDateIsRejected() {
-		assertThatExceptionOfType(ConstraintViolationProblem.class)
-			.isThrownBy(() -> validator.validate(contractWithEndDate(TODAY.minusDays(5)), TODAY.minusDays(10)))
-			.satisfies(problem -> assertThat(problem.getViolations()).extracting(Violation::field).contains("endDate"));
-	}
-
-	@Test
-	void changingEndDateToTheFutureIsAccepted() {
-		assertThatCode(() -> validator.validate(contractWithEndDate(TODAY.plusYears(1)), TODAY.minusYears(1))).doesNotThrowAnyException();
+		assertThatCode(() -> validator.validate(contractWithEndDate(null))).doesNotThrowAnyException();
 	}
 }

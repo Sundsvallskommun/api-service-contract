@@ -290,13 +290,13 @@ class ContractServiceTest {
 		// Arrange
 		final var contract = TestFactory.createContract();
 		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("stakeholders", "boom"))))
-			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		// Act & Assert
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
 			.isThrownBy(() -> contractService.createContract(MUNICIPALITY_ID, contract));
 
-		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractValidatorMock).validate(any(ContractEntity.class));
 		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
 		verifyNoInteractions(contractRepositoryMock, outboxRepositoryMock, businessruleMock);
 	}
@@ -308,13 +308,13 @@ class ContractServiceTest {
 		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(existingEntity));
 		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("fees.indexNumber", "boom"))))
-			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		// Act & Assert
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
 			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()));
 
-		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractValidatorMock).validate(any(ContractEntity.class));
 		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
 		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
 	}
@@ -326,7 +326,7 @@ class ContractServiceTest {
 		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(existingEntity));
 		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("propertyDesignations", "boom"))))
-			.when(contractValidatorMock).validate(any(ContractEntity.class), any());
+			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		final var patchPayload = PatchContract.builder().withDescription("patched").build();
 
@@ -334,7 +334,7 @@ class ContractServiceTest {
 		assertThatExceptionOfType(ConstraintViolationProblem.class)
 			.isThrownBy(() -> contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload));
 
-		verify(contractValidatorMock).validate(any(ContractEntity.class), any());
+		verify(contractValidatorMock).validate(any(ContractEntity.class));
 		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
 		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
 	}
