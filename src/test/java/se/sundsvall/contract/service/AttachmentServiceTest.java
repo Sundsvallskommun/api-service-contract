@@ -201,9 +201,9 @@ class AttachmentServiceTest {
 		// Act
 		attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response);
 
-		// Assert - quotes escaped and the en dash transliterated in the fallback, the real name intact in filename*
+		// Assert - quotes escaped and non-ASCII transliterated in the fallback, the real name intact in filename*
 		assertThat(response.getHeader(CONTENT_DISPOSITION)).isEqualTo(
-			"attachment; filename=\"räkning \\\"2024\\\" _ avtal.pdf\"; filename*=UTF-8''r%C3%A4kning%20%222024%22%20%E2%80%93%20avtal.pdf");
+			"attachment; filename=\"raekning \\\"2024\\\" _ avtal.pdf\"; filename*=UTF-8''r%C3%A4kning%20%222024%22%20%E2%80%93%20avtal.pdf");
 	}
 
 	@Test
