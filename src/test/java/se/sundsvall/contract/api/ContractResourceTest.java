@@ -151,6 +151,7 @@ class ContractResourceTest {
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY)
 				.withInvoicedIn(ARREARS)
+				.withBillingEnabled(true)
 				.build())
 			.withLeaseType(LeaseType.LAND_LEASE_RESIDENTIAL)
 			.withStatus(ACTIVE)

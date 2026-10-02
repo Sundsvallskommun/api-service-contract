@@ -35,6 +35,7 @@ class ContractValidatorTest {
 		return InvoicingEmbeddable.builder()
 			.withInvoiceInterval(IntervalType.QUARTERLY)
 			.withInvoicedIn(InvoicedIn.ARREARS)
+			.withBillingEnabled(true)
 			.build();
 	}
 
@@ -118,6 +119,20 @@ class ContractValidatorTest {
 		final var contract = ContractEntity.builder()
 			.withInvoicing(completeInvoicing())
 			.withStakeholders(List.of(namedBillingParty()))
+			.build();
+
+		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(booleans = false)
+	void invoicingCompleteWithBillingNotEnabledDoesNotRequirePrimaryBillingParty(final Boolean billingEnabled) {
+		final var invoicing = completeInvoicing();
+		invoicing.setBillingEnabled(billingEnabled);
+		final var contract = ContractEntity.builder()
+			.withInvoicing(invoicing)
+			.withStakeholders(List.of(stakeholderWithRoles(StakeholderRole.LESSEE)))
 			.build();
 
 		assertThatCode(() -> validator.validate(contract)).doesNotThrowAnyException();

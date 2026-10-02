@@ -31,8 +31,12 @@ class ContractUtilityTest {
 				ContractEntity.builder().withStatus(ACTIVE).build(), false),
 			Arguments.of("Contract is active with invoicing object but has no invoicing interval",
 				ContractEntity.builder().withStatus(ACTIVE).withInvoicing(InvoicingEmbeddable.builder().build()).build(), false),
-			Arguments.of("Contract is active with invoicing object and has invoicing interval",
-				ContractEntity.builder().withStatus(ACTIVE).withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(YEARLY).build()).build(), true));
+			Arguments.of("Contract is active with invoicing object and has invoicing interval but billing is not set",
+				ContractEntity.builder().withStatus(ACTIVE).withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(YEARLY).build()).build(), false),
+			Arguments.of("Contract is active with invoicing object and has invoicing interval but billing is disabled",
+				ContractEntity.builder().withStatus(ACTIVE).withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(YEARLY).withBillingEnabled(false).build()).build(), false),
+			Arguments.of("Contract is active with invoicing object, has invoicing interval and billing is enabled",
+				ContractEntity.builder().withStatus(ACTIVE).withInvoicing(InvoicingEmbeddable.builder().withInvoiceInterval(YEARLY).withBillingEnabled(true).build()).build(), true));
 
 	}
 }

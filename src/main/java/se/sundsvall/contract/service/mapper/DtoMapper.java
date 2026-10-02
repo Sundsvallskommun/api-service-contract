@@ -162,6 +162,8 @@ public final class DtoMapper {
 			.map(invoicing -> Invoicing.builder()
 				.withInvoiceInterval(invoicing.getInvoiceInterval())
 				.withInvoicedIn(invoicing.getInvoicedIn())
+				.withBillingEnabled(invoicing.getBillingEnabled())
+				.withYearlyBillingMonth(invoicing.getYearlyBillingMonth())
 				.build())
 			.orElse(null);
 	}

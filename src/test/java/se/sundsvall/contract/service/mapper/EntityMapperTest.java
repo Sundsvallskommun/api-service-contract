@@ -110,6 +110,8 @@ class EntityMapperTest {
 		// Assert
 		assertThat(entity.getInvoicedIn()).isEqualTo(dto.getInvoicing().getInvoicedIn());
 		assertThat(entity.getInvoiceInterval()).isEqualTo(dto.getInvoicing().getInvoiceInterval());
+		assertThat(entity.getBillingEnabled()).isEqualTo(dto.getInvoicing().getBillingEnabled());
+		assertThat(entity.getYearlyBillingMonth()).isEqualTo(dto.getInvoicing().getYearlyBillingMonth());
 	}
 
 	@Test
