@@ -10,6 +10,7 @@ import se.sundsvall.contract.model.enums.StakeholderRole;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.dept44.problem.violations.Violation;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -30,7 +31,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Component
 public class ContractValidator {
 
-	static final String PRIMARY_BILLING_PARTY_MESSAGE = "A stakeholder with role PRIMARY_BILLING_PARTY is required when both invoicing interval and invoicedIn are set.";
+	static final String PRIMARY_BILLING_PARTY_MESSAGE = "A stakeholder with role PRIMARY_BILLING_PARTY is required when billing is enabled and both invoicing interval and invoicedIn are set.";
 	static final String PRIMARY_BILLING_PARTY_NAME_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an organization name, or both a first and last name.";
 	static final String PRIMARY_BILLING_PARTY_PARTY_ID_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have a partyId.";
 	static final String PRIMARY_BILLING_PARTY_ADDRESS_MESSAGE = "The PRIMARY_BILLING_PARTY stakeholder must have an address with streetAddress, postalCode and town.";
@@ -58,7 +59,8 @@ public class ContractValidator {
 	}
 
 	/**
-	 * When a contract is set up for invoicing (both interval and invoicedIn present), it must have a stakeholder with
+	 * When a contract is set up for invoicing (billing enabled and both interval and invoicedIn present), it must have a
+	 * stakeholder with
 	 * the {@link StakeholderRole#PRIMARY_BILLING_PARTY} role — otherwise billing has no recipient. Everything
 	 * BillingDataCollector puts on the billing record's {@code recipient} is read off that single stakeholder, and
 	 * since contract-sourced billing records are always of type {@code EXTERNAL} the whole set of
@@ -83,7 +85,7 @@ public class ContractValidator {
 	private void validatePrimaryBillingParty(final ContractEntity contract, final List<Violation> violations) {
 		final var invoicing = contract.getInvoicing();
 		final var invoicingComplete = nonNull(invoicing) && nonNull(invoicing.getInvoiceInterval()) && nonNull(invoicing.getInvoicedIn());
-		if (!invoicingComplete) {
+		if (!invoicingComplete || !TRUE.equals(invoicing.getBillingEnabled())) {
 			return;
 		}
 

@@ -22,4 +22,10 @@ public class InvoicingEmbeddable {
 
 	@Column(name = "invoiced_in", length = 64)
 	private InvoicedIn invoicedIn;
+
+	@Column(name = "billing_enabled")
+	private Boolean billingEnabled;
+
+	@Column(name = "yearly_billing_month")
+	private Integer yearlyBillingMonth;
 }

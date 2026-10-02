@@ -41,7 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -96,6 +98,7 @@ class ContractServiceTest {
 			.withInvoicing(Invoicing.builder()
 				.withInvoiceInterval(QUARTERLY)
 				.withInvoicedIn(ARREARS)
+				.withBillingEnabled(true)
 				.build())
 			.withStatus(ACTIVE)
 			.withType(ContractType.LEASE_AGREEMENT)
@@ -289,7 +292,7 @@ class ContractServiceTest {
 	void createContractAbortsWhenValidationFails() {
 		// Arrange
 		final var contract = TestFactory.createContract();
-		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("stakeholders", "boom"))))
+		doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("stakeholders", "boom"))))
 			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		// Act & Assert
@@ -297,7 +300,7 @@ class ContractServiceTest {
 			.isThrownBy(() -> contractService.createContract(MUNICIPALITY_ID, contract));
 
 		verify(contractValidatorMock).validate(any(ContractEntity.class));
-		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verify(contractRepositoryMock, never()).save(any(ContractEntity.class));
 		verifyNoInteractions(contractRepositoryMock, outboxRepositoryMock, businessruleMock);
 	}
 
@@ -307,7 +310,7 @@ class ContractServiceTest {
 		final var existingEntity = createContractEntity();
 		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(existingEntity));
-		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("fees.indexNumber", "boom"))))
+		doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("fees.indexNumber", "boom"))))
 			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		// Act & Assert
@@ -315,7 +318,7 @@ class ContractServiceTest {
 			.isThrownBy(() -> contractService.updateContract(MUNICIPALITY_ID, CONTRACT_ID, TestFactory.createContract()));
 
 		verify(contractValidatorMock).validate(any(ContractEntity.class));
-		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verify(contractRepositoryMock, never()).save(any(ContractEntity.class));
 		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
 	}
 
@@ -325,7 +328,7 @@ class ContractServiceTest {
 		final var existingEntity = createContractEntity();
 		when(contractRepositoryMock.findByMunicipalityIdAndContractId(MUNICIPALITY_ID, CONTRACT_ID))
 			.thenReturn(Optional.of(existingEntity));
-		Mockito.doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("propertyDesignations", "boom"))))
+		doThrow(new ConstraintViolationProblem(HttpStatus.BAD_REQUEST, List.of(new Violation("propertyDesignations", "boom"))))
 			.when(contractValidatorMock).validate(any(ContractEntity.class));
 
 		final var patchPayload = PatchContract.builder().withDescription("patched").build();
@@ -335,7 +338,7 @@ class ContractServiceTest {
 			.isThrownBy(() -> contractService.patchContract(MUNICIPALITY_ID, CONTRACT_ID, patchPayload));
 
 		verify(contractValidatorMock).validate(any(ContractEntity.class));
-		verify(contractRepositoryMock, Mockito.never()).save(any(ContractEntity.class));
+		verify(contractRepositoryMock, never()).save(any(ContractEntity.class));
 		verifyNoInteractions(outboxRepositoryMock, businessruleMock);
 	}
 

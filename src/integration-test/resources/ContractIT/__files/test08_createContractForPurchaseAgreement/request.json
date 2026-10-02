@@ -134,7 +134,8 @@
 	],
 	"invoicing": {
 		"invoiceInterval": "QUARTERLY",
-		"invoicedIn": "ADVANCE"
+		"invoicedIn": "ADVANCE",
+		"billingEnabled": true
 	},
 	"status": "ACTIVE",
 	"extension": {

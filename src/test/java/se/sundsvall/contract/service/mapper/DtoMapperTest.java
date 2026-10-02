@@ -8,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 import se.sundsvall.contract.api.model.AttachmentMetadata;
 import se.sundsvall.contract.api.model.Contract;
 import se.sundsvall.contract.api.model.NoticeTerm;
@@ -27,6 +26,7 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.INCLUDE;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static se.sundsvall.contract.TestFactory.createAddressEmbeddable;
 import static se.sundsvall.contract.TestFactory.createAttachmentEntity;
@@ -148,6 +148,8 @@ class DtoMapperTest {
 		// Assert
 		assertThat(invoicing.getInvoicedIn()).isEqualTo(entity.getInvoicing().getInvoicedIn());
 		assertThat(invoicing.getInvoiceInterval()).isEqualTo(entity.getInvoicing().getInvoiceInterval());
+		assertThat(invoicing.getBillingEnabled()).isEqualTo(entity.getInvoicing().getBillingEnabled());
+		assertThat(invoicing.getYearlyBillingMonth()).isEqualTo(entity.getInvoicing().getYearlyBillingMonth());
 	}
 
 	@Test
@@ -439,7 +441,7 @@ class DtoMapperTest {
 	@EnumSource(value = Action.class)
 	void toBusinessruleParameters(Action action) {
 		// Arrange
-		final var entityMock = Mockito.mock(ContractEntity.class);
+		final var entityMock = mock(ContractEntity.class);
 
 		// Act
 		final var bean = DtoMapper.toBusinessruleParameters(entityMock, action);

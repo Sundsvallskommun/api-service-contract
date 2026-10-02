@@ -4,6 +4,7 @@ import java.util.Objects;
 import se.sundsvall.contract.integration.db.model.ContractEntity;
 import se.sundsvall.contract.integration.db.model.InvoicingEmbeddable;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.contract.model.enums.Status.ACTIVE;
 
@@ -16,8 +17,9 @@ public final class ContractUtility {
 	}
 
 	/**
-	 * Method evaluates if contract is billable or not. A contract is interpreted as billable if it has status ACTIVE and
-	 * has a value other than null for the invoice interval attribute (residing in the invoicing object).
+	 * Method evaluates if contract is billable or not. A contract is interpreted as billable if it has status ACTIVE,
+	 * has billing enabled and has a value other than null for the invoice interval attribute (residing in the invoicing
+	 * object).
 	 *
 	 * @param  contractEntity contract to evaluate
 	 * @return                true if contract is evaluated as billable, false otherwise
@@ -25,6 +27,7 @@ public final class ContractUtility {
 	public static boolean isBillable(ContractEntity contractEntity) {
 		return Objects.equals(ACTIVE, contractEntity.getStatus()) &&
 			ofNullable(contractEntity.getInvoicing())
+				.filter(invoicing -> TRUE.equals(invoicing.getBillingEnabled()))
 				.map(InvoicingEmbeddable::getInvoiceInterval)
 				.isPresent();
 	}

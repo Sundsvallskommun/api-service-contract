@@ -27,6 +27,7 @@
     create table contract (
         area integer,
         auto_extend bit,
+        billing_enabled bit,
         current_period_end_date date,
         current_period_start_date date,
         end_date date,
@@ -41,6 +42,7 @@
         notice_date date,
         signed_by_witness bit,
         start_date date,
+        yearly_billing_month integer,
         id bigint not null auto_increment,
         lock_version bigint default 0 not null,
         contract_id varchar(11) not null,

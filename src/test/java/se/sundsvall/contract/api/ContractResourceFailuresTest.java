@@ -248,4 +248,69 @@ class ContractResourceFailuresTest {
 			.withInvoicing(Invoicing.builder().withInvoiceInterval(IntervalType.QUARTERLY).build())
 			.build());
 	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// Invoicing.billingEnabled: @NotNull when an invoicing object is present (POST / PUT / PATCH)
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void postWithInvoicingMissingBillingEnabledIsRejected() {
+		postExpectingBadRequest(validContract()
+			.withInvoicing(invoicingWithoutBillingEnabled())
+			.build());
+	}
+
+	@Test
+	void putWithInvoicingMissingBillingEnabledIsRejected() {
+		putExpectingBadRequest(validContract()
+			.withInvoicing(invoicingWithoutBillingEnabled())
+			.build());
+	}
+
+	@Test
+	void patchWithInvoicingMissingBillingEnabledIsRejected() {
+		patchExpectingBadRequest(PatchContract.builder()
+			.withInvoicing(invoicingWithoutBillingEnabled())
+			.build());
+	}
+
+	// ----------------------------------------------------------------------------------------------------------
+	// Invoicing.yearlyBillingMonth: mandatory when invoiceInterval is YEARLY (POST / PUT / PATCH)
+	// ----------------------------------------------------------------------------------------------------------
+
+	@Test
+	void postWithYearlyInvoicingMissingYearlyBillingMonthIsRejected() {
+		postExpectingBadRequest(validContract()
+			.withInvoicing(yearlyInvoicingWithoutYearlyBillingMonth())
+			.build());
+	}
+
+	@Test
+	void putWithYearlyInvoicingMissingYearlyBillingMonthIsRejected() {
+		putExpectingBadRequest(validContract()
+			.withInvoicing(yearlyInvoicingWithoutYearlyBillingMonth())
+			.build());
+	}
+
+	@Test
+	void patchWithYearlyInvoicingMissingYearlyBillingMonthIsRejected() {
+		patchExpectingBadRequest(PatchContract.builder()
+			.withInvoicing(yearlyInvoicingWithoutYearlyBillingMonth())
+			.build());
+	}
+
+	private static Invoicing yearlyInvoicingWithoutYearlyBillingMonth() {
+		return Invoicing.builder()
+			.withInvoiceInterval(IntervalType.YEARLY)
+			.withInvoicedIn(InvoicedIn.ADVANCE)
+			.withBillingEnabled(true)
+			.build();
+	}
+
+	private static Invoicing invoicingWithoutBillingEnabled() {
+		return Invoicing.builder()
+			.withInvoiceInterval(IntervalType.QUARTERLY)
+			.withInvoicedIn(InvoicedIn.ADVANCE)
+			.build();
+	}
 }

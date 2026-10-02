@@ -29,15 +29,21 @@ class InvoicingEmbeddableTest {
 	void testBuilderMethods() {
 		var invoiceInterval = MONTHLY;
 		var invoicedIn = ARREARS;
+		var billingEnabled = true;
+		var yearlyBillingMonth = 6;
 
 		var invoicing = InvoicingEmbeddable.builder()
 			.withInvoiceInterval(invoiceInterval)
 			.withInvoicedIn(invoicedIn)
+			.withBillingEnabled(billingEnabled)
+			.withYearlyBillingMonth(yearlyBillingMonth)
 			.build();
 
 		assertThat(invoicing).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(invoicing.getInvoiceInterval()).isEqualTo(invoiceInterval);
 		assertThat(invoicing.getInvoicedIn()).isEqualTo(invoicedIn);
+		assertThat(invoicing.getBillingEnabled()).isEqualTo(billingEnabled);
+		assertThat(invoicing.getYearlyBillingMonth()).isEqualTo(yearlyBillingMonth);
 	}
 
 	@Test
