@@ -106,7 +106,8 @@
 			},
 			"invoicing": {
 				"invoiceInterval": "QUARTERLY",
-				"invoicedIn": "ADVANCE"
+				"invoicedIn": "ADVANCE",
+				"billingEnabled": true
 			},
 			"startDate": "2023-10-02",
 			"endDate": "2023-10-10",
@@ -167,7 +168,8 @@
 			},
 			"invoicing": {
 				"invoiceInterval": "MONTHLY",
-				"invoicedIn": "ADVANCE"
+				"invoicedIn": "ADVANCE",
+				"billingEnabled": true
 			},
 			"startDate": "2024-01-01",
 			"endDate": "2025-12-31",

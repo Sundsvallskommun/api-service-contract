@@ -114,7 +114,9 @@
 	},
 	"invoicing": {
 		"invoiceInterval": "YEARLY",
-		"invoicedIn": "ARREARS"
+		"invoicedIn": "ARREARS",
+		"billingEnabled": true,
+		"yearlyBillingMonth": 6
 	},
 	"startDate": "2024-05-02",
 	"endDate": "2099-12-31",

@@ -34,7 +34,8 @@
 			},
 			"invoicing": {
 				"invoiceInterval": "MONTHLY",
-				"invoicedIn": "ADVANCE"
+				"invoicedIn": "ADVANCE",
+				"billingEnabled": true
 			},
 			"startDate": "2024-01-01",
 			"endDate": "2025-12-31",

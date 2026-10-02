@@ -121,7 +121,9 @@
 	"contractId": "2024-12345",
 	"invoicing": {
 		"invoiceInterval": "YEARLY",
-		"invoicedIn": "ARREARS"
+		"invoicedIn": "ARREARS",
+		"billingEnabled": true,
+		"yearlyBillingMonth": 6
 	},
 	"status": "ACTIVE",
 	"currentPeriod": {
