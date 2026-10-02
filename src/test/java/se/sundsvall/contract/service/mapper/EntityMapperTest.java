@@ -64,38 +64,70 @@ class EntityMapperTest {
 		final var entity = EntityMapper.toContractEntity(MUNICIPALITY_ID, dto);
 
 		// Assert
-		assertThat(entity.getTermGroups()).isNotNull(); // Mapped via toTermGroupEntities
-		assertThat(entity.getArea()).isEqualTo(dto.getArea());
-		assertThat(entity.getAreaData()).isEqualTo(dto.getAreaData());
-		assertThat(entity.getContractId()).isEqualTo(dto.getContractId());
-		assertThat(entity.getDescription()).isEqualTo(dto.getDescription());
-		assertThat(entity.getEndDate()).isEqualTo(dto.getEndDate());
-		assertThat(entity.getExternalReferenceId()).isEqualTo(dto.getExternalReferenceId());
-		assertThat(entity.getExtraParameters()).isNotNull(); // Mapped via toExtraParameterGroupEntities
-		assertThat(entity.getFees()).isNotNull(); // Mapped via toFeesEmbeddable
-		assertThat(entity.getInvoicing()).isNotNull();  // Is tested in its own method
-		assertThat(entity.getLeaseType()).isEqualTo(dto.getLeaseType());
-		assertThat(entity.getLeaseExtension()).isEqualTo(dto.getExtension().getLeaseExtension());
-		assertThat(entity.getLeaseExtensionUnit()).isEqualTo(dto.getExtension().getUnit());
-		assertThat(entity.getAutoExtend()).isEqualTo(dto.getExtension().getAutoExtend());
-		assertThat(entity.getLeasehold()).isNotNull(); // Is tested in its own method
-		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-		assertThat(entity.getObjectIdentity()).isEqualTo(dto.getObjectIdentity());
-		assertThat(entity.getCurrentPeriodStartDate()).isEqualTo(dto.getCurrentPeriod().getStartDate());
-		assertThat(entity.getCurrentPeriodEndDate()).isEqualTo(dto.getCurrentPeriod().getEndDate());
-		assertThat(entity.getNoticeDate()).isEqualTo(dto.getNotice().getNoticeDate());
-		assertThat(entity.getNoticeGivenBy()).isEqualTo(dto.getNotice().getNoticeGivenBy());
-		assertThat(entity.getNoticeTerms()).isNotNull(); // Is tested in its own method
+		// Attributes mapped one-to-one from the dto
+		assertThat(entity).extracting(
+			ContractEntity::getArea,
+			ContractEntity::getAreaData,
+			ContractEntity::getContractId,
+			ContractEntity::getDescription,
+			ContractEntity::getEndDate,
+			ContractEntity::getExternalReferenceId,
+			ContractEntity::getLeaseType,
+			ContractEntity::getObjectIdentity,
+			ContractEntity::isSignedByWitness,
+			ContractEntity::getStartDate,
+			ContractEntity::getStatus,
+			ContractEntity::getType)
+			.containsExactly(
+				dto.getArea(),
+				dto.getAreaData(),
+				dto.getContractId(),
+				dto.getDescription(),
+				dto.getEndDate(),
+				dto.getExternalReferenceId(),
+				dto.getLeaseType(),
+				dto.getObjectIdentity(),
+				dto.isSignedByWitness(),
+				dto.getStartDate(),
+				dto.getStatus(),
+				dto.getType());
+
+		// Attributes flattened from nested dto objects, plus the municipality id passed in separately
+		assertThat(entity).extracting(
+			ContractEntity::getMunicipalityId,
+			ContractEntity::getLeaseExtension,
+			ContractEntity::getLeaseExtensionUnit,
+			ContractEntity::getAutoExtend,
+			ContractEntity::getCurrentPeriodStartDate,
+			ContractEntity::getCurrentPeriodEndDate,
+			ContractEntity::getNoticeDate,
+			ContractEntity::getNoticeGivenBy)
+			.containsExactly(
+				MUNICIPALITY_ID,
+				dto.getExtension().getLeaseExtension(),
+				dto.getExtension().getUnit(),
+				dto.getExtension().getAutoExtend(),
+				dto.getCurrentPeriod().getStartDate(),
+				dto.getCurrentPeriod().getEndDate(),
+				dto.getNotice().getNoticeDate(),
+				dto.getNotice().getNoticeGivenBy());
+
+		// Attributes mapped via their own mapper methods, which are tested separately
+		assertThat(entity).extracting(
+			ContractEntity::getTermGroups,
+			ContractEntity::getExtraParameters,
+			ContractEntity::getFees,
+			ContractEntity::getInvoicing,
+			ContractEntity::getLeasehold,
+			ContractEntity::getNoticeTerms,
+			ContractEntity::getStakeholders)
+			.doesNotContainNull();
+
 		assertThat(entity.getPropertyDesignations())
 			.flatExtracting(PropertyDesignationEmbeddable::getName, PropertyDesignationEmbeddable::getDistrict)
 			.containsAnyElementsOf(dto.getPropertyDesignations().stream()
 				.flatMap(prop -> Stream.of(prop.getName(), prop.getDistrict()))
 				.toList());
-		assertThat(entity.isSignedByWitness()).isEqualTo(dto.isSignedByWitness());
-		assertThat(entity.getStakeholders()).isNotNull(); // Is tested in its own method
-		assertThat(entity.getStartDate()).isEqualTo(dto.getStartDate());
-		assertThat(entity.getStatus()).isEqualTo(dto.getStatus());
-		assertThat(entity.getType()).isEqualTo(dto.getType());
 	}
 
 	@Test
