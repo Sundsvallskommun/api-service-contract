@@ -202,7 +202,7 @@ public class AttachmentService {
 			.filename(attachment.getFilename(), UTF_8)
 			.build()
 			.toString());
-		response.addHeader("X-Content-Type-Options", "nosniff");
+		response.setHeader("X-Content-Type-Options", "nosniff");
 
 		try (final var content = blob.getBinaryStream()) {
 			response.setContentLengthLong(blob.length());

@@ -186,6 +186,29 @@ class AttachmentServiceTest {
 	}
 
 	/**
+	 * Spring Security may already have written its own X-Content-Type-Options header before the request reaches the
+	 * service. The response must still carry the header once.
+	 */
+	@Test
+	void testStreamAttachmentWritesNosniffOnce() {
+		// Arrange
+		final var response = new MockHttpServletResponse();
+		response.setHeader("X-Content-Type-Options", "nosniff");
+		when(mockAttachmentRepository.findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID))
+			.thenReturn(Optional.of(TestFactory.createAttachmentEntity()));
+
+		// Act
+		attachmentService.streamAttachment(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID, response);
+
+		// Assert
+		assertThat(response.getHeaders("X-Content-Type-Options")).containsExactly("nosniff");
+
+		verify(mockAttachmentRepository).findByMunicipalityIdAndContractIdAndId(MUNICIPALITY_ID, CONTRACT_ID, ENTITY_ID);
+		verifyNoMoreInteractions(mockContractRepository);
+		verifyNoMoreInteractions(mockAttachmentRepository);
+	}
+
+	/**
 	 * The filename is client-supplied and goes straight into a response header. A quote must not break out of the
 	 * quoted-string, and a non-ASCII name - ordinary in Swedish - must survive the ISO-8859-1 encoding headers use.
 	 */
