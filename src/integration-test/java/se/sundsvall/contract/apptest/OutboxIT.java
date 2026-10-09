@@ -1,14 +1,5 @@
 package se.sundsvall.contract.apptest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,6 +8,15 @@ import se.sundsvall.contract.integration.db.OutboxRepository;
 import se.sundsvall.contract.scheduler.OutboxDispatcher;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @WireMockAppTestSuite(files = "classpath:/OutboxIT/", classes = Application.class)
 @Sql({
