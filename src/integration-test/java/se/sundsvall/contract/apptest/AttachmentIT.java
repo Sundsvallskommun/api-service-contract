@@ -1,5 +1,13 @@
 package se.sundsvall.contract.apptest;
 
+import java.util.List;
+import net.javacrumbs.jsonunit.core.Option;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.contract.Application;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 import static org.apache.hc.core5.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.apache.hc.core5.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.hc.core5.http.HttpHeaders.CONTENT_TYPE;
@@ -19,15 +27,6 @@ import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-
-import java.util.List;
-import net.javacrumbs.jsonunit.core.Option;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
-
-import se.sundsvall.contract.Application;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/AttachmentIT/", classes = Application.class)
 @Sql({

@@ -1,26 +1,26 @@
 package se.sundsvall.contract.apptest;
 
-import static java.nio.file.Files.writeString;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-
-import tools.jackson.core.JacksonException;
-import tools.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 import se.sundsvall.contract.Application;
 import se.sundsvall.dept44.util.ResourceUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+
+import static java.nio.file.Files.writeString;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 
 @ActiveProfiles("it")
 @SpringBootTest(

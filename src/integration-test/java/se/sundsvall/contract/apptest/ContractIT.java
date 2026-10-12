@@ -1,5 +1,14 @@
 package se.sundsvall.contract.apptest;
 
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.contract.Application;
+import se.sundsvall.contract.integration.db.OutboxRepository;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -12,15 +21,6 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import se.sundsvall.contract.Application;
-import se.sundsvall.contract.integration.db.OutboxRepository;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ContractIT/", classes = Application.class)
 @Sql({
@@ -479,7 +479,8 @@ class ContractIT extends AbstractAppTest {
 
 	/**
 	 * Test verifies the following:
-	 * - Update is performed for a contract changed to LAND_LEASE_RESIDENTIAL with YEARLY interval and currentPeriodEndDate June 30
+	 * - Update is performed for a contract changed to LAND_LEASE_RESIDENTIAL with YEARLY interval and currentPeriodEndDate
+	 * June 30
 	 * - BDC billing cycle is updated with billingMonths [6] (June) instead of [12] (December)
 	 */
 	@Test
@@ -510,9 +511,9 @@ class ContractIT extends AbstractAppTest {
 	 * Test verifies the following:
 	 * - Patch is applied in place on the existing contract
 	 * - Only the fields sent in the patch payload (description, area, startDate, endDate and currentPeriod) are updated;
-	 *   all other fields remain as before
+	 * all other fields remain as before
 	 * - Business rule for invoicing is executed (UPDATE action); GET of the existing BDC cycle returns matching
-	 *   settings so no further call to BDC is made
+	 * settings so no further call to BDC is made
 	 */
 	@Test
 	void test26_patchContract() {
