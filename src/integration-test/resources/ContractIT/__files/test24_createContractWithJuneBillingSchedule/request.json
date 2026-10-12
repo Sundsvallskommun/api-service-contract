@@ -82,7 +82,9 @@
 	},
 	"invoicing": {
 		"invoiceInterval": "YEARLY",
-		"invoicedIn": "ADVANCE"
+		"invoicedIn": "ADVANCE",
+		"billingEnabled": true,
+		"yearlyBillingMonth": 6
 	},
 	"status": "ACTIVE",
 	"currentPeriod": {

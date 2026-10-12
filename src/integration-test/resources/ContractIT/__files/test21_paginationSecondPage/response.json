@@ -34,7 +34,8 @@
 			},
 			"invoicing": {
 				"invoiceInterval": "MONTHLY",
-				"invoicedIn": "ADVANCE"
+				"invoicedIn": "ADVANCE",
+				"billingEnabled": true
 			},
 			"startDate": "2024-01-01",
 			"endDate": "2025-12-31",
@@ -86,7 +87,9 @@
 			},
 			"invoicing": {
 				"invoiceInterval": "YEARLY",
-				"invoicedIn": "ARREARS"
+				"invoicedIn": "ARREARS",
+				"billingEnabled": true,
+				"yearlyBillingMonth": 12
 			},
 			"startDate": "2023-07-01",
 			"endDate": "2024-06-30",

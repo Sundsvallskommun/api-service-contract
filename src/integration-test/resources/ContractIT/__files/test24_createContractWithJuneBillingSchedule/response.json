@@ -70,7 +70,9 @@
 	},
 	"invoicing": {
 		"invoiceInterval": "YEARLY",
-		"invoicedIn": "ADVANCE"
+		"invoicedIn": "ADVANCE",
+		"billingEnabled": true,
+		"yearlyBillingMonth": 6
 	},
 	"startDate": "2024-01-01",
 	"endDate": "2099-12-31",

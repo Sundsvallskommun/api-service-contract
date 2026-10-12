@@ -121,3 +121,13 @@ VALUES (201, 2, 'Parameter X', 'parameterX');
 INSERT INTO stakeholder_parameter_values(stakeholder_parameter_id, `value`)
 VALUES (201, 'value-x1'),
        (201, 'value-x2');
+
+-- All test contracts with invoicing details are billed
+UPDATE contract
+SET billing_enabled = true
+WHERE invoice_interval IS NOT NULL;
+
+-- The YEARLY test contract is billed in December
+UPDATE contract
+SET yearly_billing_month = 12
+WHERE invoice_interval = 'YEARLY';

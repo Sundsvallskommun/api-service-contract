@@ -68,6 +68,7 @@ public class PatchContract {
 	@Schema(description = "Fee details")
 	private Fees fees;
 
+	@Valid
 	@Schema(description = "Invoicing details")
 	private Invoicing invoicing;
 
