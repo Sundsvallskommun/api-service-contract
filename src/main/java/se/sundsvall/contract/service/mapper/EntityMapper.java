@@ -149,6 +149,8 @@ public final class EntityMapper {
 			.map(source -> InvoicingEmbeddable.builder()
 				.withInvoiceInterval(source.getInvoiceInterval())
 				.withInvoicedIn(source.getInvoicedIn())
+				.withBillingEnabled(source.getBillingEnabled())
+				.withYearlyBillingMonth(source.getYearlyBillingMonth())
 				.build())
 			.orElse(null);
 	}
@@ -310,7 +312,7 @@ public final class EntityMapper {
 		try {
 			existing.clear();
 			existing.addAll(replacement);
-		} catch (UnsupportedOperationException e) {
+		} catch (UnsupportedOperationException _) {
 			setter.accept(new ArrayList<>(replacement));
 		}
 	}
